@@ -1,0 +1,10 @@
+Connectome File Format Library
+
+Multi-Modal Neuroimaging Python Library for Data Input / Output and interlinking for
+
+* metadata (XML)
+* networks (GraphML, GEXF)
+* surfaces (Gifti)
+* volumes (Nifti)
+* fiber tracks (TrackVis)
+* time series (HDF5)
