@@ -16,26 +16,26 @@ Dependencies
 ------------
 
 * Nibabel
+* numexpr
 * PyTables
+* NumPy
+
 
 Additional types
 ----------------
 CData -> connectome-data
-type:
+type: npy, 
 location: local (in zip, by default), URL, filesystem
 
 CScript -> connectome-script
 type: python, matlab, ...
 location: local (in zip, by default), URL, filesystem
 
-CTimeserie
-type: hdf5
-
 CNetwork
 type: standard types (e.g. like in networkx), (from PyConto), gexf/graphml
 edgeless boolean (=marks its usage only for data storage)
 
-descr, descr-type (txt, rst)
+descr, descr-type (txt, rst) -> default: plaintxt
 
 In cfflib
 ---------
@@ -46,3 +46,4 @@ In cfflib
 * info method about available optional dependencies
 * .save / .load cff
 * lazy loading data
+* meaningful getter method for objects based on meta-data attributes
