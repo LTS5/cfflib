@@ -8,3 +8,41 @@ Multi-Modal Neuroimaging Python Library for Data Input / Output and interlinking
 * volumes (Nifti)
 * fiber tracks (TrackVis)
 * time series (HDF5)
+
+Generate classes with: 
+python /home/stephan/Dev/Python/generateDS-2.1a/generateDS.py --subclass-suffix="" -f --super="cff" -o /home/stephan/Dev/PyWorkspace/cfflib/schema/gen/cff.py -s /home/stephan/Dev/PyWorkspace/cfflib/schema/gen/cfflib.py /home/stephan/Dev/PyWorkspace/cfflib/schema/connectome.xsd
+
+Dependencies
+------------
+
+* Nibabel
+* PyTables
+
+Additional types
+----------------
+CData -> connectome-data
+type:
+location: local (in zip, by default), URL, filesystem
+
+CScript -> connectome-script
+type: python, matlab, ...
+location: local (in zip, by default), URL, filesystem
+
+CTimeserie
+type: hdf5
+
+CNetwork
+type: standard types (e.g. like in networkx), (from PyConto), gexf/graphml
+edgeless boolean (=marks its usage only for data storage)
+
+descr, descr-type (txt, rst)
+
+In cfflib
+---------
+* validate file existence and file type
+* e.g. in a python-script, write: import cfflib
+* adder (=setter?) methods
+* remover methods
+* info method about available optional dependencies
+* .save / .load cff
+* lazy loading data
