@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 #
-# Generated Tue Jul 27 12:06:53 2010 by generateDS.py version 2.1a.
+# Generated Tue Jul 27 18:57:42 2010 by generateDS.py version 2.1a.
 #
 
 import sys
@@ -269,7 +269,7 @@ def _cast(typ, value):
 class connectome(GeneratedsSuper):
     subclass = None
     superclass = None
-    def __init__(self, connectome_meta=None, connectome_network=None, connectome_surface=None, connectome_volume=None, connectome_track=None, connectome_timeserie=None):
+    def __init__(self, connectome_meta=None, connectome_network=None, connectome_surface=None, connectome_volume=None, connectome_track=None, connectome_timeserie=None, connectome_data=None, connectome_scripts=None):
         self.connectome_meta = connectome_meta
         if connectome_network is None:
             self.connectome_network = []
@@ -291,6 +291,14 @@ class connectome(GeneratedsSuper):
             self.connectome_timeserie = []
         else:
             self.connectome_timeserie = connectome_timeserie
+        if connectome_data is None:
+            self.connectome_data = []
+        else:
+            self.connectome_data = connectome_data
+        if connectome_scripts is None:
+            self.connectome_scripts = []
+        else:
+            self.connectome_scripts = connectome_scripts
     def factory(*args_, **kwargs_):
         if connectome.subclass:
             return connectome.subclass(*args_, **kwargs_)
@@ -319,6 +327,14 @@ class connectome(GeneratedsSuper):
     def set_connectome_timeserie(self, connectome_timeserie): self.connectome_timeserie = connectome_timeserie
     def add_connectome_timeserie(self, value): self.connectome_timeserie.append(value)
     def insert_connectome_timeserie(self, index, value): self.connectome_timeserie[index] = value
+    def get_connectome_data(self): return self.connectome_data
+    def set_connectome_data(self, connectome_data): self.connectome_data = connectome_data
+    def add_connectome_data(self, value): self.connectome_data.append(value)
+    def insert_connectome_data(self, index, value): self.connectome_data[index] = value
+    def get_connectome_scripts(self): return self.connectome_scripts
+    def set_connectome_scripts(self, connectome_scripts): self.connectome_scripts = connectome_scripts
+    def add_connectome_scripts(self, value): self.connectome_scripts.append(value)
+    def insert_connectome_scripts(self, index, value): self.connectome_scripts[index] = value
     def export(self, outfile, level, namespace_='', name_='connectome', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
@@ -345,6 +361,12 @@ class connectome(GeneratedsSuper):
             connectome_track_.export(outfile, level, namespace_, name_='connectome-track')
         for connectome_timeserie_ in self.connectome_timeserie:
             connectome_timeserie_.export(outfile, level, namespace_, name_='connectome-timeserie')
+        for connectome_data_ in self.connectome_data:
+            showIndent(outfile, level)
+            outfile.write('<%sconnectome-data>%s</%sconnectome-data>\n' % (namespace_, self.format_string(quote_xml(connectome_data_).encode(ExternalEncoding), input_name='connectome-data'), namespace_))
+        for connectome_scripts_ in self.connectome_scripts:
+            showIndent(outfile, level)
+            outfile.write('<%sconnectome-scripts>%s</%sconnectome-scripts>\n' % (namespace_, self.format_string(quote_xml(connectome_scripts_).encode(ExternalEncoding), input_name='connectome-scripts'), namespace_))
     def hasContent_(self):
         if (
             self.connectome_meta is not None or
@@ -352,7 +374,9 @@ class connectome(GeneratedsSuper):
             self.connectome_surface or
             self.connectome_volume or
             self.connectome_track or
-            self.connectome_timeserie
+            self.connectome_timeserie or
+            self.connectome_data or
+            self.connectome_scripts
             ):
             return True
         else:
@@ -376,8 +400,8 @@ class connectome(GeneratedsSuper):
         level += 1
         for connectome_network_ in self.connectome_network:
             showIndent(outfile, level)
-            outfile.write('model_.networkstype(\n')
-            connectome_network_.exportLiteral(outfile, level, name_='networkstype')
+            outfile.write('model_.CNetwork(\n')
+            connectome_network_.exportLiteral(outfile, level, name_='CNetwork')
             showIndent(outfile, level)
             outfile.write('),\n')
         level -= 1
@@ -388,8 +412,8 @@ class connectome(GeneratedsSuper):
         level += 1
         for connectome_surface_ in self.connectome_surface:
             showIndent(outfile, level)
-            outfile.write('model_.surfacestype(\n')
-            connectome_surface_.exportLiteral(outfile, level, name_='surfacestype')
+            outfile.write('model_.CSurface(\n')
+            connectome_surface_.exportLiteral(outfile, level, name_='CSurface')
             showIndent(outfile, level)
             outfile.write('),\n')
         level -= 1
@@ -400,8 +424,8 @@ class connectome(GeneratedsSuper):
         level += 1
         for connectome_volume_ in self.connectome_volume:
             showIndent(outfile, level)
-            outfile.write('model_.volumestype(\n')
-            connectome_volume_.exportLiteral(outfile, level, name_='volumestype')
+            outfile.write('model_.CVolume(\n')
+            connectome_volume_.exportLiteral(outfile, level, name_='CVolume')
             showIndent(outfile, level)
             outfile.write('),\n')
         level -= 1
@@ -431,6 +455,24 @@ class connectome(GeneratedsSuper):
         level -= 1
         showIndent(outfile, level)
         outfile.write('],\n')
+        showIndent(outfile, level)
+        outfile.write('connectome_data=[\n')
+        level += 1
+        for connectome_data_ in self.connectome_data:
+            showIndent(outfile, level)
+            outfile.write('%s,\n' % quote_python(connectome_data_).encode(ExternalEncoding))
+        level -= 1
+        showIndent(outfile, level)
+        outfile.write('],\n')
+        showIndent(outfile, level)
+        outfile.write('connectome_scripts=[\n')
+        level += 1
+        for connectome_scripts_ in self.connectome_scripts:
+            showIndent(outfile, level)
+            outfile.write('%s,\n' % quote_python(connectome_scripts_).encode(ExternalEncoding))
+        level -= 1
+        showIndent(outfile, level)
+        outfile.write('],\n')
     def build(self, node):
         self.buildAttributes(node, node.attrib)
         for child in node:
@@ -444,15 +486,15 @@ class connectome(GeneratedsSuper):
             obj_.build(child_)
             self.set_connectome_meta(obj_)
         elif nodeName_ == 'connectome-network': 
-            obj_ = networkstype.factory()
+            obj_ = CNetwork.factory()
             obj_.build(child_)
             self.connectome_network.append(obj_)
         elif nodeName_ == 'connectome-surface': 
-            obj_ = surfacestype.factory()
+            obj_ = CSurface.factory()
             obj_.build(child_)
             self.connectome_surface.append(obj_)
         elif nodeName_ == 'connectome-volume': 
-            obj_ = volumestype.factory()
+            obj_ = CVolume.factory()
             obj_.build(child_)
             self.connectome_volume.append(obj_)
         elif nodeName_ == 'connectome-track': 
@@ -463,13 +505,21 @@ class connectome(GeneratedsSuper):
             obj_ = CTimeserie.factory()
             obj_.build(child_)
             self.connectome_timeserie.append(obj_)
+        elif nodeName_ == 'connectome-data':
+            connectome_data_ = child_.text
+            self.connectome_data.append(connectome_data_)
+        elif nodeName_ == 'connectome-scripts':
+            connectome_scripts_ = child_.text
+            self.connectome_scripts.append(connectome_scripts_)
 # end class connectome
 
 
 class CMetadata(GeneratedsSuper):
+    """Defines the version of the Connectome Schema Definition the current
+    Connectome File is compatible with. Should be 2.0"""
     subclass = None
     superclass = None
-    def __init__(self, version=None, generator=None, initial_creator=None, institution=None, creation_date=None, modification_date=None, name=None, species=None, legal_notice=None, reference=None, url=None, description=None, metadata=None):
+    def __init__(self, version=None, generator=None, initial_creator=None, institution=None, creation_date=None, modification_date=None, name=None, species=None, legal_notice=None, reference=None, email=None, url=None, description=None, metadata=None):
         self.version = _cast(None, version)
         self.generator = generator
         self.initial_creator = initial_creator
@@ -480,6 +530,7 @@ class CMetadata(GeneratedsSuper):
         self.species = species
         self.legal_notice = legal_notice
         self.reference = reference
+        self.email = email
         self.url = url
         self.description = description
         self.metadata = metadata
@@ -507,6 +558,8 @@ class CMetadata(GeneratedsSuper):
     def set_legal_notice(self, legal_notice): self.legal_notice = legal_notice
     def get_reference(self): return self.reference
     def set_reference(self, reference): self.reference = reference
+    def get_email(self): return self.email
+    def set_email(self, email): self.email = email
     def get_url(self): return self.url
     def set_url(self, url): self.url = url
     def get_description(self): return self.description
@@ -556,6 +609,9 @@ class CMetadata(GeneratedsSuper):
         if self.reference is not None:
             showIndent(outfile, level)
             outfile.write('<%sreference>%s</%sreference>\n' % (namespace_, self.format_string(quote_xml(self.reference).encode(ExternalEncoding), input_name='reference'), namespace_))
+        if self.email is not None:
+            showIndent(outfile, level)
+            outfile.write('<%semail>%s</%semail>\n' % (namespace_, self.format_string(quote_xml(self.email).encode(ExternalEncoding), input_name='email'), namespace_))
         if self.url is not None:
             showIndent(outfile, level)
             outfile.write('<%surl>%s</%surl>\n' % (namespace_, self.format_string(quote_xml(self.url).encode(ExternalEncoding), input_name='url'), namespace_))
@@ -575,6 +631,7 @@ class CMetadata(GeneratedsSuper):
             self.species is not None or
             self.legal_notice is not None or
             self.reference is not None or
+            self.email is not None or
             self.url is not None or
             self.description is not None or
             self.metadata is not None
@@ -619,6 +676,9 @@ class CMetadata(GeneratedsSuper):
         if self.reference is not None:
             showIndent(outfile, level)
             outfile.write('reference=%s,\n' % quote_python(self.reference).encode(ExternalEncoding))
+        if self.email is not None:
+            showIndent(outfile, level)
+            outfile.write('email=%s,\n' % quote_python(self.email).encode(ExternalEncoding))
         if self.url is not None:
             showIndent(outfile, level)
             outfile.write('url=%s,\n' % quote_python(self.url).encode(ExternalEncoding))
@@ -627,7 +687,7 @@ class CMetadata(GeneratedsSuper):
             outfile.write('description=%s,\n' % quote_python(self.description).encode(ExternalEncoding))
         if self.metadata is not None:
             showIndent(outfile, level)
-            outfile.write('metadata=model_.moremetadatatype(\n')
+            outfile.write('metadata=model_.Metadata(\n')
             self.metadata.exportLiteral(outfile, level, name_='metadata')
             showIndent(outfile, level)
             outfile.write('),\n')
@@ -668,6 +728,9 @@ class CMetadata(GeneratedsSuper):
         elif nodeName_ == 'reference':
             reference_ = child_.text
             self.reference = reference_
+        elif nodeName_ == 'email':
+            email_ = child_.text
+            self.email = email_
         elif nodeName_ == 'url':
             url_ = child_.text
             self.url = url_
@@ -675,17 +738,20 @@ class CMetadata(GeneratedsSuper):
             description_ = child_.text
             self.description = description_
         elif nodeName_ == 'metadata': 
-            obj_ = moremetadatatype.factory()
+            obj_ = Metadata.factory()
             obj_.build(child_)
             self.set_metadata(obj_)
 # end class CMetadata
 
 
-class networkstype(GeneratedsSuper):
+class CNetwork(GeneratedsSuper):
+    """The short name of the network The source location of the network
+    data If true, the network contains no edges. Usually used for
+    structured node-based data representation."""
     subclass = None
     superclass = None
-    def __init__(self, directed=None, src=None, name=None, network_metadata=None, network_surface=None, network_volume=None, network_track=None, network_timeserie=None, description=None):
-        self.directed = _cast(bool, directed)
+    def __init__(self, edgeless=False, src=None, name=None, network_metadata=None, network_surface=None, network_volume=None, network_track=None, network_timeserie=None, description=None):
+        self.edgeless = _cast(bool, edgeless)
         self.src = _cast(None, src)
         self.name = _cast(None, name)
         self.network_metadata = network_metadata
@@ -707,10 +773,10 @@ class networkstype(GeneratedsSuper):
             self.network_timeserie = network_timeserie
         self.description = description
     def factory(*args_, **kwargs_):
-        if networkstype.subclass:
-            return networkstype.subclass(*args_, **kwargs_)
+        if CNetwork.subclass:
+            return CNetwork.subclass(*args_, **kwargs_)
         else:
-            return networkstype(*args_, **kwargs_)
+            return CNetwork(*args_, **kwargs_)
     factory = staticmethod(factory)
     def get_network_metadata(self): return self.network_metadata
     def set_network_metadata(self, network_metadata): self.network_metadata = network_metadata
@@ -732,16 +798,16 @@ class networkstype(GeneratedsSuper):
     def insert_network_timeserie(self, index, value): self.network_timeserie[index] = value
     def get_description(self): return self.description
     def set_description(self, description): self.description = description
-    def get_directed(self): return self.directed
-    def set_directed(self, directed): self.directed = directed
+    def get_edgeless(self): return self.edgeless
+    def set_edgeless(self, edgeless): self.edgeless = edgeless
     def get_src(self): return self.src
     def set_src(self, src): self.src = src
     def get_name(self): return self.name
     def set_name(self, name): self.name = name
-    def export(self, outfile, level, namespace_='', name_='networkstype', namespacedef_=''):
+    def export(self, outfile, level, namespace_='', name_='CNetwork', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
-        self.exportAttributes(outfile, level, namespace_, name_='networkstype')
+        self.exportAttributes(outfile, level, namespace_, name_='CNetwork')
         if self.hasContent_():
             outfile.write('>\n')
             self.exportChildren(outfile, level + 1, namespace_, name_)
@@ -749,14 +815,14 @@ class networkstype(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, namespace_='', name_='networkstype'):
-        if self.directed is not None:
-            outfile.write(' directed="%s"' % self.format_boolean(str_lower(str(self.directed)), input_name='directed'))
+    def exportAttributes(self, outfile, level, namespace_='', name_='CNetwork'):
+        if self.edgeless is not None:
+            outfile.write(' edgeless="%s"' % self.format_boolean(str_lower(str(self.edgeless)), input_name='edgeless'))
         if self.src is not None:
             outfile.write(' src=%s' % (self.format_string(quote_attrib(self.src).encode(ExternalEncoding), input_name='src'), ))
         if self.name is not None:
             outfile.write(' name=%s' % (self.format_string(quote_attrib(self.name).encode(ExternalEncoding), input_name='name'), ))
-    def exportChildren(self, outfile, level, namespace_='', name_='networkstype'):
+    def exportChildren(self, outfile, level, namespace_='', name_='CNetwork'):
         if self.network_metadata:
             self.network_metadata.export(outfile, level, namespace_, name_='network-metadata')
         for network_surface_ in self.network_surface:
@@ -782,15 +848,15 @@ class networkstype(GeneratedsSuper):
             return True
         else:
             return False
-    def exportLiteral(self, outfile, level, name_='networkstype'):
+    def exportLiteral(self, outfile, level, name_='CNetwork'):
         level += 1
         self.exportLiteralAttributes(outfile, level, name_)
         if self.hasContent_():
             self.exportLiteralChildren(outfile, level, name_)
     def exportLiteralAttributes(self, outfile, level, name_):
-        if self.directed is not None:
+        if self.edgeless is not None:
             showIndent(outfile, level)
-            outfile.write('directed = %s,\n' % (self.directed,))
+            outfile.write('edgeless = %s,\n' % (self.edgeless,))
         if self.src is not None:
             showIndent(outfile, level)
             outfile.write('src = "%s",\n' % (self.src,))
@@ -800,7 +866,7 @@ class networkstype(GeneratedsSuper):
     def exportLiteralChildren(self, outfile, level, name_):
         if self.network_metadata is not None:
             showIndent(outfile, level)
-            outfile.write('network_metadata=model_.moremetadatatype(\n')
+            outfile.write('network_metadata=model_.Metadata(\n')
             self.network_metadata.exportLiteral(outfile, level, name_='network_metadata')
             showIndent(outfile, level)
             outfile.write('),\n')
@@ -861,12 +927,12 @@ class networkstype(GeneratedsSuper):
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
             self.buildChildren(child, nodeName_)
     def buildAttributes(self, node, attrs):
-        value = attrs.get('directed')
+        value = attrs.get('edgeless')
         if value is not None:
             if value in ('true', '1'):
-                self.directed = True
+                self.edgeless = True
             elif value in ('false', '0'):
-                self.directed = False
+                self.edgeless = False
             else:
                 raise_parse_error(node, 'Bad boolean attribute')
         value = attrs.get('src')
@@ -877,7 +943,7 @@ class networkstype(GeneratedsSuper):
             self.name = value
     def buildChildren(self, child_, nodeName_):
         if nodeName_ == 'network-metadata': 
-            obj_ = moremetadatatype.factory()
+            obj_ = Metadata.factory()
             obj_.build(child_)
             self.set_network_metadata(obj_)
         elif nodeName_ == 'network-surface': 
@@ -899,10 +965,32 @@ class networkstype(GeneratedsSuper):
         elif nodeName_ == 'description':
             description_ = child_.text
             self.description = description_
-# end class networkstype
+# end class CNetwork
 
 
-class surfacestype(GeneratedsSuper):
+class CSurface(GeneratedsSuper):
+    """Descriptive name of the surface. The name appears in the
+    ConnectomeViewer Connectome File TreeView. The relative path to
+    the Gifti surface file within the archive. Set to "gifti" to use
+    the only supported Gifti format See
+    http://www.nitrc.org/frs/download.php/158/gifti.xsd for schema
+    information What type of surface does the Gifti file contain: -
+    type="label" The Gifti file contains surface labels. This file
+    can be referenced in connectome-network with either the name
+    attribute or in addition to another surface defined by name and
+    using the labelname attribute and matching labelid. If
+    referenced in such a way, the networks' nodes attribute
+    dn_intensityvalue value may match the label array integers,
+    thereby relating a network node to a surface patch (a region of
+    interest defined on the surface). See also example datasets. -
+    type="surfaceset" The Gifti file contains a set of surfaces
+    where the metadata tag AnatomicalStructurePrimary match.
+    Individual elements of the set are distinguished by the metadta
+    tag AnatomicalStructureSecondary. The ConnectomeViewer creates a
+    surface container in the Connectome File TreeView. The Gifti
+    file contains information about the coordinate system used. -
+    type="surfaceset+label" If the Gifti file contains data as
+    described for both surfaceset and label above."""
     subclass = None
     superclass = None
     def __init__(self, src=None, dtype=None, name=None, fileformat=None, description=None):
@@ -912,10 +1000,10 @@ class surfacestype(GeneratedsSuper):
         self.fileformat = _cast(None, fileformat)
         self.description = description
     def factory(*args_, **kwargs_):
-        if surfacestype.subclass:
-            return surfacestype.subclass(*args_, **kwargs_)
+        if CSurface.subclass:
+            return CSurface.subclass(*args_, **kwargs_)
         else:
-            return surfacestype(*args_, **kwargs_)
+            return CSurface(*args_, **kwargs_)
     factory = staticmethod(factory)
     def get_description(self): return self.description
     def set_description(self, description): self.description = description
@@ -927,10 +1015,10 @@ class surfacestype(GeneratedsSuper):
     def set_name(self, name): self.name = name
     def get_fileformat(self): return self.fileformat
     def set_fileformat(self, fileformat): self.fileformat = fileformat
-    def export(self, outfile, level, namespace_='', name_='surfacestype', namespacedef_=''):
+    def export(self, outfile, level, namespace_='', name_='CSurface', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
-        self.exportAttributes(outfile, level, namespace_, name_='surfacestype')
+        self.exportAttributes(outfile, level, namespace_, name_='CSurface')
         if self.hasContent_():
             outfile.write('>\n')
             self.exportChildren(outfile, level + 1, namespace_, name_)
@@ -938,7 +1026,7 @@ class surfacestype(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, namespace_='', name_='surfacestype'):
+    def exportAttributes(self, outfile, level, namespace_='', name_='CSurface'):
         if self.src is not None:
             outfile.write(' src=%s' % (self.format_string(quote_attrib(self.src).encode(ExternalEncoding), input_name='src'), ))
         if self.dtype is not None:
@@ -947,7 +1035,7 @@ class surfacestype(GeneratedsSuper):
             outfile.write(' name=%s' % (self.format_string(quote_attrib(self.name).encode(ExternalEncoding), input_name='name'), ))
         if self.fileformat is not None:
             outfile.write(' fileformat=%s' % (self.format_string(quote_attrib(self.fileformat).encode(ExternalEncoding), input_name='fileformat'), ))
-    def exportChildren(self, outfile, level, namespace_='', name_='surfacestype'):
+    def exportChildren(self, outfile, level, namespace_='', name_='CSurface'):
         if self.description is not None:
             showIndent(outfile, level)
             outfile.write('<%sdescription>%s</%sdescription>\n' % (namespace_, self.format_string(quote_xml(self.description).encode(ExternalEncoding), input_name='description'), namespace_))
@@ -958,7 +1046,7 @@ class surfacestype(GeneratedsSuper):
             return True
         else:
             return False
-    def exportLiteral(self, outfile, level, name_='surfacestype'):
+    def exportLiteral(self, outfile, level, name_='CSurface'):
         level += 1
         self.exportLiteralAttributes(outfile, level, name_)
         if self.hasContent_():
@@ -1002,10 +1090,38 @@ class surfacestype(GeneratedsSuper):
         if nodeName_ == 'description':
             description_ = child_.text
             self.description = description_
-# end class surfacestype
+# end class CSurface
 
 
-class volumestype(GeneratedsSuper):
+class CVolume(GeneratedsSuper):
+    """Name of the volume. The name appears in the ConnectomeViewer
+    Connectome File TreeView. The location of the volume file Set to
+    "nifti" to use the only supported Nifti format. This implies
+    also files with ending .nii.gz The Nifti file contains
+    information about the coordinate system used. Set type of volume
+    the Nifti file contains: - type="segmentation" The Nifti file
+    contains a single volume where the voxel values are integers,
+    representing a segmented Region of Interest. If this volume is
+    referenced by a connectome-network, its nodes dn_intensityvalue
+    attribute may match these integer values. Such a segmentation
+    volume can referenced in a connectome-volume by the
+    segmentationname attribute in addition to another, e.g.
+    T1-weighted volume which is referenced by the name attribute.
+    See also example datasets. - type="T1-weighted" The Nifti file
+    contains a T1-weighted volume. - type="T2-weighted" The Nifti
+    file contains a T2-weighted volume. - type="PD-weighted" The
+    voxel values represent a proton-density weighted signal. -
+    type="fMRI" The Nifti file contains functional MRI time series
+    data. - type="probabilitymap" Voxel values are in the range
+    [0,1]. Can stand for tissue probability maps. - type="MD"
+    Diffusion-related signal. Stands for mean diffusivity. -
+    type="FA" Diffusion-related signal. Stands for fractional
+    anisotropy. - type="LD" Diffusion-related signal. Stands for
+    longitudinal diffusivity. - type="TD" Diffusion-related signal.
+    Stands for transversal diffusivity. - type="FLAIR" Stands for
+    Fluid attenuated inversion recovery - type="MRA" Stands for
+    Magnetic resonance angiography - type="MRS" Stands for Magnetic
+    resonance spectroscopy"""
     subclass = None
     superclass = None
     def __init__(self, src=None, dtype=None, name=None, fileformat=None, description=None):
@@ -1015,10 +1131,10 @@ class volumestype(GeneratedsSuper):
         self.fileformat = _cast(None, fileformat)
         self.description = description
     def factory(*args_, **kwargs_):
-        if volumestype.subclass:
-            return volumestype.subclass(*args_, **kwargs_)
+        if CVolume.subclass:
+            return CVolume.subclass(*args_, **kwargs_)
         else:
-            return volumestype(*args_, **kwargs_)
+            return CVolume(*args_, **kwargs_)
     factory = staticmethod(factory)
     def get_description(self): return self.description
     def set_description(self, description): self.description = description
@@ -1030,10 +1146,13 @@ class volumestype(GeneratedsSuper):
     def set_name(self, name): self.name = name
     def get_fileformat(self): return self.fileformat
     def set_fileformat(self, fileformat): self.fileformat = fileformat
-    def export(self, outfile, level, namespace_='', name_='volumestype', namespacedef_=''):
+    def validate_volumeFileFormat(self, value):
+        # Validate type volumeFileFormat, a restriction on xsd:string.
+        pass
+    def export(self, outfile, level, namespace_='', name_='CVolume', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
-        self.exportAttributes(outfile, level, namespace_, name_='volumestype')
+        self.exportAttributes(outfile, level, namespace_, name_='CVolume')
         if self.hasContent_():
             outfile.write('>\n')
             self.exportChildren(outfile, level + 1, namespace_, name_)
@@ -1041,16 +1160,16 @@ class volumestype(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, namespace_='', name_='volumestype'):
+    def exportAttributes(self, outfile, level, namespace_='', name_='CVolume'):
         if self.src is not None:
             outfile.write(' src=%s' % (self.format_string(quote_attrib(self.src).encode(ExternalEncoding), input_name='src'), ))
         if self.dtype is not None:
-            outfile.write(' dtype=%s' % (self.format_string(quote_attrib(self.dtype).encode(ExternalEncoding), input_name='dtype'), ))
+            outfile.write(' dtype=%s' % (quote_attrib(self.dtype), ))
         if self.name is not None:
             outfile.write(' name=%s' % (self.format_string(quote_attrib(self.name).encode(ExternalEncoding), input_name='name'), ))
         if self.fileformat is not None:
-            outfile.write(' fileformat=%s' % (self.format_string(quote_attrib(self.fileformat).encode(ExternalEncoding), input_name='fileformat'), ))
-    def exportChildren(self, outfile, level, namespace_='', name_='volumestype'):
+            outfile.write(' fileformat=%s' % (quote_attrib(self.fileformat), ))
+    def exportChildren(self, outfile, level, namespace_='', name_='CVolume'):
         if self.description is not None:
             showIndent(outfile, level)
             outfile.write('<%sdescription>%s</%sdescription>\n' % (namespace_, self.format_string(quote_xml(self.description).encode(ExternalEncoding), input_name='description'), namespace_))
@@ -1061,7 +1180,7 @@ class volumestype(GeneratedsSuper):
             return True
         else:
             return False
-    def exportLiteral(self, outfile, level, name_='volumestype'):
+    def exportLiteral(self, outfile, level, name_='CVolume'):
         level += 1
         self.exportLiteralAttributes(outfile, level, name_)
         if self.hasContent_():
@@ -1072,7 +1191,7 @@ class volumestype(GeneratedsSuper):
             outfile.write('src = "%s",\n' % (self.src,))
         if self.dtype is not None:
             showIndent(outfile, level)
-            outfile.write('dtype = "%s",\n' % (self.dtype,))
+            outfile.write('dtype = %s,\n' % (self.dtype,))
         if self.name is not None:
             showIndent(outfile, level)
             outfile.write('name = "%s",\n' % (self.name,))
@@ -1101,14 +1220,20 @@ class volumestype(GeneratedsSuper):
         value = attrs.get('fileformat')
         if value is not None:
             self.fileformat = value
+            self.validate_volumeFileFormat(self.fileformat)    # validate type volumeFileFormat
     def buildChildren(self, child_, nodeName_):
         if nodeName_ == 'description':
             description_ = child_.text
             self.description = description_
-# end class volumestype
+# end class CVolume
 
 
 class CTrack(GeneratedsSuper):
+    """Name of the track. The name appears in the ConnectomeViewer
+    Connectome File TreeView. The location of the TrackVis file Set
+    to "trackvis" to use the only supported TrackVis file format.
+    The TrackVis file format allows to store any number of
+    additional numerical data on the individual fibers."""
     subclass = None
     superclass = None
     def __init__(self, src=None, name=None, fileformat=None, description=None):
@@ -1201,6 +1326,10 @@ class CTrack(GeneratedsSuper):
 
 
 class CTimeserie(GeneratedsSuper):
+    """Name of the timeseries. The relative path to the timeseries HDF file
+    within the archive. Set tp "hdf5" to use the only supported
+    Hierarchical Data File format. The HDF5 allows to store any
+    number of time series or other large homogenous data."""
     subclass = None
     superclass = None
     def __init__(self, src=None, name=None, fileformat=None, description=None):
@@ -1292,23 +1421,23 @@ class CTimeserie(GeneratedsSuper):
 # end class CTimeserie
 
 
-class moremetadatatype(GeneratedsSuper):
+class Metadata(GeneratedsSuper):
     subclass = None
     superclass = None
     def __init__(self, data=None):
         self.data = data
     def factory(*args_, **kwargs_):
-        if moremetadatatype.subclass:
-            return moremetadatatype.subclass(*args_, **kwargs_)
+        if Metadata.subclass:
+            return Metadata.subclass(*args_, **kwargs_)
         else:
-            return moremetadatatype(*args_, **kwargs_)
+            return Metadata(*args_, **kwargs_)
     factory = staticmethod(factory)
     def get_data(self): return self.data
     def set_data(self, data): self.data = data
-    def export(self, outfile, level, namespace_='', name_='moremetadatatype', namespacedef_=''):
+    def export(self, outfile, level, namespace_='', name_='Metadata', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
-        self.exportAttributes(outfile, level, namespace_, name_='moremetadatatype')
+        self.exportAttributes(outfile, level, namespace_, name_='Metadata')
         if self.hasContent_():
             outfile.write('>\n')
             self.exportChildren(outfile, level + 1, namespace_, name_)
@@ -1316,9 +1445,9 @@ class moremetadatatype(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, namespace_='', name_='moremetadatatype'):
+    def exportAttributes(self, outfile, level, namespace_='', name_='Metadata'):
         pass
-    def exportChildren(self, outfile, level, namespace_='', name_='moremetadatatype'):
+    def exportChildren(self, outfile, level, namespace_='', name_='Metadata'):
         if self.data:
             self.data.export(outfile, level, namespace_, name_='data')
     def hasContent_(self):
@@ -1328,7 +1457,7 @@ class moremetadatatype(GeneratedsSuper):
             return True
         else:
             return False
-    def exportLiteral(self, outfile, level, name_='moremetadatatype'):
+    def exportLiteral(self, outfile, level, name_='Metadata'):
         level += 1
         self.exportLiteralAttributes(outfile, level, name_)
         if self.hasContent_():
@@ -1354,10 +1483,12 @@ class moremetadatatype(GeneratedsSuper):
             obj_ = data.factory()
             obj_.build(child_)
             self.set_data(obj_)
-# end class moremetadatatype
+# end class Metadata
 
 
 class data(GeneratedsSuper):
+    """A data element contains a key attribute and the value as tag The key
+    to be used later in the dictionary"""
     subclass = None
     superclass = None
     def __init__(self, key=None, valueOf_=None):
@@ -1424,6 +1555,21 @@ class data(GeneratedsSuper):
 
 
 class networksurfacetype(GeneratedsSuper):
+    """The name of the surface as reference to an existing connectome-
+    surface To use an atlas that is shipped with the
+    ConnectomeViewer - name="template_atlas_homo_sapines_01"
+    Extracted atlas from Freesurfer using fsaverage mesh Optional
+    together with labelid. The name of the another surface as
+    reference to an existing connectome-surface that contains the
+    label array. Always use in conjunction with labelid. This can be
+    used for a separate Gifti file containing e.g. only label
+    information. The labelid tag name that contains the labeling of
+    the surface reference by name. The referenced surface file must
+    contain NIFTI_INTENT_LABEL intent with the matching labelid in
+    the metadata. Number of vertices of the referenced surface and
+    the label array dimension must match (one label for each
+    vertices) XXX: Probably better to use the LabelTable tag in
+    Gifti?"""
     subclass = None
     superclass = None
     def __init__(self, labelid=None, name=None, labelname=None, valueOf_=None):
@@ -1512,6 +1658,11 @@ class networksurfacetype(GeneratedsSuper):
 
 
 class networkvolumetype(GeneratedsSuper):
+    """The name of the volume as reference to an existing connectome-
+    volume. The connectome-volume can be of any dtype. Optional. The
+    name of a connectome-volume that has dtype=segmentation. It
+    specifies a segmentation of the volume referenced by name. The
+    voxel dimensions have to match."""
     subclass = None
     superclass = None
     def __init__(self, segmentationname=None, name=None, valueOf_=None):
@@ -1589,6 +1740,7 @@ class networkvolumetype(GeneratedsSuper):
 
 
 class networktracktype(GeneratedsSuper):
+    """The name of the track as reference to an existing connectome-track"""
     subclass = None
     superclass = None
     def __init__(self, name=None, valueOf_=None):
@@ -1655,6 +1807,8 @@ class networktracktype(GeneratedsSuper):
 
 
 class networktimeserietype(GeneratedsSuper):
+    """The name of the timeserie as reference to an existing connectome-
+    timeserie"""
     subclass = None
     superclass = None
     def __init__(self, name=None, valueOf_=None):

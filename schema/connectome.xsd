@@ -72,6 +72,7 @@
 <xsd:simpleType name="scriptEnumType">
 	<xsd:restriction base="xsd:string">
 		<xsd:enumeration value="Python"/>
+		<xsd:enumeration value="Bash"/>
 		<xsd:enumeration value="Matlab"/>
 		<xsd:enumeration value="Other"/>
 	</xsd:restriction>

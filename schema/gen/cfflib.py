@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 #
-# Generated Tue Jul 27 12:06:53 2010 by generateDS.py version 2.1a.
+# Generated Tue Jul 27 18:57:42 2010 by generateDS.py version 2.1a.
 #
 
 import sys
@@ -72,38 +72,38 @@ ExternalEncoding = 'ascii'
 #
 
 class connectome(supermod.connectome):
-    def __init__(self, connectome_meta=None, connectome_network=None, connectome_surface=None, connectome_volume=None, connectome_track=None, connectome_timeserie=None):
-        super(connectome, self).__init__(connectome_meta, connectome_network, connectome_surface, connectome_volume, connectome_track, connectome_timeserie, )
+    def __init__(self, connectome_meta=None, connectome_network=None, connectome_surface=None, connectome_volume=None, connectome_track=None, connectome_timeserie=None, connectome_data=None, connectome_scripts=None):
+        super(connectome, self).__init__(connectome_meta, connectome_network, connectome_surface, connectome_volume, connectome_track, connectome_timeserie, connectome_data, connectome_scripts, )
 supermod.connectome.subclass = connectome
 # end class connectome
 
 
 class CMetadata(supermod.CMetadata):
-    def __init__(self, version=None, generator=None, initial_creator=None, institution=None, creation_date=None, modification_date=None, name=None, species=None, legal_notice=None, reference=None, url=None, description=None, metadata=None):
-        super(CMetadata, self).__init__(version, generator, initial_creator, institution, creation_date, modification_date, name, species, legal_notice, reference, url, description, metadata, )
+    def __init__(self, version=None, generator=None, initial_creator=None, institution=None, creation_date=None, modification_date=None, name=None, species=None, legal_notice=None, reference=None, email=None, url=None, description=None, metadata=None):
+        super(CMetadata, self).__init__(version, generator, initial_creator, institution, creation_date, modification_date, name, species, legal_notice, reference, email, url, description, metadata, )
 supermod.CMetadata.subclass = CMetadata
 # end class CMetadata
 
 
-class networkstype(supermod.networkstype):
-    def __init__(self, directed=None, src=None, name=None, network_metadata=None, network_surface=None, network_volume=None, network_track=None, network_timeserie=None, description=None):
-        super(networkstype, self).__init__(directed, src, name, network_metadata, network_surface, network_volume, network_track, network_timeserie, description, )
-supermod.networkstype.subclass = networkstype
-# end class networkstype
+class CNetwork(supermod.CNetwork):
+    def __init__(self, edgeless=False, src=None, name=None, network_metadata=None, network_surface=None, network_volume=None, network_track=None, network_timeserie=None, description=None):
+        super(CNetwork, self).__init__(edgeless, src, name, network_metadata, network_surface, network_volume, network_track, network_timeserie, description, )
+supermod.CNetwork.subclass = CNetwork
+# end class CNetwork
 
 
-class surfacestype(supermod.surfacestype):
+class CSurface(supermod.CSurface):
     def __init__(self, src=None, dtype=None, name=None, fileformat=None, description=None):
-        super(surfacestype, self).__init__(src, dtype, name, fileformat, description, )
-supermod.surfacestype.subclass = surfacestype
-# end class surfacestype
+        super(CSurface, self).__init__(src, dtype, name, fileformat, description, )
+supermod.CSurface.subclass = CSurface
+# end class CSurface
 
 
-class volumestype(supermod.volumestype):
+class CVolume(supermod.CVolume):
     def __init__(self, src=None, dtype=None, name=None, fileformat=None, description=None):
-        super(volumestype, self).__init__(src, dtype, name, fileformat, description, )
-supermod.volumestype.subclass = volumestype
-# end class volumestype
+        super(CVolume, self).__init__(src, dtype, name, fileformat, description, )
+supermod.CVolume.subclass = CVolume
+# end class CVolume
 
 
 class CTrack(supermod.CTrack):
@@ -120,11 +120,11 @@ supermod.CTimeserie.subclass = CTimeserie
 # end class CTimeserie
 
 
-class moremetadatatype(supermod.moremetadatatype):
+class Metadata(supermod.Metadata):
     def __init__(self, data=None):
-        super(moremetadatatype, self).__init__(data, )
-supermod.moremetadatatype.subclass = moremetadatatype
-# end class moremetadatatype
+        super(Metadata, self).__init__(data, )
+supermod.Metadata.subclass = Metadata
+# end class Metadata
 
 
 class data(supermod.data):

@@ -20,7 +20,6 @@ Dependencies
 * PyTables
 * NumPy
 
-
 Additional types
 ----------------
 CData -> connectome-data
@@ -30,6 +29,7 @@ location: local (in zip, by default), URL, filesystem
 CScript -> connectome-script
 type: python, matlab, ...
 location: local (in zip, by default), URL, filesystem
+created, modified, version, encoding, descr, descr_format, freeze (cannot be modified)
 
 CNetwork
 type: standard types (e.g. like in networkx), (from PyConto), gexf/graphml
@@ -37,13 +37,21 @@ edgeless boolean (=marks its usage only for data storage)
 
 descr, descr-type (txt, rst) -> default: plaintxt
 
+directory boolean? -> add subdirectories? globber?
+
 In cfflib
 ---------
-* validate file existence and file type
+* [METHOD] validate file existence
+* [METHOD] validate file type
 * e.g. in a python-script, write: import cfflib
-* adder (=setter?) methods
-* remover methods
-* info method about available optional dependencies
-* .save / .load cff
+* [METHOD] adder (=setter?) methods for objects (or just add to a list?)
+* [METHOD] remover methods for objects (or just remove from a list?)
+* [METHOD] info method about available optional dependencies
+* [METHOD] .save / .load cff
 * lazy loading data
-* meaningful getter method for objects based on meta-data attributes
+* [METHOD] meaningful getter method for objects based on meta-data attributes
+* [METHOD] extract all zip file content to path
+* [METHOD] extract all zip file content to path and rereference all file links
+* [METHOD] load all data into memory
+* load scripts as stringIO / string object
+* lazy load, lazy memorymap load?
