@@ -12,6 +12,22 @@ Multi-Modal Neuroimaging Python Library for Data Input / Output and interlinking
 Generate classes with: 
 python /home/stephan/Dev/Python/generateDS-2.1a/generateDS.py --subclass-suffix="" -f --super="cff" -o /home/stephan/Dev/PyWorkspace/cfflib/schema/gen/cff.py -s /home/stephan/Dev/PyWorkspace/cfflib/schema/gen/cfflib.py /home/stephan/Dev/PyWorkspace/cfflib/schema/connectome.xsd
 
+Documentation:
+http://www.rexx.com/~dkuhlman/generateDS.html
+
+Load a meta.xml file::
+
+	import cfflib
+	a = cfflib.parse('/home/stephan/Dev/PyWorkspace/cfflib/datasets/meta.xml')
+
+Export the file::
+
+	f = open('output.xml', 'w')
+	f.write('<?xml version="1.0" encoding="UTF-8"?>\n')
+	a.export(f, 0, namespacedef_='xmlns="http://www.connectomics.ch/2010/Connectome/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.connectomics.ch/2010/Connectome/xmlns connectome.xsd"')
+	f.close()
+	
+
 Dependencies
 ------------
 
@@ -21,25 +37,6 @@ Dependencies
 * NumPy
 * lxml
 * pygexf
-
-Additional types
-----------------
-CData -> connectome-data
-type: npy, 
-location: local (in zip, by default), URL, filesystem
-
-CScript -> connectome-script
-type: python, matlab, ...
-location: local (in zip, by default), URL, filesystem
-created, modified, version, encoding, descr, descr_format, freeze (cannot be modified)
-
-CNetwork
-type: standard types (e.g. like in networkx), (from PyConto), gexf/graphml
-edgeless boolean (=marks its usage only for data storage)
-
-descr, descr-type (txt, rst) -> default: plaintxt
-
-directory boolean? -> add subdirectories? globber?
 
 In cfflib
 ---------

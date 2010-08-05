@@ -335,7 +335,7 @@
           </xsd:element>
 
 
-          <xsd:element maxOccurs="unbounded" minOccurs="0" name="network-surface" type="networksurfacetype">
+          <xsd:element maxOccurs="unbounded" minOccurs="0" name="network-surface" type="NetworkSurface">
           <xsd:annotation xml:lang="en">
             <xsd:documentation>
             Reference to the connectome-surface using the name attribute. The surface file must exist.
@@ -345,7 +345,7 @@
           </xsd:element>
 
           
-          <xsd:element maxOccurs="unbounded" minOccurs="0" name="network-volume" type="networkvolumetype">
+          <xsd:element maxOccurs="unbounded" minOccurs="0" name="network-volume" type="NetworkVolume">
           <xsd:annotation xml:lang="en">
             <xsd:documentation>
             Reference to the connectome-volume using the name attribute. The volume file must exist.
@@ -356,7 +356,7 @@
           </xsd:annotation>
           </xsd:element>
        
-          <xsd:element maxOccurs="unbounded" minOccurs="0" name="network-track" type="networktracktype">
+          <xsd:element maxOccurs="unbounded" minOccurs="0" name="network-track" type="NetworkTrack">
           <xsd:annotation xml:lang="en">
             <xsd:documentation>
             Reference to the connectome-track using the name attribute. The track file must exist.
@@ -364,7 +364,7 @@
           </xsd:annotation>
           </xsd:element>
 
-          <xsd:element maxOccurs="unbounded" minOccurs="0" name="network-timeserie" type="networktimeserietype">
+          <xsd:element maxOccurs="unbounded" minOccurs="0" name="network-timeserie" type="NetworkTimeserie">
           <xsd:annotation xml:lang="en">
             <xsd:documentation>
             Reference to the connectome-timeserie using the name attribute. The timeserie file must exist.
@@ -372,7 +372,7 @@
           </xsd:annotation>
           </xsd:element>
 	  
-          <xsd:element maxOccurs="unbounded" minOccurs="0" name="network-data" type="networkdatatype">
+          <xsd:element maxOccurs="unbounded" minOccurs="0" name="network-data" type="NetworkData">
           <xsd:annotation xml:lang="en">
             <xsd:documentation>
             Reference to the connectome-data using the name attribute. The data file must exist.
@@ -792,7 +792,8 @@
     <xsd:attribute name="fileformat" type="dataFileFormat">
     <xsd:annotation xml:lang="en">
        <xsd:documentation>
-	Use one of "NumPy", "HDF5", "XML", or "Other"
+	Use one of 'NumPy', 'HDF5', 'XML', 'Other'
+	
       </xsd:documentation>
     </xsd:annotation>
     </xsd:attribute>
@@ -884,7 +885,7 @@
   </xsd:all>
 </xsd:complexType>
 
-<xsd:complexType name="networksurfacetype">    
+<xsd:complexType name="NetworkSurface">    
     <xsd:attribute name="name" type="xsd:string">
     <xsd:annotation xml:lang="en">
       <xsd:documentation>
@@ -916,7 +917,7 @@
     </xsd:attribute>
 </xsd:complexType>
 
-<xsd:complexType name="networkvolumetype">    
+<xsd:complexType name="NetworkVolume">    
     <xsd:attribute name="name" type="xsd:string">
     <xsd:annotation xml:lang="en">
       <xsd:documentation>
@@ -935,7 +936,7 @@
     </xsd:attribute>
 </xsd:complexType>
 
-<xsd:complexType name="networktracktype">    
+<xsd:complexType name="NetworkTrack">    
     <xsd:attribute name="name" type="xsd:string">
     <xsd:annotation xml:lang="en">
       <xsd:documentation>
@@ -945,7 +946,7 @@
     </xsd:attribute>
 </xsd:complexType>
 
-<xsd:complexType name="networktimeserietype">    
+<xsd:complexType name="NetworkTimeserie">    
     <xsd:attribute name="name" type="xsd:string">
     <xsd:annotation xml:lang="en">
       <xsd:documentation>
@@ -955,7 +956,7 @@
     </xsd:attribute>
 </xsd:complexType>
 
-<xsd:complexType name="networkdatatype">    
+<xsd:complexType name="NetworkData">    
     <xsd:attribute name="name" type="xsd:string">
     <xsd:annotation xml:lang="en">
       <xsd:documentation>

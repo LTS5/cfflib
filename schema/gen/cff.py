@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 #
-# Generated Tue Jul 27 18:57:42 2010 by generateDS.py version 2.1a.
+# Generated Thu Aug  5 16:42:25 2010 by generateDS.py version 2.1a.
 #
 
 import sys
@@ -269,7 +269,7 @@ def _cast(typ, value):
 class connectome(GeneratedsSuper):
     subclass = None
     superclass = None
-    def __init__(self, connectome_meta=None, connectome_network=None, connectome_surface=None, connectome_volume=None, connectome_track=None, connectome_timeserie=None, connectome_data=None, connectome_scripts=None):
+    def __init__(self, connectome_meta=None, connectome_network=None, connectome_surface=None, connectome_volume=None, connectome_track=None, connectome_timeserie=None, connectome_data=None, connectome_script=None):
         self.connectome_meta = connectome_meta
         if connectome_network is None:
             self.connectome_network = []
@@ -295,10 +295,10 @@ class connectome(GeneratedsSuper):
             self.connectome_data = []
         else:
             self.connectome_data = connectome_data
-        if connectome_scripts is None:
-            self.connectome_scripts = []
+        if connectome_script is None:
+            self.connectome_script = []
         else:
-            self.connectome_scripts = connectome_scripts
+            self.connectome_script = connectome_script
     def factory(*args_, **kwargs_):
         if connectome.subclass:
             return connectome.subclass(*args_, **kwargs_)
@@ -331,10 +331,10 @@ class connectome(GeneratedsSuper):
     def set_connectome_data(self, connectome_data): self.connectome_data = connectome_data
     def add_connectome_data(self, value): self.connectome_data.append(value)
     def insert_connectome_data(self, index, value): self.connectome_data[index] = value
-    def get_connectome_scripts(self): return self.connectome_scripts
-    def set_connectome_scripts(self, connectome_scripts): self.connectome_scripts = connectome_scripts
-    def add_connectome_scripts(self, value): self.connectome_scripts.append(value)
-    def insert_connectome_scripts(self, index, value): self.connectome_scripts[index] = value
+    def get_connectome_script(self): return self.connectome_script
+    def set_connectome_script(self, connectome_script): self.connectome_script = connectome_script
+    def add_connectome_script(self, value): self.connectome_script.append(value)
+    def insert_connectome_script(self, index, value): self.connectome_script[index] = value
     def export(self, outfile, level, namespace_='', name_='connectome', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
@@ -362,11 +362,9 @@ class connectome(GeneratedsSuper):
         for connectome_timeserie_ in self.connectome_timeserie:
             connectome_timeserie_.export(outfile, level, namespace_, name_='connectome-timeserie')
         for connectome_data_ in self.connectome_data:
-            showIndent(outfile, level)
-            outfile.write('<%sconnectome-data>%s</%sconnectome-data>\n' % (namespace_, self.format_string(quote_xml(connectome_data_).encode(ExternalEncoding), input_name='connectome-data'), namespace_))
-        for connectome_scripts_ in self.connectome_scripts:
-            showIndent(outfile, level)
-            outfile.write('<%sconnectome-scripts>%s</%sconnectome-scripts>\n' % (namespace_, self.format_string(quote_xml(connectome_scripts_).encode(ExternalEncoding), input_name='connectome-scripts'), namespace_))
+            connectome_data_.export(outfile, level, namespace_, name_='connectome-data')
+        for connectome_script_ in self.connectome_script:
+            connectome_script_.export(outfile, level, namespace_, name_='connectome-script')
     def hasContent_(self):
         if (
             self.connectome_meta is not None or
@@ -376,7 +374,7 @@ class connectome(GeneratedsSuper):
             self.connectome_track or
             self.connectome_timeserie or
             self.connectome_data or
-            self.connectome_scripts
+            self.connectome_script
             ):
             return True
         else:
@@ -460,16 +458,22 @@ class connectome(GeneratedsSuper):
         level += 1
         for connectome_data_ in self.connectome_data:
             showIndent(outfile, level)
-            outfile.write('%s,\n' % quote_python(connectome_data_).encode(ExternalEncoding))
+            outfile.write('model_.CData(\n')
+            connectome_data_.exportLiteral(outfile, level, name_='CData')
+            showIndent(outfile, level)
+            outfile.write('),\n')
         level -= 1
         showIndent(outfile, level)
         outfile.write('],\n')
         showIndent(outfile, level)
-        outfile.write('connectome_scripts=[\n')
+        outfile.write('connectome_script=[\n')
         level += 1
-        for connectome_scripts_ in self.connectome_scripts:
+        for connectome_script_ in self.connectome_script:
             showIndent(outfile, level)
-            outfile.write('%s,\n' % quote_python(connectome_scripts_).encode(ExternalEncoding))
+            outfile.write('model_.CScript(\n')
+            connectome_script_.exportLiteral(outfile, level, name_='CScript')
+            showIndent(outfile, level)
+            outfile.write('),\n')
         level -= 1
         showIndent(outfile, level)
         outfile.write('],\n')
@@ -505,12 +509,14 @@ class connectome(GeneratedsSuper):
             obj_ = CTimeserie.factory()
             obj_.build(child_)
             self.connectome_timeserie.append(obj_)
-        elif nodeName_ == 'connectome-data':
-            connectome_data_ = child_.text
-            self.connectome_data.append(connectome_data_)
-        elif nodeName_ == 'connectome-scripts':
-            connectome_scripts_ = child_.text
-            self.connectome_scripts.append(connectome_scripts_)
+        elif nodeName_ == 'connectome-data': 
+            obj_ = CData.factory()
+            obj_.build(child_)
+            self.connectome_data.append(obj_)
+        elif nodeName_ == 'connectome-script': 
+            obj_ = CScript.factory()
+            obj_.build(child_)
+            self.connectome_script.append(obj_)
 # end class connectome
 
 
@@ -615,9 +621,8 @@ class CMetadata(GeneratedsSuper):
         if self.url is not None:
             showIndent(outfile, level)
             outfile.write('<%surl>%s</%surl>\n' % (namespace_, self.format_string(quote_xml(self.url).encode(ExternalEncoding), input_name='url'), namespace_))
-        if self.description is not None:
-            showIndent(outfile, level)
-            outfile.write('<%sdescription>%s</%sdescription>\n' % (namespace_, self.format_string(quote_xml(self.description).encode(ExternalEncoding), input_name='description'), namespace_))
+        if self.description:
+            self.description.export(outfile, level, namespace_, name_='description')
         if self.metadata:
             self.metadata.export(outfile, level, namespace_, name_='metadata')
     def hasContent_(self):
@@ -684,7 +689,10 @@ class CMetadata(GeneratedsSuper):
             outfile.write('url=%s,\n' % quote_python(self.url).encode(ExternalEncoding))
         if self.description is not None:
             showIndent(outfile, level)
-            outfile.write('description=%s,\n' % quote_python(self.description).encode(ExternalEncoding))
+            outfile.write('description=model_.description(\n')
+            self.description.exportLiteral(outfile, level)
+            showIndent(outfile, level)
+            outfile.write('),\n')
         if self.metadata is not None:
             showIndent(outfile, level)
             outfile.write('metadata=model_.Metadata(\n')
@@ -734,9 +742,10 @@ class CMetadata(GeneratedsSuper):
         elif nodeName_ == 'url':
             url_ = child_.text
             self.url = url_
-        elif nodeName_ == 'description':
-            description_ = child_.text
-            self.description = description_
+        elif nodeName_ == 'description': 
+            obj_ = description.factory()
+            obj_.build(child_)
+            self.set_description(obj_)
         elif nodeName_ == 'metadata': 
             obj_ = Metadata.factory()
             obj_.build(child_)
@@ -744,16 +753,99 @@ class CMetadata(GeneratedsSuper):
 # end class CMetadata
 
 
-class CNetwork(GeneratedsSuper):
-    """The short name of the network The source location of the network
-    data If true, the network contains no edges. Usually used for
-    structured node-based data representation."""
+class description(GeneratedsSuper):
+    """A description according to the format attribute syntax."""
     subclass = None
     superclass = None
-    def __init__(self, edgeless=False, src=None, name=None, network_metadata=None, network_surface=None, network_volume=None, network_track=None, network_timeserie=None, description=None):
+    def __init__(self, format=None, valueOf_=None):
+        self.format = _cast(None, format)
+        self.valueOf_ = valueOf_
+    def factory(*args_, **kwargs_):
+        if description.subclass:
+            return description.subclass(*args_, **kwargs_)
+        else:
+            return description(*args_, **kwargs_)
+    factory = staticmethod(factory)
+    def get_format(self): return self.format
+    def set_format(self, format): self.format = format
+    def validate_descriptionFormat(self, value):
+        # Validate type descriptionFormat, a restriction on xsd:string.
+        pass
+    def get_valueOf_(self): return self.valueOf_
+    def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
+    def export(self, outfile, level, namespace_='', name_='description', namespacedef_=''):
+        showIndent(outfile, level)
+        outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
+        self.exportAttributes(outfile, level, namespace_, name_='description')
+        if self.hasContent_():
+            outfile.write('>')
+            outfile.write(self.valueOf_)
+            self.exportChildren(outfile, level + 1, namespace_, name_)
+            outfile.write('</%s%s>\n' % (namespace_, name_))
+        else:
+            outfile.write('/>\n')
+    def exportAttributes(self, outfile, level, namespace_='', name_='description'):
+        if self.format is not None:
+            outfile.write(' format=%s' % (quote_attrib(self.format), ))
+    def exportChildren(self, outfile, level, namespace_='', name_='description'):
+        pass
+    def hasContent_(self):
+        if (
+            self.valueOf_
+            ):
+            return True
+        else:
+            return False
+    def exportLiteral(self, outfile, level, name_='description'):
+        level += 1
+        self.exportLiteralAttributes(outfile, level, name_)
+        if self.hasContent_():
+            self.exportLiteralChildren(outfile, level, name_)
+    def exportLiteralAttributes(self, outfile, level, name_):
+        if self.format is not None:
+            showIndent(outfile, level)
+            outfile.write('format = "%s",\n' % (self.format,))
+    def exportLiteralChildren(self, outfile, level, name_):
+        showIndent(outfile, level)
+        outfile.write('valueOf_ = """%s""",\n' % (self.valueOf_,))
+    def build(self, node):
+        self.buildAttributes(node, node.attrib)
+        self.valueOf_ = get_all_text_(node)
+        for child in node:
+            nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
+            self.buildChildren(child, nodeName_)
+    def buildAttributes(self, node, attrs):
+        value = attrs.get('format')
+        if value is not None:
+            self.format = value
+            self.validate_descriptionFormat(self.format)    # validate type descriptionFormat
+    def buildChildren(self, child_, nodeName_):
+        pass
+# end class description
+
+
+class CNetwork(GeneratedsSuper):
+    """The short name of the network The path to the file according to
+    location attribute Location either in the ZIP file ("zippath",
+    default), the "filesystem" or an "URL. Is the network stored it
+    "GEXF" or "GraphML" format, or "Other" format -
+    dtype="AttributeNetwork" A network with arbitrary number of
+    attributes for nodes and edges. - dtype="DynamicNetwork" Network
+    with either with lifespan attributes for nodes and edges (See
+    GEXF) or timeseries on nodes and edges. -
+    dtype="HierarchicalNetwork" Network with hierarchical structure.
+    - dtype="Other" Other kind of network. If true, the network
+    contains no edges. Usually used for structured node-based data
+    representation."""
+    subclass = None
+    superclass = None
+    def __init__(self, edgeless=False, src=None, name=None, dtype='AttributeNetwork', location='zippath', fileformat='GEXF', network_metadata=None, network_surface=None, network_volume=None, network_track=None, network_timeserie=None, network_data=None, description=None):
         self.edgeless = _cast(bool, edgeless)
         self.src = _cast(None, src)
         self.name = _cast(None, name)
+        self.dtype = _cast(None, dtype)
+        self.location = _cast(None, location)
+        self.fileformat = _cast(None, fileformat)
         self.network_metadata = network_metadata
         if network_surface is None:
             self.network_surface = []
@@ -771,6 +863,10 @@ class CNetwork(GeneratedsSuper):
             self.network_timeserie = []
         else:
             self.network_timeserie = network_timeserie
+        if network_data is None:
+            self.network_data = []
+        else:
+            self.network_data = network_data
         self.description = description
     def factory(*args_, **kwargs_):
         if CNetwork.subclass:
@@ -796,6 +892,10 @@ class CNetwork(GeneratedsSuper):
     def set_network_timeserie(self, network_timeserie): self.network_timeserie = network_timeserie
     def add_network_timeserie(self, value): self.network_timeserie.append(value)
     def insert_network_timeserie(self, index, value): self.network_timeserie[index] = value
+    def get_network_data(self): return self.network_data
+    def set_network_data(self, network_data): self.network_data = network_data
+    def add_network_data(self, value): self.network_data.append(value)
+    def insert_network_data(self, index, value): self.network_data[index] = value
     def get_description(self): return self.description
     def set_description(self, description): self.description = description
     def get_edgeless(self): return self.edgeless
@@ -804,6 +904,21 @@ class CNetwork(GeneratedsSuper):
     def set_src(self, src): self.src = src
     def get_name(self): return self.name
     def set_name(self, name): self.name = name
+    def get_dtype(self): return self.dtype
+    def set_dtype(self, dtype): self.dtype = dtype
+    def validate_networkEnumDType(self, value):
+        # Validate type networkEnumDType, a restriction on xsd:string.
+        pass
+    def get_location(self): return self.location
+    def set_location(self, location): self.location = location
+    def validate_locationEnumType(self, value):
+        # Validate type locationEnumType, a restriction on xsd:string.
+        pass
+    def get_fileformat(self): return self.fileformat
+    def set_fileformat(self, fileformat): self.fileformat = fileformat
+    def validate_networkFileFormat(self, value):
+        # Validate type networkFileFormat, a restriction on xsd:string.
+        pass
     def export(self, outfile, level, namespace_='', name_='CNetwork', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
@@ -822,6 +937,12 @@ class CNetwork(GeneratedsSuper):
             outfile.write(' src=%s' % (self.format_string(quote_attrib(self.src).encode(ExternalEncoding), input_name='src'), ))
         if self.name is not None:
             outfile.write(' name=%s' % (self.format_string(quote_attrib(self.name).encode(ExternalEncoding), input_name='name'), ))
+        if self.dtype is not None:
+            outfile.write(' dtype=%s' % (quote_attrib(self.dtype), ))
+        if self.location is not None:
+            outfile.write(' location=%s' % (quote_attrib(self.location), ))
+        if self.fileformat is not None:
+            outfile.write(' fileformat=%s' % (quote_attrib(self.fileformat), ))
     def exportChildren(self, outfile, level, namespace_='', name_='CNetwork'):
         if self.network_metadata:
             self.network_metadata.export(outfile, level, namespace_, name_='network-metadata')
@@ -833,9 +954,10 @@ class CNetwork(GeneratedsSuper):
             network_track_.export(outfile, level, namespace_, name_='network-track')
         for network_timeserie_ in self.network_timeserie:
             network_timeserie_.export(outfile, level, namespace_, name_='network-timeserie')
-        if self.description is not None:
-            showIndent(outfile, level)
-            outfile.write('<%sdescription>%s</%sdescription>\n' % (namespace_, self.format_string(quote_xml(self.description).encode(ExternalEncoding), input_name='description'), namespace_))
+        for network_data_ in self.network_data:
+            network_data_.export(outfile, level, namespace_, name_='network-data')
+        if self.description:
+            self.description.export(outfile, level, namespace_, name_='description')
     def hasContent_(self):
         if (
             self.network_metadata is not None or
@@ -843,6 +965,7 @@ class CNetwork(GeneratedsSuper):
             self.network_volume or
             self.network_track or
             self.network_timeserie or
+            self.network_data or
             self.description is not None
             ):
             return True
@@ -863,6 +986,15 @@ class CNetwork(GeneratedsSuper):
         if self.name is not None:
             showIndent(outfile, level)
             outfile.write('name = "%s",\n' % (self.name,))
+        if self.dtype is not None:
+            showIndent(outfile, level)
+            outfile.write('dtype = "%s",\n' % (self.dtype,))
+        if self.location is not None:
+            showIndent(outfile, level)
+            outfile.write('location = "%s",\n' % (self.location,))
+        if self.fileformat is not None:
+            showIndent(outfile, level)
+            outfile.write('fileformat = "%s",\n' % (self.fileformat,))
     def exportLiteralChildren(self, outfile, level, name_):
         if self.network_metadata is not None:
             showIndent(outfile, level)
@@ -875,8 +1007,8 @@ class CNetwork(GeneratedsSuper):
         level += 1
         for network_surface_ in self.network_surface:
             showIndent(outfile, level)
-            outfile.write('model_.networksurfacetype(\n')
-            network_surface_.exportLiteral(outfile, level, name_='networksurfacetype')
+            outfile.write('model_.NetworkSurface(\n')
+            network_surface_.exportLiteral(outfile, level, name_='NetworkSurface')
             showIndent(outfile, level)
             outfile.write('),\n')
         level -= 1
@@ -887,8 +1019,8 @@ class CNetwork(GeneratedsSuper):
         level += 1
         for network_volume_ in self.network_volume:
             showIndent(outfile, level)
-            outfile.write('model_.networkvolumetype(\n')
-            network_volume_.exportLiteral(outfile, level, name_='networkvolumetype')
+            outfile.write('model_.NetworkVolume(\n')
+            network_volume_.exportLiteral(outfile, level, name_='NetworkVolume')
             showIndent(outfile, level)
             outfile.write('),\n')
         level -= 1
@@ -899,8 +1031,8 @@ class CNetwork(GeneratedsSuper):
         level += 1
         for network_track_ in self.network_track:
             showIndent(outfile, level)
-            outfile.write('model_.networktracktype(\n')
-            network_track_.exportLiteral(outfile, level, name_='networktracktype')
+            outfile.write('model_.NetworkTrack(\n')
+            network_track_.exportLiteral(outfile, level, name_='NetworkTrack')
             showIndent(outfile, level)
             outfile.write('),\n')
         level -= 1
@@ -911,8 +1043,20 @@ class CNetwork(GeneratedsSuper):
         level += 1
         for network_timeserie_ in self.network_timeserie:
             showIndent(outfile, level)
-            outfile.write('model_.networktimeserietype(\n')
-            network_timeserie_.exportLiteral(outfile, level, name_='networktimeserietype')
+            outfile.write('model_.NetworkTimeserie(\n')
+            network_timeserie_.exportLiteral(outfile, level, name_='NetworkTimeserie')
+            showIndent(outfile, level)
+            outfile.write('),\n')
+        level -= 1
+        showIndent(outfile, level)
+        outfile.write('],\n')
+        showIndent(outfile, level)
+        outfile.write('network_data=[\n')
+        level += 1
+        for network_data_ in self.network_data:
+            showIndent(outfile, level)
+            outfile.write('model_.NetworkData(\n')
+            network_data_.exportLiteral(outfile, level, name_='NetworkData')
             showIndent(outfile, level)
             outfile.write('),\n')
         level -= 1
@@ -920,7 +1064,10 @@ class CNetwork(GeneratedsSuper):
         outfile.write('],\n')
         if self.description is not None:
             showIndent(outfile, level)
-            outfile.write('description=%s,\n' % quote_python(self.description).encode(ExternalEncoding))
+            outfile.write('description=model_.description(\n')
+            self.description.exportLiteral(outfile, level)
+            showIndent(outfile, level)
+            outfile.write('),\n')
     def build(self, node):
         self.buildAttributes(node, node.attrib)
         for child in node:
@@ -941,40 +1088,58 @@ class CNetwork(GeneratedsSuper):
         value = attrs.get('name')
         if value is not None:
             self.name = value
+        value = attrs.get('dtype')
+        if value is not None:
+            self.dtype = value
+            self.validate_networkEnumDType(self.dtype)    # validate type networkEnumDType
+        value = attrs.get('location')
+        if value is not None:
+            self.location = value
+            self.validate_locationEnumType(self.location)    # validate type locationEnumType
+        value = attrs.get('fileformat')
+        if value is not None:
+            self.fileformat = value
+            self.validate_networkFileFormat(self.fileformat)    # validate type networkFileFormat
     def buildChildren(self, child_, nodeName_):
         if nodeName_ == 'network-metadata': 
             obj_ = Metadata.factory()
             obj_.build(child_)
             self.set_network_metadata(obj_)
         elif nodeName_ == 'network-surface': 
-            obj_ = networksurfacetype.factory()
+            obj_ = NetworkSurface.factory()
             obj_.build(child_)
             self.network_surface.append(obj_)
         elif nodeName_ == 'network-volume': 
-            obj_ = networkvolumetype.factory()
+            obj_ = NetworkVolume.factory()
             obj_.build(child_)
             self.network_volume.append(obj_)
         elif nodeName_ == 'network-track': 
-            obj_ = networktracktype.factory()
+            obj_ = NetworkTrack.factory()
             obj_.build(child_)
             self.network_track.append(obj_)
         elif nodeName_ == 'network-timeserie': 
-            obj_ = networktimeserietype.factory()
+            obj_ = NetworkTimeserie.factory()
             obj_.build(child_)
             self.network_timeserie.append(obj_)
-        elif nodeName_ == 'description':
-            description_ = child_.text
-            self.description = description_
+        elif nodeName_ == 'network-data': 
+            obj_ = NetworkData.factory()
+            obj_.build(child_)
+            self.network_data.append(obj_)
+        elif nodeName_ == 'description': 
+            obj_ = description.factory()
+            obj_.build(child_)
+            self.set_description(obj_)
 # end class CNetwork
 
 
 class CSurface(GeneratedsSuper):
-    """Descriptive name of the surface. The name appears in the
-    ConnectomeViewer Connectome File TreeView. The relative path to
-    the Gifti surface file within the archive. Set to "gifti" to use
-    the only supported Gifti format See
+    """Descriptive name of the surface. The path to the file according to
+    location attribute Location either in the ZIP file ("zippath",
+    default), the "filesystem" or an "URL. Set to "gifti" to use the
+    only supported Gifti format by cfflib. See
     http://www.nitrc.org/frs/download.php/158/gifti.xsd for schema
-    information What type of surface does the Gifti file contain: -
+    information Use "Other" for other formats with custom IO
+    Handling What type of surface does the Gifti file contain: -
     type="label" The Gifti file contains surface labels. This file
     can be referenced in connectome-network with either the name
     attribute or in addition to another surface defined by name and
@@ -986,18 +1151,18 @@ class CSurface(GeneratedsSuper):
     type="surfaceset" The Gifti file contains a set of surfaces
     where the metadata tag AnatomicalStructurePrimary match.
     Individual elements of the set are distinguished by the metadta
-    tag AnatomicalStructureSecondary. The ConnectomeViewer creates a
-    surface container in the Connectome File TreeView. The Gifti
-    file contains information about the coordinate system used. -
+    tag AnatomicalStructureSecondary. The Gifti file contains
+    information about the coordinate system used. -
     type="surfaceset+label" If the Gifti file contains data as
     described for both surfaceset and label above."""
     subclass = None
     superclass = None
-    def __init__(self, src=None, dtype=None, name=None, fileformat=None, description=None):
+    def __init__(self, src=None, fileformat=None, dtype=None, name=None, location='zippath', description=None):
         self.src = _cast(None, src)
+        self.fileformat = _cast(None, fileformat)
         self.dtype = _cast(None, dtype)
         self.name = _cast(None, name)
-        self.fileformat = _cast(None, fileformat)
+        self.location = _cast(None, location)
         self.description = description
     def factory(*args_, **kwargs_):
         if CSurface.subclass:
@@ -1009,12 +1174,23 @@ class CSurface(GeneratedsSuper):
     def set_description(self, description): self.description = description
     def get_src(self): return self.src
     def set_src(self, src): self.src = src
-    def get_dtype(self): return self.dtype
-    def set_dtype(self, dtype): self.dtype = dtype
-    def get_name(self): return self.name
-    def set_name(self, name): self.name = name
     def get_fileformat(self): return self.fileformat
     def set_fileformat(self, fileformat): self.fileformat = fileformat
+    def validate_surfaceFileFormat(self, value):
+        # Validate type surfaceFileFormat, a restriction on xsd:string.
+        pass
+    def get_dtype(self): return self.dtype
+    def set_dtype(self, dtype): self.dtype = dtype
+    def validate_surfaceEnumDType(self, value):
+        # Validate type surfaceEnumDType, a restriction on xsd:string.
+        pass
+    def get_name(self): return self.name
+    def set_name(self, name): self.name = name
+    def get_location(self): return self.location
+    def set_location(self, location): self.location = location
+    def validate_locationEnumType(self, value):
+        # Validate type locationEnumType, a restriction on xsd:string.
+        pass
     def export(self, outfile, level, namespace_='', name_='CSurface', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
@@ -1029,16 +1205,17 @@ class CSurface(GeneratedsSuper):
     def exportAttributes(self, outfile, level, namespace_='', name_='CSurface'):
         if self.src is not None:
             outfile.write(' src=%s' % (self.format_string(quote_attrib(self.src).encode(ExternalEncoding), input_name='src'), ))
+        if self.fileformat is not None:
+            outfile.write(' fileformat=%s' % (quote_attrib(self.fileformat), ))
         if self.dtype is not None:
-            outfile.write(' dtype=%s' % (self.format_string(quote_attrib(self.dtype).encode(ExternalEncoding), input_name='dtype'), ))
+            outfile.write(' dtype=%s' % (quote_attrib(self.dtype), ))
         if self.name is not None:
             outfile.write(' name=%s' % (self.format_string(quote_attrib(self.name).encode(ExternalEncoding), input_name='name'), ))
-        if self.fileformat is not None:
-            outfile.write(' fileformat=%s' % (self.format_string(quote_attrib(self.fileformat).encode(ExternalEncoding), input_name='fileformat'), ))
+        if self.location is not None:
+            outfile.write(' location=%s' % (quote_attrib(self.location), ))
     def exportChildren(self, outfile, level, namespace_='', name_='CSurface'):
-        if self.description is not None:
-            showIndent(outfile, level)
-            outfile.write('<%sdescription>%s</%sdescription>\n' % (namespace_, self.format_string(quote_xml(self.description).encode(ExternalEncoding), input_name='description'), namespace_))
+        if self.description:
+            self.description.export(outfile, level, namespace_, name_='description')
     def hasContent_(self):
         if (
             self.description is not None
@@ -1055,19 +1232,25 @@ class CSurface(GeneratedsSuper):
         if self.src is not None:
             showIndent(outfile, level)
             outfile.write('src = "%s",\n' % (self.src,))
+        if self.fileformat is not None:
+            showIndent(outfile, level)
+            outfile.write('fileformat = "%s",\n' % (self.fileformat,))
         if self.dtype is not None:
             showIndent(outfile, level)
             outfile.write('dtype = "%s",\n' % (self.dtype,))
         if self.name is not None:
             showIndent(outfile, level)
             outfile.write('name = "%s",\n' % (self.name,))
-        if self.fileformat is not None:
+        if self.location is not None:
             showIndent(outfile, level)
-            outfile.write('fileformat = "%s",\n' % (self.fileformat,))
+            outfile.write('location = "%s",\n' % (self.location,))
     def exportLiteralChildren(self, outfile, level, name_):
         if self.description is not None:
             showIndent(outfile, level)
-            outfile.write('description=%s,\n' % quote_python(self.description).encode(ExternalEncoding))
+            outfile.write('description=model_.description(\n')
+            self.description.exportLiteral(outfile, level)
+            showIndent(outfile, level)
+            outfile.write('),\n')
     def build(self, node):
         self.buildAttributes(node, node.attrib)
         for child in node:
@@ -1077,58 +1260,67 @@ class CSurface(GeneratedsSuper):
         value = attrs.get('src')
         if value is not None:
             self.src = value
-        value = attrs.get('dtype')
-        if value is not None:
-            self.dtype = value
-        value = attrs.get('name')
-        if value is not None:
-            self.name = value
         value = attrs.get('fileformat')
         if value is not None:
             self.fileformat = value
+            self.validate_surfaceFileFormat(self.fileformat)    # validate type surfaceFileFormat
+        value = attrs.get('dtype')
+        if value is not None:
+            self.dtype = value
+            self.validate_surfaceEnumDType(self.dtype)    # validate type surfaceEnumDType
+        value = attrs.get('name')
+        if value is not None:
+            self.name = value
+        value = attrs.get('location')
+        if value is not None:
+            self.location = value
+            self.validate_locationEnumType(self.location)    # validate type locationEnumType
     def buildChildren(self, child_, nodeName_):
-        if nodeName_ == 'description':
-            description_ = child_.text
-            self.description = description_
+        if nodeName_ == 'description': 
+            obj_ = description.factory()
+            obj_.build(child_)
+            self.set_description(obj_)
 # end class CSurface
 
 
 class CVolume(GeneratedsSuper):
-    """Name of the volume. The name appears in the ConnectomeViewer
-    Connectome File TreeView. The location of the volume file Set to
-    "nifti" to use the only supported Nifti format. This implies
-    also files with ending .nii.gz The Nifti file contains
-    information about the coordinate system used. Set type of volume
-    the Nifti file contains: - type="segmentation" The Nifti file
-    contains a single volume where the voxel values are integers,
-    representing a segmented Region of Interest. If this volume is
-    referenced by a connectome-network, its nodes dn_intensityvalue
-    attribute may match these integer values. Such a segmentation
-    volume can referenced in a connectome-volume by the
-    segmentationname attribute in addition to another, e.g.
-    T1-weighted volume which is referenced by the name attribute.
-    See also example datasets. - type="T1-weighted" The Nifti file
-    contains a T1-weighted volume. - type="T2-weighted" The Nifti
-    file contains a T2-weighted volume. - type="PD-weighted" The
-    voxel values represent a proton-density weighted signal. -
-    type="fMRI" The Nifti file contains functional MRI time series
-    data. - type="probabilitymap" Voxel values are in the range
-    [0,1]. Can stand for tissue probability maps. - type="MD"
-    Diffusion-related signal. Stands for mean diffusivity. -
-    type="FA" Diffusion-related signal. Stands for fractional
-    anisotropy. - type="LD" Diffusion-related signal. Stands for
-    longitudinal diffusivity. - type="TD" Diffusion-related signal.
-    Stands for transversal diffusivity. - type="FLAIR" Stands for
-    Fluid attenuated inversion recovery - type="MRA" Stands for
-    Magnetic resonance angiography - type="MRS" Stands for Magnetic
-    resonance spectroscopy"""
+    """Name of the volume. The path to the file according to location
+    attribute Location either in the ZIP file ("zippath", default),
+    the "filesystem" or an "URL. Set to "Nifti1" to use the only
+    supported Nifti format. This works also for compressed files
+    with name ending .nii.gz The Nifti file contains information
+    about the coordinate system used. Set type of volume the Nifti
+    file contains: - type="segmentation" The Nifti file contains a
+    single volume where the voxel values are integers, representing
+    a segmented Region of Interest. If this volume is referenced by
+    a connectome-network, its nodes dn_intensityvalue attribute may
+    match these integer values. Such a segmentation volume can
+    referenced in a connectome-volume by the segmentationname
+    attribute in addition to another, e.g. T1-weighted volume which
+    is referenced by the name attribute. See also example datasets.
+    - type="T1-weighted" The Nifti file contains a T1-weighted
+    volume. - type="T2-weighted" The Nifti file contains a
+    T2-weighted volume. - type="PD-weighted" The voxel values
+    represent a proton-density weighted signal. - type="fMRI" The
+    Nifti file contains functional MRI time series data. -
+    type="probabilitymap" Voxel values are in the range [0,1]. Can
+    stand for tissue probability maps. - type="MD" Diffusion-related
+    signal. Stands for mean diffusivity. - type="FA" Diffusion-
+    related signal. Stands for fractional anisotropy. - type="LD"
+    Diffusion-related signal. Stands for longitudinal diffusivity. -
+    type="TD" Diffusion-related signal. Stands for transversal
+    diffusivity. - type="FLAIR" Stands for Fluid attenuated
+    inversion recovery - type="MRA" Stands for Magnetic resonance
+    angiography - type="MRS" Stands for Magnetic resonance
+    spectroscopy"""
     subclass = None
     superclass = None
-    def __init__(self, src=None, dtype=None, name=None, fileformat=None, description=None):
+    def __init__(self, src=None, fileformat='Nifti1', dtype=None, name=None, location='zippath', description=None):
         self.src = _cast(None, src)
+        self.fileformat = _cast(None, fileformat)
         self.dtype = _cast(None, dtype)
         self.name = _cast(None, name)
-        self.fileformat = _cast(None, fileformat)
+        self.location = _cast(None, location)
         self.description = description
     def factory(*args_, **kwargs_):
         if CVolume.subclass:
@@ -1140,14 +1332,22 @@ class CVolume(GeneratedsSuper):
     def set_description(self, description): self.description = description
     def get_src(self): return self.src
     def set_src(self, src): self.src = src
-    def get_dtype(self): return self.dtype
-    def set_dtype(self, dtype): self.dtype = dtype
-    def get_name(self): return self.name
-    def set_name(self, name): self.name = name
     def get_fileformat(self): return self.fileformat
     def set_fileformat(self, fileformat): self.fileformat = fileformat
     def validate_volumeFileFormat(self, value):
         # Validate type volumeFileFormat, a restriction on xsd:string.
+        pass
+    def get_dtype(self): return self.dtype
+    def set_dtype(self, dtype): self.dtype = dtype
+    def validate_volumeEnumDType(self, value):
+        # Validate type volumeEnumDType, a restriction on xsd:string.
+        pass
+    def get_name(self): return self.name
+    def set_name(self, name): self.name = name
+    def get_location(self): return self.location
+    def set_location(self, location): self.location = location
+    def validate_locationEnumType(self, value):
+        # Validate type locationEnumType, a restriction on xsd:string.
         pass
     def export(self, outfile, level, namespace_='', name_='CVolume', namespacedef_=''):
         showIndent(outfile, level)
@@ -1163,16 +1363,17 @@ class CVolume(GeneratedsSuper):
     def exportAttributes(self, outfile, level, namespace_='', name_='CVolume'):
         if self.src is not None:
             outfile.write(' src=%s' % (self.format_string(quote_attrib(self.src).encode(ExternalEncoding), input_name='src'), ))
+        if self.fileformat is not None:
+            outfile.write(' fileformat=%s' % (quote_attrib(self.fileformat), ))
         if self.dtype is not None:
             outfile.write(' dtype=%s' % (quote_attrib(self.dtype), ))
         if self.name is not None:
             outfile.write(' name=%s' % (self.format_string(quote_attrib(self.name).encode(ExternalEncoding), input_name='name'), ))
-        if self.fileformat is not None:
-            outfile.write(' fileformat=%s' % (quote_attrib(self.fileformat), ))
+        if self.location is not None:
+            outfile.write(' location=%s' % (quote_attrib(self.location), ))
     def exportChildren(self, outfile, level, namespace_='', name_='CVolume'):
-        if self.description is not None:
-            showIndent(outfile, level)
-            outfile.write('<%sdescription>%s</%sdescription>\n' % (namespace_, self.format_string(quote_xml(self.description).encode(ExternalEncoding), input_name='description'), namespace_))
+        if self.description:
+            self.description.export(outfile, level, namespace_, name_='description')
     def hasContent_(self):
         if (
             self.description is not None
@@ -1189,19 +1390,25 @@ class CVolume(GeneratedsSuper):
         if self.src is not None:
             showIndent(outfile, level)
             outfile.write('src = "%s",\n' % (self.src,))
-        if self.dtype is not None:
-            showIndent(outfile, level)
-            outfile.write('dtype = %s,\n' % (self.dtype,))
-        if self.name is not None:
-            showIndent(outfile, level)
-            outfile.write('name = "%s",\n' % (self.name,))
         if self.fileformat is not None:
             showIndent(outfile, level)
             outfile.write('fileformat = "%s",\n' % (self.fileformat,))
+        if self.dtype is not None:
+            showIndent(outfile, level)
+            outfile.write('dtype = "%s",\n' % (self.dtype,))
+        if self.name is not None:
+            showIndent(outfile, level)
+            outfile.write('name = "%s",\n' % (self.name,))
+        if self.location is not None:
+            showIndent(outfile, level)
+            outfile.write('location = "%s",\n' % (self.location,))
     def exportLiteralChildren(self, outfile, level, name_):
         if self.description is not None:
             showIndent(outfile, level)
-            outfile.write('description=%s,\n' % quote_python(self.description).encode(ExternalEncoding))
+            outfile.write('description=model_.description(\n')
+            self.description.exportLiteral(outfile, level)
+            showIndent(outfile, level)
+            outfile.write('),\n')
     def build(self, node):
         self.buildAttributes(node, node.attrib)
         for child in node:
@@ -1211,35 +1418,43 @@ class CVolume(GeneratedsSuper):
         value = attrs.get('src')
         if value is not None:
             self.src = value
-        value = attrs.get('dtype')
-        if value is not None:
-            self.dtype = value
-        value = attrs.get('name')
-        if value is not None:
-            self.name = value
         value = attrs.get('fileformat')
         if value is not None:
             self.fileformat = value
             self.validate_volumeFileFormat(self.fileformat)    # validate type volumeFileFormat
+        value = attrs.get('dtype')
+        if value is not None:
+            self.dtype = value
+            self.validate_volumeEnumDType(self.dtype)    # validate type volumeEnumDType
+        value = attrs.get('name')
+        if value is not None:
+            self.name = value
+        value = attrs.get('location')
+        if value is not None:
+            self.location = value
+            self.validate_locationEnumType(self.location)    # validate type locationEnumType
     def buildChildren(self, child_, nodeName_):
-        if nodeName_ == 'description':
-            description_ = child_.text
-            self.description = description_
+        if nodeName_ == 'description': 
+            obj_ = description.factory()
+            obj_.build(child_)
+            self.set_description(obj_)
 # end class CVolume
 
 
 class CTrack(GeneratedsSuper):
-    """Name of the track. The name appears in the ConnectomeViewer
-    Connectome File TreeView. The location of the TrackVis file Set
-    to "trackvis" to use the only supported TrackVis file format.
-    The TrackVis file format allows to store any number of
-    additional numerical data on the individual fibers."""
+    """Name of the track file. The path to the file according to location
+    attribute Location either in the ZIP file ("zippath", default),
+    the "filesystem" or an "URL. Set to "TrackVis" (default) to use
+    the only supported TrackVis file format. The TrackVis file
+    format allows to store any number of additional numerical data
+    on the individual fibers."""
     subclass = None
     superclass = None
-    def __init__(self, src=None, name=None, fileformat=None, description=None):
+    def __init__(self, src=None, fileformat='TrackVis', name=None, location='zippath', description=None):
         self.src = _cast(None, src)
-        self.name = _cast(None, name)
         self.fileformat = _cast(None, fileformat)
+        self.name = _cast(None, name)
+        self.location = _cast(None, location)
         self.description = description
     def factory(*args_, **kwargs_):
         if CTrack.subclass:
@@ -1251,10 +1466,18 @@ class CTrack(GeneratedsSuper):
     def set_description(self, description): self.description = description
     def get_src(self): return self.src
     def set_src(self, src): self.src = src
-    def get_name(self): return self.name
-    def set_name(self, name): self.name = name
     def get_fileformat(self): return self.fileformat
     def set_fileformat(self, fileformat): self.fileformat = fileformat
+    def validate_trackFileFormat(self, value):
+        # Validate type trackFileFormat, a restriction on xsd:string.
+        pass
+    def get_name(self): return self.name
+    def set_name(self, name): self.name = name
+    def get_location(self): return self.location
+    def set_location(self, location): self.location = location
+    def validate_locationEnumType(self, value):
+        # Validate type locationEnumType, a restriction on xsd:string.
+        pass
     def export(self, outfile, level, namespace_='', name_='CTrack', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
@@ -1269,14 +1492,15 @@ class CTrack(GeneratedsSuper):
     def exportAttributes(self, outfile, level, namespace_='', name_='CTrack'):
         if self.src is not None:
             outfile.write(' src=%s' % (self.format_string(quote_attrib(self.src).encode(ExternalEncoding), input_name='src'), ))
+        if self.fileformat is not None:
+            outfile.write(' fileformat=%s' % (quote_attrib(self.fileformat), ))
         if self.name is not None:
             outfile.write(' name=%s' % (self.format_string(quote_attrib(self.name).encode(ExternalEncoding), input_name='name'), ))
-        if self.fileformat is not None:
-            outfile.write(' fileformat=%s' % (self.format_string(quote_attrib(self.fileformat).encode(ExternalEncoding), input_name='fileformat'), ))
+        if self.location is not None:
+            outfile.write(' location=%s' % (quote_attrib(self.location), ))
     def exportChildren(self, outfile, level, namespace_='', name_='CTrack'):
-        if self.description is not None:
-            showIndent(outfile, level)
-            outfile.write('<%sdescription>%s</%sdescription>\n' % (namespace_, self.format_string(quote_xml(self.description).encode(ExternalEncoding), input_name='description'), namespace_))
+        if self.description:
+            self.description.export(outfile, level, namespace_, name_='description')
     def hasContent_(self):
         if (
             self.description is not None
@@ -1293,16 +1517,22 @@ class CTrack(GeneratedsSuper):
         if self.src is not None:
             showIndent(outfile, level)
             outfile.write('src = "%s",\n' % (self.src,))
-        if self.name is not None:
-            showIndent(outfile, level)
-            outfile.write('name = "%s",\n' % (self.name,))
         if self.fileformat is not None:
             showIndent(outfile, level)
             outfile.write('fileformat = "%s",\n' % (self.fileformat,))
+        if self.name is not None:
+            showIndent(outfile, level)
+            outfile.write('name = "%s",\n' % (self.name,))
+        if self.location is not None:
+            showIndent(outfile, level)
+            outfile.write('location = "%s",\n' % (self.location,))
     def exportLiteralChildren(self, outfile, level, name_):
         if self.description is not None:
             showIndent(outfile, level)
-            outfile.write('description=%s,\n' % quote_python(self.description).encode(ExternalEncoding))
+            outfile.write('description=model_.description(\n')
+            self.description.exportLiteral(outfile, level)
+            showIndent(outfile, level)
+            outfile.write('),\n')
     def build(self, node):
         self.buildAttributes(node, node.attrib)
         for child in node:
@@ -1312,30 +1542,38 @@ class CTrack(GeneratedsSuper):
         value = attrs.get('src')
         if value is not None:
             self.src = value
-        value = attrs.get('name')
-        if value is not None:
-            self.name = value
         value = attrs.get('fileformat')
         if value is not None:
             self.fileformat = value
+            self.validate_trackFileFormat(self.fileformat)    # validate type trackFileFormat
+        value = attrs.get('name')
+        if value is not None:
+            self.name = value
+        value = attrs.get('location')
+        if value is not None:
+            self.location = value
+            self.validate_locationEnumType(self.location)    # validate type locationEnumType
     def buildChildren(self, child_, nodeName_):
-        if nodeName_ == 'description':
-            description_ = child_.text
-            self.description = description_
+        if nodeName_ == 'description': 
+            obj_ = description.factory()
+            obj_.build(child_)
+            self.set_description(obj_)
 # end class CTrack
 
 
 class CTimeserie(GeneratedsSuper):
-    """Name of the timeseries. The relative path to the timeseries HDF file
-    within the archive. Set tp "hdf5" to use the only supported
-    Hierarchical Data File format. The HDF5 allows to store any
-    number of time series or other large homogenous data."""
+    """Name of the timeseries. The path to the file according to location
+    attribute Location either in the ZIP file ("zippath", default),
+    the "filesystem" or an "URL. Set to "HDF5" (default) to use the
+    only supported Hierarchical Data File format. The HDF5 allows to
+    store any number of time series or other large homogeneous data."""
     subclass = None
     superclass = None
-    def __init__(self, src=None, name=None, fileformat=None, description=None):
+    def __init__(self, src=None, fileformat='HDF5', name=None, location='zippath', description=None):
         self.src = _cast(None, src)
-        self.name = _cast(None, name)
         self.fileformat = _cast(None, fileformat)
+        self.name = _cast(None, name)
+        self.location = _cast(None, location)
         self.description = description
     def factory(*args_, **kwargs_):
         if CTimeserie.subclass:
@@ -1347,10 +1585,18 @@ class CTimeserie(GeneratedsSuper):
     def set_description(self, description): self.description = description
     def get_src(self): return self.src
     def set_src(self, src): self.src = src
-    def get_name(self): return self.name
-    def set_name(self, name): self.name = name
     def get_fileformat(self): return self.fileformat
     def set_fileformat(self, fileformat): self.fileformat = fileformat
+    def validate_timeserieFileFormat(self, value):
+        # Validate type timeserieFileFormat, a restriction on xsd:string.
+        pass
+    def get_name(self): return self.name
+    def set_name(self, name): self.name = name
+    def get_location(self): return self.location
+    def set_location(self, location): self.location = location
+    def validate_locationEnumType(self, value):
+        # Validate type locationEnumType, a restriction on xsd:string.
+        pass
     def export(self, outfile, level, namespace_='', name_='CTimeserie', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
@@ -1365,14 +1611,15 @@ class CTimeserie(GeneratedsSuper):
     def exportAttributes(self, outfile, level, namespace_='', name_='CTimeserie'):
         if self.src is not None:
             outfile.write(' src=%s' % (self.format_string(quote_attrib(self.src).encode(ExternalEncoding), input_name='src'), ))
+        if self.fileformat is not None:
+            outfile.write(' fileformat=%s' % (quote_attrib(self.fileformat), ))
         if self.name is not None:
             outfile.write(' name=%s' % (self.format_string(quote_attrib(self.name).encode(ExternalEncoding), input_name='name'), ))
-        if self.fileformat is not None:
-            outfile.write(' fileformat=%s' % (self.format_string(quote_attrib(self.fileformat).encode(ExternalEncoding), input_name='fileformat'), ))
+        if self.location is not None:
+            outfile.write(' location=%s' % (quote_attrib(self.location), ))
     def exportChildren(self, outfile, level, namespace_='', name_='CTimeserie'):
-        if self.description is not None:
-            showIndent(outfile, level)
-            outfile.write('<%sdescription>%s</%sdescription>\n' % (namespace_, self.format_string(quote_xml(self.description).encode(ExternalEncoding), input_name='description'), namespace_))
+        if self.description:
+            self.description.export(outfile, level, namespace_, name_='description')
     def hasContent_(self):
         if (
             self.description is not None
@@ -1389,16 +1636,22 @@ class CTimeserie(GeneratedsSuper):
         if self.src is not None:
             showIndent(outfile, level)
             outfile.write('src = "%s",\n' % (self.src,))
-        if self.name is not None:
-            showIndent(outfile, level)
-            outfile.write('name = "%s",\n' % (self.name,))
         if self.fileformat is not None:
             showIndent(outfile, level)
             outfile.write('fileformat = "%s",\n' % (self.fileformat,))
+        if self.name is not None:
+            showIndent(outfile, level)
+            outfile.write('name = "%s",\n' % (self.name,))
+        if self.location is not None:
+            showIndent(outfile, level)
+            outfile.write('location = "%s",\n' % (self.location,))
     def exportLiteralChildren(self, outfile, level, name_):
         if self.description is not None:
             showIndent(outfile, level)
-            outfile.write('description=%s,\n' % quote_python(self.description).encode(ExternalEncoding))
+            outfile.write('description=model_.description(\n')
+            self.description.exportLiteral(outfile, level)
+            showIndent(outfile, level)
+            outfile.write('),\n')
     def build(self, node):
         self.buildAttributes(node, node.attrib)
         for child in node:
@@ -1408,17 +1661,259 @@ class CTimeserie(GeneratedsSuper):
         value = attrs.get('src')
         if value is not None:
             self.src = value
-        value = attrs.get('name')
-        if value is not None:
-            self.name = value
         value = attrs.get('fileformat')
         if value is not None:
             self.fileformat = value
+            self.validate_timeserieFileFormat(self.fileformat)    # validate type timeserieFileFormat
+        value = attrs.get('name')
+        if value is not None:
+            self.name = value
+        value = attrs.get('location')
+        if value is not None:
+            self.location = value
+            self.validate_locationEnumType(self.location)    # validate type locationEnumType
     def buildChildren(self, child_, nodeName_):
-        if nodeName_ == 'description':
-            description_ = child_.text
-            self.description = description_
+        if nodeName_ == 'description': 
+            obj_ = description.factory()
+            obj_.build(child_)
+            self.set_description(obj_)
 # end class CTimeserie
+
+
+class CData(GeneratedsSuper):
+    """Name of the data file The path to the file according to location
+    attribute Location either in the ZIP file ("zippath", default),
+    the "filesystem" or an "URL. Use one of 'NumPy', 'HDF5', 'XML',
+    'Other'"""
+    subclass = None
+    superclass = None
+    def __init__(self, src=None, fileformat=None, name=None, location='zippath', description=None):
+        self.src = _cast(None, src)
+        self.fileformat = _cast(None, fileformat)
+        self.name = _cast(None, name)
+        self.location = _cast(None, location)
+        self.description = description
+    def factory(*args_, **kwargs_):
+        if CData.subclass:
+            return CData.subclass(*args_, **kwargs_)
+        else:
+            return CData(*args_, **kwargs_)
+    factory = staticmethod(factory)
+    def get_description(self): return self.description
+    def set_description(self, description): self.description = description
+    def get_src(self): return self.src
+    def set_src(self, src): self.src = src
+    def get_fileformat(self): return self.fileformat
+    def set_fileformat(self, fileformat): self.fileformat = fileformat
+    def validate_dataFileFormat(self, value):
+        # Validate type dataFileFormat, a restriction on xsd:string.
+        pass
+    def get_name(self): return self.name
+    def set_name(self, name): self.name = name
+    def get_location(self): return self.location
+    def set_location(self, location): self.location = location
+    def validate_locationEnumType(self, value):
+        # Validate type locationEnumType, a restriction on xsd:string.
+        pass
+    def export(self, outfile, level, namespace_='', name_='CData', namespacedef_=''):
+        showIndent(outfile, level)
+        outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
+        self.exportAttributes(outfile, level, namespace_, name_='CData')
+        if self.hasContent_():
+            outfile.write('>\n')
+            self.exportChildren(outfile, level + 1, namespace_, name_)
+            showIndent(outfile, level)
+            outfile.write('</%s%s>\n' % (namespace_, name_))
+        else:
+            outfile.write('/>\n')
+    def exportAttributes(self, outfile, level, namespace_='', name_='CData'):
+        if self.src is not None:
+            outfile.write(' src=%s' % (self.format_string(quote_attrib(self.src).encode(ExternalEncoding), input_name='src'), ))
+        if self.fileformat is not None:
+            outfile.write(' fileformat=%s' % (quote_attrib(self.fileformat), ))
+        if self.name is not None:
+            outfile.write(' name=%s' % (self.format_string(quote_attrib(self.name).encode(ExternalEncoding), input_name='name'), ))
+        if self.location is not None:
+            outfile.write(' location=%s' % (quote_attrib(self.location), ))
+    def exportChildren(self, outfile, level, namespace_='', name_='CData'):
+        if self.description:
+            self.description.export(outfile, level, namespace_, name_='description')
+    def hasContent_(self):
+        if (
+            self.description is not None
+            ):
+            return True
+        else:
+            return False
+    def exportLiteral(self, outfile, level, name_='CData'):
+        level += 1
+        self.exportLiteralAttributes(outfile, level, name_)
+        if self.hasContent_():
+            self.exportLiteralChildren(outfile, level, name_)
+    def exportLiteralAttributes(self, outfile, level, name_):
+        if self.src is not None:
+            showIndent(outfile, level)
+            outfile.write('src = "%s",\n' % (self.src,))
+        if self.fileformat is not None:
+            showIndent(outfile, level)
+            outfile.write('fileformat = "%s",\n' % (self.fileformat,))
+        if self.name is not None:
+            showIndent(outfile, level)
+            outfile.write('name = "%s",\n' % (self.name,))
+        if self.location is not None:
+            showIndent(outfile, level)
+            outfile.write('location = "%s",\n' % (self.location,))
+    def exportLiteralChildren(self, outfile, level, name_):
+        if self.description is not None:
+            showIndent(outfile, level)
+            outfile.write('description=model_.description(\n')
+            self.description.exportLiteral(outfile, level)
+            showIndent(outfile, level)
+            outfile.write('),\n')
+    def build(self, node):
+        self.buildAttributes(node, node.attrib)
+        for child in node:
+            nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
+            self.buildChildren(child, nodeName_)
+    def buildAttributes(self, node, attrs):
+        value = attrs.get('src')
+        if value is not None:
+            self.src = value
+        value = attrs.get('fileformat')
+        if value is not None:
+            self.fileformat = value
+            self.validate_dataFileFormat(self.fileformat)    # validate type dataFileFormat
+        value = attrs.get('name')
+        if value is not None:
+            self.name = value
+        value = attrs.get('location')
+        if value is not None:
+            self.location = value
+            self.validate_locationEnumType(self.location)    # validate type locationEnumType
+    def buildChildren(self, child_, nodeName_):
+        if nodeName_ == 'description': 
+            obj_ = description.factory()
+            obj_.build(child_)
+            self.set_description(obj_)
+# end class CData
+
+
+class CScript(GeneratedsSuper):
+    """Name of the script file The path to the file according to location
+    attribute Location either in the ZIP file ("zippath", default),
+    the "filesystem" or an "URL. What kind of script. Use one of
+    "Python" (default), "Bash", "Matlab", or "Other"."""
+    subclass = None
+    superclass = None
+    def __init__(self, src=None, type_='Python', name=None, location='zippath', description=None):
+        self.src = _cast(None, src)
+        self.type_ = _cast(None, type_)
+        self.name = _cast(None, name)
+        self.location = _cast(None, location)
+        self.description = description
+    def factory(*args_, **kwargs_):
+        if CScript.subclass:
+            return CScript.subclass(*args_, **kwargs_)
+        else:
+            return CScript(*args_, **kwargs_)
+    factory = staticmethod(factory)
+    def get_description(self): return self.description
+    def set_description(self, description): self.description = description
+    def get_src(self): return self.src
+    def set_src(self, src): self.src = src
+    def get_type(self): return self.type_
+    def set_type(self, type_): self.type_ = type_
+    def validate_scriptEnumType(self, value):
+        # Validate type scriptEnumType, a restriction on xsd:string.
+        pass
+    def get_name(self): return self.name
+    def set_name(self, name): self.name = name
+    def get_location(self): return self.location
+    def set_location(self, location): self.location = location
+    def validate_locationEnumType(self, value):
+        # Validate type locationEnumType, a restriction on xsd:string.
+        pass
+    def export(self, outfile, level, namespace_='', name_='CScript', namespacedef_=''):
+        showIndent(outfile, level)
+        outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
+        self.exportAttributes(outfile, level, namespace_, name_='CScript')
+        if self.hasContent_():
+            outfile.write('>\n')
+            self.exportChildren(outfile, level + 1, namespace_, name_)
+            showIndent(outfile, level)
+            outfile.write('</%s%s>\n' % (namespace_, name_))
+        else:
+            outfile.write('/>\n')
+    def exportAttributes(self, outfile, level, namespace_='', name_='CScript'):
+        if self.src is not None:
+            outfile.write(' src=%s' % (self.format_string(quote_attrib(self.src).encode(ExternalEncoding), input_name='src'), ))
+        if self.type_ is not None:
+            outfile.write(' type=%s' % (quote_attrib(self.type_), ))
+        if self.name is not None:
+            outfile.write(' name=%s' % (self.format_string(quote_attrib(self.name).encode(ExternalEncoding), input_name='name'), ))
+        if self.location is not None:
+            outfile.write(' location=%s' % (quote_attrib(self.location), ))
+    def exportChildren(self, outfile, level, namespace_='', name_='CScript'):
+        if self.description:
+            self.description.export(outfile, level, namespace_, name_='description')
+    def hasContent_(self):
+        if (
+            self.description is not None
+            ):
+            return True
+        else:
+            return False
+    def exportLiteral(self, outfile, level, name_='CScript'):
+        level += 1
+        self.exportLiteralAttributes(outfile, level, name_)
+        if self.hasContent_():
+            self.exportLiteralChildren(outfile, level, name_)
+    def exportLiteralAttributes(self, outfile, level, name_):
+        if self.src is not None:
+            showIndent(outfile, level)
+            outfile.write('src = "%s",\n' % (self.src,))
+        if self.type_ is not None:
+            showIndent(outfile, level)
+            outfile.write('type_ = "%s",\n' % (self.type_,))
+        if self.name is not None:
+            showIndent(outfile, level)
+            outfile.write('name = "%s",\n' % (self.name,))
+        if self.location is not None:
+            showIndent(outfile, level)
+            outfile.write('location = "%s",\n' % (self.location,))
+    def exportLiteralChildren(self, outfile, level, name_):
+        if self.description is not None:
+            showIndent(outfile, level)
+            outfile.write('description=model_.description(\n')
+            self.description.exportLiteral(outfile, level)
+            showIndent(outfile, level)
+            outfile.write('),\n')
+    def build(self, node):
+        self.buildAttributes(node, node.attrib)
+        for child in node:
+            nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
+            self.buildChildren(child, nodeName_)
+    def buildAttributes(self, node, attrs):
+        value = attrs.get('src')
+        if value is not None:
+            self.src = value
+        value = attrs.get('type')
+        if value is not None:
+            self.type_ = value
+            self.validate_scriptEnumType(self.type_)    # validate type scriptEnumType
+        value = attrs.get('name')
+        if value is not None:
+            self.name = value
+        value = attrs.get('location')
+        if value is not None:
+            self.location = value
+            self.validate_locationEnumType(self.location)    # validate type locationEnumType
+    def buildChildren(self, child_, nodeName_):
+        if nodeName_ == 'description': 
+            obj_ = description.factory()
+            obj_.build(child_)
+            self.set_description(obj_)
+# end class CScript
 
 
 class Metadata(GeneratedsSuper):
@@ -1554,22 +2049,19 @@ class data(GeneratedsSuper):
 # end class data
 
 
-class networksurfacetype(GeneratedsSuper):
+class NetworkSurface(GeneratedsSuper):
     """The name of the surface as reference to an existing connectome-
-    surface To use an atlas that is shipped with the
-    ConnectomeViewer - name="template_atlas_homo_sapines_01"
-    Extracted atlas from Freesurfer using fsaverage mesh Optional
-    together with labelid. The name of the another surface as
-    reference to an existing connectome-surface that contains the
-    label array. Always use in conjunction with labelid. This can be
-    used for a separate Gifti file containing e.g. only label
-    information. The labelid tag name that contains the labeling of
-    the surface reference by name. The referenced surface file must
-    contain NIFTI_INTENT_LABEL intent with the matching labelid in
-    the metadata. Number of vertices of the referenced surface and
-    the label array dimension must match (one label for each
-    vertices) XXX: Probably better to use the LabelTable tag in
-    Gifti?"""
+    surface Optional together with labelid. The name of the another
+    surface as reference to an existing connectome-surface that
+    contains the label array. Always use in conjunction with
+    labelid. This can be used for a separate Gifti file containing
+    e.g. only label information. The labelid tag name that contains
+    the labeling of the surface reference by name. The referenced
+    surface file must contain NIFTI_INTENT_LABEL intent with the
+    matching labelid in the metadata. Number of vertices of the
+    referenced surface and the label array dimension must match (one
+    label for each vertices) XXX: Probably better to use the
+    LabelTable tag in Gifti?"""
     subclass = None
     superclass = None
     def __init__(self, labelid=None, name=None, labelname=None, valueOf_=None):
@@ -1578,10 +2070,10 @@ class networksurfacetype(GeneratedsSuper):
         self.labelname = _cast(None, labelname)
         self.valueOf_ = valueOf_
     def factory(*args_, **kwargs_):
-        if networksurfacetype.subclass:
-            return networksurfacetype.subclass(*args_, **kwargs_)
+        if NetworkSurface.subclass:
+            return NetworkSurface.subclass(*args_, **kwargs_)
         else:
-            return networksurfacetype(*args_, **kwargs_)
+            return NetworkSurface(*args_, **kwargs_)
     factory = staticmethod(factory)
     def get_labelid(self): return self.labelid
     def set_labelid(self, labelid): self.labelid = labelid
@@ -1591,10 +2083,10 @@ class networksurfacetype(GeneratedsSuper):
     def set_labelname(self, labelname): self.labelname = labelname
     def get_valueOf_(self): return self.valueOf_
     def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
-    def export(self, outfile, level, namespace_='', name_='networksurfacetype', namespacedef_=''):
+    def export(self, outfile, level, namespace_='', name_='NetworkSurface', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
-        self.exportAttributes(outfile, level, namespace_, name_='networksurfacetype')
+        self.exportAttributes(outfile, level, namespace_, name_='NetworkSurface')
         if self.hasContent_():
             outfile.write('>')
             outfile.write(self.valueOf_)
@@ -1602,14 +2094,14 @@ class networksurfacetype(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, namespace_='', name_='networksurfacetype'):
+    def exportAttributes(self, outfile, level, namespace_='', name_='NetworkSurface'):
         if self.labelid is not None:
             outfile.write(' labelid=%s' % (self.format_string(quote_attrib(self.labelid).encode(ExternalEncoding), input_name='labelid'), ))
         if self.name is not None:
             outfile.write(' name=%s' % (self.format_string(quote_attrib(self.name).encode(ExternalEncoding), input_name='name'), ))
         if self.labelname is not None:
             outfile.write(' labelname=%s' % (self.format_string(quote_attrib(self.labelname).encode(ExternalEncoding), input_name='labelname'), ))
-    def exportChildren(self, outfile, level, namespace_='', name_='networksurfacetype'):
+    def exportChildren(self, outfile, level, namespace_='', name_='NetworkSurface'):
         pass
     def hasContent_(self):
         if (
@@ -1618,7 +2110,7 @@ class networksurfacetype(GeneratedsSuper):
             return True
         else:
             return False
-    def exportLiteral(self, outfile, level, name_='networksurfacetype'):
+    def exportLiteral(self, outfile, level, name_='NetworkSurface'):
         level += 1
         self.exportLiteralAttributes(outfile, level, name_)
         if self.hasContent_():
@@ -1654,10 +2146,10 @@ class networksurfacetype(GeneratedsSuper):
             self.labelname = value
     def buildChildren(self, child_, nodeName_):
         pass
-# end class networksurfacetype
+# end class NetworkSurface
 
 
-class networkvolumetype(GeneratedsSuper):
+class NetworkVolume(GeneratedsSuper):
     """The name of the volume as reference to an existing connectome-
     volume. The connectome-volume can be of any dtype. Optional. The
     name of a connectome-volume that has dtype=segmentation. It
@@ -1670,10 +2162,10 @@ class networkvolumetype(GeneratedsSuper):
         self.name = _cast(None, name)
         self.valueOf_ = valueOf_
     def factory(*args_, **kwargs_):
-        if networkvolumetype.subclass:
-            return networkvolumetype.subclass(*args_, **kwargs_)
+        if NetworkVolume.subclass:
+            return NetworkVolume.subclass(*args_, **kwargs_)
         else:
-            return networkvolumetype(*args_, **kwargs_)
+            return NetworkVolume(*args_, **kwargs_)
     factory = staticmethod(factory)
     def get_segmentationname(self): return self.segmentationname
     def set_segmentationname(self, segmentationname): self.segmentationname = segmentationname
@@ -1681,10 +2173,10 @@ class networkvolumetype(GeneratedsSuper):
     def set_name(self, name): self.name = name
     def get_valueOf_(self): return self.valueOf_
     def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
-    def export(self, outfile, level, namespace_='', name_='networkvolumetype', namespacedef_=''):
+    def export(self, outfile, level, namespace_='', name_='NetworkVolume', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
-        self.exportAttributes(outfile, level, namespace_, name_='networkvolumetype')
+        self.exportAttributes(outfile, level, namespace_, name_='NetworkVolume')
         if self.hasContent_():
             outfile.write('>')
             outfile.write(self.valueOf_)
@@ -1692,12 +2184,12 @@ class networkvolumetype(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, namespace_='', name_='networkvolumetype'):
+    def exportAttributes(self, outfile, level, namespace_='', name_='NetworkVolume'):
         if self.segmentationname is not None:
             outfile.write(' segmentationname=%s' % (self.format_string(quote_attrib(self.segmentationname).encode(ExternalEncoding), input_name='segmentationname'), ))
         if self.name is not None:
             outfile.write(' name=%s' % (self.format_string(quote_attrib(self.name).encode(ExternalEncoding), input_name='name'), ))
-    def exportChildren(self, outfile, level, namespace_='', name_='networkvolumetype'):
+    def exportChildren(self, outfile, level, namespace_='', name_='NetworkVolume'):
         pass
     def hasContent_(self):
         if (
@@ -1706,7 +2198,7 @@ class networkvolumetype(GeneratedsSuper):
             return True
         else:
             return False
-    def exportLiteral(self, outfile, level, name_='networkvolumetype'):
+    def exportLiteral(self, outfile, level, name_='NetworkVolume'):
         level += 1
         self.exportLiteralAttributes(outfile, level, name_)
         if self.hasContent_():
@@ -1736,10 +2228,10 @@ class networkvolumetype(GeneratedsSuper):
             self.name = value
     def buildChildren(self, child_, nodeName_):
         pass
-# end class networkvolumetype
+# end class NetworkVolume
 
 
-class networktracktype(GeneratedsSuper):
+class NetworkTrack(GeneratedsSuper):
     """The name of the track as reference to an existing connectome-track"""
     subclass = None
     superclass = None
@@ -1747,19 +2239,19 @@ class networktracktype(GeneratedsSuper):
         self.name = _cast(None, name)
         self.valueOf_ = valueOf_
     def factory(*args_, **kwargs_):
-        if networktracktype.subclass:
-            return networktracktype.subclass(*args_, **kwargs_)
+        if NetworkTrack.subclass:
+            return NetworkTrack.subclass(*args_, **kwargs_)
         else:
-            return networktracktype(*args_, **kwargs_)
+            return NetworkTrack(*args_, **kwargs_)
     factory = staticmethod(factory)
     def get_name(self): return self.name
     def set_name(self, name): self.name = name
     def get_valueOf_(self): return self.valueOf_
     def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
-    def export(self, outfile, level, namespace_='', name_='networktracktype', namespacedef_=''):
+    def export(self, outfile, level, namespace_='', name_='NetworkTrack', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
-        self.exportAttributes(outfile, level, namespace_, name_='networktracktype')
+        self.exportAttributes(outfile, level, namespace_, name_='NetworkTrack')
         if self.hasContent_():
             outfile.write('>')
             outfile.write(self.valueOf_)
@@ -1767,10 +2259,10 @@ class networktracktype(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, namespace_='', name_='networktracktype'):
+    def exportAttributes(self, outfile, level, namespace_='', name_='NetworkTrack'):
         if self.name is not None:
             outfile.write(' name=%s' % (self.format_string(quote_attrib(self.name).encode(ExternalEncoding), input_name='name'), ))
-    def exportChildren(self, outfile, level, namespace_='', name_='networktracktype'):
+    def exportChildren(self, outfile, level, namespace_='', name_='NetworkTrack'):
         pass
     def hasContent_(self):
         if (
@@ -1779,7 +2271,7 @@ class networktracktype(GeneratedsSuper):
             return True
         else:
             return False
-    def exportLiteral(self, outfile, level, name_='networktracktype'):
+    def exportLiteral(self, outfile, level, name_='NetworkTrack'):
         level += 1
         self.exportLiteralAttributes(outfile, level, name_)
         if self.hasContent_():
@@ -1803,10 +2295,10 @@ class networktracktype(GeneratedsSuper):
             self.name = value
     def buildChildren(self, child_, nodeName_):
         pass
-# end class networktracktype
+# end class NetworkTrack
 
 
-class networktimeserietype(GeneratedsSuper):
+class NetworkTimeserie(GeneratedsSuper):
     """The name of the timeserie as reference to an existing connectome-
     timeserie"""
     subclass = None
@@ -1815,19 +2307,19 @@ class networktimeserietype(GeneratedsSuper):
         self.name = _cast(None, name)
         self.valueOf_ = valueOf_
     def factory(*args_, **kwargs_):
-        if networktimeserietype.subclass:
-            return networktimeserietype.subclass(*args_, **kwargs_)
+        if NetworkTimeserie.subclass:
+            return NetworkTimeserie.subclass(*args_, **kwargs_)
         else:
-            return networktimeserietype(*args_, **kwargs_)
+            return NetworkTimeserie(*args_, **kwargs_)
     factory = staticmethod(factory)
     def get_name(self): return self.name
     def set_name(self, name): self.name = name
     def get_valueOf_(self): return self.valueOf_
     def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
-    def export(self, outfile, level, namespace_='', name_='networktimeserietype', namespacedef_=''):
+    def export(self, outfile, level, namespace_='', name_='NetworkTimeserie', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
-        self.exportAttributes(outfile, level, namespace_, name_='networktimeserietype')
+        self.exportAttributes(outfile, level, namespace_, name_='NetworkTimeserie')
         if self.hasContent_():
             outfile.write('>')
             outfile.write(self.valueOf_)
@@ -1835,10 +2327,10 @@ class networktimeserietype(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, namespace_='', name_='networktimeserietype'):
+    def exportAttributes(self, outfile, level, namespace_='', name_='NetworkTimeserie'):
         if self.name is not None:
             outfile.write(' name=%s' % (self.format_string(quote_attrib(self.name).encode(ExternalEncoding), input_name='name'), ))
-    def exportChildren(self, outfile, level, namespace_='', name_='networktimeserietype'):
+    def exportChildren(self, outfile, level, namespace_='', name_='NetworkTimeserie'):
         pass
     def hasContent_(self):
         if (
@@ -1847,7 +2339,7 @@ class networktimeserietype(GeneratedsSuper):
             return True
         else:
             return False
-    def exportLiteral(self, outfile, level, name_='networktimeserietype'):
+    def exportLiteral(self, outfile, level, name_='NetworkTimeserie'):
         level += 1
         self.exportLiteralAttributes(outfile, level, name_)
         if self.hasContent_():
@@ -1871,7 +2363,75 @@ class networktimeserietype(GeneratedsSuper):
             self.name = value
     def buildChildren(self, child_, nodeName_):
         pass
-# end class networktimeserietype
+# end class NetworkTimeserie
+
+
+class NetworkData(GeneratedsSuper):
+    """The name of the data object as reference to an existing connectome-
+    data"""
+    subclass = None
+    superclass = None
+    def __init__(self, name=None, valueOf_=None):
+        self.name = _cast(None, name)
+        self.valueOf_ = valueOf_
+    def factory(*args_, **kwargs_):
+        if NetworkData.subclass:
+            return NetworkData.subclass(*args_, **kwargs_)
+        else:
+            return NetworkData(*args_, **kwargs_)
+    factory = staticmethod(factory)
+    def get_name(self): return self.name
+    def set_name(self, name): self.name = name
+    def get_valueOf_(self): return self.valueOf_
+    def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
+    def export(self, outfile, level, namespace_='', name_='NetworkData', namespacedef_=''):
+        showIndent(outfile, level)
+        outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
+        self.exportAttributes(outfile, level, namespace_, name_='NetworkData')
+        if self.hasContent_():
+            outfile.write('>')
+            outfile.write(self.valueOf_)
+            self.exportChildren(outfile, level + 1, namespace_, name_)
+            outfile.write('</%s%s>\n' % (namespace_, name_))
+        else:
+            outfile.write('/>\n')
+    def exportAttributes(self, outfile, level, namespace_='', name_='NetworkData'):
+        if self.name is not None:
+            outfile.write(' name=%s' % (self.format_string(quote_attrib(self.name).encode(ExternalEncoding), input_name='name'), ))
+    def exportChildren(self, outfile, level, namespace_='', name_='NetworkData'):
+        pass
+    def hasContent_(self):
+        if (
+            self.valueOf_
+            ):
+            return True
+        else:
+            return False
+    def exportLiteral(self, outfile, level, name_='NetworkData'):
+        level += 1
+        self.exportLiteralAttributes(outfile, level, name_)
+        if self.hasContent_():
+            self.exportLiteralChildren(outfile, level, name_)
+    def exportLiteralAttributes(self, outfile, level, name_):
+        if self.name is not None:
+            showIndent(outfile, level)
+            outfile.write('name = "%s",\n' % (self.name,))
+    def exportLiteralChildren(self, outfile, level, name_):
+        showIndent(outfile, level)
+        outfile.write('valueOf_ = """%s""",\n' % (self.valueOf_,))
+    def build(self, node):
+        self.buildAttributes(node, node.attrib)
+        self.valueOf_ = get_all_text_(node)
+        for child in node:
+            nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
+            self.buildChildren(child, nodeName_)
+    def buildAttributes(self, node, attrs):
+        value = attrs.get('name')
+        if value is not None:
+            self.name = value
+    def buildChildren(self, child_, nodeName_):
+        pass
+# end class NetworkData
 
 
 USAGE_TEXT = """
