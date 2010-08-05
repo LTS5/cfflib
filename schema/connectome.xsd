@@ -287,11 +287,13 @@
       A description according to the format attribute syntax.
       </xsd:documentation>
     </xsd:annotation>
-    <xs:simpleContent>
-     <xs:extension base="xs:string">
-	<xs:attribute name="format" type="descriptionFormat"/>
-     </xs:extension>
-    </xs:simpleContent>
+    <xsd:complexType>
+    <xsd:simpleContent>
+     <xsd:extension base="xsd:string">
+	<xsd:attribute name="format" type="descriptionFormat"/>
+     </xsd:extension>
+    </xsd:simpleContent>
+    </xsd:complexType>
     </xsd:element>
 
     <xsd:element maxOccurs="1" minOccurs="0" name="metadata" type="Metadata">
@@ -384,11 +386,13 @@
 	       A description according to the format attribute syntax.
 	       </xsd:documentation>
 	     </xsd:annotation>
-	     <xs:simpleContent>
-	      <xs:extension base="xs:string">
-		 <xs:attribute name="format" type="descriptionFormat"/>
-	      </xs:extension>
-	     </xs:simpleContent>
+	     <xsd:complexType>
+	     <xsd:simpleContent>
+	      <xsd:extension base="xsd:string">
+		 <xsd:attribute name="format" type="descriptionFormat"/>
+	      </xsd:extension>
+	     </xsd:simpleContent>
+	     </xsd:complexType>
 	     </xsd:element>
 
 
@@ -464,11 +468,13 @@
 	       A description according to the format attribute syntax.
 	       </xsd:documentation>
 	     </xsd:annotation>
-	     <xs:simpleContent>
-	      <xs:extension base="xs:string">
-		 <xs:attribute name="format" type="descriptionFormat"/>
-	      </xs:extension>
-	     </xs:simpleContent>
+	     <xsd:complexType>
+	     <xsd:simpleContent>
+	      <xsd:extension base="xsd:string">
+		 <xsd:attribute name="format" type="descriptionFormat"/>
+	      </xsd:extension>
+	     </xsd:simpleContent>
+	     </xsd:complexType>
 	     </xsd:element>
     </xsd:all>
 
@@ -540,11 +546,13 @@
 	       A description according to the format attribute syntax.
 	       </xsd:documentation>
 	     </xsd:annotation>
-	     <xs:simpleContent>
-	      <xs:extension base="xs:string">
-		 <xs:attribute name="format" type="descriptionFormat"/>
-	      </xs:extension>
-	     </xs:simpleContent>
+	     <xsd:complexType>
+	     <xsd:simpleContent>
+	      <xsd:extension base="xsd:string">
+		 <xsd:attribute name="format" type="descriptionFormat"/>
+	      </xsd:extension>
+	     </xsd:simpleContent>
+	     </xsd:complexType>
 	     </xsd:element>
     </xsd:all>
     
@@ -634,11 +642,13 @@
 	       A description according to the format attribute syntax.
 	       </xsd:documentation>
 	     </xsd:annotation>
-	     <xs:simpleContent>
-	      <xs:extension base="xs:string">
-		 <xs:attribute name="format" type="descriptionFormat"/>
-	      </xs:extension>
-	     </xs:simpleContent>
+	     <xsd:complexType>
+	     <xsd:simpleContent>
+	      <xsd:extension base="xsd:string">
+		 <xsd:attribute name="format" type="descriptionFormat"/>
+	      </xsd:extension>
+	     </xsd:simpleContent>
+	     </xsd:complexType>
 	     </xsd:element>
   </xsd:all>
   
@@ -688,11 +698,13 @@
 	       A description according to the format attribute syntax.
 	       </xsd:documentation>
 	     </xsd:annotation>
-	     <xs:simpleContent>
-	      <xs:extension base="xs:string">
-		 <xs:attribute name="format" type="descriptionFormat"/>
-	      </xs:extension>
-	     </xs:simpleContent>
+	     <xsd:complexType>
+	     <xsd:simpleContent>
+	      <xsd:extension base="xsd:string">
+		 <xsd:attribute name="format" type="descriptionFormat"/>
+	      </xsd:extension>
+	     </xsd:simpleContent>
+	     </xsd:complexType>
 	     </xsd:element>
   </xsd:all>
   
@@ -742,11 +754,13 @@
 	       A description according to the format attribute syntax.
 	       </xsd:documentation>
 	     </xsd:annotation>
-	     <xs:simpleContent>
-	      <xs:extension base="xs:string">
-		 <xs:attribute name="format" type="descriptionFormat"/>
-	      </xs:extension>
-	     </xs:simpleContent>
+	     <xsd:complexType>
+	     <xsd:simpleContent>
+	      <xsd:extension base="xsd:string">
+		 <xsd:attribute name="format" type="descriptionFormat"/>
+	      </xsd:extension>
+	     </xsd:simpleContent>
+	     </xsd:complexType>
 	     </xsd:element>
   </xsd:all>
   
@@ -795,11 +809,13 @@
 	       A description according to the format attribute syntax.
 	       </xsd:documentation>
 	     </xsd:annotation>
-	     <xs:simpleContent>
-	      <xs:extension base="xs:string">
-		 <xs:attribute name="format" type="descriptionFormat"/>
-	      </xs:extension>
-	     </xs:simpleContent>
+	     <xsd:complexType>
+	     <xsd:simpleContent>
+	      <xsd:extension base="xsd:string">
+		 <xsd:attribute name="format" type="descriptionFormat"/>
+	      </xsd:extension>
+	     </xsd:simpleContent>
+	     </xsd:complexType>
 	     </xsd:element>
   </xsd:all>
   
