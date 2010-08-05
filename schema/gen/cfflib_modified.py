@@ -9,6 +9,34 @@ from string import lower as str_lower
 
 import cff as supermod
 
+# NetworkX
+try:
+    import networkx as nx
+except ImportError:
+    raise ImportError("Failed to import networkx from any known place")
+
+# PyTables
+try:
+    import tables
+except ImportError:
+    raise ImportError("Failed to import networkx from any known place")
+
+# Nibabel
+try:
+    import nibabel as nib
+except ImportError:
+    raise ImportError("Failed to import nibabel from any known place")
+
+# NumPy
+try:
+    import numpy as np
+except ImportError:
+    raise ImportError("Failed to import numpy from any known place")
+
+
+
+# PyGEXF
+
 etree_ = None
 Verbose_import_ = False
 (   XMLParser_import_none, XMLParser_import_lxml,
@@ -253,6 +281,28 @@ def usage():
     print USAGE_TEXT
     sys.exit(1)
 
+#### ADDED FUNCTIONS
+
+def load(fname):
+    """ Loads the connectome file fname """        
+    pass
+
+def save(cfile, fname):
+    """ Save the connectome file to fname """
+    
+    # create zip file
+    
+    # meta.xml = cfile.export()....
+    # add meta.xml
+    
+    # loop through all the data and add it to the zip file 
+    # do nothing in case its in the filesystem or URL
+    
+    
+    
+    pass
+
+####################
 
 def main():
     args = sys.argv[1:]

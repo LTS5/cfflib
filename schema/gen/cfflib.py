@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 #
-# Generated Thu Aug  5 16:42:25 2010 by generateDS.py version 2.1a.
+# Generated Thu Aug  5 17:32:40 2010 by generateDS.py version 2.1a.
 #
 
 import sys
@@ -93,50 +93,50 @@ supermod.description.subclass = description
 
 
 class CNetwork(supermod.CNetwork):
-    def __init__(self, edgeless=False, src=None, name=None, dtype='AttributeNetwork', location='zippath', fileformat='GEXF', network_metadata=None, network_surface=None, network_volume=None, network_track=None, network_timeserie=None, network_data=None, description=None):
-        super(CNetwork, self).__init__(edgeless, src, name, dtype, location, fileformat, network_metadata, network_surface, network_volume, network_track, network_timeserie, network_data, description, )
+    def __init__(self, edgeless=False, src=None, name=None, dtype='AttributeNetwork', location='zippath', fileformat='GEXF', metadata=None, network_surface=None, network_volume=None, network_track=None, network_timeserie=None, network_data=None, description=None):
+        super(CNetwork, self).__init__(edgeless, src, name, dtype, location, fileformat, metadata, network_surface, network_volume, network_track, network_timeserie, network_data, description, )
 supermod.CNetwork.subclass = CNetwork
 # end class CNetwork
 
 
 class CSurface(supermod.CSurface):
-    def __init__(self, src=None, fileformat=None, dtype=None, name=None, location='zippath', description=None):
-        super(CSurface, self).__init__(src, fileformat, dtype, name, location, description, )
+    def __init__(self, src=None, fileformat=None, dtype=None, name=None, location='zippath', description=None, metadata=None):
+        super(CSurface, self).__init__(src, fileformat, dtype, name, location, description, metadata, )
 supermod.CSurface.subclass = CSurface
 # end class CSurface
 
 
 class CVolume(supermod.CVolume):
-    def __init__(self, src=None, fileformat='Nifti1', dtype=None, name=None, location='zippath', description=None):
-        super(CVolume, self).__init__(src, fileformat, dtype, name, location, description, )
+    def __init__(self, src=None, fileformat='Nifti1', dtype=None, name=None, location='zippath', description=None, metadata=None):
+        super(CVolume, self).__init__(src, fileformat, dtype, name, location, description, metadata, )
 supermod.CVolume.subclass = CVolume
 # end class CVolume
 
 
 class CTrack(supermod.CTrack):
-    def __init__(self, src=None, fileformat='TrackVis', name=None, location='zippath', description=None):
-        super(CTrack, self).__init__(src, fileformat, name, location, description, )
+    def __init__(self, src=None, fileformat='TrackVis', name=None, location='zippath', description=None, metadata=None):
+        super(CTrack, self).__init__(src, fileformat, name, location, description, metadata, )
 supermod.CTrack.subclass = CTrack
 # end class CTrack
 
 
 class CTimeserie(supermod.CTimeserie):
-    def __init__(self, src=None, fileformat='HDF5', name=None, location='zippath', description=None):
-        super(CTimeserie, self).__init__(src, fileformat, name, location, description, )
+    def __init__(self, src=None, fileformat='HDF5', name=None, location='zippath', description=None, metadata=None):
+        super(CTimeserie, self).__init__(src, fileformat, name, location, description, metadata, )
 supermod.CTimeserie.subclass = CTimeserie
 # end class CTimeserie
 
 
 class CData(supermod.CData):
-    def __init__(self, src=None, fileformat=None, name=None, location='zippath', description=None):
-        super(CData, self).__init__(src, fileformat, name, location, description, )
+    def __init__(self, src=None, fileformat=None, name=None, location='zippath', description=None, metadata=None):
+        super(CData, self).__init__(src, fileformat, name, location, description, metadata, )
 supermod.CData.subclass = CData
 # end class CData
 
 
 class CScript(supermod.CScript):
-    def __init__(self, src=None, type_='Python', name=None, location='zippath', description=None):
-        super(CScript, self).__init__(src, type_, name, location, description, )
+    def __init__(self, src=None, type_='Python', name=None, location='zippath', description=None, metadata=None):
+        super(CScript, self).__init__(src, type_, name, location, description, metadata, )
 supermod.CScript.subclass = CScript
 # end class CScript
 

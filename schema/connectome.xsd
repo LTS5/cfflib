@@ -324,7 +324,7 @@
 
   <xsd:sequence>
 
-          <xsd:element maxOccurs="1" minOccurs="0" name="network-metadata" type="Metadata">
+          <xsd:element maxOccurs="1" minOccurs="0" name="metadata" type="Metadata">
           <xsd:annotation xml:lang="en">
             <xsd:documentation>
             Often, there is particular metadata for networks one wants to use for later processing. For example one can annotate networks that represent subjects with
@@ -476,6 +476,15 @@
 	     </xsd:simpleContent>
 	     </xsd:complexType>
 	     </xsd:element>
+	    
+          <xsd:element name="metadata" type="Metadata">
+          <xsd:annotation xml:lang="en">
+            <xsd:documentation>
+            More metadata
+           </xsd:documentation>
+          </xsd:annotation>
+          </xsd:element>
+	    
     </xsd:all>
 
     <xsd:attribute name="name" type="xsd:string">
@@ -554,6 +563,15 @@
 	     </xsd:simpleContent>
 	     </xsd:complexType>
 	     </xsd:element>
+	    
+          <xsd:element name="metadata" type="Metadata">
+          <xsd:annotation xml:lang="en">
+            <xsd:documentation>
+            More metadata
+           </xsd:documentation>
+          </xsd:annotation>
+          </xsd:element>
+	    
     </xsd:all>
     
     <xsd:attribute name="name" type="xsd:string">
@@ -650,6 +668,16 @@
 	     </xsd:simpleContent>
 	     </xsd:complexType>
 	     </xsd:element>
+	    
+          <xsd:element name="metadata" type="Metadata">
+          <xsd:annotation xml:lang="en">
+            <xsd:documentation>
+            More metadata
+           </xsd:documentation>
+          </xsd:annotation>
+          </xsd:element>
+
+	    
   </xsd:all>
   
     <xsd:attribute name="name" type="xsd:string">
@@ -706,6 +734,15 @@
 	     </xsd:simpleContent>
 	     </xsd:complexType>
 	     </xsd:element>
+	    
+          <xsd:element name="metadata" type="Metadata">
+          <xsd:annotation xml:lang="en">
+            <xsd:documentation>
+            More metadata
+           </xsd:documentation>
+          </xsd:annotation>
+          </xsd:element>
+	    
   </xsd:all>
   
     <xsd:attribute name="name" type="xsd:string">
@@ -762,6 +799,15 @@
 	     </xsd:simpleContent>
 	     </xsd:complexType>
 	     </xsd:element>
+	    
+          <xsd:element name="metadata" type="Metadata">
+          <xsd:annotation xml:lang="en">
+            <xsd:documentation>
+            More metadata
+           </xsd:documentation>
+          </xsd:annotation>
+          </xsd:element>
+	    
   </xsd:all>
   
     <xsd:attribute name="name" type="xsd:string">
@@ -818,6 +864,16 @@
 	     </xsd:simpleContent>
 	     </xsd:complexType>
 	     </xsd:element>
+	    
+          <xsd:element name="metadata" type="Metadata">
+          <xsd:annotation xml:lang="en">
+            <xsd:documentation>
+            More metadata
+           </xsd:documentation>
+          </xsd:annotation>
+          </xsd:element>
+
+	    
   </xsd:all>
   
     <xsd:attribute name="name" type="xsd:string">

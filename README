@@ -38,19 +38,45 @@ Dependencies
 * lxml
 * pygexf
 
+Think
+-----
+* .load cff
+  -> create connectome object in memory. lazy load object with corresponding get_object() (vs. load_object() and then access) using
+     corresponding libraries
+  -> 
+     
+* .save cff
+  -> give connectome object in memory and out_fname. create a zip/cff file. add data
+     -> first create meta.xml in tmp, add it and remove
+     -> loop through data
+        -> if location=='zippath':
+              if loaded in memory:
+              	using library, write out object in /tmp, add it and remove it in /tmp
+              else:
+                you do not want to require to load all the files in memory to save the cff, thus
+                add a special insert_..(modify it?) or add_object(?..) or insert_from_filesystem_without_loading
+                
+                ?? csurf_obj = cfflib.CSurface(....., from_file='/.../my.gii')
+                    # from_file generate a _src attribute that stores the fs path, to be used for saving
+                   cfile.connectome_surface.append(csurf_obj)
+
 In cfflib
 ---------
+* see util.py
+
 * [METHOD] validate file existence
 * [METHOD] validate file type
+
 * e.g. in a python-script, write: import cfflib
+* lazy loading data
+
 * [METHOD] adder (=setter?) methods for objects (or just add to a list?)
 * [METHOD] remover methods for objects (or just remove from a list?)
 * [METHOD] info method about available optional dependencies
 * [METHOD] .save / .load cff
-* lazy loading data
-* [METHOD] meaningful getter method for objects based on meta-data attributes
-* [METHOD] extract all zip file content to path
-* [METHOD] extract all zip file content to path and rereference all file links
+
+* [METHOD] meaningful getter method for objects based on meta-data attributes (for all kinds of data types)
+
 * [METHOD] load all data into memory
 * load scripts as stringIO / string object
 * lazy load, lazy memorymap load?

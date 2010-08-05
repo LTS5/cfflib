@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 #
-# Generated Thu Aug  5 16:42:25 2010 by generateDS.py version 2.1a.
+# Generated Thu Aug  5 17:32:40 2010 by generateDS.py version 2.1a.
 #
 
 import sys
@@ -839,14 +839,14 @@ class CNetwork(GeneratedsSuper):
     representation."""
     subclass = None
     superclass = None
-    def __init__(self, edgeless=False, src=None, name=None, dtype='AttributeNetwork', location='zippath', fileformat='GEXF', network_metadata=None, network_surface=None, network_volume=None, network_track=None, network_timeserie=None, network_data=None, description=None):
+    def __init__(self, edgeless=False, src=None, name=None, dtype='AttributeNetwork', location='zippath', fileformat='GEXF', metadata=None, network_surface=None, network_volume=None, network_track=None, network_timeserie=None, network_data=None, description=None):
         self.edgeless = _cast(bool, edgeless)
         self.src = _cast(None, src)
         self.name = _cast(None, name)
         self.dtype = _cast(None, dtype)
         self.location = _cast(None, location)
         self.fileformat = _cast(None, fileformat)
-        self.network_metadata = network_metadata
+        self.metadata = metadata
         if network_surface is None:
             self.network_surface = []
         else:
@@ -874,8 +874,8 @@ class CNetwork(GeneratedsSuper):
         else:
             return CNetwork(*args_, **kwargs_)
     factory = staticmethod(factory)
-    def get_network_metadata(self): return self.network_metadata
-    def set_network_metadata(self, network_metadata): self.network_metadata = network_metadata
+    def get_metadata(self): return self.metadata
+    def set_metadata(self, metadata): self.metadata = metadata
     def get_network_surface(self): return self.network_surface
     def set_network_surface(self, network_surface): self.network_surface = network_surface
     def add_network_surface(self, value): self.network_surface.append(value)
@@ -944,8 +944,8 @@ class CNetwork(GeneratedsSuper):
         if self.fileformat is not None:
             outfile.write(' fileformat=%s' % (quote_attrib(self.fileformat), ))
     def exportChildren(self, outfile, level, namespace_='', name_='CNetwork'):
-        if self.network_metadata:
-            self.network_metadata.export(outfile, level, namespace_, name_='network-metadata')
+        if self.metadata:
+            self.metadata.export(outfile, level, namespace_, name_='metadata')
         for network_surface_ in self.network_surface:
             network_surface_.export(outfile, level, namespace_, name_='network-surface')
         for network_volume_ in self.network_volume:
@@ -960,7 +960,7 @@ class CNetwork(GeneratedsSuper):
             self.description.export(outfile, level, namespace_, name_='description')
     def hasContent_(self):
         if (
-            self.network_metadata is not None or
+            self.metadata is not None or
             self.network_surface or
             self.network_volume or
             self.network_track or
@@ -996,10 +996,10 @@ class CNetwork(GeneratedsSuper):
             showIndent(outfile, level)
             outfile.write('fileformat = "%s",\n' % (self.fileformat,))
     def exportLiteralChildren(self, outfile, level, name_):
-        if self.network_metadata is not None:
+        if self.metadata is not None:
             showIndent(outfile, level)
-            outfile.write('network_metadata=model_.Metadata(\n')
-            self.network_metadata.exportLiteral(outfile, level, name_='network_metadata')
+            outfile.write('metadata=model_.Metadata(\n')
+            self.metadata.exportLiteral(outfile, level, name_='metadata')
             showIndent(outfile, level)
             outfile.write('),\n')
         showIndent(outfile, level)
@@ -1101,10 +1101,10 @@ class CNetwork(GeneratedsSuper):
             self.fileformat = value
             self.validate_networkFileFormat(self.fileformat)    # validate type networkFileFormat
     def buildChildren(self, child_, nodeName_):
-        if nodeName_ == 'network-metadata': 
+        if nodeName_ == 'metadata': 
             obj_ = Metadata.factory()
             obj_.build(child_)
-            self.set_network_metadata(obj_)
+            self.set_metadata(obj_)
         elif nodeName_ == 'network-surface': 
             obj_ = NetworkSurface.factory()
             obj_.build(child_)
@@ -1157,13 +1157,14 @@ class CSurface(GeneratedsSuper):
     described for both surfaceset and label above."""
     subclass = None
     superclass = None
-    def __init__(self, src=None, fileformat=None, dtype=None, name=None, location='zippath', description=None):
+    def __init__(self, src=None, fileformat=None, dtype=None, name=None, location='zippath', description=None, metadata=None):
         self.src = _cast(None, src)
         self.fileformat = _cast(None, fileformat)
         self.dtype = _cast(None, dtype)
         self.name = _cast(None, name)
         self.location = _cast(None, location)
         self.description = description
+        self.metadata = metadata
     def factory(*args_, **kwargs_):
         if CSurface.subclass:
             return CSurface.subclass(*args_, **kwargs_)
@@ -1172,6 +1173,8 @@ class CSurface(GeneratedsSuper):
     factory = staticmethod(factory)
     def get_description(self): return self.description
     def set_description(self, description): self.description = description
+    def get_metadata(self): return self.metadata
+    def set_metadata(self, metadata): self.metadata = metadata
     def get_src(self): return self.src
     def set_src(self, src): self.src = src
     def get_fileformat(self): return self.fileformat
@@ -1216,9 +1219,12 @@ class CSurface(GeneratedsSuper):
     def exportChildren(self, outfile, level, namespace_='', name_='CSurface'):
         if self.description:
             self.description.export(outfile, level, namespace_, name_='description')
+        if self.metadata:
+            self.metadata.export(outfile, level, namespace_, name_='metadata', )
     def hasContent_(self):
         if (
-            self.description is not None
+            self.description is not None or
+            self.metadata is not None
             ):
             return True
         else:
@@ -1251,6 +1257,12 @@ class CSurface(GeneratedsSuper):
             self.description.exportLiteral(outfile, level)
             showIndent(outfile, level)
             outfile.write('),\n')
+        if self.metadata is not None:
+            showIndent(outfile, level)
+            outfile.write('metadata=model_.Metadata(\n')
+            self.metadata.exportLiteral(outfile, level, name_='metadata')
+            showIndent(outfile, level)
+            outfile.write('),\n')
     def build(self, node):
         self.buildAttributes(node, node.attrib)
         for child in node:
@@ -1280,6 +1292,10 @@ class CSurface(GeneratedsSuper):
             obj_ = description.factory()
             obj_.build(child_)
             self.set_description(obj_)
+        elif nodeName_ == 'metadata': 
+            obj_ = Metadata.factory()
+            obj_.build(child_)
+            self.set_metadata(obj_)
 # end class CSurface
 
 
@@ -1315,13 +1331,14 @@ class CVolume(GeneratedsSuper):
     spectroscopy"""
     subclass = None
     superclass = None
-    def __init__(self, src=None, fileformat='Nifti1', dtype=None, name=None, location='zippath', description=None):
+    def __init__(self, src=None, fileformat='Nifti1', dtype=None, name=None, location='zippath', description=None, metadata=None):
         self.src = _cast(None, src)
         self.fileformat = _cast(None, fileformat)
         self.dtype = _cast(None, dtype)
         self.name = _cast(None, name)
         self.location = _cast(None, location)
         self.description = description
+        self.metadata = metadata
     def factory(*args_, **kwargs_):
         if CVolume.subclass:
             return CVolume.subclass(*args_, **kwargs_)
@@ -1330,6 +1347,8 @@ class CVolume(GeneratedsSuper):
     factory = staticmethod(factory)
     def get_description(self): return self.description
     def set_description(self, description): self.description = description
+    def get_metadata(self): return self.metadata
+    def set_metadata(self, metadata): self.metadata = metadata
     def get_src(self): return self.src
     def set_src(self, src): self.src = src
     def get_fileformat(self): return self.fileformat
@@ -1374,9 +1393,12 @@ class CVolume(GeneratedsSuper):
     def exportChildren(self, outfile, level, namespace_='', name_='CVolume'):
         if self.description:
             self.description.export(outfile, level, namespace_, name_='description')
+        if self.metadata:
+            self.metadata.export(outfile, level, namespace_, name_='metadata', )
     def hasContent_(self):
         if (
-            self.description is not None
+            self.description is not None or
+            self.metadata is not None
             ):
             return True
         else:
@@ -1409,6 +1431,12 @@ class CVolume(GeneratedsSuper):
             self.description.exportLiteral(outfile, level)
             showIndent(outfile, level)
             outfile.write('),\n')
+        if self.metadata is not None:
+            showIndent(outfile, level)
+            outfile.write('metadata=model_.Metadata(\n')
+            self.metadata.exportLiteral(outfile, level, name_='metadata')
+            showIndent(outfile, level)
+            outfile.write('),\n')
     def build(self, node):
         self.buildAttributes(node, node.attrib)
         for child in node:
@@ -1438,6 +1466,10 @@ class CVolume(GeneratedsSuper):
             obj_ = description.factory()
             obj_.build(child_)
             self.set_description(obj_)
+        elif nodeName_ == 'metadata': 
+            obj_ = Metadata.factory()
+            obj_.build(child_)
+            self.set_metadata(obj_)
 # end class CVolume
 
 
@@ -1450,12 +1482,13 @@ class CTrack(GeneratedsSuper):
     on the individual fibers."""
     subclass = None
     superclass = None
-    def __init__(self, src=None, fileformat='TrackVis', name=None, location='zippath', description=None):
+    def __init__(self, src=None, fileformat='TrackVis', name=None, location='zippath', description=None, metadata=None):
         self.src = _cast(None, src)
         self.fileformat = _cast(None, fileformat)
         self.name = _cast(None, name)
         self.location = _cast(None, location)
         self.description = description
+        self.metadata = metadata
     def factory(*args_, **kwargs_):
         if CTrack.subclass:
             return CTrack.subclass(*args_, **kwargs_)
@@ -1464,6 +1497,8 @@ class CTrack(GeneratedsSuper):
     factory = staticmethod(factory)
     def get_description(self): return self.description
     def set_description(self, description): self.description = description
+    def get_metadata(self): return self.metadata
+    def set_metadata(self, metadata): self.metadata = metadata
     def get_src(self): return self.src
     def set_src(self, src): self.src = src
     def get_fileformat(self): return self.fileformat
@@ -1501,9 +1536,12 @@ class CTrack(GeneratedsSuper):
     def exportChildren(self, outfile, level, namespace_='', name_='CTrack'):
         if self.description:
             self.description.export(outfile, level, namespace_, name_='description')
+        if self.metadata:
+            self.metadata.export(outfile, level, namespace_, name_='metadata', )
     def hasContent_(self):
         if (
-            self.description is not None
+            self.description is not None or
+            self.metadata is not None
             ):
             return True
         else:
@@ -1533,6 +1571,12 @@ class CTrack(GeneratedsSuper):
             self.description.exportLiteral(outfile, level)
             showIndent(outfile, level)
             outfile.write('),\n')
+        if self.metadata is not None:
+            showIndent(outfile, level)
+            outfile.write('metadata=model_.Metadata(\n')
+            self.metadata.exportLiteral(outfile, level, name_='metadata')
+            showIndent(outfile, level)
+            outfile.write('),\n')
     def build(self, node):
         self.buildAttributes(node, node.attrib)
         for child in node:
@@ -1558,6 +1602,10 @@ class CTrack(GeneratedsSuper):
             obj_ = description.factory()
             obj_.build(child_)
             self.set_description(obj_)
+        elif nodeName_ == 'metadata': 
+            obj_ = Metadata.factory()
+            obj_.build(child_)
+            self.set_metadata(obj_)
 # end class CTrack
 
 
@@ -1569,12 +1617,13 @@ class CTimeserie(GeneratedsSuper):
     store any number of time series or other large homogeneous data."""
     subclass = None
     superclass = None
-    def __init__(self, src=None, fileformat='HDF5', name=None, location='zippath', description=None):
+    def __init__(self, src=None, fileformat='HDF5', name=None, location='zippath', description=None, metadata=None):
         self.src = _cast(None, src)
         self.fileformat = _cast(None, fileformat)
         self.name = _cast(None, name)
         self.location = _cast(None, location)
         self.description = description
+        self.metadata = metadata
     def factory(*args_, **kwargs_):
         if CTimeserie.subclass:
             return CTimeserie.subclass(*args_, **kwargs_)
@@ -1583,6 +1632,8 @@ class CTimeserie(GeneratedsSuper):
     factory = staticmethod(factory)
     def get_description(self): return self.description
     def set_description(self, description): self.description = description
+    def get_metadata(self): return self.metadata
+    def set_metadata(self, metadata): self.metadata = metadata
     def get_src(self): return self.src
     def set_src(self, src): self.src = src
     def get_fileformat(self): return self.fileformat
@@ -1620,9 +1671,12 @@ class CTimeserie(GeneratedsSuper):
     def exportChildren(self, outfile, level, namespace_='', name_='CTimeserie'):
         if self.description:
             self.description.export(outfile, level, namespace_, name_='description')
+        if self.metadata:
+            self.metadata.export(outfile, level, namespace_, name_='metadata', )
     def hasContent_(self):
         if (
-            self.description is not None
+            self.description is not None or
+            self.metadata is not None
             ):
             return True
         else:
@@ -1652,6 +1706,12 @@ class CTimeserie(GeneratedsSuper):
             self.description.exportLiteral(outfile, level)
             showIndent(outfile, level)
             outfile.write('),\n')
+        if self.metadata is not None:
+            showIndent(outfile, level)
+            outfile.write('metadata=model_.Metadata(\n')
+            self.metadata.exportLiteral(outfile, level, name_='metadata')
+            showIndent(outfile, level)
+            outfile.write('),\n')
     def build(self, node):
         self.buildAttributes(node, node.attrib)
         for child in node:
@@ -1677,6 +1737,10 @@ class CTimeserie(GeneratedsSuper):
             obj_ = description.factory()
             obj_.build(child_)
             self.set_description(obj_)
+        elif nodeName_ == 'metadata': 
+            obj_ = Metadata.factory()
+            obj_.build(child_)
+            self.set_metadata(obj_)
 # end class CTimeserie
 
 
@@ -1687,12 +1751,13 @@ class CData(GeneratedsSuper):
     'Other'"""
     subclass = None
     superclass = None
-    def __init__(self, src=None, fileformat=None, name=None, location='zippath', description=None):
+    def __init__(self, src=None, fileformat=None, name=None, location='zippath', description=None, metadata=None):
         self.src = _cast(None, src)
         self.fileformat = _cast(None, fileformat)
         self.name = _cast(None, name)
         self.location = _cast(None, location)
         self.description = description
+        self.metadata = metadata
     def factory(*args_, **kwargs_):
         if CData.subclass:
             return CData.subclass(*args_, **kwargs_)
@@ -1701,6 +1766,8 @@ class CData(GeneratedsSuper):
     factory = staticmethod(factory)
     def get_description(self): return self.description
     def set_description(self, description): self.description = description
+    def get_metadata(self): return self.metadata
+    def set_metadata(self, metadata): self.metadata = metadata
     def get_src(self): return self.src
     def set_src(self, src): self.src = src
     def get_fileformat(self): return self.fileformat
@@ -1738,9 +1805,12 @@ class CData(GeneratedsSuper):
     def exportChildren(self, outfile, level, namespace_='', name_='CData'):
         if self.description:
             self.description.export(outfile, level, namespace_, name_='description')
+        if self.metadata:
+            self.metadata.export(outfile, level, namespace_, name_='metadata', )
     def hasContent_(self):
         if (
-            self.description is not None
+            self.description is not None or
+            self.metadata is not None
             ):
             return True
         else:
@@ -1770,6 +1840,12 @@ class CData(GeneratedsSuper):
             self.description.exportLiteral(outfile, level)
             showIndent(outfile, level)
             outfile.write('),\n')
+        if self.metadata is not None:
+            showIndent(outfile, level)
+            outfile.write('metadata=model_.Metadata(\n')
+            self.metadata.exportLiteral(outfile, level, name_='metadata')
+            showIndent(outfile, level)
+            outfile.write('),\n')
     def build(self, node):
         self.buildAttributes(node, node.attrib)
         for child in node:
@@ -1795,6 +1871,10 @@ class CData(GeneratedsSuper):
             obj_ = description.factory()
             obj_.build(child_)
             self.set_description(obj_)
+        elif nodeName_ == 'metadata': 
+            obj_ = Metadata.factory()
+            obj_.build(child_)
+            self.set_metadata(obj_)
 # end class CData
 
 
@@ -1805,12 +1885,13 @@ class CScript(GeneratedsSuper):
     "Python" (default), "Bash", "Matlab", or "Other"."""
     subclass = None
     superclass = None
-    def __init__(self, src=None, type_='Python', name=None, location='zippath', description=None):
+    def __init__(self, src=None, type_='Python', name=None, location='zippath', description=None, metadata=None):
         self.src = _cast(None, src)
         self.type_ = _cast(None, type_)
         self.name = _cast(None, name)
         self.location = _cast(None, location)
         self.description = description
+        self.metadata = metadata
     def factory(*args_, **kwargs_):
         if CScript.subclass:
             return CScript.subclass(*args_, **kwargs_)
@@ -1819,6 +1900,8 @@ class CScript(GeneratedsSuper):
     factory = staticmethod(factory)
     def get_description(self): return self.description
     def set_description(self, description): self.description = description
+    def get_metadata(self): return self.metadata
+    def set_metadata(self, metadata): self.metadata = metadata
     def get_src(self): return self.src
     def set_src(self, src): self.src = src
     def get_type(self): return self.type_
@@ -1856,9 +1939,12 @@ class CScript(GeneratedsSuper):
     def exportChildren(self, outfile, level, namespace_='', name_='CScript'):
         if self.description:
             self.description.export(outfile, level, namespace_, name_='description')
+        if self.metadata:
+            self.metadata.export(outfile, level, namespace_, name_='metadata', )
     def hasContent_(self):
         if (
-            self.description is not None
+            self.description is not None or
+            self.metadata is not None
             ):
             return True
         else:
@@ -1888,6 +1974,12 @@ class CScript(GeneratedsSuper):
             self.description.exportLiteral(outfile, level)
             showIndent(outfile, level)
             outfile.write('),\n')
+        if self.metadata is not None:
+            showIndent(outfile, level)
+            outfile.write('metadata=model_.Metadata(\n')
+            self.metadata.exportLiteral(outfile, level, name_='metadata')
+            showIndent(outfile, level)
+            outfile.write('),\n')
     def build(self, node):
         self.buildAttributes(node, node.attrib)
         for child in node:
@@ -1913,6 +2005,10 @@ class CScript(GeneratedsSuper):
             obj_ = description.factory()
             obj_.build(child_)
             self.set_description(obj_)
+        elif nodeName_ == 'metadata': 
+            obj_ = Metadata.factory()
+            obj_.build(child_)
+            self.set_metadata(obj_)
 # end class CScript
 
 
