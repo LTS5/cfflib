@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <xsd:schema xmlns="http://www.connectomics.ch/2010/Connectome/xmlns" xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://www.connectomics.ch/2010/Connectome/xmlns">
 
-
 <xsd:annotation xml:lang="en">
     <xsd:documentation>
     Stephan Gerhard, Version 2.0
@@ -39,25 +38,31 @@
 		<xsd:enumeration value="label"/>
 		<xsd:enumeration value="surfaceset"/>
 		<xsd:enumeration value="surfaceset+label"/>
+		<xsd:enumeration value="Other"/>
 	</xsd:restriction>
 </xsd:simpleType>
 
 <xsd:simpleType name="surfaceFileFormat">
 	<xsd:restriction base="xsd:string">
 		<xsd:enumeration value="Gifti"/>
+		<xsd:enumeration value="Other"/>
 	</xsd:restriction>
 </xsd:simpleType>
 
 <xsd:simpleType name="networkEnumDType">
 	<xsd:restriction base="xsd:string">
-		<xsd:enumeration value="Network"/>
+		<xsd:enumeration value="AttributeNetwork"/>
+		<xsd:enumeration value="DynamicNetwork"/>
+		<xsd:enumeration value="HierarchicalNetwork"/>
+		<xsd:enumeration value="Other"/>
 	</xsd:restriction>
 </xsd:simpleType>
 
 <xsd:simpleType name="networkFileFormat">
 	<xsd:restriction base="xsd:string">
-		<xsd:enumeration value="GraphML"/>
 		<xsd:enumeration value="GEXF"/>
+		<xsd:enumeration value="GraphML"/>
+		<xsd:enumeration value="Other"/>
 	</xsd:restriction>
 </xsd:simpleType>
 
@@ -82,6 +87,7 @@
 	<xsd:restriction base="xsd:string">
 		<xsd:enumeration value="NumPy"/>
 		<xsd:enumeration value="HDF5"/>
+		<xsd:enumeration value="XML"/>
 		<xsd:enumeration value="Other"/>
 	</xsd:restriction>
 </xsd:simpleType>
@@ -89,6 +95,12 @@
 <xsd:simpleType name="timeserieFileFormat">
 	<xsd:restriction base="xsd:string">
 		<xsd:enumeration value="HDF5"/>
+	</xsd:restriction>
+</xsd:simpleType>
+
+<xsd:simpleType name="trackFileFormat">
+	<xsd:restriction base="xsd:string">
+		<xsd:enumeration value="TrackVis"/>
 	</xsd:restriction>
 </xsd:simpleType>
 
@@ -165,10 +177,10 @@
       </xsd:annotation>
       </xsd:element>  
       
-      <xsd:element maxOccurs="unbounded" minOccurs="0" name="connectome-scripts" type="CScript">
+      <xsd:element maxOccurs="unbounded" minOccurs="0" name="connectome-script" type="CScript">
       <xsd:annotation xml:lang="en">
         <xsd:documentation>
-        A list of scripts. Scripts represent executable text files.
+        A list of scripts. Scripts are represented by executable text files.
         </xsd:documentation>
       </xsd:annotation>
       </xsd:element>  
@@ -269,12 +281,17 @@
     </xsd:annotation>
     </xsd:element>
     
-   <xsd:element minOccurs="0" name="description" type="xsd:string">
+   <xsd:element minOccurs="0" name="description">
     <xsd:annotation xml:lang="en">
       <xsd:documentation>
-      Description of the dataset.
+      A description according to the format attribute syntax.
       </xsd:documentation>
     </xsd:annotation>
+    <xs:simpleContent>
+     <xs:extension base="xs:string">
+	<xs:attribute name="format" type="descriptionFormat"/>
+     </xs:extension>
+    </xs:simpleContent>
     </xsd:element>
 
     <xsd:element maxOccurs="1" minOccurs="0" name="metadata" type="Metadata">
@@ -319,8 +336,8 @@
           <xsd:element maxOccurs="unbounded" minOccurs="0" name="network-surface" type="networksurfacetype">
           <xsd:annotation xml:lang="en">
             <xsd:documentation>
-            Reference to the connectome-surface using the name attribute. The surface file must exist in the archive.
-            A labeling of the surface can be specified using labelname refering to a connectome-surface of dtype label  with labelid, refering to the metatag in the Gifti file.
+            Reference to the connectome-surface using the name attribute. The surface file must exist.
+            A labeling of the surface can be specified using labelname refering to a connectome-surface of dtype label with labelid, refering to the metatag in the Gifti file.
             </xsd:documentation>
           </xsd:annotation>
           </xsd:element>
@@ -329,7 +346,7 @@
           <xsd:element maxOccurs="unbounded" minOccurs="0" name="network-volume" type="networkvolumetype">
           <xsd:annotation xml:lang="en">
             <xsd:documentation>
-            Reference to the connectome-volume using the name attribute. The volume file must exist in the archive.
+            Reference to the connectome-volume using the name attribute. The volume file must exist.
             A segmentation of a particular volume can be specified using segmentationname refering to a connectome-volume of dtype segmentation
             in addition to the reference with the name attribute to e.g. a T1-weighted volume. The voxel dimensions have to match.
             The networks' node attribute dn_intensityvalue value must be consistent with the voxel intensityvalues in the segmentation volumes.
@@ -340,7 +357,7 @@
           <xsd:element maxOccurs="unbounded" minOccurs="0" name="network-track" type="networktracktype">
           <xsd:annotation xml:lang="en">
             <xsd:documentation>
-            Reference to the connectome-track using the name attribute. The track file must exist in the archive.
+            Reference to the connectome-track using the name attribute. The track file must exist.
             </xsd:documentation>
           </xsd:annotation>
           </xsd:element>
@@ -348,18 +365,32 @@
           <xsd:element maxOccurs="unbounded" minOccurs="0" name="network-timeserie" type="networktimeserietype">
           <xsd:annotation xml:lang="en">
             <xsd:documentation>
-            Reference to the connectome-timeserie using the name attribute. The timeserie file must exist in the archive.
+            Reference to the connectome-timeserie using the name attribute. The timeserie file must exist.
+            </xsd:documentation>
+          </xsd:annotation>
+          </xsd:element>
+	  
+          <xsd:element maxOccurs="unbounded" minOccurs="0" name="network-data" type="networkdatatype">
+          <xsd:annotation xml:lang="en">
+            <xsd:documentation>
+            Reference to the connectome-data using the name attribute. The data file must exist.
             </xsd:documentation>
           </xsd:annotation>
           </xsd:element>
 
-          <xsd:element maxOccurs="1" minOccurs="0" name="description" type="xsd:string">
-            <xsd:annotation xml:lang="en">
-             <xsd:documentation>
-              Description of the network
-              </xsd:documentation>
-            </xsd:annotation>
-          </xsd:element>
+	    <xsd:element maxOccurs="1" minOccurs="0" name="description">
+	     <xsd:annotation xml:lang="en">
+	       <xsd:documentation>
+	       A description according to the format attribute syntax.
+	       </xsd:documentation>
+	     </xsd:annotation>
+	     <xs:simpleContent>
+	      <xs:extension base="xs:string">
+		 <xs:attribute name="format" type="descriptionFormat"/>
+	      </xs:extension>
+	     </xs:simpleContent>
+	     </xsd:element>
+
 
   </xsd:sequence>
   
@@ -375,7 +406,40 @@
     <xsd:attribute name="src" type="xsd:string">
     <xsd:annotation xml:lang="en">
       <xsd:documentation>
-      The source location of the network data
+      The path to the file according to location attribute
+      </xsd:documentation>
+    </xsd:annotation>
+    </xsd:attribute>
+
+    <xsd:attribute name="location" type="locationEnumType" default="zippath">
+    <xsd:annotation xml:lang="en">
+	<xsd:documentation>
+	Location either in the ZIP file ("zippath", default),
+	the "filesystem" or an "URL.		
+      </xsd:documentation>
+    </xsd:annotation>
+    </xsd:attribute>
+
+    <xsd:attribute name="fileformat" type="networkFileFormat" default="GEXF">
+    <xsd:annotation xml:lang="en">
+	<xsd:documentation>
+	Is the network stored it "GEXF" or "GraphML" format, or "Other" format
+      </xsd:documentation>
+    </xsd:annotation>
+    </xsd:attribute>
+    
+    <xsd:attribute name="dtype" type="networkEnumDType" default="AttributeNetwork">
+    <xsd:annotation xml:lang="en">
+	<xsd:documentation>
+	- dtype="AttributeNetwork"
+	A network with arbitrary number of attributes for nodes and edges.
+	- dtype="DynamicNetwork"
+	Network with either with lifespan attributes for nodes and edges (See GEXF)
+	or timeseries on nodes and edges.
+	- dtype="HierarchicalNetwork"
+	Network with hierarchical structure.
+	- dtype="Other"
+	Other kind of network.
       </xsd:documentation>
     </xsd:annotation>
     </xsd:attribute>
@@ -394,19 +458,24 @@
 
 <xsd:complexType name="CSurface">
     <xsd:all>
-        <xsd:element minOccurs="0" name="description" type="xsd:string">
-         <xsd:annotation xml:lang="en">
-           <xsd:documentation>
-           Description of the surface(s) or labeling.
-           </xsd:documentation>
-         </xsd:annotation>
-         </xsd:element>
+	    <xsd:element minOccurs="0" name="description">
+	     <xsd:annotation xml:lang="en">
+	       <xsd:documentation>
+	       A description according to the format attribute syntax.
+	       </xsd:documentation>
+	     </xsd:annotation>
+	     <xs:simpleContent>
+	      <xs:extension base="xs:string">
+		 <xs:attribute name="format" type="descriptionFormat"/>
+	      </xs:extension>
+	     </xs:simpleContent>
+	     </xsd:element>
     </xsd:all>
 
     <xsd:attribute name="name" type="xsd:string">
     <xsd:annotation xml:lang="en">
       <xsd:documentation>
-      Descriptive name of the surface. The name appears in the ConnectomeViewer Connectome File TreeView.
+      Descriptive name of the surface.
       </xsd:documentation>
     </xsd:annotation>
     </xsd:attribute>
@@ -414,21 +483,32 @@
     <xsd:attribute name="src" type="xsd:string">
     <xsd:annotation xml:lang="en">
       <xsd:documentation>
-      The relative path to the Gifti surface file within the archive.
+      The path to the file according to location attribute
+      </xsd:documentation>
+    </xsd:annotation>
+    </xsd:attribute>
+
+    <xsd:attribute name="location" type="locationEnumType" default="zippath">
+    <xsd:annotation xml:lang="en">
+	<xsd:documentation>
+	Location either in the ZIP file ("zippath", default),
+	the "filesystem" or an "URL.		
       </xsd:documentation>
     </xsd:annotation>
     </xsd:attribute>
     
-    <xsd:attribute name="fileformat" type="xsd:string">
+    <xsd:attribute name="fileformat" type="surfaceFileFormat">
     <xsd:annotation xml:lang="en">
       <xsd:documentation>
-      Set to "gifti" to use the only supported Gifti format
+      Set to "gifti" to use the only supported Gifti format by cfflib.
       See http://www.nitrc.org/frs/download.php/158/gifti.xsd for schema information
+      
+      Use "Other" for other formats with custom IO Handling
       </xsd:documentation>
     </xsd:annotation>
     </xsd:attribute>
     
-    <xsd:attribute name="dtype" type="xsd:string">
+    <xsd:attribute name="dtype" type="surfaceEnumDType">
     <xsd:annotation xml:lang="en">
       <xsd:documentation>
       What type of surface does the Gifti file contain:
@@ -442,7 +522,6 @@
       - type="surfaceset"
       The Gifti file contains a set of surfaces where the metadata tag AnatomicalStructurePrimary match.
       Individual elements of the set are distinguished by the metadta tag AnatomicalStructureSecondary.
-      The ConnectomeViewer creates a surface container in the Connectome File TreeView.
       The Gifti file contains information about the coordinate system used.
       - type="surfaceset+label"
       If the Gifti file contains data as described for both surfaceset and label above.
@@ -455,19 +534,24 @@
 
 <xsd:complexType name="CVolume">
      <xsd:all>
-      <xsd:element minOccurs="0" name="description" type="xsd:string">
-      <xsd:annotation xml:lang="en">
-        <xsd:documentation>
-        Detailed description of the content of the Nifti file.
-        </xsd:documentation>
-      </xsd:annotation>
-      </xsd:element>
+	    <xsd:element minOccurs="0" name="description">
+	     <xsd:annotation xml:lang="en">
+	       <xsd:documentation>
+	       A description according to the format attribute syntax.
+	       </xsd:documentation>
+	     </xsd:annotation>
+	     <xs:simpleContent>
+	      <xs:extension base="xs:string">
+		 <xs:attribute name="format" type="descriptionFormat"/>
+	      </xs:extension>
+	     </xs:simpleContent>
+	     </xsd:element>
     </xsd:all>
     
     <xsd:attribute name="name" type="xsd:string">
     <xsd:annotation xml:lang="en">
       <xsd:documentation>
-      Name of the volume. The name appears in the ConnectomeViewer Connectome File TreeView.
+      Name of the volume.
       </xsd:documentation>
     </xsd:annotation>
     </xsd:attribute>
@@ -475,21 +559,30 @@
     <xsd:attribute name="src" type="xsd:string">
     <xsd:annotation xml:lang="en">
       <xsd:documentation>
-      The location of the volume file
+      The path to the file according to location attribute
+      </xsd:documentation>
+    </xsd:annotation>
+    </xsd:attribute>
+
+    <xsd:attribute name="location" type="locationEnumType" default="zippath">
+    <xsd:annotation xml:lang="en">
+	<xsd:documentation>
+	Location either in the ZIP file ("zippath", default),
+	the "filesystem" or an "URL.		
       </xsd:documentation>
     </xsd:annotation>
     </xsd:attribute>
     
-    <xsd:attribute name="fileformat" type="volumeFileFormat">
+    <xsd:attribute name="fileformat" type="volumeFileFormat" default="Nifti1">
     <xsd:annotation xml:lang="en">
       <xsd:documentation>
-      Set to "nifti" to use the only supported Nifti format. This implies
-      also files with ending .nii.gz
+      Set to "Nifti1" to use the only supported Nifti format. This works also
+      for compressed files with name ending .nii.gz
       </xsd:documentation>
     </xsd:annotation>
     </xsd:attribute>
     
-    <xsd:attribute name="dtype" type="volumeEnumType">
+    <xsd:attribute name="dtype" type="volumeEnumDType">
     <xsd:annotation xml:lang="en">
       <xsd:documentation>
       The Nifti file contains information about the coordinate system used.
@@ -535,20 +628,24 @@
 <xsd:complexType name="CTrack">
 
   <xsd:all>
-    <xsd:element minOccurs="0" name="description" type="xsd:string">
-    <xsd:annotation xml:lang="en">
-      <xsd:documentation>
-      Description of the content of the file, e.g what tractography algorithm was used.
-      </xsd:documentation>
-    </xsd:annotation>
-    </xsd:element>
-    
+	    <xsd:element minOccurs="0" name="description">
+	     <xsd:annotation xml:lang="en">
+	       <xsd:documentation>
+	       A description according to the format attribute syntax.
+	       </xsd:documentation>
+	     </xsd:annotation>
+	     <xs:simpleContent>
+	      <xs:extension base="xs:string">
+		 <xs:attribute name="format" type="descriptionFormat"/>
+	      </xs:extension>
+	     </xs:simpleContent>
+	     </xsd:element>
   </xsd:all>
   
     <xsd:attribute name="name" type="xsd:string">
     <xsd:annotation xml:lang="en">
       <xsd:documentation>
-      Name of the track. The name appears in the ConnectomeViewer Connectome File TreeView.
+      Name of the track file.
       </xsd:documentation>
     </xsd:annotation>
     </xsd:attribute>
@@ -556,15 +653,24 @@
     <xsd:attribute name="src" type="xsd:string">
     <xsd:annotation xml:lang="en">
       <xsd:documentation>
-      The location of the TrackVis file
+      The path to the file according to location attribute
+      </xsd:documentation>
+    </xsd:annotation>
+    </xsd:attribute>
+
+    <xsd:attribute name="location" type="locationEnumType" default="zippath">
+    <xsd:annotation xml:lang="en">
+	<xsd:documentation>
+	Location either in the ZIP file ("zippath", default),
+	the "filesystem" or an "URL.		
       </xsd:documentation>
     </xsd:annotation>
     </xsd:attribute>
     
-    <xsd:attribute name="fileformat" type="xsd:string">
+    <xsd:attribute name="fileformat" type="trackFileFormat" default="TrackVis">
     <xsd:annotation xml:lang="en">
       <xsd:documentation>
-      Set to "trackvis" to use the only supported TrackVis file format.
+      Set to "TrackVis" (default) to use the only supported TrackVis file format.
       The TrackVis file format allows to store any number of additional numerical
       data on the individual fibers.
       </xsd:documentation>
@@ -576,14 +682,18 @@
 <xsd:complexType name="CTimeserie">
 
   <xsd:all>
-    <xsd:element minOccurs="0" name="description" type="xsd:string">
-    <xsd:annotation xml:lang="en">
-      <xsd:documentation>
-      Description of the content of the file, e.g what type of time series data it contains.
-      </xsd:documentation>
-    </xsd:annotation>
-    </xsd:element>
-    
+	    <xsd:element minOccurs="0" name="description">
+	     <xsd:annotation xml:lang="en">
+	       <xsd:documentation>
+	       A description according to the format attribute syntax.
+	       </xsd:documentation>
+	     </xsd:annotation>
+	     <xs:simpleContent>
+	      <xs:extension base="xs:string">
+		 <xs:attribute name="format" type="descriptionFormat"/>
+	      </xs:extension>
+	     </xs:simpleContent>
+	     </xsd:element>
   </xsd:all>
   
     <xsd:attribute name="name" type="xsd:string">
@@ -597,22 +707,137 @@
     <xsd:attribute name="src" type="xsd:string">
     <xsd:annotation xml:lang="en">
       <xsd:documentation>
-      The relative path to the timeseries HDF file within the archive.
+      The path to the file according to location attribute
+      </xsd:documentation>
+    </xsd:annotation>
+    </xsd:attribute>
+
+    <xsd:attribute name="location" type="locationEnumType" default="zippath">
+    <xsd:annotation xml:lang="en">
+	<xsd:documentation>
+	Location either in the ZIP file ("zippath", default),
+	the "filesystem" or an "URL.		
       </xsd:documentation>
     </xsd:annotation>
     </xsd:attribute>
     
-    <xsd:attribute name="fileformat" type="xsd:string">
+    <xsd:attribute name="fileformat" type="timeserieFileFormat" default="HDF5">
     <xsd:annotation xml:lang="en">
       <xsd:documentation>
-      Set tp "hdf5" to use the only supported Hierarchical Data File format.
-      The HDF5 allows to store any number of time series or other large homogenous data.
+      Set to "HDF5" (default) to use the only supported Hierarchical Data File format.
+      The HDF5 allows to store any number of time series or other large homogeneous data.
       </xsd:documentation>
     </xsd:annotation>
     </xsd:attribute>
     
 </xsd:complexType>
 
+
+<xsd:complexType name="CData">
+
+  <xsd:all>
+	    <xsd:element minOccurs="0" name="description">
+	     <xsd:annotation xml:lang="en">
+	       <xsd:documentation>
+	       A description according to the format attribute syntax.
+	       </xsd:documentation>
+	     </xsd:annotation>
+	     <xs:simpleContent>
+	      <xs:extension base="xs:string">
+		 <xs:attribute name="format" type="descriptionFormat"/>
+	      </xs:extension>
+	     </xs:simpleContent>
+	     </xsd:element>
+  </xsd:all>
+  
+    <xsd:attribute name="name" type="xsd:string">
+    <xsd:annotation xml:lang="en">
+      <xsd:documentation>
+      Name of the data file
+      </xsd:documentation>
+    </xsd:annotation>
+    </xsd:attribute>
+    
+    <xsd:attribute name="src" type="xsd:string">
+    <xsd:annotation xml:lang="en">
+      <xsd:documentation>
+      The path to the file according to location attribute
+      </xsd:documentation>
+    </xsd:annotation>
+    </xsd:attribute>
+
+    <xsd:attribute name="location" type="locationEnumType" default="zippath">
+    <xsd:annotation xml:lang="en">
+	<xsd:documentation>
+	Location either in the ZIP file ("zippath", default),
+	the "filesystem" or an "URL.		
+      </xsd:documentation>
+    </xsd:annotation>
+    </xsd:attribute>
+    
+    <xsd:attribute name="fileformat" type="dataFileFormat">
+    <xsd:annotation xml:lang="en">
+       <xsd:documentation>
+	Use one of "NumPy", "HDF5", "XML", or "Other"
+      </xsd:documentation>
+    </xsd:annotation>
+    </xsd:attribute>
+    
+</xsd:complexType>
+
+
+<xsd:complexType name="CScript">
+
+  <xsd:all>
+	    <xsd:element minOccurs="0" name="description">
+	     <xsd:annotation xml:lang="en">
+	       <xsd:documentation>
+	       A description according to the format attribute syntax.
+	       </xsd:documentation>
+	     </xsd:annotation>
+	     <xs:simpleContent>
+	      <xs:extension base="xs:string">
+		 <xs:attribute name="format" type="descriptionFormat"/>
+	      </xs:extension>
+	     </xs:simpleContent>
+	     </xsd:element>
+  </xsd:all>
+  
+    <xsd:attribute name="name" type="xsd:string">
+    <xsd:annotation xml:lang="en">
+      <xsd:documentation>
+      Name of the script file
+      </xsd:documentation>
+    </xsd:annotation>
+    </xsd:attribute>
+    
+    <xsd:attribute name="src" type="xsd:string">
+    <xsd:annotation xml:lang="en">
+      <xsd:documentation>
+      The path to the file according to location attribute
+      </xsd:documentation>
+    </xsd:annotation>
+    </xsd:attribute>
+
+    <xsd:attribute name="location" type="locationEnumType" default="zippath">
+    <xsd:annotation xml:lang="en">
+	<xsd:documentation>
+	Location either in the ZIP file ("zippath", default),
+	the "filesystem" or an "URL.		
+      </xsd:documentation>
+    </xsd:annotation>
+    </xsd:attribute>
+    
+    <xsd:attribute name="type" type="scriptEnumType" default="Python">
+    <xsd:annotation xml:lang="en">
+       <xsd:documentation>
+	What kind of script. Use one of "Python" (default), "Bash", "Matlab",
+	or "Other".
+      </xsd:documentation>
+    </xsd:annotation>
+    </xsd:attribute>
+    
+</xsd:complexType>
 
 <xsd:complexType name="Metadata">
   <xsd:all>
@@ -648,9 +873,6 @@
     <xsd:annotation xml:lang="en">
       <xsd:documentation>
       The name of the surface as reference to an existing connectome-surface
-      To use an atlas that is shipped with the ConnectomeViewer
-      - name="template_atlas_homo_sapines_01"
-      Extracted atlas from Freesurfer using fsaverage mesh
       </xsd:documentation>
     </xsd:annotation>
     </xsd:attribute>
@@ -712,6 +934,16 @@
     <xsd:annotation xml:lang="en">
       <xsd:documentation>
       The name of the timeserie as reference to an existing connectome-timeserie
+      </xsd:documentation>
+    </xsd:annotation>
+    </xsd:attribute>
+</xsd:complexType>
+
+<xsd:complexType name="networkdatatype">    
+    <xsd:attribute name="name" type="xsd:string">
+    <xsd:annotation xml:lang="en">
+      <xsd:documentation>
+      The name of the data object as reference to an existing connectome-data
       </xsd:documentation>
     </xsd:annotation>
     </xsd:attribute>

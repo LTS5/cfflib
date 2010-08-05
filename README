@@ -19,6 +19,8 @@ Dependencies
 * numexpr
 * PyTables
 * NumPy
+* lxml
+* pygexf
 
 Additional types
 ----------------
