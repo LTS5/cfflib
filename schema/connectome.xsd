@@ -113,6 +113,7 @@
 </xsd:simpleType>
 
 
+
 <xsd:element name="connectome">
   <xsd:complexType>
     <xsd:sequence>
@@ -245,6 +246,62 @@
       <xsd:documentation>
       From which species is the data?
       According to the internationally used binomial nomenclature.
+      </xsd:documentation>
+    </xsd:annotation>
+    </xsd:element>
+   
+   <xsd:element minOccurs="1" name="atlas" type="xsd:string">
+    <xsd:annotation xml:lang="en">
+      <xsd:documentation>
+      After affine transformation of volumes, surfaces etc. what is the common
+      overarching (atlas) space the transformed objects are residing.
+      
+      The following atlas spaces are suggested to be used:
+	
+      Homo sapiens:
+  
+      - 'MNI305'
+      - 'ICBM152' http://www.loni.ucla.edu/Atlases/Atlas_Detail.jsp?atlas_id=5
+      - 'ICBM452' http://www.loni.ucla.edu/Atlases/Atlas_Detail.jsp?atlas_id=6
+      - 'colin27'
+      - 'Talairach atlas' http://imaging.mrc-cbu.cam.ac.uk/imaging/MniTalairach    
+      - 'PALS-B12' http://brainvis.wustl.edu/wiki/index.php/Caret:Atlases
+      - 'PC-CC' PALS Cerebral, Colin Cerebellar
+      - 'UNC Pediatric Brain Atlas 1' http://www.nitrc.org/projects/unc_brain_atlas
+      - 'UNC Adult Brain Atlas 1' http://www.nitrc.org/projects/unc_brain_atlas
+      - 'UNC Elderly Brain Atlas 1' http://www.nitrc.org/projects/unc_brain_atlas
+      - 'Penn Hippocampus Atlas' http://www.nitrc.org/projects/pennhippoatlas
+      - 'UNC Primate Brain Atlas' http://www.nitrc.org/projects/primate_atlas
+      - 'SRI24' normal adult human brain anatomy http://www.nitrc.org/projects/sri24
+      - 'UNC Infant 0-1-2 Atlases' http://bric.unc.edu/ideagroup/free-softwares/
+      - 'LPBA40' http://www.loni.ucla.edu/Atlases/Atlas_Detail.jsp?atlas_id=12
+  
+      See also http://www.loni.ucla.edu/Atlases/
+      and http://www.loni.ucla.edu/ICBM/Downloads/Downloads_Atlases.shtml
+      
+      
+      Macaque mulatta:
+      - 'F99' http://brainvis.wustl.edu/wiki/index.php/Caret:Atlases
+      - 'F6' http://brainvis.wustl.edu/wiki/index.php/Caret:Atlases
+      
+      Macaca nemestrina:
+      - 'LONI Monkey atlas' http://www.loni.ucla.edu/Atlases/Atlas_Detail.jsp?atlas_id=2
+  
+      Drosophila melanogaster:
+      'Neurofly atlas' http://www.neurofly.de/
+  
+      Rattus norvegicus:
+      - 'Song_2' http://sumsdb.wustl.edu/sums/mousemore.do
+      - 'LONI Rat atlas' http://www.loni.ucla.edu/Atlases/Atlas_Detail.jsp?atlas_id=1
+  
+      Mus musculus:
+      - 'Waxholm Space mouse brain' http://www.nitrc.org/projects/incf_waxholm-sp
+      - 'Allen Reference Atlas' http://www.brain-map.org/
+      - 'map_015' http://sumsdb.wustl.edu/sums/mousemore.do
+  
+      Chlorocebus pygerythrus:
+      - 'Vervet probabilistic atlas' http://www.nitrc.org/projects/vervet_atlas
+
       </xsd:documentation>
     </xsd:annotation>
     </xsd:element>
