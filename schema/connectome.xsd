@@ -112,8 +112,6 @@
 	</xsd:restriction>
 </xsd:simpleType>
 
-
-
 <xsd:element name="connectome">
   <xsd:complexType>
     <xsd:sequence>
