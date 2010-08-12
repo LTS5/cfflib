@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 #
-# Generated Thu Aug  5 17:32:40 2010 by generateDS.py version 2.1a.
+# Generated Thu Aug 12 16:45:14 2010 by generateDS.py version 2.1a.
 #
 
 import sys
@@ -525,7 +525,7 @@ class CMetadata(GeneratedsSuper):
     Connectome File is compatible with. Should be 2.0"""
     subclass = None
     superclass = None
-    def __init__(self, version=None, generator=None, initial_creator=None, institution=None, creation_date=None, modification_date=None, name=None, species=None, legal_notice=None, reference=None, email=None, url=None, description=None, metadata=None):
+    def __init__(self, version=None, generator=None, initial_creator=None, institution=None, creation_date=None, modification_date=None, name=None, species=None, targetspace=None, atlas=None, legal_notice=None, reference=None, email=None, url=None, description=None, metadata=None):
         self.version = _cast(None, version)
         self.generator = generator
         self.initial_creator = initial_creator
@@ -534,6 +534,8 @@ class CMetadata(GeneratedsSuper):
         self.modification_date = modification_date
         self.name = name
         self.species = species
+        self.targetspace = targetspace
+        self.atlas = atlas
         self.legal_notice = legal_notice
         self.reference = reference
         self.email = email
@@ -560,6 +562,10 @@ class CMetadata(GeneratedsSuper):
     def set_name(self, name): self.name = name
     def get_species(self): return self.species
     def set_species(self, species): self.species = species
+    def get_targetspace(self): return self.targetspace
+    def set_targetspace(self, targetspace): self.targetspace = targetspace
+    def get_atlas(self): return self.atlas
+    def set_atlas(self, atlas): self.atlas = atlas
     def get_legal_notice(self): return self.legal_notice
     def set_legal_notice(self, legal_notice): self.legal_notice = legal_notice
     def get_reference(self): return self.reference
@@ -609,6 +615,12 @@ class CMetadata(GeneratedsSuper):
         if self.species is not None:
             showIndent(outfile, level)
             outfile.write('<%sspecies>%s</%sspecies>\n' % (namespace_, self.format_string(quote_xml(self.species).encode(ExternalEncoding), input_name='species'), namespace_))
+        if self.targetspace is not None:
+            showIndent(outfile, level)
+            outfile.write('<%stargetspace>%s</%stargetspace>\n' % (namespace_, self.format_string(quote_xml(self.targetspace).encode(ExternalEncoding), input_name='targetspace'), namespace_))
+        if self.atlas is not None:
+            showIndent(outfile, level)
+            outfile.write('<%satlas>%s</%satlas>\n' % (namespace_, self.format_string(quote_xml(self.atlas).encode(ExternalEncoding), input_name='atlas'), namespace_))
         if self.legal_notice is not None:
             showIndent(outfile, level)
             outfile.write('<%slegal-notice>%s</%slegal-notice>\n' % (namespace_, self.format_string(quote_xml(self.legal_notice).encode(ExternalEncoding), input_name='legal-notice'), namespace_))
@@ -634,6 +646,8 @@ class CMetadata(GeneratedsSuper):
             self.modification_date is not None or
             self.name is not None or
             self.species is not None or
+            self.targetspace is not None or
+            self.atlas is not None or
             self.legal_notice is not None or
             self.reference is not None or
             self.email is not None or
@@ -675,6 +689,12 @@ class CMetadata(GeneratedsSuper):
         if self.species is not None:
             showIndent(outfile, level)
             outfile.write('species=%s,\n' % quote_python(self.species).encode(ExternalEncoding))
+        if self.targetspace is not None:
+            showIndent(outfile, level)
+            outfile.write('targetspace=%s,\n' % quote_python(self.targetspace).encode(ExternalEncoding))
+        if self.atlas is not None:
+            showIndent(outfile, level)
+            outfile.write('atlas=%s,\n' % quote_python(self.atlas).encode(ExternalEncoding))
         if self.legal_notice is not None:
             showIndent(outfile, level)
             outfile.write('legal_notice=%s,\n' % quote_python(self.legal_notice).encode(ExternalEncoding))
@@ -730,6 +750,12 @@ class CMetadata(GeneratedsSuper):
         elif nodeName_ == 'species':
             species_ = child_.text
             self.species = species_
+        elif nodeName_ == 'targetspace':
+            targetspace_ = child_.text
+            self.targetspace = targetspace_
+        elif nodeName_ == 'atlas':
+            atlas_ = child_.text
+            self.atlas = atlas_
         elif nodeName_ == 'legal-notice':
             legal_notice_ = child_.text
             self.legal_notice = legal_notice_
@@ -1154,7 +1180,8 @@ class CSurface(GeneratedsSuper):
     tag AnatomicalStructureSecondary. The Gifti file contains
     information about the coordinate system used. -
     type="surfaceset+label" If the Gifti file contains data as
-    described for both surfaceset and label above."""
+    described for both surfaceset and label above. - type="other"
+    Any other kind of data storable in a Gifti file."""
     subclass = None
     superclass = None
     def __init__(self, src=None, fileformat=None, dtype=None, name=None, location='zippath', description=None, metadata=None):

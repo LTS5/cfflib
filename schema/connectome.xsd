@@ -248,6 +248,15 @@
     </xsd:annotation>
     </xsd:element>
    
+   <xsd:element minOccurs="1" name="targetspace" type="xsd:string">
+    <xsd:annotation xml:lang="en">
+      <xsd:documentation>
+      After affine transformation of volumes, surfaces etc. what is the common
+      target space the transformed objects reside.
+      </xsd:documentation>
+    </xsd:annotation>
+    </xsd:element>
+   
    <xsd:element minOccurs="1" name="atlas" type="xsd:string">
     <xsd:annotation xml:lang="en">
       <xsd:documentation>
@@ -595,6 +604,8 @@
       The Gifti file contains information about the coordinate system used.
       - type="surfaceset+label"
       If the Gifti file contains data as described for both surfaceset and label above.
+      - type="other"
+      Any other kind of data storable in a Gifti file.
       </xsd:documentation>
     </xsd:annotation>
     </xsd:attribute>

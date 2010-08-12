@@ -40,6 +40,9 @@ Dependencies
 
 Think
 -----
+
+* how to have accessor methods but using top-level connectome. need a backlink?
+
 * .load cff
   -> create connectome object in memory. lazy load object with corresponding get_object() (vs. load_object() and then access) using
      corresponding libraries
@@ -59,6 +62,10 @@ Think
                 ?? csurf_obj = cfflib.CSurface(....., from_file='/.../my.gii')
                     # from_file generate a _src attribute that stores the fs path, to be used for saving
                    cfile.connectome_surface.append(csurf_obj)
+
+gexf io for networkx, e.g. using libexpat
+* rewrite the pygexf to use networkx graphs
+* http://gexf.net/format/schema.html
 
 In cfflib
 ---------
@@ -80,3 +87,13 @@ In cfflib
 * [METHOD] load all data into memory
 * load scripts as stringIO / string object
 * lazy load, lazy memorymap load?
+
+Between datatype mapping
+------------------------
+
+link to hdf?
+* time series (ts) on nodes only -> directly as hdf tag? n x t
+* edges ones e x t
+* surface vertices, v x t
+* surface faces, v x t
+* network to HDF: hdffilename:/group/group/dsetarray[:,0]

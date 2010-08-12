@@ -15,7 +15,7 @@ Dependencies
 
 """
 
-import cfflib
+import schema.gen.cfflib_modified as cfflib
 
 
 def load(filename, *args, **kwargs):
@@ -52,6 +52,7 @@ def load(filename, *args, **kwargs):
     except: # XXX: what is the correct exception for read error?
         raise RuntimeError('Can not extract meta.xml from connectome file.')
     
+
     # create connectome instance
     connectome = cfflib.parseString(metadata_string)
     

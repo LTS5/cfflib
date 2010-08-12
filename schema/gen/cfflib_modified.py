@@ -8,6 +8,7 @@ import sys
 from string import lower as str_lower
 
 import cff as supermod
+from util import *
 
 # NetworkX
 try:
@@ -32,8 +33,6 @@ try:
     import numpy as np
 except ImportError:
     raise ImportError("Failed to import numpy from any known place")
-
-
 
 # PyGEXF
 
@@ -102,6 +101,18 @@ ExternalEncoding = 'ascii'
 class connectome(supermod.connectome):
     def __init__(self, connectome_meta=None, connectome_network=None, connectome_surface=None, connectome_volume=None, connectome_track=None, connectome_timeserie=None, connectome_data=None, connectome_script=None):
         super(connectome, self).__init__(connectome_meta, connectome_network, connectome_surface, connectome_volume, connectome_track, connectome_timeserie, connectome_data, connectome_script, )
+        
+    def to_xml(self):
+        from StringIO import StringIO
+        re = StringIO()
+        re.write('<?xml version="1.0" encoding="UTF-i"?\n')
+        ns = """xmlns="http://www.connectomics.ch/2010/Connectome/xmlns"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.connectomics.ch/2010/Connectome/xmlns connectome.xsd" """
+        self.export(re, 0, name_= "connectome", namespacedef_=ns)
+        re.seek(0)
+        return re.read()
+    
 supermod.connectome.subclass = connectome
 # end class connectome
 
@@ -251,9 +262,9 @@ def parseString(inString):
     rootObj.build(rootNode)
     # Enable Python to collect the space used by the DOM.
     doc = None
-    sys.stdout.write('<?xml version="1.0" ?>\n')
-    rootObj.export(sys.stdout, 0, name_=rootTag,
-        namespacedef_='')
+    #sys.stdout.write('<?xml version="1.0" ?>\n')
+    #rootObj.export(sys.stdout, 0, name_=rootTag,
+    #    namespacedef_='')
     return rootObj
 
 

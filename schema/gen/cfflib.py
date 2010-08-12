@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 #
-# Generated Thu Aug  5 17:32:40 2010 by generateDS.py version 2.1a.
+# Generated Thu Aug 12 16:45:14 2010 by generateDS.py version 2.1a.
 #
 
 import sys
@@ -79,8 +79,8 @@ supermod.connectome.subclass = connectome
 
 
 class CMetadata(supermod.CMetadata):
-    def __init__(self, version=None, generator=None, initial_creator=None, institution=None, creation_date=None, modification_date=None, name=None, species=None, legal_notice=None, reference=None, email=None, url=None, description=None, metadata=None):
-        super(CMetadata, self).__init__(version, generator, initial_creator, institution, creation_date, modification_date, name, species, legal_notice, reference, email, url, description, metadata, )
+    def __init__(self, version=None, generator=None, initial_creator=None, institution=None, creation_date=None, modification_date=None, name=None, species=None, targetspace=None, atlas=None, legal_notice=None, reference=None, email=None, url=None, description=None, metadata=None):
+        super(CMetadata, self).__init__(version, generator, initial_creator, institution, creation_date, modification_date, name, species, targetspace, atlas, legal_notice, reference, email, url, description, metadata, )
 supermod.CMetadata.subclass = CMetadata
 # end class CMetadata
 
