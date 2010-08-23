@@ -68,7 +68,7 @@
 
 <xsd:simpleType name="locationEnumType">
 	<xsd:restriction base="xsd:string">
-		<xsd:enumeration value="zippath"/>
+		<xsd:enumeration value="relpath"/>
 		<xsd:enumeration value="filesystem"/>
 		<xsd:enumeration value="URL"/>
 	</xsd:restriction>
@@ -104,6 +104,15 @@
 	</xsd:restriction>
 </xsd:simpleType>
 
+<xsd:simpleType name="imagestackFileFormat">
+	<xsd:restriction base="xsd:string">
+		<xsd:enumeration value="PNG"/>
+		<xsd:enumeration value="JPG"/>
+		<xsd:enumeration value="TIFF"/>
+		<xsd:enumeration value="Other"/>
+	</xsd:restriction>
+</xsd:simpleType>
+
 <xsd:simpleType name="descriptionFormat">
 	<xsd:restriction base="xsd:string">
 		<xsd:enumeration value="plaintxt"/>
@@ -111,6 +120,7 @@
 		<xsd:enumeration value="HTML"/>
 	</xsd:restriction>
 </xsd:simpleType>
+
 
 <xsd:element name="connectome">
   <xsd:complexType>
@@ -256,63 +266,7 @@
       </xsd:documentation>
     </xsd:annotation>
     </xsd:element>
-   
-   <xsd:element minOccurs="1" name="atlas" type="xsd:string">
-    <xsd:annotation xml:lang="en">
-      <xsd:documentation>
-      After affine transformation of volumes, surfaces etc. what is the common
-      overarching (atlas) space the transformed objects are residing.
       
-      The following atlas spaces are suggested to be used:
-	
-      Homo sapiens:
-  
-      - 'MNI305'
-      - 'ICBM152' http://www.loni.ucla.edu/Atlases/Atlas_Detail.jsp?atlas_id=5
-      - 'ICBM452' http://www.loni.ucla.edu/Atlases/Atlas_Detail.jsp?atlas_id=6
-      - 'colin27'
-      - 'Talairach atlas' http://imaging.mrc-cbu.cam.ac.uk/imaging/MniTalairach    
-      - 'PALS-B12' http://brainvis.wustl.edu/wiki/index.php/Caret:Atlases
-      - 'PC-CC' PALS Cerebral, Colin Cerebellar
-      - 'UNC Pediatric Brain Atlas 1' http://www.nitrc.org/projects/unc_brain_atlas
-      - 'UNC Adult Brain Atlas 1' http://www.nitrc.org/projects/unc_brain_atlas
-      - 'UNC Elderly Brain Atlas 1' http://www.nitrc.org/projects/unc_brain_atlas
-      - 'Penn Hippocampus Atlas' http://www.nitrc.org/projects/pennhippoatlas
-      - 'UNC Primate Brain Atlas' http://www.nitrc.org/projects/primate_atlas
-      - 'SRI24' normal adult human brain anatomy http://www.nitrc.org/projects/sri24
-      - 'UNC Infant 0-1-2 Atlases' http://bric.unc.edu/ideagroup/free-softwares/
-      - 'LPBA40' http://www.loni.ucla.edu/Atlases/Atlas_Detail.jsp?atlas_id=12
-  
-      See also http://www.loni.ucla.edu/Atlases/
-      and http://www.loni.ucla.edu/ICBM/Downloads/Downloads_Atlases.shtml
-      
-      
-      Macaque mulatta:
-      - 'F99' http://brainvis.wustl.edu/wiki/index.php/Caret:Atlases
-      - 'F6' http://brainvis.wustl.edu/wiki/index.php/Caret:Atlases
-      
-      Macaca nemestrina:
-      - 'LONI Monkey atlas' http://www.loni.ucla.edu/Atlases/Atlas_Detail.jsp?atlas_id=2
-  
-      Drosophila melanogaster:
-      'Neurofly atlas' http://www.neurofly.de/
-  
-      Rattus norvegicus:
-      - 'Song_2' http://sumsdb.wustl.edu/sums/mousemore.do
-      - 'LONI Rat atlas' http://www.loni.ucla.edu/Atlases/Atlas_Detail.jsp?atlas_id=1
-  
-      Mus musculus:
-      - 'Waxholm Space mouse brain' http://www.nitrc.org/projects/incf_waxholm-sp
-      - 'Allen Reference Atlas' http://www.brain-map.org/
-      - 'map_015' http://sumsdb.wustl.edu/sums/mousemore.do
-  
-      Chlorocebus pygerythrus:
-      - 'Vervet probabilistic atlas' http://www.nitrc.org/projects/vervet_atlas
-
-      </xsd:documentation>
-    </xsd:annotation>
-    </xsd:element>
-    
    <xsd:element minOccurs="0" name="legal-notice" type="xsd:string">
     <xsd:annotation xml:lang="en">
       <xsd:documentation>
@@ -403,7 +357,6 @@
           <xsd:annotation xml:lang="en">
             <xsd:documentation>
             Reference to the connectome-surface using the name attribute. The surface file must exist.
-            A labeling of the surface can be specified using labelname refering to a connectome-surface of dtype label with labelid, refering to the metatag in the Gifti file.
             </xsd:documentation>
           </xsd:annotation>
           </xsd:element>
@@ -413,9 +366,6 @@
           <xsd:annotation xml:lang="en">
             <xsd:documentation>
             Reference to the connectome-volume using the name attribute. The volume file must exist.
-            A segmentation of a particular volume can be specified using segmentationname refering to a connectome-volume of dtype segmentation
-            in addition to the reference with the name attribute to e.g. a T1-weighted volume. The voxel dimensions have to match.
-            The networks' node attribute dn_intensityvalue value must be consistent with the voxel intensityvalues in the segmentation volumes.
             </xsd:documentation>
           </xsd:annotation>
           </xsd:element>
@@ -479,11 +429,11 @@
     </xsd:annotation>
     </xsd:attribute>
 
-    <xsd:attribute name="location" type="locationEnumType" default="zippath">
+    <xsd:attribute name="location" type="locationEnumType" default="relpath">
     <xsd:annotation xml:lang="en">
 	<xsd:documentation>
-	Location either in the ZIP file ("zippath", default),
-	the "filesystem" or an "URL.		
+	Location either in the ZIP file ("relpath", default),
+	the "filesystem" with an absolute path or an "URL".		
       </xsd:documentation>
     </xsd:annotation>
     </xsd:attribute>
@@ -567,11 +517,11 @@
     </xsd:annotation>
     </xsd:attribute>
 
-    <xsd:attribute name="location" type="locationEnumType" default="zippath">
+    <xsd:attribute name="location" type="locationEnumType" default="relpath">
     <xsd:annotation xml:lang="en">
 	<xsd:documentation>
-	Location either in the ZIP file ("zippath", default),
-	the "filesystem" or an "URL.		
+	Location either in the ZIP file ("relpath", default),
+	the "filesystem" with an absolute path or an "URL".		
       </xsd:documentation>
     </xsd:annotation>
     </xsd:attribute>
@@ -656,11 +606,11 @@
     </xsd:annotation>
     </xsd:attribute>
 
-    <xsd:attribute name="location" type="locationEnumType" default="zippath">
+    <xsd:attribute name="location" type="locationEnumType" default="relpath">
     <xsd:annotation xml:lang="en">
 	<xsd:documentation>
-	Location either in the ZIP file ("zippath", default),
-	the "filesystem" or an "URL.		
+	Location either in the ZIP file ("relpath", default),
+	the "filesystem" with an absolute path or an "URL".		
       </xsd:documentation>
     </xsd:annotation>
     </xsd:attribute>
@@ -708,8 +658,8 @@
       Stands for Fluid attenuated inversion recovery 
       - type="MRA"
       Stands for Magnetic resonance angiography
-	  - type="MRS"
-	  Stands for Magnetic resonance spectroscopy
+      - type="MRS"
+      Stands for Magnetic resonance spectroscopy
       </xsd:documentation>
     </xsd:annotation>
     </xsd:attribute>
@@ -762,11 +712,11 @@
     </xsd:annotation>
     </xsd:attribute>
 
-    <xsd:attribute name="location" type="locationEnumType" default="zippath">
+    <xsd:attribute name="location" type="locationEnumType" default="relpath">
     <xsd:annotation xml:lang="en">
 	<xsd:documentation>
-	Location either in the ZIP file ("zippath", default),
-	the "filesystem" or an "URL.		
+	Location either in the ZIP file ("relpath", default),
+	the "filesystem" with an absolute path or an "URL".		
       </xsd:documentation>
     </xsd:annotation>
     </xsd:attribute>
@@ -827,11 +777,11 @@
     </xsd:annotation>
     </xsd:attribute>
 
-    <xsd:attribute name="location" type="locationEnumType" default="zippath">
+    <xsd:attribute name="location" type="locationEnumType" default="relpath">
     <xsd:annotation xml:lang="en">
 	<xsd:documentation>
-	Location either in the ZIP file ("zippath", default),
-	the "filesystem" or an "URL.		
+	Location either in the ZIP file ("relpath", default),
+	the "filesystem" with an absolute path or an "URL".		
       </xsd:documentation>
     </xsd:annotation>
     </xsd:attribute>
@@ -892,11 +842,11 @@
     </xsd:annotation>
     </xsd:attribute>
 
-    <xsd:attribute name="location" type="locationEnumType" default="zippath">
+    <xsd:attribute name="location" type="locationEnumType" default="relpath">
     <xsd:annotation xml:lang="en">
 	<xsd:documentation>
-	Location either in the ZIP file ("zippath", default),
-	the "filesystem" or an "URL.		
+	Location either in the ZIP file ("relpath", default),
+	the "filesystem" with an absolute path or an "URL".		
       </xsd:documentation>
     </xsd:annotation>
     </xsd:attribute>
@@ -938,7 +888,6 @@
            </xsd:documentation>
           </xsd:annotation>
           </xsd:element>
-
 	    
   </xsd:all>
   
@@ -958,11 +907,11 @@
     </xsd:annotation>
     </xsd:attribute>
 
-    <xsd:attribute name="location" type="locationEnumType" default="zippath">
+    <xsd:attribute name="location" type="locationEnumType" default="relpath">
     <xsd:annotation xml:lang="en">
 	<xsd:documentation>
-	Location either in the ZIP file ("zippath", default),
-	the "filesystem" or an "URL.		
+	Location either in the ZIP file ("relpath", default),
+	the "filesystem" with an absolute path or an "URL".		
       </xsd:documentation>
     </xsd:annotation>
     </xsd:attribute>
@@ -977,6 +926,100 @@
     </xsd:attribute>
     
 </xsd:complexType>
+
+
+<xsd:complexType name="CImagestack">
+
+  <xsd:all>
+	    <xsd:element minOccurs="0" name="description">
+	     <xsd:annotation xml:lang="en">
+	       <xsd:documentation>
+	       A description according to the format attribute syntax.
+	       </xsd:documentation>
+	     </xsd:annotation>
+	     <xsd:complexType>
+	     <xsd:simpleContent>
+	      <xsd:extension base="xsd:string">
+		 <xsd:attribute name="format" type="descriptionFormat"/>
+	      </xsd:extension>
+	     </xsd:simpleContent>
+	     </xsd:complexType>
+	     </xsd:element>
+	    
+          <xsd:element name="metadata" type="Metadata">
+          <xsd:annotation xml:lang="en">
+            <xsd:documentation>
+            More metadata. Following keys are proposed to position the image
+	    stack sensibly in 3D.
+	    location : x,y,z
+		The location of the left-bottom pixel of the first stack in
+		the image stack
+	    orientation_x : x,y,z
+		Unit length vector pointing in the positive x direction
+	    orientation_y : x,y,z
+		Unit length vector pointing in the positive y direction
+		Should be orthogonal to orientation_x
+	    orientation_z : x,y,z
+		Unit length vector pointing in the positive z direction
+		Should be orthogonal to orientation_x and orientation_y
+	    coordsystem : "RAS"
+		"RAS" means for x-axes: left-right, y-axes: anterior-posterior,
+		z-axes: superior-inferior. Right, Anterior, Posterior denotes
+		the positive axes direction.
+	    pixelsize : x,y,z
+		The actual extent of the pixel in the three dimensional euclidean
+		metric space given in nanometer "nm", micrometer "um" or milimeter "mm"
+		Example: 1 mm, 1 mm, 2 mm
+           </xsd:documentation>
+          </xsd:annotation>
+          </xsd:element>
+	    
+  </xsd:all>
+  
+    <xsd:attribute name="name" type="xsd:string">
+    <xsd:annotation xml:lang="en">
+      <xsd:documentation>
+      Name of the image stack
+      </xsd:documentation>
+    </xsd:annotation>
+    </xsd:attribute>
+    
+    <xsd:attribute name="src" type="xsd:string">
+    <xsd:annotation xml:lang="en">
+      <xsd:documentation>
+      The path to the enumerated files according to location attribute
+      </xsd:documentation>
+    </xsd:annotation>
+    </xsd:attribute>
+
+    <xsd:attribute name="location" type="locationEnumType" default="relpath">
+    <xsd:annotation xml:lang="en">
+	<xsd:documentation>
+	Location either in the ZIP file ("relpath", default),
+	the "filesystem" with an absolute path or an "URL".
+	If pointed to an URL, the directory needs to have read access.
+      </xsd:documentation>
+    </xsd:annotation>
+    </xsd:attribute>
+    
+    <xsd:attribute name="pattern" type="xsd:string">
+    <xsd:annotation xml:lang="en">
+	<xsd:documentation>
+	The file name pattern that may contain simple shell-style wildcards a la fnmatch.
+      </xsd:documentation>
+    </xsd:annotation>
+    </xsd:attribute>
+    
+    <xsd:attribute name="fileformat" type="imagestackFileFormat">
+    <xsd:annotation xml:lang="en">
+       <xsd:documentation>
+	Use one of 'PNG', 'JPG', 'TIFF', 'Other'
+      </xsd:documentation>
+    </xsd:annotation>
+    </xsd:attribute>
+    
+</xsd:complexType>
+
 
 <xsd:complexType name="Metadata">
   <xsd:all>
@@ -1007,7 +1050,19 @@
   </xsd:all>
 </xsd:complexType>
 
-<xsd:complexType name="NetworkSurface">    
+<xsd:complexType name="NetworkSurface">
+
+    <xsd:all>
+          <xsd:element maxOccurs="1" minOccurs="0" name="metadata" type="Metadata">
+          <xsd:annotation xml:lang="en">
+            <xsd:documentation>
+	    Metadata as key-value pair.
+	    Can be used for application specific processing of the datasets.
+           </xsd:documentation>
+          </xsd:annotation>
+          </xsd:element>
+    </xsd:all>
+  
     <xsd:attribute name="name" type="xsd:string">
     <xsd:annotation xml:lang="en">
       <xsd:documentation>
@@ -1015,31 +1070,22 @@
       </xsd:documentation>
     </xsd:annotation>
     </xsd:attribute>
-    <xsd:attribute name="labelname" type="xsd:string">
-    <xsd:annotation xml:lang="en">
-      <xsd:documentation>
-      Optional together with labelid. The name of the another surface as reference to an existing connectome-surface
-      that contains the label array. Always use in conjunction with labelid. This can
-      be used for a separate Gifti file containing e.g. only label information.
-      </xsd:documentation>
-    </xsd:annotation>
-    </xsd:attribute>
-    <xsd:attribute name="labelid" type="xsd:string">
-    <xsd:annotation xml:lang="en">
-      <xsd:documentation>
-      The labelid tag name that contains the labeling of the surface reference
-      by name. The referenced surface file must contain NIFTI_INTENT_LABEL intent
-      with the matching labelid in the metadata. Number of vertices of the
-      referenced surface and the label array dimension must match (one label for
-      each vertices)
-      
-      XXX: Probably better to use the LabelTable tag in Gifti?
-      </xsd:documentation>
-    </xsd:annotation>
-    </xsd:attribute>
+    
 </xsd:complexType>
 
-<xsd:complexType name="NetworkVolume">    
+<xsd:complexType name="NetworkVolume">
+        
+    <xsd:all>
+          <xsd:element maxOccurs="1" minOccurs="0" name="metadata" type="Metadata">
+          <xsd:annotation xml:lang="en">
+            <xsd:documentation>
+	    Metadata as key-value pair.
+	    Can be used for application specific processing of the datasets.
+           </xsd:documentation>
+          </xsd:annotation>
+          </xsd:element>
+    </xsd:all>
+    
     <xsd:attribute name="name" type="xsd:string">
     <xsd:annotation xml:lang="en">
       <xsd:documentation>
@@ -1048,17 +1094,22 @@
       </xsd:documentation>
     </xsd:annotation>
     </xsd:attribute>
-    <xsd:attribute name="segmentationname" type="xsd:string">
-    <xsd:annotation xml:lang="en">
-      <xsd:documentation>
-      Optional. The name of a connectome-volume that has dtype=segmentation. It specifies
-      a segmentation of the volume referenced by name. The voxel dimensions have to match.
-    </xsd:documentation>
-    </xsd:annotation>
-    </xsd:attribute>
+    
 </xsd:complexType>
 
-<xsd:complexType name="NetworkTrack">    
+<xsd:complexType name="NetworkTrack">
+    
+    <xsd:all>
+          <xsd:element maxOccurs="1" minOccurs="0" name="metadata" type="Metadata">
+          <xsd:annotation xml:lang="en">
+            <xsd:documentation>
+	    Metadata as key-value pair.
+	    Can be used for application specific processing of the datasets.
+           </xsd:documentation>
+          </xsd:annotation>
+          </xsd:element>
+    </xsd:all>
+    
     <xsd:attribute name="name" type="xsd:string">
     <xsd:annotation xml:lang="en">
       <xsd:documentation>
@@ -1066,9 +1117,22 @@
       </xsd:documentation>
     </xsd:annotation>
     </xsd:attribute>
+    
 </xsd:complexType>
 
-<xsd:complexType name="NetworkTimeserie">    
+<xsd:complexType name="NetworkTimeserie">
+    
+    <xsd:all>
+          <xsd:element maxOccurs="1" minOccurs="0" name="metadata" type="Metadata">
+          <xsd:annotation xml:lang="en">
+            <xsd:documentation>
+	    Metadata as key-value pair.
+	    Can be used for application specific processing of the datasets.
+           </xsd:documentation>
+          </xsd:annotation>
+          </xsd:element>
+    </xsd:all>
+    
     <xsd:attribute name="name" type="xsd:string">
     <xsd:annotation xml:lang="en">
       <xsd:documentation>
@@ -1076,9 +1140,22 @@
       </xsd:documentation>
     </xsd:annotation>
     </xsd:attribute>
+    
 </xsd:complexType>
 
-<xsd:complexType name="NetworkData">    
+<xsd:complexType name="NetworkData">
+    
+    <xsd:all>
+          <xsd:element maxOccurs="1" minOccurs="0" name="metadata" type="Metadata">
+          <xsd:annotation xml:lang="en">
+            <xsd:documentation>
+	    Metadata as key-value pair.
+	    Can be used for application specific processing of the datasets.
+           </xsd:documentation>
+          </xsd:annotation>
+          </xsd:element>
+    </xsd:all>
+    
     <xsd:attribute name="name" type="xsd:string">
     <xsd:annotation xml:lang="en">
       <xsd:documentation>
