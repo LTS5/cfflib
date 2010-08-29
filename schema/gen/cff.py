@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 #
-# Generated Thu Aug 12 16:45:14 2010 by generateDS.py version 2.1a.
+# Generated Sun Aug 29 11:58:22 2010 by generateDS.py version 2.1a.
 #
 
 import sys
@@ -269,7 +269,7 @@ def _cast(typ, value):
 class connectome(GeneratedsSuper):
     subclass = None
     superclass = None
-    def __init__(self, connectome_meta=None, connectome_network=None, connectome_surface=None, connectome_volume=None, connectome_track=None, connectome_timeserie=None, connectome_data=None, connectome_script=None):
+    def __init__(self, connectome_meta=None, connectome_network=None, connectome_surface=None, connectome_volume=None, connectome_track=None, connectome_timeserie=None, connectome_data=None, connectome_script=None, connectome_imagestack=None):
         self.connectome_meta = connectome_meta
         if connectome_network is None:
             self.connectome_network = []
@@ -299,6 +299,10 @@ class connectome(GeneratedsSuper):
             self.connectome_script = []
         else:
             self.connectome_script = connectome_script
+        if connectome_imagestack is None:
+            self.connectome_imagestack = []
+        else:
+            self.connectome_imagestack = connectome_imagestack
     def factory(*args_, **kwargs_):
         if connectome.subclass:
             return connectome.subclass(*args_, **kwargs_)
@@ -335,6 +339,10 @@ class connectome(GeneratedsSuper):
     def set_connectome_script(self, connectome_script): self.connectome_script = connectome_script
     def add_connectome_script(self, value): self.connectome_script.append(value)
     def insert_connectome_script(self, index, value): self.connectome_script[index] = value
+    def get_connectome_imagestack(self): return self.connectome_imagestack
+    def set_connectome_imagestack(self, connectome_imagestack): self.connectome_imagestack = connectome_imagestack
+    def add_connectome_imagestack(self, value): self.connectome_imagestack.append(value)
+    def insert_connectome_imagestack(self, index, value): self.connectome_imagestack[index] = value
     def export(self, outfile, level, namespace_='', name_='connectome', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
@@ -365,6 +373,8 @@ class connectome(GeneratedsSuper):
             connectome_data_.export(outfile, level, namespace_, name_='connectome-data')
         for connectome_script_ in self.connectome_script:
             connectome_script_.export(outfile, level, namespace_, name_='connectome-script')
+        for connectome_imagestack_ in self.connectome_imagestack:
+            connectome_imagestack_.export(outfile, level, namespace_, name_='connectome-imagestack')
     def hasContent_(self):
         if (
             self.connectome_meta is not None or
@@ -374,7 +384,8 @@ class connectome(GeneratedsSuper):
             self.connectome_track or
             self.connectome_timeserie or
             self.connectome_data or
-            self.connectome_script
+            self.connectome_script or
+            self.connectome_imagestack
             ):
             return True
         else:
@@ -477,6 +488,18 @@ class connectome(GeneratedsSuper):
         level -= 1
         showIndent(outfile, level)
         outfile.write('],\n')
+        showIndent(outfile, level)
+        outfile.write('connectome_imagestack=[\n')
+        level += 1
+        for connectome_imagestack_ in self.connectome_imagestack:
+            showIndent(outfile, level)
+            outfile.write('model_.CImagestack(\n')
+            connectome_imagestack_.exportLiteral(outfile, level, name_='CImagestack')
+            showIndent(outfile, level)
+            outfile.write('),\n')
+        level -= 1
+        showIndent(outfile, level)
+        outfile.write('],\n')
     def build(self, node):
         self.buildAttributes(node, node.attrib)
         for child in node:
@@ -517,6 +540,10 @@ class connectome(GeneratedsSuper):
             obj_ = CScript.factory()
             obj_.build(child_)
             self.connectome_script.append(obj_)
+        elif nodeName_ == 'connectome-imagestack': 
+            obj_ = CImagestack.factory()
+            obj_.build(child_)
+            self.connectome_imagestack.append(obj_)
 # end class connectome
 
 
@@ -525,7 +552,7 @@ class CMetadata(GeneratedsSuper):
     Connectome File is compatible with. Should be 2.0"""
     subclass = None
     superclass = None
-    def __init__(self, version=None, generator=None, initial_creator=None, institution=None, creation_date=None, modification_date=None, name=None, species=None, targetspace=None, atlas=None, legal_notice=None, reference=None, email=None, url=None, description=None, metadata=None):
+    def __init__(self, version=None, generator=None, initial_creator=None, institution=None, creation_date=None, modification_date=None, name=None, species=None, targetspace=None, legal_notice=None, reference=None, email=None, url=None, description=None, metadata=None):
         self.version = _cast(None, version)
         self.generator = generator
         self.initial_creator = initial_creator
@@ -535,7 +562,6 @@ class CMetadata(GeneratedsSuper):
         self.name = name
         self.species = species
         self.targetspace = targetspace
-        self.atlas = atlas
         self.legal_notice = legal_notice
         self.reference = reference
         self.email = email
@@ -564,8 +590,6 @@ class CMetadata(GeneratedsSuper):
     def set_species(self, species): self.species = species
     def get_targetspace(self): return self.targetspace
     def set_targetspace(self, targetspace): self.targetspace = targetspace
-    def get_atlas(self): return self.atlas
-    def set_atlas(self, atlas): self.atlas = atlas
     def get_legal_notice(self): return self.legal_notice
     def set_legal_notice(self, legal_notice): self.legal_notice = legal_notice
     def get_reference(self): return self.reference
@@ -618,9 +642,6 @@ class CMetadata(GeneratedsSuper):
         if self.targetspace is not None:
             showIndent(outfile, level)
             outfile.write('<%stargetspace>%s</%stargetspace>\n' % (namespace_, self.format_string(quote_xml(self.targetspace).encode(ExternalEncoding), input_name='targetspace'), namespace_))
-        if self.atlas is not None:
-            showIndent(outfile, level)
-            outfile.write('<%satlas>%s</%satlas>\n' % (namespace_, self.format_string(quote_xml(self.atlas).encode(ExternalEncoding), input_name='atlas'), namespace_))
         if self.legal_notice is not None:
             showIndent(outfile, level)
             outfile.write('<%slegal-notice>%s</%slegal-notice>\n' % (namespace_, self.format_string(quote_xml(self.legal_notice).encode(ExternalEncoding), input_name='legal-notice'), namespace_))
@@ -647,7 +668,6 @@ class CMetadata(GeneratedsSuper):
             self.name is not None or
             self.species is not None or
             self.targetspace is not None or
-            self.atlas is not None or
             self.legal_notice is not None or
             self.reference is not None or
             self.email is not None or
@@ -692,9 +712,6 @@ class CMetadata(GeneratedsSuper):
         if self.targetspace is not None:
             showIndent(outfile, level)
             outfile.write('targetspace=%s,\n' % quote_python(self.targetspace).encode(ExternalEncoding))
-        if self.atlas is not None:
-            showIndent(outfile, level)
-            outfile.write('atlas=%s,\n' % quote_python(self.atlas).encode(ExternalEncoding))
         if self.legal_notice is not None:
             showIndent(outfile, level)
             outfile.write('legal_notice=%s,\n' % quote_python(self.legal_notice).encode(ExternalEncoding))
@@ -753,9 +770,6 @@ class CMetadata(GeneratedsSuper):
         elif nodeName_ == 'targetspace':
             targetspace_ = child_.text
             self.targetspace = targetspace_
-        elif nodeName_ == 'atlas':
-            atlas_ = child_.text
-            self.atlas = atlas_
         elif nodeName_ == 'legal-notice':
             legal_notice_ = child_.text
             self.legal_notice = legal_notice_
@@ -852,20 +866,20 @@ class description(GeneratedsSuper):
 
 class CNetwork(GeneratedsSuper):
     """The short name of the network The path to the file according to
-    location attribute Location either in the ZIP file ("zippath",
-    default), the "filesystem" or an "URL. Is the network stored it
-    "GEXF" or "GraphML" format, or "Other" format -
-    dtype="AttributeNetwork" A network with arbitrary number of
-    attributes for nodes and edges. - dtype="DynamicNetwork" Network
-    with either with lifespan attributes for nodes and edges (See
-    GEXF) or timeseries on nodes and edges. -
-    dtype="HierarchicalNetwork" Network with hierarchical structure.
-    - dtype="Other" Other kind of network. If true, the network
-    contains no edges. Usually used for structured node-based data
-    representation."""
+    location attribute Location either in the ZIP file ("relpath",
+    default), the "filesystem" with an absolute path or an "URL". Is
+    the network stored it "GEXF" or "GraphML" format, or "Other"
+    format - dtype="AttributeNetwork" A network with arbitrary
+    number of attributes for nodes and edges. -
+    dtype="DynamicNetwork" Network with either with lifespan
+    attributes for nodes and edges (See GEXF) or timeseries on nodes
+    and edges. - dtype="HierarchicalNetwork" Network with
+    hierarchical structure. - dtype="Other" Other kind of network.
+    If true, the network contains no edges. Usually used for
+    structured node-based data representation."""
     subclass = None
     superclass = None
-    def __init__(self, edgeless=False, src=None, name=None, dtype='AttributeNetwork', location='zippath', fileformat='GEXF', metadata=None, network_surface=None, network_volume=None, network_track=None, network_timeserie=None, network_data=None, description=None):
+    def __init__(self, edgeless=False, src=None, name=None, dtype='AttributeNetwork', location='relpath', fileformat='GEXF', metadata=None, network_surface=None, network_volume=None, network_track=None, network_timeserie=None, network_data=None, description=None):
         self.edgeless = _cast(bool, edgeless)
         self.src = _cast(None, src)
         self.name = _cast(None, name)
@@ -1160,11 +1174,11 @@ class CNetwork(GeneratedsSuper):
 
 class CSurface(GeneratedsSuper):
     """Descriptive name of the surface. The path to the file according to
-    location attribute Location either in the ZIP file ("zippath",
-    default), the "filesystem" or an "URL. Set to "gifti" to use the
-    only supported Gifti format by cfflib. See
-    http://www.nitrc.org/frs/download.php/158/gifti.xsd for schema
-    information Use "Other" for other formats with custom IO
+    location attribute Location either in the ZIP file ("relpath",
+    default), the "filesystem" with an absolute path or an "URL".
+    Set to "gifti" to use the only supported Gifti format by cfflib.
+    See http://www.nitrc.org/frs/download.php/158/gifti.xsd for
+    schema information Use "Other" for other formats with custom IO
     Handling What type of surface does the Gifti file contain: -
     type="label" The Gifti file contains surface labels. This file
     can be referenced in connectome-network with either the name
@@ -1184,7 +1198,7 @@ class CSurface(GeneratedsSuper):
     Any other kind of data storable in a Gifti file."""
     subclass = None
     superclass = None
-    def __init__(self, src=None, fileformat=None, dtype=None, name=None, location='zippath', description=None, metadata=None):
+    def __init__(self, src=None, fileformat=None, dtype=None, name=None, location='relpath', description=None, metadata=None):
         self.src = _cast(None, src)
         self.fileformat = _cast(None, fileformat)
         self.dtype = _cast(None, dtype)
@@ -1328,37 +1342,37 @@ class CSurface(GeneratedsSuper):
 
 class CVolume(GeneratedsSuper):
     """Name of the volume. The path to the file according to location
-    attribute Location either in the ZIP file ("zippath", default),
-    the "filesystem" or an "URL. Set to "Nifti1" to use the only
-    supported Nifti format. This works also for compressed files
-    with name ending .nii.gz The Nifti file contains information
-    about the coordinate system used. Set type of volume the Nifti
-    file contains: - type="segmentation" The Nifti file contains a
-    single volume where the voxel values are integers, representing
-    a segmented Region of Interest. If this volume is referenced by
-    a connectome-network, its nodes dn_intensityvalue attribute may
-    match these integer values. Such a segmentation volume can
-    referenced in a connectome-volume by the segmentationname
-    attribute in addition to another, e.g. T1-weighted volume which
-    is referenced by the name attribute. See also example datasets.
-    - type="T1-weighted" The Nifti file contains a T1-weighted
-    volume. - type="T2-weighted" The Nifti file contains a
-    T2-weighted volume. - type="PD-weighted" The voxel values
-    represent a proton-density weighted signal. - type="fMRI" The
-    Nifti file contains functional MRI time series data. -
-    type="probabilitymap" Voxel values are in the range [0,1]. Can
-    stand for tissue probability maps. - type="MD" Diffusion-related
-    signal. Stands for mean diffusivity. - type="FA" Diffusion-
-    related signal. Stands for fractional anisotropy. - type="LD"
-    Diffusion-related signal. Stands for longitudinal diffusivity. -
-    type="TD" Diffusion-related signal. Stands for transversal
-    diffusivity. - type="FLAIR" Stands for Fluid attenuated
-    inversion recovery - type="MRA" Stands for Magnetic resonance
-    angiography - type="MRS" Stands for Magnetic resonance
-    spectroscopy"""
+    attribute Location either in the ZIP file ("relpath", default),
+    the "filesystem" with an absolute path or an "URL". Set to
+    "Nifti1" to use the only supported Nifti format. This works also
+    for compressed files with name ending .nii.gz The Nifti file
+    contains information about the coordinate system used. Set type
+    of volume the Nifti file contains: - type="segmentation" The
+    Nifti file contains a single volume where the voxel values are
+    integers, representing a segmented Region of Interest. If this
+    volume is referenced by a connectome-network, its nodes
+    dn_intensityvalue attribute may match these integer values. Such
+    a segmentation volume can referenced in a connectome-volume by
+    the segmentationname attribute in addition to another, e.g.
+    T1-weighted volume which is referenced by the name attribute.
+    See also example datasets. - type="T1-weighted" The Nifti file
+    contains a T1-weighted volume. - type="T2-weighted" The Nifti
+    file contains a T2-weighted volume. - type="PD-weighted" The
+    voxel values represent a proton-density weighted signal. -
+    type="fMRI" The Nifti file contains functional MRI time series
+    data. - type="probabilitymap" Voxel values are in the range
+    [0,1]. Can stand for tissue probability maps. - type="MD"
+    Diffusion-related signal. Stands for mean diffusivity. -
+    type="FA" Diffusion-related signal. Stands for fractional
+    anisotropy. - type="LD" Diffusion-related signal. Stands for
+    longitudinal diffusivity. - type="TD" Diffusion-related signal.
+    Stands for transversal diffusivity. - type="FLAIR" Stands for
+    Fluid attenuated inversion recovery - type="MRA" Stands for
+    Magnetic resonance angiography - type="MRS" Stands for Magnetic
+    resonance spectroscopy"""
     subclass = None
     superclass = None
-    def __init__(self, src=None, fileformat='Nifti1', dtype=None, name=None, location='zippath', description=None, metadata=None):
+    def __init__(self, src=None, fileformat='Nifti1', dtype=None, name=None, location='relpath', description=None, metadata=None):
         self.src = _cast(None, src)
         self.fileformat = _cast(None, fileformat)
         self.dtype = _cast(None, dtype)
@@ -1502,14 +1516,14 @@ class CVolume(GeneratedsSuper):
 
 class CTrack(GeneratedsSuper):
     """Name of the track file. The path to the file according to location
-    attribute Location either in the ZIP file ("zippath", default),
-    the "filesystem" or an "URL. Set to "TrackVis" (default) to use
-    the only supported TrackVis file format. The TrackVis file
-    format allows to store any number of additional numerical data
-    on the individual fibers."""
+    attribute Location either in the ZIP file ("relpath", default),
+    the "filesystem" with an absolute path or an "URL". Set to
+    "TrackVis" (default) to use the only supported TrackVis file
+    format. The TrackVis file format allows to store any number of
+    additional numerical data on the individual fibers."""
     subclass = None
     superclass = None
-    def __init__(self, src=None, fileformat='TrackVis', name=None, location='zippath', description=None, metadata=None):
+    def __init__(self, src=None, fileformat='TrackVis', name=None, location='relpath', description=None, metadata=None):
         self.src = _cast(None, src)
         self.fileformat = _cast(None, fileformat)
         self.name = _cast(None, name)
@@ -1638,13 +1652,14 @@ class CTrack(GeneratedsSuper):
 
 class CTimeserie(GeneratedsSuper):
     """Name of the timeseries. The path to the file according to location
-    attribute Location either in the ZIP file ("zippath", default),
-    the "filesystem" or an "URL. Set to "HDF5" (default) to use the
-    only supported Hierarchical Data File format. The HDF5 allows to
-    store any number of time series or other large homogeneous data."""
+    attribute Location either in the ZIP file ("relpath", default),
+    the "filesystem" with an absolute path or an "URL". Set to
+    "HDF5" (default) to use the only supported Hierarchical Data
+    File format. The HDF5 allows to store any number of time series
+    or other large homogeneous data."""
     subclass = None
     superclass = None
-    def __init__(self, src=None, fileformat='HDF5', name=None, location='zippath', description=None, metadata=None):
+    def __init__(self, src=None, fileformat='HDF5', name=None, location='relpath', description=None, metadata=None):
         self.src = _cast(None, src)
         self.fileformat = _cast(None, fileformat)
         self.name = _cast(None, name)
@@ -1773,12 +1788,12 @@ class CTimeserie(GeneratedsSuper):
 
 class CData(GeneratedsSuper):
     """Name of the data file The path to the file according to location
-    attribute Location either in the ZIP file ("zippath", default),
-    the "filesystem" or an "URL. Use one of 'NumPy', 'HDF5', 'XML',
-    'Other'"""
+    attribute Location either in the ZIP file ("relpath", default),
+    the "filesystem" with an absolute path or an "URL". Use one of
+    'NumPy', 'HDF5', 'XML', 'Other'"""
     subclass = None
     superclass = None
-    def __init__(self, src=None, fileformat=None, name=None, location='zippath', description=None, metadata=None):
+    def __init__(self, src=None, fileformat=None, name=None, location='relpath', description=None, metadata=None):
         self.src = _cast(None, src)
         self.fileformat = _cast(None, fileformat)
         self.name = _cast(None, name)
@@ -1907,12 +1922,13 @@ class CData(GeneratedsSuper):
 
 class CScript(GeneratedsSuper):
     """Name of the script file The path to the file according to location
-    attribute Location either in the ZIP file ("zippath", default),
-    the "filesystem" or an "URL. What kind of script. Use one of
-    "Python" (default), "Bash", "Matlab", or "Other"."""
+    attribute Location either in the ZIP file ("relpath", default),
+    the "filesystem" with an absolute path or an "URL". What kind of
+    script. Use one of "Python" (default), "Bash", "Matlab", or
+    "Other"."""
     subclass = None
     superclass = None
-    def __init__(self, src=None, type_='Python', name=None, location='zippath', description=None, metadata=None):
+    def __init__(self, src=None, type_='Python', name=None, location='relpath', description=None, metadata=None):
         self.src = _cast(None, src)
         self.type_ = _cast(None, type_)
         self.name = _cast(None, name)
@@ -2037,6 +2053,154 @@ class CScript(GeneratedsSuper):
             obj_.build(child_)
             self.set_metadata(obj_)
 # end class CScript
+
+
+class CImagestack(GeneratedsSuper):
+    """Name of the image stack The path to the enumerated files according
+    to location attribute Location either in the ZIP file
+    ("relpath", default), the "filesystem" with an absolute path or
+    an "URL". If pointed to an URL, the directory needs to have read
+    access. The file name pattern that may contain simple shell-
+    style wildcards a la fnmatch. Use one of 'PNG', 'JPG', 'TIFF',
+    'Other'"""
+    subclass = None
+    superclass = None
+    def __init__(self, src=None, fileformat=None, pattern=None, name=None, location='relpath', description=None, metadata=None):
+        self.src = _cast(None, src)
+        self.fileformat = _cast(None, fileformat)
+        self.pattern = _cast(None, pattern)
+        self.name = _cast(None, name)
+        self.location = _cast(None, location)
+        self.description = description
+        self.metadata = metadata
+    def factory(*args_, **kwargs_):
+        if CImagestack.subclass:
+            return CImagestack.subclass(*args_, **kwargs_)
+        else:
+            return CImagestack(*args_, **kwargs_)
+    factory = staticmethod(factory)
+    def get_description(self): return self.description
+    def set_description(self, description): self.description = description
+    def get_metadata(self): return self.metadata
+    def set_metadata(self, metadata): self.metadata = metadata
+    def get_src(self): return self.src
+    def set_src(self, src): self.src = src
+    def get_fileformat(self): return self.fileformat
+    def set_fileformat(self, fileformat): self.fileformat = fileformat
+    def validate_imagestackFileFormat(self, value):
+        # Validate type imagestackFileFormat, a restriction on xsd:string.
+        pass
+    def get_pattern(self): return self.pattern
+    def set_pattern(self, pattern): self.pattern = pattern
+    def get_name(self): return self.name
+    def set_name(self, name): self.name = name
+    def get_location(self): return self.location
+    def set_location(self, location): self.location = location
+    def validate_locationEnumType(self, value):
+        # Validate type locationEnumType, a restriction on xsd:string.
+        pass
+    def export(self, outfile, level, namespace_='', name_='CImagestack', namespacedef_=''):
+        showIndent(outfile, level)
+        outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
+        self.exportAttributes(outfile, level, namespace_, name_='CImagestack')
+        if self.hasContent_():
+            outfile.write('>\n')
+            self.exportChildren(outfile, level + 1, namespace_, name_)
+            showIndent(outfile, level)
+            outfile.write('</%s%s>\n' % (namespace_, name_))
+        else:
+            outfile.write('/>\n')
+    def exportAttributes(self, outfile, level, namespace_='', name_='CImagestack'):
+        if self.src is not None:
+            outfile.write(' src=%s' % (self.format_string(quote_attrib(self.src).encode(ExternalEncoding), input_name='src'), ))
+        if self.fileformat is not None:
+            outfile.write(' fileformat=%s' % (quote_attrib(self.fileformat), ))
+        if self.pattern is not None:
+            outfile.write(' pattern=%s' % (self.format_string(quote_attrib(self.pattern).encode(ExternalEncoding), input_name='pattern'), ))
+        if self.name is not None:
+            outfile.write(' name=%s' % (self.format_string(quote_attrib(self.name).encode(ExternalEncoding), input_name='name'), ))
+        if self.location is not None:
+            outfile.write(' location=%s' % (quote_attrib(self.location), ))
+    def exportChildren(self, outfile, level, namespace_='', name_='CImagestack'):
+        if self.description:
+            self.description.export(outfile, level, namespace_, name_='description')
+        if self.metadata:
+            self.metadata.export(outfile, level, namespace_, name_='metadata', )
+    def hasContent_(self):
+        if (
+            self.description is not None or
+            self.metadata is not None
+            ):
+            return True
+        else:
+            return False
+    def exportLiteral(self, outfile, level, name_='CImagestack'):
+        level += 1
+        self.exportLiteralAttributes(outfile, level, name_)
+        if self.hasContent_():
+            self.exportLiteralChildren(outfile, level, name_)
+    def exportLiteralAttributes(self, outfile, level, name_):
+        if self.src is not None:
+            showIndent(outfile, level)
+            outfile.write('src = "%s",\n' % (self.src,))
+        if self.fileformat is not None:
+            showIndent(outfile, level)
+            outfile.write('fileformat = "%s",\n' % (self.fileformat,))
+        if self.pattern is not None:
+            showIndent(outfile, level)
+            outfile.write('pattern = "%s",\n' % (self.pattern,))
+        if self.name is not None:
+            showIndent(outfile, level)
+            outfile.write('name = "%s",\n' % (self.name,))
+        if self.location is not None:
+            showIndent(outfile, level)
+            outfile.write('location = "%s",\n' % (self.location,))
+    def exportLiteralChildren(self, outfile, level, name_):
+        if self.description is not None:
+            showIndent(outfile, level)
+            outfile.write('description=model_.description(\n')
+            self.description.exportLiteral(outfile, level)
+            showIndent(outfile, level)
+            outfile.write('),\n')
+        if self.metadata is not None:
+            showIndent(outfile, level)
+            outfile.write('metadata=model_.Metadata(\n')
+            self.metadata.exportLiteral(outfile, level, name_='metadata')
+            showIndent(outfile, level)
+            outfile.write('),\n')
+    def build(self, node):
+        self.buildAttributes(node, node.attrib)
+        for child in node:
+            nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
+            self.buildChildren(child, nodeName_)
+    def buildAttributes(self, node, attrs):
+        value = attrs.get('src')
+        if value is not None:
+            self.src = value
+        value = attrs.get('fileformat')
+        if value is not None:
+            self.fileformat = value
+            self.validate_imagestackFileFormat(self.fileformat)    # validate type imagestackFileFormat
+        value = attrs.get('pattern')
+        if value is not None:
+            self.pattern = value
+        value = attrs.get('name')
+        if value is not None:
+            self.name = value
+        value = attrs.get('location')
+        if value is not None:
+            self.location = value
+            self.validate_locationEnumType(self.location)    # validate type locationEnumType
+    def buildChildren(self, child_, nodeName_):
+        if nodeName_ == 'description': 
+            obj_ = description.factory()
+            obj_.build(child_)
+            self.set_description(obj_)
+        elif nodeName_ == 'metadata': 
+            obj_ = Metadata.factory()
+            obj_.build(child_)
+            self.set_metadata(obj_)
+# end class CImagestack
 
 
 class Metadata(GeneratedsSuper):
@@ -2174,61 +2338,42 @@ class data(GeneratedsSuper):
 
 class NetworkSurface(GeneratedsSuper):
     """The name of the surface as reference to an existing connectome-
-    surface Optional together with labelid. The name of the another
-    surface as reference to an existing connectome-surface that
-    contains the label array. Always use in conjunction with
-    labelid. This can be used for a separate Gifti file containing
-    e.g. only label information. The labelid tag name that contains
-    the labeling of the surface reference by name. The referenced
-    surface file must contain NIFTI_INTENT_LABEL intent with the
-    matching labelid in the metadata. Number of vertices of the
-    referenced surface and the label array dimension must match (one
-    label for each vertices) XXX: Probably better to use the
-    LabelTable tag in Gifti?"""
+    surface"""
     subclass = None
     superclass = None
-    def __init__(self, labelid=None, name=None, labelname=None, valueOf_=None):
-        self.labelid = _cast(None, labelid)
+    def __init__(self, name=None, metadata=None):
         self.name = _cast(None, name)
-        self.labelname = _cast(None, labelname)
-        self.valueOf_ = valueOf_
+        self.metadata = metadata
     def factory(*args_, **kwargs_):
         if NetworkSurface.subclass:
             return NetworkSurface.subclass(*args_, **kwargs_)
         else:
             return NetworkSurface(*args_, **kwargs_)
     factory = staticmethod(factory)
-    def get_labelid(self): return self.labelid
-    def set_labelid(self, labelid): self.labelid = labelid
+    def get_metadata(self): return self.metadata
+    def set_metadata(self, metadata): self.metadata = metadata
     def get_name(self): return self.name
     def set_name(self, name): self.name = name
-    def get_labelname(self): return self.labelname
-    def set_labelname(self, labelname): self.labelname = labelname
-    def get_valueOf_(self): return self.valueOf_
-    def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
     def export(self, outfile, level, namespace_='', name_='NetworkSurface', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, namespace_, name_='NetworkSurface')
         if self.hasContent_():
-            outfile.write('>')
-            outfile.write(self.valueOf_)
+            outfile.write('>\n')
             self.exportChildren(outfile, level + 1, namespace_, name_)
+            showIndent(outfile, level)
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
     def exportAttributes(self, outfile, level, namespace_='', name_='NetworkSurface'):
-        if self.labelid is not None:
-            outfile.write(' labelid=%s' % (self.format_string(quote_attrib(self.labelid).encode(ExternalEncoding), input_name='labelid'), ))
         if self.name is not None:
             outfile.write(' name=%s' % (self.format_string(quote_attrib(self.name).encode(ExternalEncoding), input_name='name'), ))
-        if self.labelname is not None:
-            outfile.write(' labelname=%s' % (self.format_string(quote_attrib(self.labelname).encode(ExternalEncoding), input_name='labelname'), ))
     def exportChildren(self, outfile, level, namespace_='', name_='NetworkSurface'):
-        pass
+        if self.metadata:
+            self.metadata.export(outfile, level, namespace_, name_='metadata')
     def hasContent_(self):
         if (
-            self.valueOf_
+            self.metadata is not None
             ):
             return True
         else:
@@ -2239,84 +2384,71 @@ class NetworkSurface(GeneratedsSuper):
         if self.hasContent_():
             self.exportLiteralChildren(outfile, level, name_)
     def exportLiteralAttributes(self, outfile, level, name_):
-        if self.labelid is not None:
-            showIndent(outfile, level)
-            outfile.write('labelid = "%s",\n' % (self.labelid,))
         if self.name is not None:
             showIndent(outfile, level)
             outfile.write('name = "%s",\n' % (self.name,))
-        if self.labelname is not None:
-            showIndent(outfile, level)
-            outfile.write('labelname = "%s",\n' % (self.labelname,))
     def exportLiteralChildren(self, outfile, level, name_):
-        showIndent(outfile, level)
-        outfile.write('valueOf_ = """%s""",\n' % (self.valueOf_,))
+        if self.metadata is not None:
+            showIndent(outfile, level)
+            outfile.write('metadata=model_.Metadata(\n')
+            self.metadata.exportLiteral(outfile, level, name_='metadata')
+            showIndent(outfile, level)
+            outfile.write('),\n')
     def build(self, node):
         self.buildAttributes(node, node.attrib)
-        self.valueOf_ = get_all_text_(node)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
             self.buildChildren(child, nodeName_)
     def buildAttributes(self, node, attrs):
-        value = attrs.get('labelid')
-        if value is not None:
-            self.labelid = value
         value = attrs.get('name')
         if value is not None:
             self.name = value
-        value = attrs.get('labelname')
-        if value is not None:
-            self.labelname = value
     def buildChildren(self, child_, nodeName_):
-        pass
+        if nodeName_ == 'metadata': 
+            obj_ = Metadata.factory()
+            obj_.build(child_)
+            self.set_metadata(obj_)
 # end class NetworkSurface
 
 
 class NetworkVolume(GeneratedsSuper):
     """The name of the volume as reference to an existing connectome-
-    volume. The connectome-volume can be of any dtype. Optional. The
-    name of a connectome-volume that has dtype=segmentation. It
-    specifies a segmentation of the volume referenced by name. The
-    voxel dimensions have to match."""
+    volume. The connectome-volume can be of any dtype."""
     subclass = None
     superclass = None
-    def __init__(self, segmentationname=None, name=None, valueOf_=None):
-        self.segmentationname = _cast(None, segmentationname)
+    def __init__(self, name=None, metadata=None):
         self.name = _cast(None, name)
-        self.valueOf_ = valueOf_
+        self.metadata = metadata
     def factory(*args_, **kwargs_):
         if NetworkVolume.subclass:
             return NetworkVolume.subclass(*args_, **kwargs_)
         else:
             return NetworkVolume(*args_, **kwargs_)
     factory = staticmethod(factory)
-    def get_segmentationname(self): return self.segmentationname
-    def set_segmentationname(self, segmentationname): self.segmentationname = segmentationname
+    def get_metadata(self): return self.metadata
+    def set_metadata(self, metadata): self.metadata = metadata
     def get_name(self): return self.name
     def set_name(self, name): self.name = name
-    def get_valueOf_(self): return self.valueOf_
-    def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
     def export(self, outfile, level, namespace_='', name_='NetworkVolume', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, namespace_, name_='NetworkVolume')
         if self.hasContent_():
-            outfile.write('>')
-            outfile.write(self.valueOf_)
+            outfile.write('>\n')
             self.exportChildren(outfile, level + 1, namespace_, name_)
+            showIndent(outfile, level)
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
     def exportAttributes(self, outfile, level, namespace_='', name_='NetworkVolume'):
-        if self.segmentationname is not None:
-            outfile.write(' segmentationname=%s' % (self.format_string(quote_attrib(self.segmentationname).encode(ExternalEncoding), input_name='segmentationname'), ))
         if self.name is not None:
             outfile.write(' name=%s' % (self.format_string(quote_attrib(self.name).encode(ExternalEncoding), input_name='name'), ))
     def exportChildren(self, outfile, level, namespace_='', name_='NetworkVolume'):
-        pass
+        if self.metadata:
+            self.metadata.export(outfile, level, namespace_, name_='metadata')
     def hasContent_(self):
         if (
-            self.valueOf_
+            self.metadata is not None
             ):
             return True
         else:
@@ -2327,30 +2459,30 @@ class NetworkVolume(GeneratedsSuper):
         if self.hasContent_():
             self.exportLiteralChildren(outfile, level, name_)
     def exportLiteralAttributes(self, outfile, level, name_):
-        if self.segmentationname is not None:
-            showIndent(outfile, level)
-            outfile.write('segmentationname = "%s",\n' % (self.segmentationname,))
         if self.name is not None:
             showIndent(outfile, level)
             outfile.write('name = "%s",\n' % (self.name,))
     def exportLiteralChildren(self, outfile, level, name_):
-        showIndent(outfile, level)
-        outfile.write('valueOf_ = """%s""",\n' % (self.valueOf_,))
+        if self.metadata is not None:
+            showIndent(outfile, level)
+            outfile.write('metadata=model_.Metadata(\n')
+            self.metadata.exportLiteral(outfile, level, name_='metadata')
+            showIndent(outfile, level)
+            outfile.write('),\n')
     def build(self, node):
         self.buildAttributes(node, node.attrib)
-        self.valueOf_ = get_all_text_(node)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
             self.buildChildren(child, nodeName_)
     def buildAttributes(self, node, attrs):
-        value = attrs.get('segmentationname')
-        if value is not None:
-            self.segmentationname = value
         value = attrs.get('name')
         if value is not None:
             self.name = value
     def buildChildren(self, child_, nodeName_):
-        pass
+        if nodeName_ == 'metadata': 
+            obj_ = Metadata.factory()
+            obj_.build(child_)
+            self.set_metadata(obj_)
 # end class NetworkVolume
 
 
@@ -2358,27 +2490,27 @@ class NetworkTrack(GeneratedsSuper):
     """The name of the track as reference to an existing connectome-track"""
     subclass = None
     superclass = None
-    def __init__(self, name=None, valueOf_=None):
+    def __init__(self, name=None, metadata=None):
         self.name = _cast(None, name)
-        self.valueOf_ = valueOf_
+        self.metadata = metadata
     def factory(*args_, **kwargs_):
         if NetworkTrack.subclass:
             return NetworkTrack.subclass(*args_, **kwargs_)
         else:
             return NetworkTrack(*args_, **kwargs_)
     factory = staticmethod(factory)
+    def get_metadata(self): return self.metadata
+    def set_metadata(self, metadata): self.metadata = metadata
     def get_name(self): return self.name
     def set_name(self, name): self.name = name
-    def get_valueOf_(self): return self.valueOf_
-    def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
     def export(self, outfile, level, namespace_='', name_='NetworkTrack', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, namespace_, name_='NetworkTrack')
         if self.hasContent_():
-            outfile.write('>')
-            outfile.write(self.valueOf_)
+            outfile.write('>\n')
             self.exportChildren(outfile, level + 1, namespace_, name_)
+            showIndent(outfile, level)
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
@@ -2386,10 +2518,11 @@ class NetworkTrack(GeneratedsSuper):
         if self.name is not None:
             outfile.write(' name=%s' % (self.format_string(quote_attrib(self.name).encode(ExternalEncoding), input_name='name'), ))
     def exportChildren(self, outfile, level, namespace_='', name_='NetworkTrack'):
-        pass
+        if self.metadata:
+            self.metadata.export(outfile, level, namespace_, name_='metadata')
     def hasContent_(self):
         if (
-            self.valueOf_
+            self.metadata is not None
             ):
             return True
         else:
@@ -2404,11 +2537,14 @@ class NetworkTrack(GeneratedsSuper):
             showIndent(outfile, level)
             outfile.write('name = "%s",\n' % (self.name,))
     def exportLiteralChildren(self, outfile, level, name_):
-        showIndent(outfile, level)
-        outfile.write('valueOf_ = """%s""",\n' % (self.valueOf_,))
+        if self.metadata is not None:
+            showIndent(outfile, level)
+            outfile.write('metadata=model_.Metadata(\n')
+            self.metadata.exportLiteral(outfile, level, name_='metadata')
+            showIndent(outfile, level)
+            outfile.write('),\n')
     def build(self, node):
         self.buildAttributes(node, node.attrib)
-        self.valueOf_ = get_all_text_(node)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
             self.buildChildren(child, nodeName_)
@@ -2417,7 +2553,10 @@ class NetworkTrack(GeneratedsSuper):
         if value is not None:
             self.name = value
     def buildChildren(self, child_, nodeName_):
-        pass
+        if nodeName_ == 'metadata': 
+            obj_ = Metadata.factory()
+            obj_.build(child_)
+            self.set_metadata(obj_)
 # end class NetworkTrack
 
 
@@ -2426,27 +2565,27 @@ class NetworkTimeserie(GeneratedsSuper):
     timeserie"""
     subclass = None
     superclass = None
-    def __init__(self, name=None, valueOf_=None):
+    def __init__(self, name=None, metadata=None):
         self.name = _cast(None, name)
-        self.valueOf_ = valueOf_
+        self.metadata = metadata
     def factory(*args_, **kwargs_):
         if NetworkTimeserie.subclass:
             return NetworkTimeserie.subclass(*args_, **kwargs_)
         else:
             return NetworkTimeserie(*args_, **kwargs_)
     factory = staticmethod(factory)
+    def get_metadata(self): return self.metadata
+    def set_metadata(self, metadata): self.metadata = metadata
     def get_name(self): return self.name
     def set_name(self, name): self.name = name
-    def get_valueOf_(self): return self.valueOf_
-    def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
     def export(self, outfile, level, namespace_='', name_='NetworkTimeserie', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, namespace_, name_='NetworkTimeserie')
         if self.hasContent_():
-            outfile.write('>')
-            outfile.write(self.valueOf_)
+            outfile.write('>\n')
             self.exportChildren(outfile, level + 1, namespace_, name_)
+            showIndent(outfile, level)
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
@@ -2454,10 +2593,11 @@ class NetworkTimeserie(GeneratedsSuper):
         if self.name is not None:
             outfile.write(' name=%s' % (self.format_string(quote_attrib(self.name).encode(ExternalEncoding), input_name='name'), ))
     def exportChildren(self, outfile, level, namespace_='', name_='NetworkTimeserie'):
-        pass
+        if self.metadata:
+            self.metadata.export(outfile, level, namespace_, name_='metadata')
     def hasContent_(self):
         if (
-            self.valueOf_
+            self.metadata is not None
             ):
             return True
         else:
@@ -2472,11 +2612,14 @@ class NetworkTimeserie(GeneratedsSuper):
             showIndent(outfile, level)
             outfile.write('name = "%s",\n' % (self.name,))
     def exportLiteralChildren(self, outfile, level, name_):
-        showIndent(outfile, level)
-        outfile.write('valueOf_ = """%s""",\n' % (self.valueOf_,))
+        if self.metadata is not None:
+            showIndent(outfile, level)
+            outfile.write('metadata=model_.Metadata(\n')
+            self.metadata.exportLiteral(outfile, level, name_='metadata')
+            showIndent(outfile, level)
+            outfile.write('),\n')
     def build(self, node):
         self.buildAttributes(node, node.attrib)
-        self.valueOf_ = get_all_text_(node)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
             self.buildChildren(child, nodeName_)
@@ -2485,7 +2628,10 @@ class NetworkTimeserie(GeneratedsSuper):
         if value is not None:
             self.name = value
     def buildChildren(self, child_, nodeName_):
-        pass
+        if nodeName_ == 'metadata': 
+            obj_ = Metadata.factory()
+            obj_.build(child_)
+            self.set_metadata(obj_)
 # end class NetworkTimeserie
 
 
@@ -2494,27 +2640,27 @@ class NetworkData(GeneratedsSuper):
     data"""
     subclass = None
     superclass = None
-    def __init__(self, name=None, valueOf_=None):
+    def __init__(self, name=None, metadata=None):
         self.name = _cast(None, name)
-        self.valueOf_ = valueOf_
+        self.metadata = metadata
     def factory(*args_, **kwargs_):
         if NetworkData.subclass:
             return NetworkData.subclass(*args_, **kwargs_)
         else:
             return NetworkData(*args_, **kwargs_)
     factory = staticmethod(factory)
+    def get_metadata(self): return self.metadata
+    def set_metadata(self, metadata): self.metadata = metadata
     def get_name(self): return self.name
     def set_name(self, name): self.name = name
-    def get_valueOf_(self): return self.valueOf_
-    def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
     def export(self, outfile, level, namespace_='', name_='NetworkData', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, namespace_, name_='NetworkData')
         if self.hasContent_():
-            outfile.write('>')
-            outfile.write(self.valueOf_)
+            outfile.write('>\n')
             self.exportChildren(outfile, level + 1, namespace_, name_)
+            showIndent(outfile, level)
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
@@ -2522,10 +2668,11 @@ class NetworkData(GeneratedsSuper):
         if self.name is not None:
             outfile.write(' name=%s' % (self.format_string(quote_attrib(self.name).encode(ExternalEncoding), input_name='name'), ))
     def exportChildren(self, outfile, level, namespace_='', name_='NetworkData'):
-        pass
+        if self.metadata:
+            self.metadata.export(outfile, level, namespace_, name_='metadata')
     def hasContent_(self):
         if (
-            self.valueOf_
+            self.metadata is not None
             ):
             return True
         else:
@@ -2540,11 +2687,14 @@ class NetworkData(GeneratedsSuper):
             showIndent(outfile, level)
             outfile.write('name = "%s",\n' % (self.name,))
     def exportLiteralChildren(self, outfile, level, name_):
-        showIndent(outfile, level)
-        outfile.write('valueOf_ = """%s""",\n' % (self.valueOf_,))
+        if self.metadata is not None:
+            showIndent(outfile, level)
+            outfile.write('metadata=model_.Metadata(\n')
+            self.metadata.exportLiteral(outfile, level, name_='metadata')
+            showIndent(outfile, level)
+            outfile.write('),\n')
     def build(self, node):
         self.buildAttributes(node, node.attrib)
-        self.valueOf_ = get_all_text_(node)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
             self.buildChildren(child, nodeName_)
@@ -2553,7 +2703,10 @@ class NetworkData(GeneratedsSuper):
         if value is not None:
             self.name = value
     def buildChildren(self, child_, nodeName_):
-        pass
+        if nodeName_ == 'metadata': 
+            obj_ = Metadata.factory()
+            obj_.build(child_)
+            self.set_metadata(obj_)
 # end class NetworkData
 
 

@@ -192,6 +192,14 @@
         A list of scripts. Scripts are represented by executable text files.
         </xsd:documentation>
       </xsd:annotation>
+      </xsd:element>
+      
+      <xsd:element maxOccurs="unbounded" minOccurs="0" name="connectome-imagestack" type="CImagestack">
+      <xsd:annotation xml:lang="en">
+        <xsd:documentation>
+        A list of image stacks. Image stacks represent an enumerated list of 2d images.
+        </xsd:documentation>
+      </xsd:annotation>
       </xsd:element>  
 
    </xsd:sequence>

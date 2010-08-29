@@ -82,7 +82,6 @@ In cfflib
 * [METHOD] info method about available optional dependencies
 * [METHOD] .save / .load cff
 
-* [METHOD] meaningful getter method for objects based on meta-data attributes (for all kinds of data types)
 
 * [METHOD] load all data into memory
 * load scripts as stringIO / string object

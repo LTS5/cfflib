@@ -34,7 +34,7 @@ try:
 except ImportError:
     raise ImportError("Failed to import numpy from any known place")
 
-# PyGEXF
+# PyGEXF, included in networkx-1.4
 
 etree_ = None
 Verbose_import_ = False
@@ -101,7 +101,38 @@ ExternalEncoding = 'ascii'
 class connectome(supermod.connectome):
     def __init__(self, connectome_meta=None, connectome_network=None, connectome_surface=None, connectome_volume=None, connectome_track=None, connectome_timeserie=None, connectome_data=None, connectome_script=None):
         super(connectome, self).__init__(connectome_meta, connectome_network, connectome_surface, connectome_volume, connectome_track, connectome_timeserie, connectome_data, connectome_script, )
+
+        # add parent reference to all children
+        self._update_parent_reference()
+
+    def get_all(self):
+        """ Returns all connectome objects mixed """
         
+        return connectome_network + connectome_surface + \
+                connectome_volume + connectome_track + \
+                connectome_timeserie + connectome_data + \
+                connectome_script + connectome_imagestack
+    
+    def get_by_name(self, name):
+        """ Return connectome object that has given name """
+        
+        def eq_name(name, element):
+            if name == element.name:
+                return True
+            else:
+                return False
+            
+        return filter( eq_name , self.get_all() )
+
+    def _update_parent_reference(self):
+        """ Updates the parent reference to the connectome file super-object """
+        
+        all_cobj = self.get_all() 
+        
+        for ele in all_cobj:
+            ele.parent_cfile = self
+        
+
     def to_xml(self):
         from StringIO import StringIO
         re = StringIO()
