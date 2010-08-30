@@ -1,21 +1,20 @@
 """ Routines to load, save and validate a connectome file
 
-CNetwork: Load/Parse GraphML
-CVolume: Load Nifti
-CSurface. Load Gifti
-CTrack: Load TrackVis
-
 Dependencies
 ------------
 * NetworkX
 * Nibabel (Nifti, Gifti IO)
-* NiPy (for Nifti IO)
-* DiPy (for TrackVis IO)
-* ConnectomeViewer (for Gifti IO)
+* PyTables (HDF5)
+* Numexpr
+* NumPy
 
 """
 
-import schema.gen.cfflib_modified2 as cfflib
+import cfflib_modified as cfflib
+
+# only expose a few
+# from cfflib_modified import *
+
 import os.path as op
 
 def load_from_metaxml(filename):

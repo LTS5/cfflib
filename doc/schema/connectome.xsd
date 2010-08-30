@@ -69,7 +69,7 @@
 <xsd:simpleType name="locationEnumType">
 	<xsd:restriction base="xsd:string">
 		<xsd:enumeration value="relpath"/>
-		<xsd:enumeration value="filesystem"/>
+		<xsd:enumeration value="abspath"/>
 		<xsd:enumeration value="URL"/>
 	</xsd:restriction>
 </xsd:simpleType>
@@ -95,12 +95,14 @@
 <xsd:simpleType name="timeserieFileFormat">
 	<xsd:restriction base="xsd:string">
 		<xsd:enumeration value="HDF5"/>
+		<xsd:enumeration value="Other"/>
 	</xsd:restriction>
 </xsd:simpleType>
 
 <xsd:simpleType name="trackFileFormat">
 	<xsd:restriction base="xsd:string">
 		<xsd:enumeration value="TrackVis"/>
+		<xsd:enumeration value="Other"/>
 	</xsd:restriction>
 </xsd:simpleType>
 
@@ -441,7 +443,7 @@
     <xsd:annotation xml:lang="en">
 	<xsd:documentation>
 	Location either in the ZIP file ("relpath", default),
-	the "filesystem" with an absolute path or an "URL".		
+	the "abspath" with an absolute path or an "URL".		
       </xsd:documentation>
     </xsd:annotation>
     </xsd:attribute>
@@ -529,7 +531,7 @@
     <xsd:annotation xml:lang="en">
 	<xsd:documentation>
 	Location either in the ZIP file ("relpath", default),
-	the "filesystem" with an absolute path or an "URL".		
+	the "abspath" with an absolute path or an "URL".		
       </xsd:documentation>
     </xsd:annotation>
     </xsd:attribute>
@@ -618,7 +620,7 @@
     <xsd:annotation xml:lang="en">
 	<xsd:documentation>
 	Location either in the ZIP file ("relpath", default),
-	the "filesystem" with an absolute path or an "URL".		
+	the "abspath" with an absolute path or an "URL".		
       </xsd:documentation>
     </xsd:annotation>
     </xsd:attribute>
@@ -724,7 +726,7 @@
     <xsd:annotation xml:lang="en">
 	<xsd:documentation>
 	Location either in the ZIP file ("relpath", default),
-	the "filesystem" with an absolute path or an "URL".		
+	the "abspath" with an absolute path or an "URL".		
       </xsd:documentation>
     </xsd:annotation>
     </xsd:attribute>
@@ -789,7 +791,7 @@
     <xsd:annotation xml:lang="en">
 	<xsd:documentation>
 	Location either in the ZIP file ("relpath", default),
-	the "filesystem" with an absolute path or an "URL".		
+	the "abspath" with an absolute path or an "URL".		
       </xsd:documentation>
     </xsd:annotation>
     </xsd:attribute>
@@ -854,7 +856,7 @@
     <xsd:annotation xml:lang="en">
 	<xsd:documentation>
 	Location either in the ZIP file ("relpath", default),
-	the "filesystem" with an absolute path or an "URL".		
+	the "abspath" with an absolute path or an "URL".		
       </xsd:documentation>
     </xsd:annotation>
     </xsd:attribute>
@@ -919,7 +921,7 @@
     <xsd:annotation xml:lang="en">
 	<xsd:documentation>
 	Location either in the ZIP file ("relpath", default),
-	the "filesystem" with an absolute path or an "URL".		
+	the "abspath" with an absolute path or an "URL".		
       </xsd:documentation>
     </xsd:annotation>
     </xsd:attribute>
@@ -1004,8 +1006,8 @@
     <xsd:annotation xml:lang="en">
 	<xsd:documentation>
 	Location either in the ZIP file ("relpath", default),
-	the "filesystem" with an absolute path or an "URL".
-	If pointed to an URL, the directory needs to have read access.
+	the "abspath" with an absolute path or an "URL".
+	URLs are not supported.
       </xsd:documentation>
     </xsd:annotation>
     </xsd:attribute>

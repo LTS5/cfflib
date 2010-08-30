@@ -4,6 +4,13 @@
 # Generated Sun Aug 29 11:58:22 2010 by generateDS.py version 2.1a.
 #
 
+### My Imports
+
+import warnings
+from util import *
+
+###
+
 import sys
 from string import lower as str_lower
 
@@ -74,6 +81,54 @@ ExternalEncoding = 'ascii'
 class connectome(supermod.connectome):
     def __init__(self, connectome_meta=None, connectome_network=None, connectome_surface=None, connectome_volume=None, connectome_track=None, connectome_timeserie=None, connectome_data=None, connectome_script=None, connectome_imagestack=None):
         super(connectome, self).__init__(connectome_meta, connectome_network, connectome_surface, connectome_volume, connectome_track, connectome_timeserie, connectome_data, connectome_script, connectome_imagestack, )
+
+        # add parent reference to all children
+        self._update_parent_reference()
+
+    def get_all(self):
+        """ Returns all connectome objects mixed """
+        
+        return self.connectome_network + self.connectome_surface + \
+                self.connectome_volume + self.connectome_track + \
+                self.connectome_timeserie + self.connectome_data + \
+                self.connectome_script + self.connectome_imagestack
+    
+    def get_by_name(self, name):
+        """ Return connectome object(s) that have given name """
+        
+        all_cobj = self.get_all() 
+        
+        ret = []
+        
+        for ele in all_cobj:
+            if name == ele.name:
+                ret.append(ele)
+                
+        if len(ret) > 1:
+            warnings.warn('More than one element found. Non-unique name could lead to problems!')
+            
+        return ret
+            
+
+    def _update_parent_reference(self):
+        """ Updates the parent reference to the connectome file super-object """
+
+        all_cobj = self.get_all() 
+        
+        for ele in all_cobj:
+            ele.parent_cfile = self
+
+    def to_xml(self):
+        from StringIO import StringIO
+        re = StringIO()
+        re.write('<?xml version="1.0" encoding="UTF-i"?\n')
+        ns = """xmlns="http://www.connectomics.ch/2010/Connectome/xmlns"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.connectomics.ch/2010/Connectome/xmlns connectome.xsd" """
+        self.export(re, 0, name_= "connectome", namespacedef_=ns)
+        re.seek(0)
+        return re.read()
+    
 supermod.connectome.subclass = connectome
 # end class connectome
 
@@ -95,6 +150,11 @@ supermod.description.subclass = description
 class CNetwork(supermod.CNetwork):
     def __init__(self, edgeless=False, src=None, name=None, dtype='AttributeNetwork', location='relpath', fileformat='GEXF', metadata=None, network_surface=None, network_volume=None, network_track=None, network_timeserie=None, network_data=None, description=None):
         super(CNetwork, self).__init__(edgeless, src, name, dtype, location, fileformat, metadata, network_surface, network_volume, network_track, network_timeserie, network_data, description, )
+        
+    def load(self):
+        """ Load the network into .content """
+        self.content = load_data(self)
+        
 supermod.CNetwork.subclass = CNetwork
 # end class CNetwork
 
@@ -102,6 +162,11 @@ supermod.CNetwork.subclass = CNetwork
 class CSurface(supermod.CSurface):
     def __init__(self, src=None, fileformat=None, dtype=None, name=None, location='relpath', description=None, metadata=None):
         super(CSurface, self).__init__(src, fileformat, dtype, name, location, description, metadata, )
+        
+    def load(self):
+        """ Load the surface into .content """
+        self.content = load_data(self)
+        
 supermod.CSurface.subclass = CSurface
 # end class CSurface
 
@@ -109,6 +174,11 @@ supermod.CSurface.subclass = CSurface
 class CVolume(supermod.CVolume):
     def __init__(self, src=None, fileformat='Nifti1', dtype=None, name=None, location='relpath', description=None, metadata=None):
         super(CVolume, self).__init__(src, fileformat, dtype, name, location, description, metadata, )
+        
+    def load(self):
+        """ Load the volume into .content """
+        self.content = load_data(self)
+            
 supermod.CVolume.subclass = CVolume
 # end class CVolume
 
@@ -116,6 +186,11 @@ supermod.CVolume.subclass = CVolume
 class CTrack(supermod.CTrack):
     def __init__(self, src=None, fileformat='TrackVis', name=None, location='relpath', description=None, metadata=None):
         super(CTrack, self).__init__(src, fileformat, name, location, description, metadata, )
+        
+    def load(self):
+        """ Load the trackfile into .content """
+        self.content = load_data(self)
+        
 supermod.CTrack.subclass = CTrack
 # end class CTrack
 
@@ -123,6 +198,11 @@ supermod.CTrack.subclass = CTrack
 class CTimeserie(supermod.CTimeserie):
     def __init__(self, src=None, fileformat='HDF5', name=None, location='relpath', description=None, metadata=None):
         super(CTimeserie, self).__init__(src, fileformat, name, location, description, metadata, )
+        
+    def load(self):
+        """ Load the timeserie into .content """
+        self.content = load_data(self)
+        
 supermod.CTimeserie.subclass = CTimeserie
 # end class CTimeserie
 
@@ -130,6 +210,11 @@ supermod.CTimeserie.subclass = CTimeserie
 class CData(supermod.CData):
     def __init__(self, src=None, fileformat=None, name=None, location='relpath', description=None, metadata=None):
         super(CData, self).__init__(src, fileformat, name, location, description, metadata, )
+        
+    def load(self):
+        """ Load the data into .content """
+        self.content = load_data(self)
+        
 supermod.CData.subclass = CData
 # end class CData
 
@@ -137,6 +222,12 @@ supermod.CData.subclass = CData
 class CScript(supermod.CScript):
     def __init__(self, src=None, type_='Python', name=None, location='relpath', description=None, metadata=None):
         super(CScript, self).__init__(src, type_, name, location, description, metadata, )
+        
+    def load(self):
+        """ Load the script into .content """
+        self.content = load_data(self)
+
+
 supermod.CScript.subclass = CScript
 # end class CScript
 
@@ -144,6 +235,11 @@ supermod.CScript.subclass = CScript
 class CImagestack(supermod.CImagestack):
     def __init__(self, src=None, fileformat=None, pattern=None, name=None, location='relpath', description=None, metadata=None):
         super(CImagestack, self).__init__(src, fileformat, pattern, name, location, description, metadata, )
+        
+    def load(self):
+        """ Load the imagestack file list into .content """
+        self.content = load_data(self)
+
 supermod.CImagestack.subclass = CImagestack
 # end class CImagestack
 
@@ -230,9 +326,13 @@ def parseString(inString):
     rootObj.build(rootNode)
     # Enable Python to collect the space used by the DOM.
     doc = None
-    sys.stdout.write('<?xml version="1.0" ?>\n')
-    rootObj.export(sys.stdout, 0, name_=rootTag,
-        namespacedef_='')
+    #sys.stdout.write('<?xml version="1.0" ?>\n')
+    #rootObj.export(sys.stdout, 0, name_=rootTag,
+    #    namespacedef_='')
+    
+    # update parent references
+    rootObj._update_parent_reference()
+    
     return rootObj
 
 

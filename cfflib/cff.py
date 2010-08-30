@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 #
-# Generated Sun Aug 29 11:58:22 2010 by generateDS.py version 2.1a.
+# Generated Mon Aug 30 12:47:44 2010 by generateDS.py version 2.1a.
 #
 
 import sys
@@ -867,7 +867,7 @@ class description(GeneratedsSuper):
 class CNetwork(GeneratedsSuper):
     """The short name of the network The path to the file according to
     location attribute Location either in the ZIP file ("relpath",
-    default), the "filesystem" with an absolute path or an "URL". Is
+    default), the "abspath" with an absolute path or an "URL". Is
     the network stored it "GEXF" or "GraphML" format, or "Other"
     format - dtype="AttributeNetwork" A network with arbitrary
     number of attributes for nodes and edges. -
@@ -1175,10 +1175,10 @@ class CNetwork(GeneratedsSuper):
 class CSurface(GeneratedsSuper):
     """Descriptive name of the surface. The path to the file according to
     location attribute Location either in the ZIP file ("relpath",
-    default), the "filesystem" with an absolute path or an "URL".
-    Set to "gifti" to use the only supported Gifti format by cfflib.
-    See http://www.nitrc.org/frs/download.php/158/gifti.xsd for
-    schema information Use "Other" for other formats with custom IO
+    default), the "abspath" with an absolute path or an "URL". Set
+    to "gifti" to use the only supported Gifti format by cfflib. See
+    http://www.nitrc.org/frs/download.php/158/gifti.xsd for schema
+    information Use "Other" for other formats with custom IO
     Handling What type of surface does the Gifti file contain: -
     type="label" The Gifti file contains surface labels. This file
     can be referenced in connectome-network with either the name
@@ -1343,9 +1343,9 @@ class CSurface(GeneratedsSuper):
 class CVolume(GeneratedsSuper):
     """Name of the volume. The path to the file according to location
     attribute Location either in the ZIP file ("relpath", default),
-    the "filesystem" with an absolute path or an "URL". Set to
-    "Nifti1" to use the only supported Nifti format. This works also
-    for compressed files with name ending .nii.gz The Nifti file
+    the "abspath" with an absolute path or an "URL". Set to "Nifti1"
+    to use the only supported Nifti format. This works also for
+    compressed files with name ending .nii.gz The Nifti file
     contains information about the coordinate system used. Set type
     of volume the Nifti file contains: - type="segmentation" The
     Nifti file contains a single volume where the voxel values are
@@ -1517,7 +1517,7 @@ class CVolume(GeneratedsSuper):
 class CTrack(GeneratedsSuper):
     """Name of the track file. The path to the file according to location
     attribute Location either in the ZIP file ("relpath", default),
-    the "filesystem" with an absolute path or an "URL". Set to
+    the "abspath" with an absolute path or an "URL". Set to
     "TrackVis" (default) to use the only supported TrackVis file
     format. The TrackVis file format allows to store any number of
     additional numerical data on the individual fibers."""
@@ -1653,10 +1653,10 @@ class CTrack(GeneratedsSuper):
 class CTimeserie(GeneratedsSuper):
     """Name of the timeseries. The path to the file according to location
     attribute Location either in the ZIP file ("relpath", default),
-    the "filesystem" with an absolute path or an "URL". Set to
-    "HDF5" (default) to use the only supported Hierarchical Data
-    File format. The HDF5 allows to store any number of time series
-    or other large homogeneous data."""
+    the "abspath" with an absolute path or an "URL". Set to "HDF5"
+    (default) to use the only supported Hierarchical Data File
+    format. The HDF5 allows to store any number of time series or
+    other large homogeneous data."""
     subclass = None
     superclass = None
     def __init__(self, src=None, fileformat='HDF5', name=None, location='relpath', description=None, metadata=None):
@@ -1789,7 +1789,7 @@ class CTimeserie(GeneratedsSuper):
 class CData(GeneratedsSuper):
     """Name of the data file The path to the file according to location
     attribute Location either in the ZIP file ("relpath", default),
-    the "filesystem" with an absolute path or an "URL". Use one of
+    the "abspath" with an absolute path or an "URL". Use one of
     'NumPy', 'HDF5', 'XML', 'Other'"""
     subclass = None
     superclass = None
@@ -1923,7 +1923,7 @@ class CData(GeneratedsSuper):
 class CScript(GeneratedsSuper):
     """Name of the script file The path to the file according to location
     attribute Location either in the ZIP file ("relpath", default),
-    the "filesystem" with an absolute path or an "URL". What kind of
+    the "abspath" with an absolute path or an "URL". What kind of
     script. Use one of "Python" (default), "Bash", "Matlab", or
     "Other"."""
     subclass = None
@@ -2058,11 +2058,10 @@ class CScript(GeneratedsSuper):
 class CImagestack(GeneratedsSuper):
     """Name of the image stack The path to the enumerated files according
     to location attribute Location either in the ZIP file
-    ("relpath", default), the "filesystem" with an absolute path or
-    an "URL". If pointed to an URL, the directory needs to have read
-    access. The file name pattern that may contain simple shell-
-    style wildcards a la fnmatch. Use one of 'PNG', 'JPG', 'TIFF',
-    'Other'"""
+    ("relpath", default), the "abspath" with an absolute path or an
+    "URL". URLs are not supported. The file name pattern that may
+    contain simple shell-style wildcards a la fnmatch. Use one of
+    'PNG', 'JPG', 'TIFF', 'Other'"""
     subclass = None
     superclass = None
     def __init__(self, src=None, fileformat=None, pattern=None, name=None, location='relpath', description=None, metadata=None):

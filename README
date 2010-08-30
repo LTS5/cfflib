@@ -10,7 +10,7 @@ Multi-Modal Neuroimaging Python Library for Data Input / Output and interlinking
 * time series (HDF5)
 
 Generate classes with: 
-python /home/stephan/Dev/Python/generateDS-2.1a/generateDS.py --subclass-suffix="" -f --super="cff" -o /home/stephan/Dev/PyWorkspace/cfflib/schema/gen/cff.py -s /home/stephan/Dev/PyWorkspace/cfflib/schema/gen/cfflib.py /home/stephan/Dev/PyWorkspace/cfflib/schema/connectome.xsd
+python /home/stephan/Dev/Python/generateDS-2.1a/generateDS.py --subclass-suffix="" -f --super="cff" -o /home/stephan/Dev/PyWorkspace/cfflib/cfflib/cff.py -s /home/stephan/Dev/PyWorkspace/cfflib/cfflib/cfflib.py /home/stephan/Dev/PyWorkspace/cfflib/doc/schema/connectome.xsd
 
 Documentation:
 http://www.rexx.com/~dkuhlman/generateDS.html
@@ -26,27 +26,9 @@ Export the file::
 	f.write('<?xml version="1.0" encoding="UTF-8"?>\n')
 	a.export(f, 0, namespacedef_='xmlns="http://www.connectomics.ch/2010/Connectome/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.connectomics.ch/2010/Connectome/xmlns connectome.xsd"')
 	f.close()
-	
-
-Dependencies
-------------
-
-* Nibabel
-* numexpr
-* PyTables
-* NumPy
-* lxml
-* pygexf
 
 Think
 -----
-
-* how to have accessor methods but using top-level connectome. need a backlink?
-
-* .load cff
-  -> create connectome object in memory. lazy load object with corresponding get_object() (vs. load_object() and then access) using
-     corresponding libraries
-  -> 
      
 * .save cff
   -> give connectome object in memory and out_fname. create a zip/cff file. add data
@@ -63,29 +45,18 @@ Think
                     # from_file generate a _src attribute that stores the fs path, to be used for saving
                    cfile.connectome_surface.append(csurf_obj)
 
-gexf io for networkx, e.g. using libexpat
-* rewrite the pygexf to use networkx graphs
-* http://gexf.net/format/schema.html
-
 In cfflib
 ---------
-* see util.py
 
 * [METHOD] validate file existence
 * [METHOD] validate file type
-
-* e.g. in a python-script, write: import cfflib
-* lazy loading data
-
 * [METHOD] adder (=setter?) methods for objects (or just add to a list?)
 * [METHOD] remover methods for objects (or just remove from a list?)
 * [METHOD] info method about available optional dependencies
-* [METHOD] .save / .load cff
 
-
-* [METHOD] load all data into memory
-* load scripts as stringIO / string object
-* lazy load, lazy memorymap load?
+* [METHOD] .save
+* [METHOD] add / remove methods for connectome objects, set parent_cfile, check file name consistency
+		   cdat = cdata_from_numpy(...); add_cdata(cdat) -> add_cdata_from_numpy(np.array)
 
 Between datatype mapping
 ------------------------

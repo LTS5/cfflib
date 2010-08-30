@@ -1,5 +1,7 @@
 from zipfile import ZipFile, ZIP_DEFLATED
-
+from glob import glob
+import os.path as op
+            
 # NetworkX
 try:
     import networkx as nx
@@ -11,6 +13,18 @@ try:
     import nibabel as ni
 except ImportError:
     raise ImportError("Failed to import nibabel from any known place")
+
+# PyTables
+try:
+    import tables
+except ImportError:
+    raise ImportError("Failed to import pytables from any known place")
+
+# NumPy
+try:
+    import numpy as np
+except ImportError:
+    raise ImportError("Failed to import numpy from any known place")
 
 
 def file_exists(src, location):
@@ -67,6 +81,13 @@ def extract_complete_cfile(path):
     """ Extract the complete connectome file to a particular path """
     pass
 
+class NotSupportedFormat(Exception):
+    def __init__(self, fileformat, objtype):
+        self.fileformat = fileformat
+        self.objtype = objtype
+    def __str__(self):
+        return "Loading %s:\nFile format '%s' not supported by cfflib. Use your custom loader." % (self.objtype, self.fileformat)
+
 def load_data(obj):
     
     import tempfile
@@ -79,9 +100,70 @@ def load_data(obj):
         if obj.fileformat == "GraphML":
             load = nx.read_graphml
         elif obj.fileformat == "GEXF":
-            # XXX
+            # XXX: networkx 1.4 / read_gexf
             pass
-    
+        else:
+            raise NotSupportedFormat("Other", str(obj))
+        
+    elif 'CSurface' in objrep:
+        if obj.fileformat == "Gifti":
+            import nibabel.gifti as nig
+            load = nig.read
+        else:
+            raise NotSupportedFormat("Other", str(obj))
+        
+    elif 'CTrack' in objrep:
+        if obj.fileformat == "TrackVis":
+            load = ni.trackvis.read
+        else:
+            raise NotSupportedFormat("Other", str(obj))
+        
+    elif 'CTimeserie' in objrep:
+        if obj.fileformat == "HDF5":
+            load = tables.openFile
+        else:
+            raise NotSupportedFormat("Other", str(obj))
+        
+    elif 'CData' in objrep:
+        
+        if obj.fileformat == "NumPy":
+            load = np.load
+        elif obj.fileformat == "HDF5":
+            load = tables.openFile
+        elif obj.fileformat == "XML":
+            load = open
+        else:
+            raise NotSupportedFormat("Other", str(obj))
+        
+    elif 'CScript' in objrep:
+        load = open
+        
+    elif 'CImagestack' in objrep:
+        
+        if obj.parent_cfile.iszip:
+            _zipfile = ZipFile(obj.parent_cfile.src, 'r', ZIP_DEFLATED)
+            try:
+                namelist = _zipfile.namelist()
+            except: # XXX: what is the correct exception for read error?
+                raise RuntimeError('Can not extract %s from connectome file.' % str(obj.src) )
+            finally:
+                _zipfile.close()
+            import fnmatch
+            ret = []
+            for ele in namelist:
+                if fnmatch.fnmatch(ele, op.join(obj.src, obj.pattern)):
+                    ret.append(ele)
+            return ret
+        else:
+            # returned list should be absolute path
+            if op.isabs(obj.src):
+                return sorted(glob(op.join(obj.src, obj.pattern)))
+            else:
+                path2files = op.join(op.dirname(obj.parent_cfile.fname), obj.src, obj.pattern)
+                return sorted(glob(path2files))
+
+    ######
+        
     if obj.parent_cfile.iszip:
         # extract src from zipfile to temp
         _zipfile = ZipFile(obj.parent_cfile.src, 'r', ZIP_DEFLATED)
@@ -95,20 +177,14 @@ def load_data(obj):
         return load(exfile)
         
     else:
-        # load it using nibabel
-        import os.path as op
-        
         if op.isabs(obj.src):
             # we have an absolute path
             return load(obj.src)
         else:
             # otherwise, we need to join the meta.xml path with the current relative path
-            print op.dirname(obj.parent_cfile.fname)
             path2file = op.join(op.dirname(obj.parent_cfile.fname), obj.src)
             return load(path2file)
 
-                
-                
 
 import urllib2
 
