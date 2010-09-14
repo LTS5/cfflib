@@ -29,14 +29,14 @@ def load_from_metaxml(filename):
         
     return connectome
 
-def load_cff_from_url(url, to_filename):
+def load_from_url(url, to_filename):
     """ First downloads the connectome file to a file to_filename
     load it and return the reference to the connectome object
     
     Not tested.
     """
     
-    from schema.gen.util import download
+    from util import download
     
     download(url, to_filename)
     
@@ -78,7 +78,6 @@ def load_from_cff(filename, *args, **kwargs):
     except: # XXX: what is the correct exception for read error?
         raise RuntimeError('Can not extract meta.xml from connectome file.')
     
-
     # create connectome instance
     connectome = cfflib.parseString(metadata_string)
     
@@ -92,14 +91,14 @@ def load_from_cff(filename, *args, **kwargs):
     # check if all referenced container elements exist in the archive
     # if not, raise an Exception
     
-    # lazy loading strategy for individual container elements
-    # add is loaded etc.
+    # check if names are unique!
     
     return connectome
 
 
 def save(filename, connectome):
-    """ Save connectome file to file on disk """
+    """ Save connectome file to new .cff file on disk """
+    
     
     # create a zip file
     # loop through datasources and store them to temporary files

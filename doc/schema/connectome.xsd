@@ -111,6 +111,7 @@
 		<xsd:enumeration value="PNG"/>
 		<xsd:enumeration value="JPG"/>
 		<xsd:enumeration value="TIFF"/>
+		<xsd:enumeration value="SVG"/>
 		<xsd:enumeration value="Other"/>
 	</xsd:restriction>
 </xsd:simpleType>

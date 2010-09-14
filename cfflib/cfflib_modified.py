@@ -110,6 +110,26 @@ class connectome(supermod.connectome):
         return ret
             
 
+    def update_cff(self):
+        """ Updates the content of the corresponding connectome file """
+        
+        if not self.iszip:
+            return
+        
+        all_cobj = self.get_all()
+        
+        for ele in all_cobj:
+            
+            if ele.content is None:
+                pass
+                # check if .src exists in zipfile
+                # if not, see if tmpsrc is not none and add it to the zipfile , if it is none, throw an exception
+            else:
+                pass
+                # store to tmp folder with tempfile with generated CXX/uniquename.ending, set abs path to tmpsrc and relpath to src
+                # add it to zipfile
+                # remove tmpsrc from disk and tmpsrc = None
+
     def _update_parent_reference(self):
         """ Updates the parent reference to the connectome file super-object """
 

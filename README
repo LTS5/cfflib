@@ -44,6 +44,34 @@ Think
                 ?? csurf_obj = cfflib.CSurface(....., from_file='/.../my.gii')
                     # from_file generate a _src attribute that stores the fs path, to be used for saving
                    cfile.connectome_surface.append(csurf_obj)
+                   
+Convention:
+.src -> refering to relative path in fs or zip file (iszip = True)
+.tmpsrc -> refering to absolute path in fs or tempfile. a tempfile is created when .content != None.
+
+schema to convert absolute file names to relative
+CXXX / unique_name.fileformatending
+
+if .content != None:
+	create tempfile with data and store it in .tmpsrc
+	create unique relative path
+	
+if .content == None and iszip:
+	just update the zip file
+	add for not yet existing objects in zipfile
+	
+
+
+Use Case
+--------
+
+* new_connectome() with metadata
+* add nifti file from abspath with metadata and description
+* add surface file from abspath with metadata and description
+* Nifti1Image object. Add it with metadata and description.
+
+
+
 
 In cfflib
 ---------
