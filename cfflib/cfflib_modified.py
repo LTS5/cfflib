@@ -110,25 +110,42 @@ class connectome(supermod.connectome):
         return ret
             
 
-    def update_cff(self):
-        """ Updates the content of the corresponding connectome file """
+    def check_file_in_cff(self):
+        """ Checks if the files described in the meta.xml are contained in the zip file """
         
         if not self.iszip:
             return
         
         all_cobj = self.get_all()
+        nlist = self._zipfile.namelist()
         
         for ele in all_cobj:
             
-            if ele.content is None:
-                pass
-                # check if .src exists in zipfile
-                # if not, see if tmpsrc is not none and add it to the zipfile , if it is none, throw an exception
-            else:
-                pass
-                # store to tmp folder with tempfile with generated CXX/uniquename.ending, set abs path to tmpsrc and relpath to src
-                # add it to zipfile
-                # remove tmpsrc from disk and tmpsrc = None
+            if not ele.src in nlist:
+                msg = "Element with name %s and source path %s is not contained in the connectome file." % (ele.name, ele.src)
+                raise Exception(msg)
+            
+    def check_names_unique(self):
+        """ Checks whether the names are unique """
+        
+        all_cobj = self.get_all()
+        namelist = []
+        for ele in all_cobj:
+            namelist.append(ele.name)
+        
+        # check for non uniqueness
+        while len(namelist) > 0:
+            e = namelist.pop()
+            if e in namelist:
+                msg = "Element '%s' has a non unique name! Please change the name to make it unique." % e
+                raise Exception(msg)
+    
+    def get_unique_cff_name(self):
+        """ Return a unique connectome file name """
+        n = self.get_connectome_meta().name
+        n = n.lower()
+        n = n.replace(' ', '_')
+        return n
 
     def _update_parent_reference(self):
         """ Updates the parent reference to the connectome file super-object """
@@ -175,6 +192,22 @@ class CNetwork(supermod.CNetwork):
         """ Load the network into .content """
         self.content = load_data(self)
         
+    def save(self):
+        """ Save a loaded network from .content to a temporary file and return the path """
+        return save_data(self)
+            
+    def get_unique_relpath(self):
+        """ Return a unique relative path for this element """
+        
+        if self.fileformat == 'GraphML':
+            fend = '.graphml'
+        elif self.fileformat == 'GEXF':
+            fend = '.gexf'
+        elif self.fileformat == 'Other':
+            fend = ''
+            
+        return unify('CNetwork', self.name + fend)
+
 supermod.CNetwork.subclass = CNetwork
 # end class CNetwork
 
@@ -186,7 +219,17 @@ class CSurface(supermod.CSurface):
     def load(self):
         """ Load the surface into .content """
         self.content = load_data(self)
-        
+
+    def get_unique_relpath(self):
+        """ Return a unique relative path for this element """
+
+        if self.fileformat == 'Gifti':
+            fend = '.gii'
+        elif self.fileformat == 'Other':
+            fend = ''
+            
+        return unify('CSurface', self.name + fend)
+    
 supermod.CSurface.subclass = CSurface
 # end class CSurface
 
@@ -198,7 +241,23 @@ class CVolume(supermod.CVolume):
     def load(self):
         """ Load the volume into .content """
         self.content = load_data(self)
+        
+    def get_unique_relpath(self):
+        """ Return a unique relative path for this element """
+    
+        if self.fileformat == 'Nifti1':
+            fend = '.nii.gz'
+        elif self.fileformat == 'ANALYZE':
+            print "Save ANALYZE file in Nifti format .nii"
+            fend = '.nii'
+        elif self.fileformat == 'DICOM':
+            print "Saving in DICOM format not supported."
+            fend = ''
+        else:
+            fend = ''
             
+        return unify('CVolume', self.name + fend)
+    
 supermod.CVolume.subclass = CVolume
 # end class CVolume
 
@@ -211,6 +270,16 @@ class CTrack(supermod.CTrack):
         """ Load the trackfile into .content """
         self.content = load_data(self)
         
+    def get_unique_relpath(self):
+        """ Return a unique relative path for this element """
+    
+        if self.fileformat == 'TrackVis':
+            fend = '.trk'
+        elif self.fileformat == 'Other':
+            fend = ''
+            
+        return unify('CTrack', self.name + fend)
+    
 supermod.CTrack.subclass = CTrack
 # end class CTrack
 
@@ -223,6 +292,16 @@ class CTimeserie(supermod.CTimeserie):
         """ Load the timeserie into .content """
         self.content = load_data(self)
         
+    def get_unique_relpath(self):
+        """ Return a unique relative path for this element """
+        
+        if self.fileformat == 'HDF5':
+            fend = '.h5'
+        elif self.fileformat == 'Other':
+            fend = ''
+            
+        return unify('CTimeserie', self.name + fend)
+    
 supermod.CTimeserie.subclass = CTimeserie
 # end class CTimeserie
 
@@ -235,6 +314,20 @@ class CData(supermod.CData):
         """ Load the data into .content """
         self.content = load_data(self)
         
+    def get_unique_relpath(self):
+        """ Return a unique relative path for this element """
+        
+        if self.fileformat == 'NumPy':
+            fend = '.npy'
+        if self.fileformat == 'HDF5':
+            fend = '.h5'
+        if self.fileformat == 'XML':
+            fend = '.xml'
+        elif self.fileformat == 'Other':
+            fend = ''
+            
+        return unify('CData', self.name + fend)
+    
 supermod.CData.subclass = CData
 # end class CData
 
@@ -247,6 +340,19 @@ class CScript(supermod.CScript):
         """ Load the script into .content """
         self.content = load_data(self)
 
+    def get_unique_relpath(self):
+        """ Return a unique relative path for this element """
+        
+        if self.type == 'Python':
+            fend = '.py'
+        if self.type == 'Bash':
+            fend = '.sh'
+        if self.tyoe == 'Matlab':
+            fend = '.m'
+        elif self.fileformat == 'Other':
+            fend = ''
+            
+        return unify('CScript', self.name + fname)
 
 supermod.CScript.subclass = CScript
 # end class CScript
@@ -260,6 +366,10 @@ class CImagestack(supermod.CImagestack):
         """ Load the imagestack file list into .content """
         self.content = load_data(self)
 
+    def get_unique_relpath(self):
+        """ Return a unique relative path for this element """
+        return unify('CImagestack', self.name + '/')
+    
 supermod.CImagestack.subclass = CImagestack
 # end class CImagestack
 

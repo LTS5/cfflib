@@ -1,7 +1,9 @@
 from zipfile import ZipFile, ZIP_DEFLATED
 from glob import glob
 import os.path as op
-            
+import os
+
+
 # NetworkX
 try:
     import networkx as nx
@@ -88,6 +90,88 @@ class NotSupportedFormat(Exception):
     def __str__(self):
         return "Loading %s:\nFile format '%s' not supported by cfflib. Use your custom loader." % (self.objtype, self.fileformat)
 
+def save_data(obj):
+    
+    import tempfile
+    tmpdir = tempfile.gettempdir()
+    
+    objrep = str(type(obj))
+        
+    if not obj.content is None:
+
+        # it appears that there is no remove function for zip archives implemented to date
+        # http://bugs.python.org/issue6818
+        
+        tmpfname = op.join(tmpdir, obj.get_unique_relpath())
+        
+        dname = op.dirname(tmpfname)
+        if not op.exists(dname):
+            os.makedirs()
+
+        if 'CVolume' in objrep:
+            ni.save(ele.content, tmpfname)
+        elif 'CNetwork' in objrep:
+            if obj.fileformat == "GraphML":
+                # write graph to temporary file
+                nx.write_graphml(obj.content, tmpfname)
+            elif obj.fileformat == "GEXF":
+                # XXX: networkx 1.4 / read_gexf
+                pass
+            else:
+                raise NotSupportedFormat("Other", str(obj))
+            
+        elif 'CSurface' in objrep:
+            if obj.fileformat == "Gifti":
+                import nibabel.gifti as nig
+                nig.write(obj.content, tmpfname)
+            else:
+                raise NotSupportedFormat("Other", str(obj))
+            
+        elif 'CTrack' in objrep:
+            if obj.fileformat == "TrackVis":
+                ni.trackvis.write(tmpfname, obj.content[0], obj.content[1])
+                # XXX: correct?
+                
+            else:
+                raise NotSupportedFormat("Other", str(obj))
+            
+        elif 'CTimeserie' in objrep:
+            if obj.fileformat == "HDF5":
+                # XXX: load = tables.openFile
+                pass
+            else:
+                raise NotSupportedFormat("Other", str(obj))
+            
+        elif 'CData' in objrep:
+            
+            if obj.fileformat == "NumPy":
+                load = np.save(tmpfname, obj.content)
+            elif obj.fileformat == "HDF5":
+                # load = tables.openFile
+                pass
+            elif obj.fileformat == "XML":
+                f = open(tmpfname, 'w')
+                f.write(obj.content)
+                f.close()
+            else:
+                raise NotSupportedFormat("Other", str(obj))
+            
+        elif 'CScript' in objrep:
+            
+                f = open(tmpfname, 'w')
+                f.write(obj.content)
+                f.close()
+            
+            
+        
+        return tmpfname
+    
+    else:
+        print "No content loaded. Nothing to save to a temporary file"
+        
+
+
+    
 def load_data(obj):
     
     import tempfile
@@ -172,19 +256,29 @@ def load_data(obj):
         except: # XXX: what is the correct exception for read error?
             raise RuntimeError('Can not extract %s from connectome file.' % str(obj.src) )
         finally:
+            print "Created temporary file %s while loading. Store path in .tmpsrc" % exfile
+            obj.tmpsrc = exfile
             _zipfile.close()
             
         return load(exfile)
         
     else:
-        if op.isabs(obj.src):
+        if not obj.tmpsrc is None and op.isabs(obj.tmpsrc):
             # we have an absolute path
-            return load(obj.src)
+            return load(obj.tmpsrc)
         else:
             # otherwise, we need to join the meta.xml path with the current relative path
             path2file = op.join(op.dirname(obj.parent_cfile.fname), obj.src)
             return load(path2file)
 
+def unify(t, n):
+    """ Unify type and name """
+
+    n = n.lower()
+    n = n.replace(' ', '_')
+        
+    return '%s/%s' % (t, n)
+        
 
 import urllib2
 

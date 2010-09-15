@@ -1,7 +1,16 @@
 from cfflib import *
 
+a = load_from_cff('/home/stephan/Dev/PyWorkspace/cfflib/datasets/ds1/c.cff')
+
+w=a.get_all()[0]
+w.load()
+w.save() 
+
+save('test.cff', a)
+
+
 #a = load_from_cff('datasets/meta.cff')
-a = load_from_metaxml('datasets/meta.xml')
+#a = load_from_metaxml('datasets/meta.xml')
 
 #myvol = a.get_by_name('T1-weighted single subject')[0]
 #myvol.load()
@@ -27,6 +36,6 @@ a = load_from_metaxml('datasets/meta.xml')
 #scr = a.get_by_name('Analysis Script MMXXXIV')[0]
 #scr.load()
 
-stk = a.get_by_name('Planar anatomical segmentation')[0]
-stk.load()
-print stk.content
+#stk = a.get_by_name('Planar anatomical segmentation')[0]
+#stk.load()
+#print stk.content
