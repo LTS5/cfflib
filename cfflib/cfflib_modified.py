@@ -193,8 +193,7 @@ class CNetwork(supermod.CNetwork):
         self.content = load_data(self)
         
     def save(self):
-        """ Save a loaded network from .content to a temporary file, setting .tmpsrc and return the path """
-        # XXX propagate this when working!
+        """ Save a loaded connectome object to a temporary file, return the path """
         rval = save_data(self)
         if not rval == '':
             self.tmpsrc = rval 
@@ -227,6 +226,15 @@ class CSurface(supermod.CSurface):
         """ Load the surface into .content """
         self.content = load_data(self)
 
+    def save(self):
+        """ Save a loaded connectome object to a temporary file, return the path """
+        rval = save_data(self)
+        if not rval == '':
+            self.tmpsrc = rval 
+            return rval
+        else:
+            raise Exception('There is nothing to save.')
+        
     def get_unique_relpath(self):
         """ Return a unique relative path for this element """
 
@@ -248,7 +256,16 @@ class CVolume(supermod.CVolume):
     def load(self):
         """ Load the volume into .content """
         self.content = load_data(self)
-        
+
+    def save(self):
+        """ Save a loaded connectome object to a temporary file, return the path """
+        rval = save_data(self)
+        if not rval == '':
+            self.tmpsrc = rval 
+            return rval
+        else:
+            raise Exception('There is nothing to save.')
+          
     def get_unique_relpath(self):
         """ Return a unique relative path for this element """
     
@@ -277,6 +294,15 @@ class CTrack(supermod.CTrack):
         """ Load the trackfile into .content """
         self.content = load_data(self)
         
+    def save(self):
+        """ Save a loaded connectome object to a temporary file, return the path """
+        rval = save_data(self)
+        if not rval == '':
+            self.tmpsrc = rval 
+            return rval
+        else:
+            raise Exception('There is nothing to save.')
+        
     def get_unique_relpath(self):
         """ Return a unique relative path for this element """
     
@@ -299,6 +325,15 @@ class CTimeserie(supermod.CTimeserie):
         """ Load the timeserie into .content """
         self.content = load_data(self)
         
+    def save(self):
+        """ Save a loaded connectome object to a temporary file, return the path """
+        rval = save_data(self)
+        if not rval == '':
+            self.tmpsrc = rval 
+            return rval
+        else:
+            raise Exception('There is nothing to save.')
+        
     def get_unique_relpath(self):
         """ Return a unique relative path for this element """
         
@@ -320,6 +355,15 @@ class CData(supermod.CData):
     def load(self):
         """ Load the data into .content """
         self.content = load_data(self)
+
+    def save(self):
+        """ Save a loaded connectome object to a temporary file, return the path """
+        rval = save_data(self)
+        if not rval == '':
+            self.tmpsrc = rval 
+            return rval
+        else:
+            raise Exception('There is nothing to save.')
         
     def get_unique_relpath(self):
         """ Return a unique relative path for this element """
@@ -347,6 +391,15 @@ class CScript(supermod.CScript):
         """ Load the script into .content """
         self.content = load_data(self)
 
+    def save(self):
+        """ Save a loaded connectome object to a temporary file, return the path """
+        rval = save_data(self)
+        if not rval == '':
+            self.tmpsrc = rval 
+            return rval
+        else:
+            raise Exception('There is nothing to save.')
+        
     def get_unique_relpath(self):
         """ Return a unique relative path for this element """
         
@@ -373,6 +426,10 @@ class CImagestack(supermod.CImagestack):
         """ Load the imagestack file list into .content """
         self.content = load_data(self)
 
+    def save(self):
+        """ Save a loaded connectome object to a temporary file, return the path """
+        raise NotImplementedError('Saving CImagestack not implemented yet.')
+        
     def get_unique_relpath(self):
         """ Return a unique relative path for this element """
         return unify('CImagestack', self.name + '/')

@@ -70,7 +70,7 @@ def save_data(obj):
             os.makedirs()
 
         if 'CVolume' in objrep:
-            ni.save(ele.content, tmpfname)
+            ni.save(obj.content, tmpfname)
         elif 'CNetwork' in objrep:
             if obj.fileformat == "GraphML":
                 # write graph to temporary file
@@ -229,12 +229,16 @@ def load_data(obj):
         return load(exfile)
         
     else:
-        if hasattr(obj, 'tmpsrc') and op.isabs(obj.tmpsrc):
+        if hasattr(obj, 'tmpsrc'):
             # we have an absolute path
+            print "Try to load object from %s" % obj.tmpsrc
+            obj.tmpsrc = obj.tmpsrc
             return load(obj.tmpsrc)
         else:
             # otherwise, we need to join the meta.xml path with the current relative path
             path2file = op.join(op.dirname(obj.parent_cfile.fname), obj.src)
+            print "Try to load object from %s" % path2file
+            obj.tmpsrc = path2file
             return load(path2file)
 
 def unify(t, n):

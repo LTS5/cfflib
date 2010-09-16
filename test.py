@@ -6,11 +6,21 @@ from cfflib import *
 #w.save() 
 #save('test.cff', a)
 
+#from cfflib import *
+#a=load_from_cff('test4.cff')
+#w=a.get_all()[0]
+#w.load()
+#w.save()
+
+# volume save
 from cfflib import *
-a=load_from_cff('test4.cff')
-w=a.get_all()[0]
-w.load()
-w.save()
+a=load_from_metaxml('datasets/meta2.xml')
+v=a.get_all()[1]
+v.load()
+v.content.get_header()
+#save_to_cff('test1.cff', a)
+
+
 
 
 #a = load_from_cff('datasets/meta.cff')
