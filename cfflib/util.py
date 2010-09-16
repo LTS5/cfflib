@@ -70,11 +70,15 @@ def save_data(obj):
             os.makedirs()
 
         if 'CVolume' in objrep:
+            print "Saving CVolume ..."
             ni.save(obj.content, tmpfname)
+            print "Done."
         elif 'CNetwork' in objrep:
             if obj.fileformat == "GraphML":
                 # write graph to temporary file
+                print "Saving CNetwork"
                 nx.write_graphml(obj.content, tmpfname)
+                print "Done."
             elif obj.fileformat == "GEXF":
                 # XXX: networkx 1.4 / read_gexf
                 pass
