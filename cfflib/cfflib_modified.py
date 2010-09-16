@@ -158,7 +158,7 @@ class connectome(supermod.connectome):
     def to_xml(self):
         from StringIO import StringIO
         re = StringIO()
-        re.write('<?xml version="1.0" encoding="UTF-i"?\n')
+        re.write('<?xml version="1.0" encoding="UTF-8"?>\n')
         ns = """xmlns="http://www.connectomics.ch/2010/Connectome/xmlns"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xsi:schemaLocation="http://www.connectomics.ch/2010/Connectome/xmlns connectome.xsd" """
@@ -193,8 +193,15 @@ class CNetwork(supermod.CNetwork):
         self.content = load_data(self)
         
     def save(self):
-        """ Save a loaded network from .content to a temporary file and return the path """
-        return save_data(self)
+        """ Save a loaded network from .content to a temporary file, setting .tmpsrc and return the path """
+        # XXX propagate this when working!
+        rval = save_data(self)
+        if not rval == '':
+            self.tmpsrc = rval 
+            return rval
+        else:
+            raise Exception('There is nothing to save.')
+         
             
     def get_unique_relpath(self):
         """ Return a unique relative path for this element """

@@ -36,37 +36,6 @@ def validate_filedata_type(src, location, fileformat, dtype):
     """ Try to evalute whether the given file is of dtype type """
     pass 
 
-def extract_file(cobj, zippath):
-    """ XXX: deprecated
-    
-    Extracts the file given by zippath from a connectome object
-    to the temporary folder and returns the absolute path """
-    
-    from tempfile import mkdtemp, mkstemp
-    import os.path as op
-    import os
-    
-    # mkdtemp(prefix = 'cffile')
-    fname = op.basename(zippath)
-    # XXX: need to preserve file ending!
-    
-    fhandler, fpath = mkstemp(suffix = fname)
-    
-    if cobj._src is None:
-        raise RuntimeError('Connectome Object has to attribute _src pointing to its source file')
-    
-    from zipfile import ZipFile, ZIP_DEFLATED
-    _zipfile = ZipFile(cobj._src, 'r', ZIP_DEFLATED)
-    try:
-        fileextracted = _zipfile.read(zippath)
-    except: # XXX: what is the correct exception for read error?
-        raise RuntimeError('Can not extract "%s" from connectome file.' % zippath)
-    
-    os.write(fhandler, fileextracted)
-    del fileextracted
-    os.close(fhandler)
-    return fpath
-    
 def remove_file(fpath):
     """ Closes and removes the fpath file from the temporary folder """
     import os
@@ -80,13 +49,10 @@ class NotSupportedFormat(Exception):
         return "Loading %s:\nFile format '%s' not supported by cfflib. Use your custom loader." % (self.objtype, self.fileformat)
 
 def save_data(obj):
-    
-    import tempfile
-    tmpdir = tempfile.gettempdir()
-    
+        
     objrep = str(type(obj))
         
-    if not obj.content is None:
+    if hasattr(obj, 'content'):
 
         # it appears that there is no remove function for zip archives implemented to date
         # http://bugs.python.org/issue6818
@@ -94,10 +60,10 @@ def save_data(obj):
         # the file was loaded, thus it exists a .tmpsrc pointing to
         # its absolute path. Use this path to overwrite the file by the
         # current .content data
-        if not obj.tmpsrc is None:
+        if hasattr(obj, 'tmpsrc'):
             tmpfname = obj.tmpsrc
         else:
-            raise Exception('Element %s has no .tmpsrc attribute.' % str(obj))
+            raise Exception('Element %s cannot be saved. (It was never loaded)' % str(obj))
         
         dname = op.dirname(tmpfname)
         if not op.exists(dname):
@@ -166,7 +132,9 @@ def save_data(obj):
         # assumes the .src paths are given relative to the meta.xml
         # valid for iszip = True and iszip = False
         # either path to the .cff or to the meta.xml
-        return op.join(op.dirname(obj.parent_cfile.fname), obj.src)
+        # return op.join(op.dirname(obj.parent_cfile.fname), obj.src)
+        print "Connectome Object is not loaded. Nothing to save."
+        return ''
 
     
 def load_data(obj):
@@ -245,7 +213,7 @@ def load_data(obj):
         from tempfile import gettempdir
     
         # create a meaningful and unique temporary path to extract data files
-        tmpdir = op.join(gettempdir(), obj.parent_cfile.get_unique_cff_name(), op.dirname(obj.src))
+        tmpdir = op.join(gettempdir(), obj.parent_cfile.get_unique_cff_name())
 
         # extract src from zipfile to temp
         _zipfile = ZipFile(obj.parent_cfile.src, 'r', ZIP_DEFLATED)
@@ -254,14 +222,14 @@ def load_data(obj):
         except: # XXX: what is the correct exception for read error?
             raise RuntimeError('Can not extract %s from connectome file.' % str(obj.src) )
         finally:
-            print "Created temporary file %s while loading. Store path in .tmpsrc" % exfile
+            print "Created temporary file %s while loading." % exfile
             obj.tmpsrc = exfile
             _zipfile.close()
             
         return load(exfile)
         
     else:
-        if not obj.tmpsrc is None and op.isabs(obj.tmpsrc):
+        if hasattr(obj, 'tmpsrc') and op.isabs(obj.tmpsrc):
             # we have an absolute path
             return load(obj.tmpsrc)
         else:

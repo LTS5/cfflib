@@ -1,12 +1,16 @@
 from cfflib import *
 
-a = load_from_cff('/home/stephan/Dev/PyWorkspace/cfflib/datasets/ds1/c.cff')
+#a = load_from_cff('/home/stephan/Dev/PyWorkspace/cfflib/datasets/ds1/c.cff')
+#w=a.get_all()[0]
+#w.load()
+#w.save() 
+#save('test.cff', a)
 
+from cfflib import *
+a=load_from_cff('test4.cff')
 w=a.get_all()[0]
 w.load()
-w.save() 
-
-save('test.cff', a)
+w.save()
 
 
 #a = load_from_cff('datasets/meta.cff')

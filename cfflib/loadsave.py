@@ -1,4 +1,4 @@
-""" Routines to load, save and validate a connectome file
+""" Routines to load, save a connectome file
 
 Dependencies
 ------------
@@ -106,7 +106,7 @@ def load_from_cff(filename, *args, **kwargs):
     return connectome
 
 
-def save(filename, connectome):
+def save_to_cff(filename, connectome):
     """ Save connectome file to new .cff file on disk """
     
     _newzip = ZipFile(filename, 'w', ZIP_DEFLATED)
@@ -120,61 +120,62 @@ def save(filename, connectome):
     
     # check if names are unique!
     connectome.check_names_unique()
-    
-    if connectome.iszip:
-    
-        for ele in allcobj:
-            
-            if ele.src is None or ele.src == '':
-                wt = ele.get_unique_relpath()
-            else:
-                wt = ele.src
-            
-            if ele.content is None:
-                
-                # extract zip content and add it to new zipfile
-                ftmp = connectome._zipfile.extract(ele)
-                
-                _newzip.write(ftmp, wt)
-                
-                # remove file
-                os.remove(ftmp)
-                
-                # update ele.src
-                ele.src = wt
-                
-            else:
-                
-                # save content to a temporary file according to the objects specs
-                ftmp = ele.save()
-                
-                _newzip.write(ftmp, wt)
-                
-                # remove file
-                os.remove(ftmp)
-                
-                # update ele.src
-                ele.src = wt
-          
-        # export and store meta.xml
-        mpth = op.join(tmpdir, 'meta.xml')
-        f = open(mpth, 'w')
-        f.write(connectome.to_xml())
-        f.close()
-        
-        _newzip.write(mpth, 'meta.xml')
-        os.remove(mpth)
-        
-        _newzip.close()
-        
-        print "New connectome file written to %s " % filename
-        
-    else:
-        # if is is not a zip file
-        pass
-            
-    # include the temporary files in the zip file with the correct src name
-    # export and store meta.xml
 
+    for ele in allcobj:
+        
+        if not hasattr(ele, 'src') or ele.src == '':
+            wt = ele.get_unique_relpath()
+        else:
+            wt = ele.src
+        
+        if not hasattr(ele, 'content'):
+            
+            if connectome.iszip:
+                # extract zip content and add it to new zipfile
+                if not wt in connectome._zipfile.namelist():
+                    msg = "There exists no file %s in the connectome file from where " + \
+                    "you want to save. Please create .content and set the attributes right" + \
+                    "according to the documentation"
+                    raise Exception(msg)
+                else:
+                    ftmp = connectome._zipfile.extract(wt)
+            else:
+                # create path coming from filesystem
+                ftmp = op.join(op.dirname(connectome.fname), wt)
+                
+                if not op.exists(ftmp):
+                    msg = "There exists no file %s for element %s. " + \
+                    "Cannot save it. Either create it or assign a valid .content to element. " % (ftmp, str(ele))
+                    raise Exception(msg)
+            
+            _newzip.write(ftmp, wt)
+            
+        else:
+            
+            # save content to a temporary file according to the objects specs
+            ftmp = ele.save()
+            
+            _newzip.write(ftmp, wt)
+        
+        if connectome.iszip:
+            # remove file
+            os.remove(ftmp)
+        
+        # update ele.src
+        ele.src = wt
+  
+    # export and store meta.xml
+    mpth = op.join(tmpdir, 'meta.xml')
+    f = open(mpth, 'w')
+    f.write(connectome.to_xml())
+    f.close()
     
+    _newzip.write(mpth, 'meta.xml')
+    os.remove(mpth)
+    
+    _newzip.close()
+    
+    print "New connectome file written to %s " % op.abspath(filename)
+    
+
     
