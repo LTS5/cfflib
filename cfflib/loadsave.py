@@ -19,7 +19,7 @@ import os.path as op
 from zipfile import ZipFile, ZIP_DEFLATED
 
 def load_from_metaxml(filename):
-    """ Load connectome file from meta.xml directly """
+    """ Load connectome file from meta.xml directly. """
     
     with open(filename, 'r') as metaxml:
         metastr = metaxml.read()
@@ -29,6 +29,11 @@ def load_from_metaxml(filename):
     connectome.fname = op.abspath(filename)
     # check if names are unique!
     connectome.check_names_unique()
+    
+    # update .src and .tmpsrc depending on how the path is given!
+    # people want to write the absolute path in the meta.xml
+    # this has to be accounted for
+    # OR: only allow relative path names in src!! would simplify a lot!
     
     return connectome
 

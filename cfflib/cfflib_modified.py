@@ -248,8 +248,8 @@ class CVolume(supermod.CVolume):
         if self.fileformat == 'Nifti1':
             fend = '.nii.gz'
         elif self.fileformat == 'ANALYZE':
-            print "Save ANALYZE file in Nifti format .nii"
-            fend = '.nii'
+            print "Save ANALYZE file in Nifti format .nii.gz"
+            fend = '.nii.gz'
         elif self.fileformat == 'DICOM':
             print "Saving in DICOM format not supported."
             fend = ''

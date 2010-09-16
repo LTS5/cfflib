@@ -28,13 +28,6 @@ try:
 except ImportError:
     raise ImportError("Failed to import numpy from any known place")
 
-
-def file_exists(src, location):
-    """ Checks if the file actually exists at the
-    given location """
-    
-    pass
-
 def validate_fileformat_type(src, location, fileformat):
     """ Try to evaluate whether the given file has the correct fileformat is given """
     pass
@@ -43,10 +36,10 @@ def validate_filedata_type(src, location, fileformat, dtype):
     """ Try to evalute whether the given file is of dtype type """
     pass 
 
-# * [METHOD] extract all zip file content to path
-
 def extract_file(cobj, zippath):
-    """ Extracts the file given by zippath from a connectome object
+    """ XXX: deprecated
+    
+    Extracts the file given by zippath from a connectome object
     to the temporary folder and returns the absolute path """
     
     from tempfile import mkdtemp, mkstemp
@@ -79,10 +72,6 @@ def remove_file(fpath):
     import os
     os.remove(fpath)
 
-def extract_complete_cfile(path):
-    """ Extract the complete connectome file to a particular path """
-    pass
-
 class NotSupportedFormat(Exception):
     def __init__(self, fileformat, objtype):
         self.fileformat = fileformat
@@ -101,8 +90,14 @@ def save_data(obj):
 
         # it appears that there is no remove function for zip archives implemented to date
         # http://bugs.python.org/issue6818
-        
-        tmpfname = op.join(tmpdir, obj.get_unique_relpath())
+                
+        # the file was loaded, thus it exists a .tmpsrc pointing to
+        # its absolute path. Use this path to overwrite the file by the
+        # current .content data
+        if not obj.tmpsrc is None:
+            tmpfname = obj.tmpsrc
+        else:
+            raise Exception('Element %s has no .tmpsrc attribute.' % str(obj))
         
         dname = op.dirname(tmpfname)
         if not op.exists(dname):
@@ -137,8 +132,10 @@ def save_data(obj):
             
         elif 'CTimeserie' in objrep:
             if obj.fileformat == "HDF5":
-                # XXX: load = tables.openFile
-                pass
+                # flush the content of the buffers
+                obj.content.flush()
+                # close the file
+                obj.content.close()
             else:
                 raise NotSupportedFormat("Other", str(obj))
             
@@ -147,8 +144,10 @@ def save_data(obj):
             if obj.fileformat == "NumPy":
                 load = np.save(tmpfname, obj.content)
             elif obj.fileformat == "HDF5":
-                # load = tables.openFile
-                pass
+                # flush the content of the buffers
+                obj.content.flush()
+                # close the file
+                obj.content.close()
             elif obj.fileformat == "XML":
                 f = open(tmpfname, 'w')
                 f.write(obj.content)
@@ -157,26 +156,21 @@ def save_data(obj):
                 raise NotSupportedFormat("Other", str(obj))
             
         elif 'CScript' in objrep:
-            
                 f = open(tmpfname, 'w')
                 f.write(obj.content)
                 f.close()
-            
-            
         
         return tmpfname
     
     else:
-        print "No content loaded. Nothing to save to a temporary file"
-        
-
+        # assumes the .src paths are given relative to the meta.xml
+        # valid for iszip = True and iszip = False
+        # either path to the .cff or to the meta.xml
+        return op.join(op.dirname(obj.parent_cfile.fname), obj.src)
 
     
 def load_data(obj):
-    
-    import tempfile
-    tmpdir = tempfile.gettempdir()
-    
+        
     objrep = str(type(obj))
     if 'CVolume' in objrep:
         load = ni.load
@@ -209,7 +203,6 @@ def load_data(obj):
             raise NotSupportedFormat("Other", str(obj))
         
     elif 'CData' in objrep:
-        
         if obj.fileformat == "NumPy":
             load = np.load
         elif obj.fileformat == "HDF5":
@@ -223,7 +216,6 @@ def load_data(obj):
         load = open
         
     elif 'CImagestack' in objrep:
-        
         if obj.parent_cfile.iszip:
             _zipfile = ZipFile(obj.parent_cfile.src, 'r', ZIP_DEFLATED)
             try:
@@ -249,6 +241,12 @@ def load_data(obj):
     ######
         
     if obj.parent_cfile.iszip:
+        
+        from tempfile import gettempdir
+    
+        # create a meaningful and unique temporary path to extract data files
+        tmpdir = op.join(gettempdir(), obj.parent_cfile.get_unique_cff_name(), op.dirname(obj.src))
+
         # extract src from zipfile to temp
         _zipfile = ZipFile(obj.parent_cfile.src, 'r', ZIP_DEFLATED)
         try:
