@@ -111,7 +111,7 @@ class connectome(supermod.connectome):
             
 
     def check_file_in_cff(self):
-        """ Checks if the files described in the meta.xml are contained in the zip file """
+        """ Checks if the files described in the meta.cml are contained in the connectome zip file """
         
         if not self.iszip:
             return
@@ -169,8 +169,8 @@ class connectome(supermod.connectome):
     def close_all(self, save = False):
         """ Close all currently loaded elements, thereby releasing occupied memory 
         
-        Parameter
-        ---------
+        Parameters
+        ----------
         save : bool
             Save the content before closing.
             
@@ -208,6 +208,24 @@ supermod.description.subclass = description
 
 
 class CBaseClass(object):
+
+    def load(self, custom_loader = None):
+        """ Load the element. The loaded object is stored in the content attribute.
+        
+        Parameters
+        ----------
+        custom_loader : function, default: None
+            Custom loader function that takes connectome element as
+            its first argument.
+            
+        See Also
+        --------
+        See cfflib.util.load_data for example. """
+        
+        if not custom_loader is None:
+            self.content = custom_loader(self)
+        else:
+            self.content = load_data(self)
     
     def save(self):
         """ Save a loaded connectome object to a temporary file, return the path """
@@ -226,18 +244,12 @@ class CBaseClass(object):
         """ Returns the class name """
         pass
         # XXX: as single string 
-
     
 
 class CNetwork(supermod.CNetwork, CBaseClass):
     def __init__(self, edgeless=False, src=None, name=None, dtype='AttributeNetwork', location='relpath', fileformat='GEXF', metadata=None, network_surface=None, network_volume=None, network_track=None, network_timeserie=None, network_data=None, description=None):
         super(CNetwork, self).__init__(edgeless, src, name, dtype, location, fileformat, metadata, network_surface, network_volume, network_track, network_timeserie, network_data, description, )
         
-    def load(self):
-        """ Load the network into .content """
-        self.content = load_data(self)
-                 
-            
     def get_unique_relpath(self):
         """ Return a unique relative path for this element """
         
@@ -258,11 +270,6 @@ class CSurface(supermod.CSurface, CBaseClass):
     def __init__(self, src=None, fileformat=None, dtype=None, name=None, location='relpath', description=None, metadata=None):
         super(CSurface, self).__init__(src, fileformat, dtype, name, location, description, metadata, )
         
-    def load(self):
-        """ Load the surface into .content """
-        self.content = load_data(self)
-
-        
     def get_unique_relpath(self):
         """ Return a unique relative path for this element """
 
@@ -280,11 +287,7 @@ supermod.CSurface.subclass = CSurface
 class CVolume(supermod.CVolume, CBaseClass):
     def __init__(self, src=None, fileformat='Nifti1', dtype=None, name=None, location='relpath', description=None, metadata=None):
         super(CVolume, self).__init__(src, fileformat, dtype, name, location, description, metadata, )
-        
-    def load(self):
-        """ Load the volume into .content """
-        self.content = load_data(self)
-          
+                  
     def get_unique_relpath(self):
         """ Return a unique relative path for this element """
     
@@ -307,11 +310,7 @@ supermod.CVolume.subclass = CVolume
 class CTrack(supermod.CTrack, CBaseClass):
     def __init__(self, src=None, fileformat='TrackVis', name=None, location='relpath', description=None, metadata=None):
         super(CTrack, self).__init__(src, fileformat, name, location, description, metadata, )
-        
-    def load(self):
-        """ Load the trackfile into .content """
-        self.content = load_data(self)
-                
+                        
     def get_unique_relpath(self):
         """ Return a unique relative path for this element """
     
@@ -329,11 +328,7 @@ supermod.CTrack.subclass = CTrack
 class CTimeserie(supermod.CTimeserie, CBaseClass):
     def __init__(self, src=None, fileformat='HDF5', name=None, location='relpath', description=None, metadata=None):
         super(CTimeserie, self).__init__(src, fileformat, name, location, description, metadata, )
-        
-    def load(self):
-        """ Load the timeserie into .content """
-        self.content = load_data(self)
-        
+                
     def get_unique_relpath(self):
         """ Return a unique relative path for this element """
         
@@ -351,11 +346,7 @@ supermod.CTimeserie.subclass = CTimeserie
 class CData(supermod.CData, CBaseClass):
     def __init__(self, src=None, fileformat=None, name=None, location='relpath', description=None, metadata=None):
         super(CData, self).__init__(src, fileformat, name, location, description, metadata, )
-        
-    def load(self):
-        """ Load the data into .content """
-        self.content = load_data(self)
-        
+                
     def get_unique_relpath(self):
         """ Return a unique relative path for this element """
         
@@ -377,11 +368,7 @@ supermod.CData.subclass = CData
 class CScript(supermod.CScript, CBaseClass):
     def __init__(self, src=None, type_='Python', name=None, location='relpath', description=None, metadata=None):
         super(CScript, self).__init__(src, type_, name, location, description, metadata, )
-        
-    def load(self):
-        """ Load the script into .content """
-        self.content = load_data(self)
-        
+                
     def get_unique_relpath(self):
         """ Return a unique relative path for this element """
         
@@ -404,10 +391,6 @@ class CImagestack(supermod.CImagestack, CBaseClass):
     def __init__(self, src=None, fileformat=None, pattern=None, name=None, location='relpath', description=None, metadata=None):
         super(CImagestack, self).__init__(src, fileformat, pattern, name, location, description, metadata, )
         
-    def load(self):
-        """ Load the imagestack file list into .content """
-        self.content = load_data(self)
-
     def save(self):
         """ Save a loaded connectome object to a temporary file, return the path """
         raise NotImplementedError('Saving CImagestack not implemented yet.')

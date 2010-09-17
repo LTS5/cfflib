@@ -12,28 +12,20 @@ Dependencies
 
 import cfflib_modified as cfflib
 
-# only expose a few
-# from cfflib_modified import *
-
 import os.path as op
 from zipfile import ZipFile, ZIP_DEFLATED
 
-def load_from_metaxml(filename):
-    """ Load connectome file from meta.xml directly. """
+def load_from_meta_cml(filename):
+    """ Load connectome file from a meta.cml file. """
     
-    with open(filename, 'r') as metaxml:
-        metastr = metaxml.read()
+    with open(filename, 'r') as metacml:
+        metastr = metacml.read()
         
     connectome = cfflib.parseString(metastr)
     connectome.iszip = False
     connectome.fname = op.abspath(filename)
     # check if names are unique!
     connectome.check_names_unique()
-    
-    # update .src and .tmpsrc depending on how the path is given!
-    # people want to write the absolute path in the meta.xml
-    # this has to be accounted for
-    # OR: only allow relative path names in src!! would simplify a lot!
     
     return connectome
 
@@ -44,13 +36,11 @@ def load_from_url(url, to_filename):
     Not tested.
     """
     
-    from util import download
-    
+    from util import download    
     download(url, to_filename)
-    
     return load_from_cff(to_filename)
     
-
+    
 def load_from_cff(filename, *args, **kwargs):
     """ Load connectome file given filename
     
@@ -76,14 +66,12 @@ def load_from_cff(filename, *args, **kwargs):
     else:
         raise RuntimeError('%s seems not to be a valid file string' % filename)
 
-
-    # extract meta.xml from connectome file
-    # take care to have allowZip64 = True (but not supported by unix zip/unzip, same for ubuntu?) ?
+    # XXX: take care to have allowZip64 = True (but not supported by unix zip/unzip, same for ubuntu?) ?
     _zipfile = ZipFile(fname, 'a', ZIP_DEFLATED)
     try:
-        metadata_string = _zipfile.read('meta.xml')
+        metadata_string = _zipfile.read('meta.cml')
     except: # XXX: what is the correct exception for read error?
-        raise RuntimeError('Can not extract meta.xml from connectome file.')
+        raise RuntimeError('Can not extract meta.cml from connectome file.')
     
     # create connectome instance
     connectome = cfflib.parseString(metadata_string)
@@ -164,18 +152,16 @@ def save_to_cff(filename, connectome):
         # update ele.src
         ele.src = wt
   
-    # export and store meta.xml
-    mpth = op.join(tmpdir, 'meta.xml')
+    # export and store meta.cml
+    mpth = op.join(tmpdir, 'meta.cml')
     f = open(mpth, 'w')
     f.write(connectome.to_xml())
     f.close()
     
-    _newzip.write(mpth, 'meta.xml')
+    _newzip.write(mpth, 'meta.cml')
     os.remove(mpth)
     
     _newzip.close()
     
     print "New connectome file written to %s " % op.abspath(filename)
-    
-
     

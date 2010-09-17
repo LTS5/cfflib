@@ -14,17 +14,12 @@ from cfflib import *
 
 # volume save
 from cfflib import *
-a=load_from_metaxml('datasets/meta.cml')
+a=load_from_meta_cml('datasets/meta.cml')
 v=a.get_all()[1]
 v.load()
 v.content.get_header()
 #save_to_cff('test1.cff', a)
 
-
-
-
-#a = load_from_cff('datasets/meta.cff')
-#a = load_from_metaxml('datasets/meta.xml')
 
 #myvol = a.get_by_name('T1-weighted single subject')[0]
 #myvol.load()
