@@ -14,7 +14,7 @@ from cfflib import *
 
 # volume save
 from cfflib import *
-a=load_from_metaxml('datasets/meta2.xml')
+a=load_from_metaxml('datasets/meta.cml')
 v=a.get_all()[1]
 v.load()
 v.content.get_header()

@@ -133,9 +133,9 @@ def save_data(obj):
         return tmpfname
     
     else:
-        # assumes the .src paths are given relative to the meta.xml
+        # assumes the .src paths are given relative to the meta.cml
         # valid for iszip = True and iszip = False
-        # either path to the .cff or to the meta.xml
+        # either path to the .cff or to the meta.cml
         # return op.join(op.dirname(obj.parent_cfile.fname), obj.src)
         print "Connectome Object is not loaded. Nothing to save."
         return ''
@@ -239,7 +239,7 @@ def load_data(obj):
             obj.tmpsrc = obj.tmpsrc
             return load(obj.tmpsrc)
         else:
-            # otherwise, we need to join the meta.xml path with the current relative path
+            # otherwise, we need to join the meta.cml path with the current relative path
             path2file = op.join(op.dirname(obj.parent_cfile.fname), obj.src)
             print "Try to load object from %s" % path2file
             obj.tmpsrc = path2file

@@ -66,14 +66,6 @@
 	</xsd:restriction>
 </xsd:simpleType>
 
-<xsd:simpleType name="locationEnumType">
-	<xsd:restriction base="xsd:string">
-		<xsd:enumeration value="relpath"/>
-		<xsd:enumeration value="abspath"/>
-		<xsd:enumeration value="URL"/>
-	</xsd:restriction>
-</xsd:simpleType>
-
 <xsd:simpleType name="scriptEnumType">
 	<xsd:restriction base="xsd:string">
 		<xsd:enumeration value="Python"/>
@@ -440,15 +432,6 @@
     </xsd:annotation>
     </xsd:attribute>
 
-    <xsd:attribute name="location" type="locationEnumType" default="relpath">
-    <xsd:annotation xml:lang="en">
-	<xsd:documentation>
-	Location either in the ZIP file ("relpath", default),
-	the "abspath" with an absolute path or an "URL".		
-      </xsd:documentation>
-    </xsd:annotation>
-    </xsd:attribute>
-
     <xsd:attribute name="fileformat" type="networkFileFormat" default="GEXF">
     <xsd:annotation xml:lang="en">
 	<xsd:documentation>
@@ -528,15 +511,6 @@
     </xsd:annotation>
     </xsd:attribute>
 
-    <xsd:attribute name="location" type="locationEnumType" default="relpath">
-    <xsd:annotation xml:lang="en">
-	<xsd:documentation>
-	Location either in the ZIP file ("relpath", default),
-	the "abspath" with an absolute path or an "URL".		
-      </xsd:documentation>
-    </xsd:annotation>
-    </xsd:attribute>
-    
     <xsd:attribute name="fileformat" type="surfaceFileFormat">
     <xsd:annotation xml:lang="en">
       <xsd:documentation>
@@ -617,15 +591,6 @@
     </xsd:annotation>
     </xsd:attribute>
 
-    <xsd:attribute name="location" type="locationEnumType" default="relpath">
-    <xsd:annotation xml:lang="en">
-	<xsd:documentation>
-	Location either in the ZIP file ("relpath", default),
-	the "abspath" with an absolute path or an "URL".		
-      </xsd:documentation>
-    </xsd:annotation>
-    </xsd:attribute>
-    
     <xsd:attribute name="fileformat" type="volumeFileFormat" default="Nifti1">
     <xsd:annotation xml:lang="en">
       <xsd:documentation>
@@ -722,15 +687,6 @@
       </xsd:documentation>
     </xsd:annotation>
     </xsd:attribute>
-
-    <xsd:attribute name="location" type="locationEnumType" default="relpath">
-    <xsd:annotation xml:lang="en">
-	<xsd:documentation>
-	Location either in the ZIP file ("relpath", default),
-	the "abspath" with an absolute path or an "URL".		
-      </xsd:documentation>
-    </xsd:annotation>
-    </xsd:attribute>
     
     <xsd:attribute name="fileformat" type="trackFileFormat" default="TrackVis">
     <xsd:annotation xml:lang="en">
@@ -787,15 +743,6 @@
       </xsd:documentation>
     </xsd:annotation>
     </xsd:attribute>
-
-    <xsd:attribute name="location" type="locationEnumType" default="relpath">
-    <xsd:annotation xml:lang="en">
-	<xsd:documentation>
-	Location either in the ZIP file ("relpath", default),
-	the "abspath" with an absolute path or an "URL".		
-      </xsd:documentation>
-    </xsd:annotation>
-    </xsd:attribute>
     
     <xsd:attribute name="fileformat" type="timeserieFileFormat" default="HDF5">
     <xsd:annotation xml:lang="en">
@@ -849,15 +796,6 @@
     <xsd:annotation xml:lang="en">
       <xsd:documentation>
       The path to the file according to location attribute
-      </xsd:documentation>
-    </xsd:annotation>
-    </xsd:attribute>
-
-    <xsd:attribute name="location" type="locationEnumType" default="relpath">
-    <xsd:annotation xml:lang="en">
-	<xsd:documentation>
-	Location either in the ZIP file ("relpath", default),
-	the "abspath" with an absolute path or an "URL".		
       </xsd:documentation>
     </xsd:annotation>
     </xsd:attribute>
@@ -918,15 +856,6 @@
     </xsd:annotation>
     </xsd:attribute>
 
-    <xsd:attribute name="location" type="locationEnumType" default="relpath">
-    <xsd:annotation xml:lang="en">
-	<xsd:documentation>
-	Location either in the ZIP file ("relpath", default),
-	the "abspath" with an absolute path or an "URL".		
-      </xsd:documentation>
-    </xsd:annotation>
-    </xsd:attribute>
-    
     <xsd:attribute name="type" type="scriptEnumType" default="Python">
     <xsd:annotation xml:lang="en">
        <xsd:documentation>
@@ -999,16 +928,6 @@
     <xsd:annotation xml:lang="en">
       <xsd:documentation>
       The path to the enumerated files according to location attribute
-      </xsd:documentation>
-    </xsd:annotation>
-    </xsd:attribute>
-
-    <xsd:attribute name="location" type="locationEnumType" default="relpath">
-    <xsd:annotation xml:lang="en">
-	<xsd:documentation>
-	Location either in the ZIP file ("relpath", default),
-	the "abspath" with an absolute path or an "URL".
-	URLs are not supported.
       </xsd:documentation>
     </xsd:annotation>
     </xsd:attribute>
