@@ -60,8 +60,8 @@
 
 <xsd:simpleType name="networkFileFormat">
 	<xsd:restriction base="xsd:string">
-		<xsd:enumeration value="GEXF"/>
 		<xsd:enumeration value="GraphML"/>
+		<xsd:enumeration value="GEXF"/>
 		<xsd:enumeration value="Other"/>
 	</xsd:restriction>
 </xsd:simpleType>
@@ -432,10 +432,10 @@
     </xsd:annotation>
     </xsd:attribute>
 
-    <xsd:attribute name="fileformat" type="networkFileFormat" default="GEXF">
+    <xsd:attribute name="fileformat" type="networkFileFormat" default="GraphML">
     <xsd:annotation xml:lang="en">
 	<xsd:documentation>
-	Is the network stored it "GEXF" or "GraphML" format, or "Other" format
+	Is the network stored it "GEXF" or "GraphML" format, or "Other" format?
       </xsd:documentation>
     </xsd:annotation>
     </xsd:attribute>
