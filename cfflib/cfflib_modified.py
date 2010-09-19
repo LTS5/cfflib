@@ -181,12 +181,16 @@ class connectome(supermod.connectome):
         for ele in all_cobj:
             
             if hasattr(ele, 'content') and hasattr(ele, 'tmpsrc') and op.exists(ele.tmpsrc):
+                
                 if save:
                     ele.save()
-                else:
-                    # remove .content and .tmpsrc
-                    del ele.content
-                    del ele.tmpsrc
+                
+                # remove .content and .tmpsrc
+                print "Will not remove file %s from file system" % ele.tmpsrc
+                print "Remove .content attribute"
+                del ele.content
+                print "Remove .tmpsrc attribute"
+                del ele.tmpsrc
         
     
 supermod.connectome.subclass = connectome

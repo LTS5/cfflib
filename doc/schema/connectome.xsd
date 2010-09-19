@@ -455,15 +455,6 @@
       </xsd:documentation>
     </xsd:annotation>
     </xsd:attribute>
-
-    <xsd:attribute name="edgeless" type="xsd:boolean" default="0">
-    <xsd:annotation xml:lang="en">
-      <xsd:documentation>
-      If true, the network contains no edges. Usually used for structured
-      node-based data representation.
-      </xsd:documentation>
-    </xsd:annotation>
-    </xsd:attribute>
     
 </xsd:complexType>
 
