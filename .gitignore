@@ -1,4 +1,5 @@
 *.pyc
+MANIFEST
 .project
 .pydevproject
 cfflib.egg-info/

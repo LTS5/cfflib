@@ -1,6 +1,4 @@
-include LICENSE
-include THANKS
-include README.rst
+include THANKS COPYING Makefile* MANIFEST.in setup* README.* LICENSE
 
 graft cfflib
 graft datasets
