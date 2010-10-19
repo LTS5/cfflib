@@ -212,7 +212,7 @@
     </xsd:annotation>
   </xsd:element>
   
-   <xsd:element minOccurs="1" name="initial-creator" type="xsd:string">
+   <xsd:element minOccurs="1" name="author" type="xsd:string">
     <xsd:annotation xml:lang="en">
       <xsd:documentation>
       Author(s) of the data
@@ -260,16 +260,7 @@
       </xsd:documentation>
     </xsd:annotation>
     </xsd:element>
-   
-   <xsd:element minOccurs="1" name="targetspace" type="xsd:string">
-    <xsd:annotation xml:lang="en">
-      <xsd:documentation>
-      After affine transformation of volumes, surfaces etc. what is the common
-      target space the transformed objects reside.
-      </xsd:documentation>
-    </xsd:annotation>
-    </xsd:element>
-      
+         
    <xsd:element minOccurs="0" name="legal-notice" type="xsd:string">
     <xsd:annotation xml:lang="en">
       <xsd:documentation>

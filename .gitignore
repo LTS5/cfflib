@@ -1,7 +1,11 @@
 *.pyc
+.project
+.pydevproject
+cfflib.egg-info/
 build/
 doc/_build/
 doc/build/
 doc/manual/
-*.kpf
-external/
+
+
+

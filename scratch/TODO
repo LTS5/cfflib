@@ -1,14 +1,3 @@
-Connectome File Format Library
-
-Multi-Modal Neuroimaging Python Library for Data Input / Output and interlinking for
-
-* metadata (XML)
-* networks (GraphML, GEXF)
-* surfaces (Gifti)
-* volumes (Nifti)
-* fiber tracks (TrackVis)
-* time series (HDF5)
-
 Generate classes with: 
 python /home/stephan/Dev/Python/generateDS-2.1a/generateDS.py --subclass-suffix="" -f --super="cff" -o /home/stephan/Dev/PyWorkspace/cfflib/cfflib/cff.py -s /home/stephan/Dev/PyWorkspace/cfflib/cfflib/cfflib.py /home/stephan/Dev/PyWorkspace/cfflib/doc/schema/connectome.xsd
 
@@ -30,18 +19,17 @@ Export the file::
 Think
 -----
      
-                you do not want to require to load all the files in memory to save the cff, thus
-                add a special insert_..(modify it?) or add_object(?..) or insert_from_filesystem_without_loading
-                
-                ?? csurf_obj = cfflib.CSurface(....., from_file='/.../my.gii')
-                    # from_file generate a _src attribute that stores the fs path, to be used for saving
-                   cfile.connectome_surface.append(csurf_obj)
+you do not want to require to load all the files in memory to save the cff, thus
+add a special insert_..(modify it?) or add_object(?..) or insert_from_filesystem_without_loading
+
+?? csurf_obj = cfflib.CSurface(....., from_file='/.../my.gii')
+    # from_file generate a _src attribute that stores the fs path, to be used for saving
+   cfile.connectome_surface.append(csurf_obj)
                    
 Convention:
 .src -> refering to relative path in fs or zip file (iszip = True)
 .tmpsrc -> refering to absolute path in fs or tempfile. a tempfile is created when .content != None.
 schema to convert absolute file names to relative: CXXX / unique_name.fileformatending
-
 
 
 Use Case

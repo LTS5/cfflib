@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 #
-# Generated Mon Aug 30 12:47:44 2010 by generateDS.py version 2.1a.
+# Generated Tue Oct 19 09:30:45 2010 by generateDS.py version 2.1a.
 #
 
 import sys
@@ -79,8 +79,8 @@ supermod.connectome.subclass = connectome
 
 
 class CMetadata(supermod.CMetadata):
-    def __init__(self, version=None, generator=None, initial_creator=None, institution=None, creation_date=None, modification_date=None, name=None, species=None, targetspace=None, legal_notice=None, reference=None, email=None, url=None, description=None, metadata=None):
-        super(CMetadata, self).__init__(version, generator, initial_creator, institution, creation_date, modification_date, name, species, targetspace, legal_notice, reference, email, url, description, metadata, )
+    def __init__(self, version=None, generator=None, author=None, institution=None, creation_date=None, modification_date=None, name=None, species=None, legal_notice=None, reference=None, email=None, url=None, description=None, metadata=None):
+        super(CMetadata, self).__init__(version, generator, author, institution, creation_date, modification_date, name, species, legal_notice, reference, email, url, description, metadata, )
 supermod.CMetadata.subclass = CMetadata
 # end class CMetadata
 
@@ -93,57 +93,57 @@ supermod.description.subclass = description
 
 
 class CNetwork(supermod.CNetwork):
-    def __init__(self, edgeless=False, src=None, name=None, dtype='AttributeNetwork', location='relpath', fileformat='GEXF', metadata=None, network_surface=None, network_volume=None, network_track=None, network_timeserie=None, network_data=None, description=None):
-        super(CNetwork, self).__init__(edgeless, src, name, dtype, location, fileformat, metadata, network_surface, network_volume, network_track, network_timeserie, network_data, description, )
+    def __init__(self, src=None, dtype='AttributeNetwork', name=None, fileformat='GraphML', metadata=None, network_surface=None, network_volume=None, network_track=None, network_timeserie=None, network_data=None, description=None):
+        super(CNetwork, self).__init__(src, dtype, name, fileformat, metadata, network_surface, network_volume, network_track, network_timeserie, network_data, description, )
 supermod.CNetwork.subclass = CNetwork
 # end class CNetwork
 
 
 class CSurface(supermod.CSurface):
-    def __init__(self, src=None, fileformat=None, dtype=None, name=None, location='relpath', description=None, metadata=None):
-        super(CSurface, self).__init__(src, fileformat, dtype, name, location, description, metadata, )
+    def __init__(self, src=None, dtype=None, name=None, fileformat=None, description=None, metadata=None):
+        super(CSurface, self).__init__(src, dtype, name, fileformat, description, metadata, )
 supermod.CSurface.subclass = CSurface
 # end class CSurface
 
 
 class CVolume(supermod.CVolume):
-    def __init__(self, src=None, fileformat='Nifti1', dtype=None, name=None, location='relpath', description=None, metadata=None):
-        super(CVolume, self).__init__(src, fileformat, dtype, name, location, description, metadata, )
+    def __init__(self, src=None, dtype=None, name=None, fileformat='Nifti1', description=None, metadata=None):
+        super(CVolume, self).__init__(src, dtype, name, fileformat, description, metadata, )
 supermod.CVolume.subclass = CVolume
 # end class CVolume
 
 
 class CTrack(supermod.CTrack):
-    def __init__(self, src=None, fileformat='TrackVis', name=None, location='relpath', description=None, metadata=None):
-        super(CTrack, self).__init__(src, fileformat, name, location, description, metadata, )
+    def __init__(self, src=None, name=None, fileformat='TrackVis', description=None, metadata=None):
+        super(CTrack, self).__init__(src, name, fileformat, description, metadata, )
 supermod.CTrack.subclass = CTrack
 # end class CTrack
 
 
 class CTimeserie(supermod.CTimeserie):
-    def __init__(self, src=None, fileformat='HDF5', name=None, location='relpath', description=None, metadata=None):
-        super(CTimeserie, self).__init__(src, fileformat, name, location, description, metadata, )
+    def __init__(self, src=None, name=None, fileformat='HDF5', description=None, metadata=None):
+        super(CTimeserie, self).__init__(src, name, fileformat, description, metadata, )
 supermod.CTimeserie.subclass = CTimeserie
 # end class CTimeserie
 
 
 class CData(supermod.CData):
-    def __init__(self, src=None, fileformat=None, name=None, location='relpath', description=None, metadata=None):
-        super(CData, self).__init__(src, fileformat, name, location, description, metadata, )
+    def __init__(self, src=None, name=None, fileformat=None, description=None, metadata=None):
+        super(CData, self).__init__(src, name, fileformat, description, metadata, )
 supermod.CData.subclass = CData
 # end class CData
 
 
 class CScript(supermod.CScript):
-    def __init__(self, src=None, type_='Python', name=None, location='relpath', description=None, metadata=None):
-        super(CScript, self).__init__(src, type_, name, location, description, metadata, )
+    def __init__(self, src=None, type_='Python', name=None, description=None, metadata=None):
+        super(CScript, self).__init__(src, type_, name, description, metadata, )
 supermod.CScript.subclass = CScript
 # end class CScript
 
 
 class CImagestack(supermod.CImagestack):
-    def __init__(self, src=None, fileformat=None, pattern=None, name=None, location='relpath', description=None, metadata=None):
-        super(CImagestack, self).__init__(src, fileformat, pattern, name, location, description, metadata, )
+    def __init__(self, src=None, fileformat=None, name=None, pattern=None, description=None, metadata=None):
+        super(CImagestack, self).__init__(src, fileformat, name, pattern, description, metadata, )
 supermod.CImagestack.subclass = CImagestack
 # end class CImagestack
 

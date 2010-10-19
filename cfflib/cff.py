@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 #
-# Generated Mon Aug 30 12:47:44 2010 by generateDS.py version 2.1a.
+# Generated Tue Oct 19 09:30:45 2010 by generateDS.py version 2.1a.
 #
 
 import sys
@@ -552,16 +552,15 @@ class CMetadata(GeneratedsSuper):
     Connectome File is compatible with. Should be 2.0"""
     subclass = None
     superclass = None
-    def __init__(self, version=None, generator=None, initial_creator=None, institution=None, creation_date=None, modification_date=None, name=None, species=None, targetspace=None, legal_notice=None, reference=None, email=None, url=None, description=None, metadata=None):
+    def __init__(self, version=None, generator=None, author=None, institution=None, creation_date=None, modification_date=None, name=None, species=None, legal_notice=None, reference=None, email=None, url=None, description=None, metadata=None):
         self.version = _cast(None, version)
         self.generator = generator
-        self.initial_creator = initial_creator
+        self.author = author
         self.institution = institution
         self.creation_date = creation_date
         self.modification_date = modification_date
         self.name = name
         self.species = species
-        self.targetspace = targetspace
         self.legal_notice = legal_notice
         self.reference = reference
         self.email = email
@@ -576,8 +575,8 @@ class CMetadata(GeneratedsSuper):
     factory = staticmethod(factory)
     def get_generator(self): return self.generator
     def set_generator(self, generator): self.generator = generator
-    def get_initial_creator(self): return self.initial_creator
-    def set_initial_creator(self, initial_creator): self.initial_creator = initial_creator
+    def get_author(self): return self.author
+    def set_author(self, author): self.author = author
     def get_institution(self): return self.institution
     def set_institution(self, institution): self.institution = institution
     def get_creation_date(self): return self.creation_date
@@ -588,8 +587,6 @@ class CMetadata(GeneratedsSuper):
     def set_name(self, name): self.name = name
     def get_species(self): return self.species
     def set_species(self, species): self.species = species
-    def get_targetspace(self): return self.targetspace
-    def set_targetspace(self, targetspace): self.targetspace = targetspace
     def get_legal_notice(self): return self.legal_notice
     def set_legal_notice(self, legal_notice): self.legal_notice = legal_notice
     def get_reference(self): return self.reference
@@ -621,9 +618,9 @@ class CMetadata(GeneratedsSuper):
         if self.generator is not None:
             showIndent(outfile, level)
             outfile.write('<%sgenerator>%s</%sgenerator>\n' % (namespace_, self.format_string(quote_xml(self.generator).encode(ExternalEncoding), input_name='generator'), namespace_))
-        if self.initial_creator is not None:
+        if self.author is not None:
             showIndent(outfile, level)
-            outfile.write('<%sinitial-creator>%s</%sinitial-creator>\n' % (namespace_, self.format_string(quote_xml(self.initial_creator).encode(ExternalEncoding), input_name='initial-creator'), namespace_))
+            outfile.write('<%sauthor>%s</%sauthor>\n' % (namespace_, self.format_string(quote_xml(self.author).encode(ExternalEncoding), input_name='author'), namespace_))
         if self.institution is not None:
             showIndent(outfile, level)
             outfile.write('<%sinstitution>%s</%sinstitution>\n' % (namespace_, self.format_string(quote_xml(self.institution).encode(ExternalEncoding), input_name='institution'), namespace_))
@@ -639,9 +636,6 @@ class CMetadata(GeneratedsSuper):
         if self.species is not None:
             showIndent(outfile, level)
             outfile.write('<%sspecies>%s</%sspecies>\n' % (namespace_, self.format_string(quote_xml(self.species).encode(ExternalEncoding), input_name='species'), namespace_))
-        if self.targetspace is not None:
-            showIndent(outfile, level)
-            outfile.write('<%stargetspace>%s</%stargetspace>\n' % (namespace_, self.format_string(quote_xml(self.targetspace).encode(ExternalEncoding), input_name='targetspace'), namespace_))
         if self.legal_notice is not None:
             showIndent(outfile, level)
             outfile.write('<%slegal-notice>%s</%slegal-notice>\n' % (namespace_, self.format_string(quote_xml(self.legal_notice).encode(ExternalEncoding), input_name='legal-notice'), namespace_))
@@ -661,13 +655,12 @@ class CMetadata(GeneratedsSuper):
     def hasContent_(self):
         if (
             self.generator is not None or
-            self.initial_creator is not None or
+            self.author is not None or
             self.institution is not None or
             self.creation_date is not None or
             self.modification_date is not None or
             self.name is not None or
             self.species is not None or
-            self.targetspace is not None or
             self.legal_notice is not None or
             self.reference is not None or
             self.email is not None or
@@ -691,9 +684,9 @@ class CMetadata(GeneratedsSuper):
         if self.generator is not None:
             showIndent(outfile, level)
             outfile.write('generator=%s,\n' % quote_python(self.generator).encode(ExternalEncoding))
-        if self.initial_creator is not None:
+        if self.author is not None:
             showIndent(outfile, level)
-            outfile.write('initial_creator=%s,\n' % quote_python(self.initial_creator).encode(ExternalEncoding))
+            outfile.write('author=%s,\n' % quote_python(self.author).encode(ExternalEncoding))
         if self.institution is not None:
             showIndent(outfile, level)
             outfile.write('institution=%s,\n' % quote_python(self.institution).encode(ExternalEncoding))
@@ -709,9 +702,6 @@ class CMetadata(GeneratedsSuper):
         if self.species is not None:
             showIndent(outfile, level)
             outfile.write('species=%s,\n' % quote_python(self.species).encode(ExternalEncoding))
-        if self.targetspace is not None:
-            showIndent(outfile, level)
-            outfile.write('targetspace=%s,\n' % quote_python(self.targetspace).encode(ExternalEncoding))
         if self.legal_notice is not None:
             showIndent(outfile, level)
             outfile.write('legal_notice=%s,\n' % quote_python(self.legal_notice).encode(ExternalEncoding))
@@ -749,9 +739,9 @@ class CMetadata(GeneratedsSuper):
         if nodeName_ == 'generator':
             generator_ = child_.text
             self.generator = generator_
-        elif nodeName_ == 'initial-creator':
-            initial_creator_ = child_.text
-            self.initial_creator = initial_creator_
+        elif nodeName_ == 'author':
+            author_ = child_.text
+            self.author = author_
         elif nodeName_ == 'institution':
             institution_ = child_.text
             self.institution = institution_
@@ -767,9 +757,6 @@ class CMetadata(GeneratedsSuper):
         elif nodeName_ == 'species':
             species_ = child_.text
             self.species = species_
-        elif nodeName_ == 'targetspace':
-            targetspace_ = child_.text
-            self.targetspace = targetspace_
         elif nodeName_ == 'legal-notice':
             legal_notice_ = child_.text
             self.legal_notice = legal_notice_
@@ -866,25 +853,19 @@ class description(GeneratedsSuper):
 
 class CNetwork(GeneratedsSuper):
     """The short name of the network The path to the file according to
-    location attribute Location either in the ZIP file ("relpath",
-    default), the "abspath" with an absolute path or an "URL". Is
-    the network stored it "GEXF" or "GraphML" format, or "Other"
-    format - dtype="AttributeNetwork" A network with arbitrary
-    number of attributes for nodes and edges. -
+    location attribute Is the network stored it "GEXF" or "GraphML"
+    format, or "Other" format? - dtype="AttributeNetwork" A network
+    with arbitrary number of attributes for nodes and edges. -
     dtype="DynamicNetwork" Network with either with lifespan
     attributes for nodes and edges (See GEXF) or timeseries on nodes
     and edges. - dtype="HierarchicalNetwork" Network with
-    hierarchical structure. - dtype="Other" Other kind of network.
-    If true, the network contains no edges. Usually used for
-    structured node-based data representation."""
+    hierarchical structure. - dtype="Other" Other kind of network."""
     subclass = None
     superclass = None
-    def __init__(self, edgeless=False, src=None, name=None, dtype='AttributeNetwork', location='relpath', fileformat='GEXF', metadata=None, network_surface=None, network_volume=None, network_track=None, network_timeserie=None, network_data=None, description=None):
-        self.edgeless = _cast(bool, edgeless)
+    def __init__(self, src=None, dtype='AttributeNetwork', name=None, fileformat='GraphML', metadata=None, network_surface=None, network_volume=None, network_track=None, network_timeserie=None, network_data=None, description=None):
         self.src = _cast(None, src)
-        self.name = _cast(None, name)
         self.dtype = _cast(None, dtype)
-        self.location = _cast(None, location)
+        self.name = _cast(None, name)
         self.fileformat = _cast(None, fileformat)
         self.metadata = metadata
         if network_surface is None:
@@ -938,22 +919,15 @@ class CNetwork(GeneratedsSuper):
     def insert_network_data(self, index, value): self.network_data[index] = value
     def get_description(self): return self.description
     def set_description(self, description): self.description = description
-    def get_edgeless(self): return self.edgeless
-    def set_edgeless(self, edgeless): self.edgeless = edgeless
     def get_src(self): return self.src
     def set_src(self, src): self.src = src
-    def get_name(self): return self.name
-    def set_name(self, name): self.name = name
     def get_dtype(self): return self.dtype
     def set_dtype(self, dtype): self.dtype = dtype
     def validate_networkEnumDType(self, value):
         # Validate type networkEnumDType, a restriction on xsd:string.
         pass
-    def get_location(self): return self.location
-    def set_location(self, location): self.location = location
-    def validate_locationEnumType(self, value):
-        # Validate type locationEnumType, a restriction on xsd:string.
-        pass
+    def get_name(self): return self.name
+    def set_name(self, name): self.name = name
     def get_fileformat(self): return self.fileformat
     def set_fileformat(self, fileformat): self.fileformat = fileformat
     def validate_networkFileFormat(self, value):
@@ -971,16 +945,12 @@ class CNetwork(GeneratedsSuper):
         else:
             outfile.write('/>\n')
     def exportAttributes(self, outfile, level, namespace_='', name_='CNetwork'):
-        if self.edgeless is not None:
-            outfile.write(' edgeless="%s"' % self.format_boolean(str_lower(str(self.edgeless)), input_name='edgeless'))
         if self.src is not None:
             outfile.write(' src=%s' % (self.format_string(quote_attrib(self.src).encode(ExternalEncoding), input_name='src'), ))
-        if self.name is not None:
-            outfile.write(' name=%s' % (self.format_string(quote_attrib(self.name).encode(ExternalEncoding), input_name='name'), ))
         if self.dtype is not None:
             outfile.write(' dtype=%s' % (quote_attrib(self.dtype), ))
-        if self.location is not None:
-            outfile.write(' location=%s' % (quote_attrib(self.location), ))
+        if self.name is not None:
+            outfile.write(' name=%s' % (self.format_string(quote_attrib(self.name).encode(ExternalEncoding), input_name='name'), ))
         if self.fileformat is not None:
             outfile.write(' fileformat=%s' % (quote_attrib(self.fileformat), ))
     def exportChildren(self, outfile, level, namespace_='', name_='CNetwork'):
@@ -1017,21 +987,15 @@ class CNetwork(GeneratedsSuper):
         if self.hasContent_():
             self.exportLiteralChildren(outfile, level, name_)
     def exportLiteralAttributes(self, outfile, level, name_):
-        if self.edgeless is not None:
-            showIndent(outfile, level)
-            outfile.write('edgeless = %s,\n' % (self.edgeless,))
         if self.src is not None:
             showIndent(outfile, level)
             outfile.write('src = "%s",\n' % (self.src,))
-        if self.name is not None:
-            showIndent(outfile, level)
-            outfile.write('name = "%s",\n' % (self.name,))
         if self.dtype is not None:
             showIndent(outfile, level)
             outfile.write('dtype = "%s",\n' % (self.dtype,))
-        if self.location is not None:
+        if self.name is not None:
             showIndent(outfile, level)
-            outfile.write('location = "%s",\n' % (self.location,))
+            outfile.write('name = "%s",\n' % (self.name,))
         if self.fileformat is not None:
             showIndent(outfile, level)
             outfile.write('fileformat = "%s",\n' % (self.fileformat,))
@@ -1114,28 +1078,16 @@ class CNetwork(GeneratedsSuper):
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
             self.buildChildren(child, nodeName_)
     def buildAttributes(self, node, attrs):
-        value = attrs.get('edgeless')
-        if value is not None:
-            if value in ('true', '1'):
-                self.edgeless = True
-            elif value in ('false', '0'):
-                self.edgeless = False
-            else:
-                raise_parse_error(node, 'Bad boolean attribute')
         value = attrs.get('src')
         if value is not None:
             self.src = value
-        value = attrs.get('name')
-        if value is not None:
-            self.name = value
         value = attrs.get('dtype')
         if value is not None:
             self.dtype = value
             self.validate_networkEnumDType(self.dtype)    # validate type networkEnumDType
-        value = attrs.get('location')
+        value = attrs.get('name')
         if value is not None:
-            self.location = value
-            self.validate_locationEnumType(self.location)    # validate type locationEnumType
+            self.name = value
         value = attrs.get('fileformat')
         if value is not None:
             self.fileformat = value
@@ -1174,9 +1126,8 @@ class CNetwork(GeneratedsSuper):
 
 class CSurface(GeneratedsSuper):
     """Descriptive name of the surface. The path to the file according to
-    location attribute Location either in the ZIP file ("relpath",
-    default), the "abspath" with an absolute path or an "URL". Set
-    to "gifti" to use the only supported Gifti format by cfflib. See
+    location attribute Set to "gifti" to use the only supported
+    Gifti format by cfflib. See
     http://www.nitrc.org/frs/download.php/158/gifti.xsd for schema
     information Use "Other" for other formats with custom IO
     Handling What type of surface does the Gifti file contain: -
@@ -1198,12 +1149,11 @@ class CSurface(GeneratedsSuper):
     Any other kind of data storable in a Gifti file."""
     subclass = None
     superclass = None
-    def __init__(self, src=None, fileformat=None, dtype=None, name=None, location='relpath', description=None, metadata=None):
+    def __init__(self, src=None, dtype=None, name=None, fileformat=None, description=None, metadata=None):
         self.src = _cast(None, src)
-        self.fileformat = _cast(None, fileformat)
         self.dtype = _cast(None, dtype)
         self.name = _cast(None, name)
-        self.location = _cast(None, location)
+        self.fileformat = _cast(None, fileformat)
         self.description = description
         self.metadata = metadata
     def factory(*args_, **kwargs_):
@@ -1218,11 +1168,6 @@ class CSurface(GeneratedsSuper):
     def set_metadata(self, metadata): self.metadata = metadata
     def get_src(self): return self.src
     def set_src(self, src): self.src = src
-    def get_fileformat(self): return self.fileformat
-    def set_fileformat(self, fileformat): self.fileformat = fileformat
-    def validate_surfaceFileFormat(self, value):
-        # Validate type surfaceFileFormat, a restriction on xsd:string.
-        pass
     def get_dtype(self): return self.dtype
     def set_dtype(self, dtype): self.dtype = dtype
     def validate_surfaceEnumDType(self, value):
@@ -1230,10 +1175,10 @@ class CSurface(GeneratedsSuper):
         pass
     def get_name(self): return self.name
     def set_name(self, name): self.name = name
-    def get_location(self): return self.location
-    def set_location(self, location): self.location = location
-    def validate_locationEnumType(self, value):
-        # Validate type locationEnumType, a restriction on xsd:string.
+    def get_fileformat(self): return self.fileformat
+    def set_fileformat(self, fileformat): self.fileformat = fileformat
+    def validate_surfaceFileFormat(self, value):
+        # Validate type surfaceFileFormat, a restriction on xsd:string.
         pass
     def export(self, outfile, level, namespace_='', name_='CSurface', namespacedef_=''):
         showIndent(outfile, level)
@@ -1249,14 +1194,12 @@ class CSurface(GeneratedsSuper):
     def exportAttributes(self, outfile, level, namespace_='', name_='CSurface'):
         if self.src is not None:
             outfile.write(' src=%s' % (self.format_string(quote_attrib(self.src).encode(ExternalEncoding), input_name='src'), ))
-        if self.fileformat is not None:
-            outfile.write(' fileformat=%s' % (quote_attrib(self.fileformat), ))
         if self.dtype is not None:
             outfile.write(' dtype=%s' % (quote_attrib(self.dtype), ))
         if self.name is not None:
             outfile.write(' name=%s' % (self.format_string(quote_attrib(self.name).encode(ExternalEncoding), input_name='name'), ))
-        if self.location is not None:
-            outfile.write(' location=%s' % (quote_attrib(self.location), ))
+        if self.fileformat is not None:
+            outfile.write(' fileformat=%s' % (quote_attrib(self.fileformat), ))
     def exportChildren(self, outfile, level, namespace_='', name_='CSurface'):
         if self.description:
             self.description.export(outfile, level, namespace_, name_='description')
@@ -1279,18 +1222,15 @@ class CSurface(GeneratedsSuper):
         if self.src is not None:
             showIndent(outfile, level)
             outfile.write('src = "%s",\n' % (self.src,))
-        if self.fileformat is not None:
-            showIndent(outfile, level)
-            outfile.write('fileformat = "%s",\n' % (self.fileformat,))
         if self.dtype is not None:
             showIndent(outfile, level)
             outfile.write('dtype = "%s",\n' % (self.dtype,))
         if self.name is not None:
             showIndent(outfile, level)
             outfile.write('name = "%s",\n' % (self.name,))
-        if self.location is not None:
+        if self.fileformat is not None:
             showIndent(outfile, level)
-            outfile.write('location = "%s",\n' % (self.location,))
+            outfile.write('fileformat = "%s",\n' % (self.fileformat,))
     def exportLiteralChildren(self, outfile, level, name_):
         if self.description is not None:
             showIndent(outfile, level)
@@ -1313,10 +1253,6 @@ class CSurface(GeneratedsSuper):
         value = attrs.get('src')
         if value is not None:
             self.src = value
-        value = attrs.get('fileformat')
-        if value is not None:
-            self.fileformat = value
-            self.validate_surfaceFileFormat(self.fileformat)    # validate type surfaceFileFormat
         value = attrs.get('dtype')
         if value is not None:
             self.dtype = value
@@ -1324,10 +1260,10 @@ class CSurface(GeneratedsSuper):
         value = attrs.get('name')
         if value is not None:
             self.name = value
-        value = attrs.get('location')
+        value = attrs.get('fileformat')
         if value is not None:
-            self.location = value
-            self.validate_locationEnumType(self.location)    # validate type locationEnumType
+            self.fileformat = value
+            self.validate_surfaceFileFormat(self.fileformat)    # validate type surfaceFileFormat
     def buildChildren(self, child_, nodeName_):
         if nodeName_ == 'description': 
             obj_ = description.factory()
@@ -1342,42 +1278,40 @@ class CSurface(GeneratedsSuper):
 
 class CVolume(GeneratedsSuper):
     """Name of the volume. The path to the file according to location
-    attribute Location either in the ZIP file ("relpath", default),
-    the "abspath" with an absolute path or an "URL". Set to "Nifti1"
-    to use the only supported Nifti format. This works also for
-    compressed files with name ending .nii.gz The Nifti file
-    contains information about the coordinate system used. Set type
-    of volume the Nifti file contains: - type="segmentation" The
-    Nifti file contains a single volume where the voxel values are
-    integers, representing a segmented Region of Interest. If this
-    volume is referenced by a connectome-network, its nodes
-    dn_intensityvalue attribute may match these integer values. Such
-    a segmentation volume can referenced in a connectome-volume by
-    the segmentationname attribute in addition to another, e.g.
-    T1-weighted volume which is referenced by the name attribute.
-    See also example datasets. - type="T1-weighted" The Nifti file
-    contains a T1-weighted volume. - type="T2-weighted" The Nifti
-    file contains a T2-weighted volume. - type="PD-weighted" The
-    voxel values represent a proton-density weighted signal. -
-    type="fMRI" The Nifti file contains functional MRI time series
-    data. - type="probabilitymap" Voxel values are in the range
-    [0,1]. Can stand for tissue probability maps. - type="MD"
-    Diffusion-related signal. Stands for mean diffusivity. -
-    type="FA" Diffusion-related signal. Stands for fractional
-    anisotropy. - type="LD" Diffusion-related signal. Stands for
-    longitudinal diffusivity. - type="TD" Diffusion-related signal.
-    Stands for transversal diffusivity. - type="FLAIR" Stands for
-    Fluid attenuated inversion recovery - type="MRA" Stands for
-    Magnetic resonance angiography - type="MRS" Stands for Magnetic
-    resonance spectroscopy"""
+    attribute Set to "Nifti1" to use the only supported Nifti
+    format. This works also for compressed files with name ending
+    .nii.gz The Nifti file contains information about the coordinate
+    system used. Set type of volume the Nifti file contains: -
+    type="segmentation" The Nifti file contains a single volume
+    where the voxel values are integers, representing a segmented
+    Region of Interest. If this volume is referenced by a
+    connectome-network, its nodes dn_intensityvalue attribute may
+    match these integer values. Such a segmentation volume can
+    referenced in a connectome-volume by the segmentationname
+    attribute in addition to another, e.g. T1-weighted volume which
+    is referenced by the name attribute. See also example datasets.
+    - type="T1-weighted" The Nifti file contains a T1-weighted
+    volume. - type="T2-weighted" The Nifti file contains a
+    T2-weighted volume. - type="PD-weighted" The voxel values
+    represent a proton-density weighted signal. - type="fMRI" The
+    Nifti file contains functional MRI time series data. -
+    type="probabilitymap" Voxel values are in the range [0,1]. Can
+    stand for tissue probability maps. - type="MD" Diffusion-related
+    signal. Stands for mean diffusivity. - type="FA" Diffusion-
+    related signal. Stands for fractional anisotropy. - type="LD"
+    Diffusion-related signal. Stands for longitudinal diffusivity. -
+    type="TD" Diffusion-related signal. Stands for transversal
+    diffusivity. - type="FLAIR" Stands for Fluid attenuated
+    inversion recovery - type="MRA" Stands for Magnetic resonance
+    angiography - type="MRS" Stands for Magnetic resonance
+    spectroscopy"""
     subclass = None
     superclass = None
-    def __init__(self, src=None, fileformat='Nifti1', dtype=None, name=None, location='relpath', description=None, metadata=None):
+    def __init__(self, src=None, dtype=None, name=None, fileformat='Nifti1', description=None, metadata=None):
         self.src = _cast(None, src)
-        self.fileformat = _cast(None, fileformat)
         self.dtype = _cast(None, dtype)
         self.name = _cast(None, name)
-        self.location = _cast(None, location)
+        self.fileformat = _cast(None, fileformat)
         self.description = description
         self.metadata = metadata
     def factory(*args_, **kwargs_):
@@ -1392,11 +1326,6 @@ class CVolume(GeneratedsSuper):
     def set_metadata(self, metadata): self.metadata = metadata
     def get_src(self): return self.src
     def set_src(self, src): self.src = src
-    def get_fileformat(self): return self.fileformat
-    def set_fileformat(self, fileformat): self.fileformat = fileformat
-    def validate_volumeFileFormat(self, value):
-        # Validate type volumeFileFormat, a restriction on xsd:string.
-        pass
     def get_dtype(self): return self.dtype
     def set_dtype(self, dtype): self.dtype = dtype
     def validate_volumeEnumDType(self, value):
@@ -1404,10 +1333,10 @@ class CVolume(GeneratedsSuper):
         pass
     def get_name(self): return self.name
     def set_name(self, name): self.name = name
-    def get_location(self): return self.location
-    def set_location(self, location): self.location = location
-    def validate_locationEnumType(self, value):
-        # Validate type locationEnumType, a restriction on xsd:string.
+    def get_fileformat(self): return self.fileformat
+    def set_fileformat(self, fileformat): self.fileformat = fileformat
+    def validate_volumeFileFormat(self, value):
+        # Validate type volumeFileFormat, a restriction on xsd:string.
         pass
     def export(self, outfile, level, namespace_='', name_='CVolume', namespacedef_=''):
         showIndent(outfile, level)
@@ -1423,14 +1352,12 @@ class CVolume(GeneratedsSuper):
     def exportAttributes(self, outfile, level, namespace_='', name_='CVolume'):
         if self.src is not None:
             outfile.write(' src=%s' % (self.format_string(quote_attrib(self.src).encode(ExternalEncoding), input_name='src'), ))
-        if self.fileformat is not None:
-            outfile.write(' fileformat=%s' % (quote_attrib(self.fileformat), ))
         if self.dtype is not None:
             outfile.write(' dtype=%s' % (quote_attrib(self.dtype), ))
         if self.name is not None:
             outfile.write(' name=%s' % (self.format_string(quote_attrib(self.name).encode(ExternalEncoding), input_name='name'), ))
-        if self.location is not None:
-            outfile.write(' location=%s' % (quote_attrib(self.location), ))
+        if self.fileformat is not None:
+            outfile.write(' fileformat=%s' % (quote_attrib(self.fileformat), ))
     def exportChildren(self, outfile, level, namespace_='', name_='CVolume'):
         if self.description:
             self.description.export(outfile, level, namespace_, name_='description')
@@ -1453,18 +1380,15 @@ class CVolume(GeneratedsSuper):
         if self.src is not None:
             showIndent(outfile, level)
             outfile.write('src = "%s",\n' % (self.src,))
-        if self.fileformat is not None:
-            showIndent(outfile, level)
-            outfile.write('fileformat = "%s",\n' % (self.fileformat,))
         if self.dtype is not None:
             showIndent(outfile, level)
             outfile.write('dtype = "%s",\n' % (self.dtype,))
         if self.name is not None:
             showIndent(outfile, level)
             outfile.write('name = "%s",\n' % (self.name,))
-        if self.location is not None:
+        if self.fileformat is not None:
             showIndent(outfile, level)
-            outfile.write('location = "%s",\n' % (self.location,))
+            outfile.write('fileformat = "%s",\n' % (self.fileformat,))
     def exportLiteralChildren(self, outfile, level, name_):
         if self.description is not None:
             showIndent(outfile, level)
@@ -1487,10 +1411,6 @@ class CVolume(GeneratedsSuper):
         value = attrs.get('src')
         if value is not None:
             self.src = value
-        value = attrs.get('fileformat')
-        if value is not None:
-            self.fileformat = value
-            self.validate_volumeFileFormat(self.fileformat)    # validate type volumeFileFormat
         value = attrs.get('dtype')
         if value is not None:
             self.dtype = value
@@ -1498,10 +1418,10 @@ class CVolume(GeneratedsSuper):
         value = attrs.get('name')
         if value is not None:
             self.name = value
-        value = attrs.get('location')
+        value = attrs.get('fileformat')
         if value is not None:
-            self.location = value
-            self.validate_locationEnumType(self.location)    # validate type locationEnumType
+            self.fileformat = value
+            self.validate_volumeFileFormat(self.fileformat)    # validate type volumeFileFormat
     def buildChildren(self, child_, nodeName_):
         if nodeName_ == 'description': 
             obj_ = description.factory()
@@ -1516,18 +1436,16 @@ class CVolume(GeneratedsSuper):
 
 class CTrack(GeneratedsSuper):
     """Name of the track file. The path to the file according to location
-    attribute Location either in the ZIP file ("relpath", default),
-    the "abspath" with an absolute path or an "URL". Set to
-    "TrackVis" (default) to use the only supported TrackVis file
-    format. The TrackVis file format allows to store any number of
-    additional numerical data on the individual fibers."""
+    attribute Set to "TrackVis" (default) to use the only supported
+    TrackVis file format. The TrackVis file format allows to store
+    any number of additional numerical data on the individual
+    fibers."""
     subclass = None
     superclass = None
-    def __init__(self, src=None, fileformat='TrackVis', name=None, location='relpath', description=None, metadata=None):
+    def __init__(self, src=None, name=None, fileformat='TrackVis', description=None, metadata=None):
         self.src = _cast(None, src)
-        self.fileformat = _cast(None, fileformat)
         self.name = _cast(None, name)
-        self.location = _cast(None, location)
+        self.fileformat = _cast(None, fileformat)
         self.description = description
         self.metadata = metadata
     def factory(*args_, **kwargs_):
@@ -1542,17 +1460,12 @@ class CTrack(GeneratedsSuper):
     def set_metadata(self, metadata): self.metadata = metadata
     def get_src(self): return self.src
     def set_src(self, src): self.src = src
+    def get_name(self): return self.name
+    def set_name(self, name): self.name = name
     def get_fileformat(self): return self.fileformat
     def set_fileformat(self, fileformat): self.fileformat = fileformat
     def validate_trackFileFormat(self, value):
         # Validate type trackFileFormat, a restriction on xsd:string.
-        pass
-    def get_name(self): return self.name
-    def set_name(self, name): self.name = name
-    def get_location(self): return self.location
-    def set_location(self, location): self.location = location
-    def validate_locationEnumType(self, value):
-        # Validate type locationEnumType, a restriction on xsd:string.
         pass
     def export(self, outfile, level, namespace_='', name_='CTrack', namespacedef_=''):
         showIndent(outfile, level)
@@ -1568,12 +1481,10 @@ class CTrack(GeneratedsSuper):
     def exportAttributes(self, outfile, level, namespace_='', name_='CTrack'):
         if self.src is not None:
             outfile.write(' src=%s' % (self.format_string(quote_attrib(self.src).encode(ExternalEncoding), input_name='src'), ))
-        if self.fileformat is not None:
-            outfile.write(' fileformat=%s' % (quote_attrib(self.fileformat), ))
         if self.name is not None:
             outfile.write(' name=%s' % (self.format_string(quote_attrib(self.name).encode(ExternalEncoding), input_name='name'), ))
-        if self.location is not None:
-            outfile.write(' location=%s' % (quote_attrib(self.location), ))
+        if self.fileformat is not None:
+            outfile.write(' fileformat=%s' % (quote_attrib(self.fileformat), ))
     def exportChildren(self, outfile, level, namespace_='', name_='CTrack'):
         if self.description:
             self.description.export(outfile, level, namespace_, name_='description')
@@ -1596,15 +1507,12 @@ class CTrack(GeneratedsSuper):
         if self.src is not None:
             showIndent(outfile, level)
             outfile.write('src = "%s",\n' % (self.src,))
-        if self.fileformat is not None:
-            showIndent(outfile, level)
-            outfile.write('fileformat = "%s",\n' % (self.fileformat,))
         if self.name is not None:
             showIndent(outfile, level)
             outfile.write('name = "%s",\n' % (self.name,))
-        if self.location is not None:
+        if self.fileformat is not None:
             showIndent(outfile, level)
-            outfile.write('location = "%s",\n' % (self.location,))
+            outfile.write('fileformat = "%s",\n' % (self.fileformat,))
     def exportLiteralChildren(self, outfile, level, name_):
         if self.description is not None:
             showIndent(outfile, level)
@@ -1627,17 +1535,13 @@ class CTrack(GeneratedsSuper):
         value = attrs.get('src')
         if value is not None:
             self.src = value
+        value = attrs.get('name')
+        if value is not None:
+            self.name = value
         value = attrs.get('fileformat')
         if value is not None:
             self.fileformat = value
             self.validate_trackFileFormat(self.fileformat)    # validate type trackFileFormat
-        value = attrs.get('name')
-        if value is not None:
-            self.name = value
-        value = attrs.get('location')
-        if value is not None:
-            self.location = value
-            self.validate_locationEnumType(self.location)    # validate type locationEnumType
     def buildChildren(self, child_, nodeName_):
         if nodeName_ == 'description': 
             obj_ = description.factory()
@@ -1652,18 +1556,15 @@ class CTrack(GeneratedsSuper):
 
 class CTimeserie(GeneratedsSuper):
     """Name of the timeseries. The path to the file according to location
-    attribute Location either in the ZIP file ("relpath", default),
-    the "abspath" with an absolute path or an "URL". Set to "HDF5"
-    (default) to use the only supported Hierarchical Data File
-    format. The HDF5 allows to store any number of time series or
-    other large homogeneous data."""
+    attribute Set to "HDF5" (default) to use the only supported
+    Hierarchical Data File format. The HDF5 allows to store any
+    number of time series or other large homogeneous data."""
     subclass = None
     superclass = None
-    def __init__(self, src=None, fileformat='HDF5', name=None, location='relpath', description=None, metadata=None):
+    def __init__(self, src=None, name=None, fileformat='HDF5', description=None, metadata=None):
         self.src = _cast(None, src)
-        self.fileformat = _cast(None, fileformat)
         self.name = _cast(None, name)
-        self.location = _cast(None, location)
+        self.fileformat = _cast(None, fileformat)
         self.description = description
         self.metadata = metadata
     def factory(*args_, **kwargs_):
@@ -1678,17 +1579,12 @@ class CTimeserie(GeneratedsSuper):
     def set_metadata(self, metadata): self.metadata = metadata
     def get_src(self): return self.src
     def set_src(self, src): self.src = src
+    def get_name(self): return self.name
+    def set_name(self, name): self.name = name
     def get_fileformat(self): return self.fileformat
     def set_fileformat(self, fileformat): self.fileformat = fileformat
     def validate_timeserieFileFormat(self, value):
         # Validate type timeserieFileFormat, a restriction on xsd:string.
-        pass
-    def get_name(self): return self.name
-    def set_name(self, name): self.name = name
-    def get_location(self): return self.location
-    def set_location(self, location): self.location = location
-    def validate_locationEnumType(self, value):
-        # Validate type locationEnumType, a restriction on xsd:string.
         pass
     def export(self, outfile, level, namespace_='', name_='CTimeserie', namespacedef_=''):
         showIndent(outfile, level)
@@ -1704,12 +1600,10 @@ class CTimeserie(GeneratedsSuper):
     def exportAttributes(self, outfile, level, namespace_='', name_='CTimeserie'):
         if self.src is not None:
             outfile.write(' src=%s' % (self.format_string(quote_attrib(self.src).encode(ExternalEncoding), input_name='src'), ))
-        if self.fileformat is not None:
-            outfile.write(' fileformat=%s' % (quote_attrib(self.fileformat), ))
         if self.name is not None:
             outfile.write(' name=%s' % (self.format_string(quote_attrib(self.name).encode(ExternalEncoding), input_name='name'), ))
-        if self.location is not None:
-            outfile.write(' location=%s' % (quote_attrib(self.location), ))
+        if self.fileformat is not None:
+            outfile.write(' fileformat=%s' % (quote_attrib(self.fileformat), ))
     def exportChildren(self, outfile, level, namespace_='', name_='CTimeserie'):
         if self.description:
             self.description.export(outfile, level, namespace_, name_='description')
@@ -1732,15 +1626,12 @@ class CTimeserie(GeneratedsSuper):
         if self.src is not None:
             showIndent(outfile, level)
             outfile.write('src = "%s",\n' % (self.src,))
-        if self.fileformat is not None:
-            showIndent(outfile, level)
-            outfile.write('fileformat = "%s",\n' % (self.fileformat,))
         if self.name is not None:
             showIndent(outfile, level)
             outfile.write('name = "%s",\n' % (self.name,))
-        if self.location is not None:
+        if self.fileformat is not None:
             showIndent(outfile, level)
-            outfile.write('location = "%s",\n' % (self.location,))
+            outfile.write('fileformat = "%s",\n' % (self.fileformat,))
     def exportLiteralChildren(self, outfile, level, name_):
         if self.description is not None:
             showIndent(outfile, level)
@@ -1763,17 +1654,13 @@ class CTimeserie(GeneratedsSuper):
         value = attrs.get('src')
         if value is not None:
             self.src = value
+        value = attrs.get('name')
+        if value is not None:
+            self.name = value
         value = attrs.get('fileformat')
         if value is not None:
             self.fileformat = value
             self.validate_timeserieFileFormat(self.fileformat)    # validate type timeserieFileFormat
-        value = attrs.get('name')
-        if value is not None:
-            self.name = value
-        value = attrs.get('location')
-        if value is not None:
-            self.location = value
-            self.validate_locationEnumType(self.location)    # validate type locationEnumType
     def buildChildren(self, child_, nodeName_):
         if nodeName_ == 'description': 
             obj_ = description.factory()
@@ -1788,16 +1675,13 @@ class CTimeserie(GeneratedsSuper):
 
 class CData(GeneratedsSuper):
     """Name of the data file The path to the file according to location
-    attribute Location either in the ZIP file ("relpath", default),
-    the "abspath" with an absolute path or an "URL". Use one of
-    'NumPy', 'HDF5', 'XML', 'Other'"""
+    attribute Use one of 'NumPy', 'HDF5', 'XML', 'Other'"""
     subclass = None
     superclass = None
-    def __init__(self, src=None, fileformat=None, name=None, location='relpath', description=None, metadata=None):
+    def __init__(self, src=None, name=None, fileformat=None, description=None, metadata=None):
         self.src = _cast(None, src)
-        self.fileformat = _cast(None, fileformat)
         self.name = _cast(None, name)
-        self.location = _cast(None, location)
+        self.fileformat = _cast(None, fileformat)
         self.description = description
         self.metadata = metadata
     def factory(*args_, **kwargs_):
@@ -1812,17 +1696,12 @@ class CData(GeneratedsSuper):
     def set_metadata(self, metadata): self.metadata = metadata
     def get_src(self): return self.src
     def set_src(self, src): self.src = src
+    def get_name(self): return self.name
+    def set_name(self, name): self.name = name
     def get_fileformat(self): return self.fileformat
     def set_fileformat(self, fileformat): self.fileformat = fileformat
     def validate_dataFileFormat(self, value):
         # Validate type dataFileFormat, a restriction on xsd:string.
-        pass
-    def get_name(self): return self.name
-    def set_name(self, name): self.name = name
-    def get_location(self): return self.location
-    def set_location(self, location): self.location = location
-    def validate_locationEnumType(self, value):
-        # Validate type locationEnumType, a restriction on xsd:string.
         pass
     def export(self, outfile, level, namespace_='', name_='CData', namespacedef_=''):
         showIndent(outfile, level)
@@ -1838,12 +1717,10 @@ class CData(GeneratedsSuper):
     def exportAttributes(self, outfile, level, namespace_='', name_='CData'):
         if self.src is not None:
             outfile.write(' src=%s' % (self.format_string(quote_attrib(self.src).encode(ExternalEncoding), input_name='src'), ))
-        if self.fileformat is not None:
-            outfile.write(' fileformat=%s' % (quote_attrib(self.fileformat), ))
         if self.name is not None:
             outfile.write(' name=%s' % (self.format_string(quote_attrib(self.name).encode(ExternalEncoding), input_name='name'), ))
-        if self.location is not None:
-            outfile.write(' location=%s' % (quote_attrib(self.location), ))
+        if self.fileformat is not None:
+            outfile.write(' fileformat=%s' % (quote_attrib(self.fileformat), ))
     def exportChildren(self, outfile, level, namespace_='', name_='CData'):
         if self.description:
             self.description.export(outfile, level, namespace_, name_='description')
@@ -1866,15 +1743,12 @@ class CData(GeneratedsSuper):
         if self.src is not None:
             showIndent(outfile, level)
             outfile.write('src = "%s",\n' % (self.src,))
-        if self.fileformat is not None:
-            showIndent(outfile, level)
-            outfile.write('fileformat = "%s",\n' % (self.fileformat,))
         if self.name is not None:
             showIndent(outfile, level)
             outfile.write('name = "%s",\n' % (self.name,))
-        if self.location is not None:
+        if self.fileformat is not None:
             showIndent(outfile, level)
-            outfile.write('location = "%s",\n' % (self.location,))
+            outfile.write('fileformat = "%s",\n' % (self.fileformat,))
     def exportLiteralChildren(self, outfile, level, name_):
         if self.description is not None:
             showIndent(outfile, level)
@@ -1897,17 +1771,13 @@ class CData(GeneratedsSuper):
         value = attrs.get('src')
         if value is not None:
             self.src = value
+        value = attrs.get('name')
+        if value is not None:
+            self.name = value
         value = attrs.get('fileformat')
         if value is not None:
             self.fileformat = value
             self.validate_dataFileFormat(self.fileformat)    # validate type dataFileFormat
-        value = attrs.get('name')
-        if value is not None:
-            self.name = value
-        value = attrs.get('location')
-        if value is not None:
-            self.location = value
-            self.validate_locationEnumType(self.location)    # validate type locationEnumType
     def buildChildren(self, child_, nodeName_):
         if nodeName_ == 'description': 
             obj_ = description.factory()
@@ -1922,17 +1792,14 @@ class CData(GeneratedsSuper):
 
 class CScript(GeneratedsSuper):
     """Name of the script file The path to the file according to location
-    attribute Location either in the ZIP file ("relpath", default),
-    the "abspath" with an absolute path or an "URL". What kind of
-    script. Use one of "Python" (default), "Bash", "Matlab", or
-    "Other"."""
+    attribute What kind of script. Use one of "Python" (default),
+    "Bash", "Matlab", or "Other"."""
     subclass = None
     superclass = None
-    def __init__(self, src=None, type_='Python', name=None, location='relpath', description=None, metadata=None):
+    def __init__(self, src=None, type_='Python', name=None, description=None, metadata=None):
         self.src = _cast(None, src)
         self.type_ = _cast(None, type_)
         self.name = _cast(None, name)
-        self.location = _cast(None, location)
         self.description = description
         self.metadata = metadata
     def factory(*args_, **kwargs_):
@@ -1954,11 +1821,6 @@ class CScript(GeneratedsSuper):
         pass
     def get_name(self): return self.name
     def set_name(self, name): self.name = name
-    def get_location(self): return self.location
-    def set_location(self, location): self.location = location
-    def validate_locationEnumType(self, value):
-        # Validate type locationEnumType, a restriction on xsd:string.
-        pass
     def export(self, outfile, level, namespace_='', name_='CScript', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
@@ -1977,8 +1839,6 @@ class CScript(GeneratedsSuper):
             outfile.write(' type=%s' % (quote_attrib(self.type_), ))
         if self.name is not None:
             outfile.write(' name=%s' % (self.format_string(quote_attrib(self.name).encode(ExternalEncoding), input_name='name'), ))
-        if self.location is not None:
-            outfile.write(' location=%s' % (quote_attrib(self.location), ))
     def exportChildren(self, outfile, level, namespace_='', name_='CScript'):
         if self.description:
             self.description.export(outfile, level, namespace_, name_='description')
@@ -2007,9 +1867,6 @@ class CScript(GeneratedsSuper):
         if self.name is not None:
             showIndent(outfile, level)
             outfile.write('name = "%s",\n' % (self.name,))
-        if self.location is not None:
-            showIndent(outfile, level)
-            outfile.write('location = "%s",\n' % (self.location,))
     def exportLiteralChildren(self, outfile, level, name_):
         if self.description is not None:
             showIndent(outfile, level)
@@ -2039,10 +1896,6 @@ class CScript(GeneratedsSuper):
         value = attrs.get('name')
         if value is not None:
             self.name = value
-        value = attrs.get('location')
-        if value is not None:
-            self.location = value
-            self.validate_locationEnumType(self.location)    # validate type locationEnumType
     def buildChildren(self, child_, nodeName_):
         if nodeName_ == 'description': 
             obj_ = description.factory()
@@ -2057,19 +1910,16 @@ class CScript(GeneratedsSuper):
 
 class CImagestack(GeneratedsSuper):
     """Name of the image stack The path to the enumerated files according
-    to location attribute Location either in the ZIP file
-    ("relpath", default), the "abspath" with an absolute path or an
-    "URL". URLs are not supported. The file name pattern that may
-    contain simple shell-style wildcards a la fnmatch. Use one of
-    'PNG', 'JPG', 'TIFF', 'Other'"""
+    to location attribute The file name pattern that may contain
+    simple shell-style wildcards a la fnmatch. Use one of 'PNG',
+    'JPG', 'TIFF', 'Other'"""
     subclass = None
     superclass = None
-    def __init__(self, src=None, fileformat=None, pattern=None, name=None, location='relpath', description=None, metadata=None):
+    def __init__(self, src=None, fileformat=None, name=None, pattern=None, description=None, metadata=None):
         self.src = _cast(None, src)
         self.fileformat = _cast(None, fileformat)
-        self.pattern = _cast(None, pattern)
         self.name = _cast(None, name)
-        self.location = _cast(None, location)
+        self.pattern = _cast(None, pattern)
         self.description = description
         self.metadata = metadata
     def factory(*args_, **kwargs_):
@@ -2089,15 +1939,10 @@ class CImagestack(GeneratedsSuper):
     def validate_imagestackFileFormat(self, value):
         # Validate type imagestackFileFormat, a restriction on xsd:string.
         pass
-    def get_pattern(self): return self.pattern
-    def set_pattern(self, pattern): self.pattern = pattern
     def get_name(self): return self.name
     def set_name(self, name): self.name = name
-    def get_location(self): return self.location
-    def set_location(self, location): self.location = location
-    def validate_locationEnumType(self, value):
-        # Validate type locationEnumType, a restriction on xsd:string.
-        pass
+    def get_pattern(self): return self.pattern
+    def set_pattern(self, pattern): self.pattern = pattern
     def export(self, outfile, level, namespace_='', name_='CImagestack', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
@@ -2114,12 +1959,10 @@ class CImagestack(GeneratedsSuper):
             outfile.write(' src=%s' % (self.format_string(quote_attrib(self.src).encode(ExternalEncoding), input_name='src'), ))
         if self.fileformat is not None:
             outfile.write(' fileformat=%s' % (quote_attrib(self.fileformat), ))
-        if self.pattern is not None:
-            outfile.write(' pattern=%s' % (self.format_string(quote_attrib(self.pattern).encode(ExternalEncoding), input_name='pattern'), ))
         if self.name is not None:
             outfile.write(' name=%s' % (self.format_string(quote_attrib(self.name).encode(ExternalEncoding), input_name='name'), ))
-        if self.location is not None:
-            outfile.write(' location=%s' % (quote_attrib(self.location), ))
+        if self.pattern is not None:
+            outfile.write(' pattern=%s' % (self.format_string(quote_attrib(self.pattern).encode(ExternalEncoding), input_name='pattern'), ))
     def exportChildren(self, outfile, level, namespace_='', name_='CImagestack'):
         if self.description:
             self.description.export(outfile, level, namespace_, name_='description')
@@ -2145,15 +1988,12 @@ class CImagestack(GeneratedsSuper):
         if self.fileformat is not None:
             showIndent(outfile, level)
             outfile.write('fileformat = "%s",\n' % (self.fileformat,))
-        if self.pattern is not None:
-            showIndent(outfile, level)
-            outfile.write('pattern = "%s",\n' % (self.pattern,))
         if self.name is not None:
             showIndent(outfile, level)
             outfile.write('name = "%s",\n' % (self.name,))
-        if self.location is not None:
+        if self.pattern is not None:
             showIndent(outfile, level)
-            outfile.write('location = "%s",\n' % (self.location,))
+            outfile.write('pattern = "%s",\n' % (self.pattern,))
     def exportLiteralChildren(self, outfile, level, name_):
         if self.description is not None:
             showIndent(outfile, level)
@@ -2180,16 +2020,12 @@ class CImagestack(GeneratedsSuper):
         if value is not None:
             self.fileformat = value
             self.validate_imagestackFileFormat(self.fileformat)    # validate type imagestackFileFormat
-        value = attrs.get('pattern')
-        if value is not None:
-            self.pattern = value
         value = attrs.get('name')
         if value is not None:
             self.name = value
-        value = attrs.get('location')
+        value = attrs.get('pattern')
         if value is not None:
-            self.location = value
-            self.validate_locationEnumType(self.location)    # validate type locationEnumType
+            self.pattern = value
     def buildChildren(self, child_, nodeName_):
         if nodeName_ == 'description': 
             obj_ = description.factory()

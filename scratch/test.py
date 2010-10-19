@@ -14,10 +14,11 @@ from cfflib import *
 
 # volume save
 from cfflib import *
-a=load_from_meta_cml('datasets/meta.cml')
-v=a.get_all()[1]
-v.load()
-v.content.get_header()
+a=load_from_meta_cml('datasets/ds2/meta.cml')
+print a.get_all()
+#v=a.get_all()[1]
+#v.load()
+#v.content.get_header()
 #save_to_cff('test1.cff', a)
 
 

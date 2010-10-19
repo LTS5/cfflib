@@ -81,7 +81,6 @@ ExternalEncoding = 'ascii'
 class connectome(supermod.connectome):
     def __init__(self, connectome_meta=None, connectome_network=None, connectome_surface=None, connectome_volume=None, connectome_track=None, connectome_timeserie=None, connectome_data=None, connectome_script=None, connectome_imagestack=None):
         super(connectome, self).__init__(connectome_meta, connectome_network, connectome_surface, connectome_volume, connectome_track, connectome_timeserie, connectome_data, connectome_script, connectome_imagestack, )
-
         # add parent reference to all children
         self._update_parent_reference()
 
@@ -198,8 +197,8 @@ supermod.connectome.subclass = connectome
 
 
 class CMetadata(supermod.CMetadata):
-    def __init__(self, version=None, generator=None, initial_creator=None, institution=None, creation_date=None, modification_date=None, name=None, species=None, targetspace=None, legal_notice=None, reference=None, email=None, url=None, description=None, metadata=None):
-        super(CMetadata, self).__init__(version, generator, initial_creator, institution, creation_date, modification_date, name, species, targetspace, legal_notice, reference, email, url, description, metadata, )
+    def __init__(self, version=None, generator=None, author=None, institution=None, creation_date=None, modification_date=None, name=None, species=None, legal_notice=None, reference=None, email=None, url=None, description=None, metadata=None):
+        super(CMetadata, self).__init__(version, generator, author, institution, creation_date, modification_date, name, species, legal_notice, reference, email, url, description, metadata, )
 supermod.CMetadata.subclass = CMetadata
 # end class CMetadata
 
@@ -240,8 +239,8 @@ class CBaseClass(object):
         else:
             raise Exception('There is nothing to save.')
         
-    def __repr__(self):
-        pass
+#    def __repr__(self):
+#        pass
         # XXX: give a representation of the object. for print
         
     def get_type(self):
@@ -251,8 +250,8 @@ class CBaseClass(object):
     
 
 class CNetwork(supermod.CNetwork, CBaseClass):
-    def __init__(self, edgeless=False, src=None, name=None, dtype='AttributeNetwork', location='relpath', fileformat='GEXF', metadata=None, network_surface=None, network_volume=None, network_track=None, network_timeserie=None, network_data=None, description=None):
-        super(CNetwork, self).__init__(edgeless, src, name, dtype, location, fileformat, metadata, network_surface, network_volume, network_track, network_timeserie, network_data, description, )
+    def __init__(self, src=None, dtype='AttributeNetwork', name=None, fileformat='GraphML', metadata=None, network_surface=None, network_volume=None, network_track=None, network_timeserie=None, network_data=None, description=None):
+        super(CNetwork, self).__init__(src, dtype, name, fileformat, metadata, network_surface, network_volume, network_track, network_timeserie, network_data, description, )
         
     def get_unique_relpath(self):
         """ Return a unique relative path for this element """
@@ -271,8 +270,8 @@ supermod.CNetwork.subclass = CNetwork
 
 
 class CSurface(supermod.CSurface, CBaseClass):
-    def __init__(self, src=None, fileformat=None, dtype=None, name=None, location='relpath', description=None, metadata=None):
-        super(CSurface, self).__init__(src, fileformat, dtype, name, location, description, metadata, )
+    def __init__(self, src=None, dtype=None, name=None, fileformat=None, description=None, metadata=None):
+        super(CSurface, self).__init__(src, dtype, name, fileformat, description, metadata, )
         
     def get_unique_relpath(self):
         """ Return a unique relative path for this element """
@@ -289,8 +288,8 @@ supermod.CSurface.subclass = CSurface
 
 
 class CVolume(supermod.CVolume, CBaseClass):
-    def __init__(self, src=None, fileformat='Nifti1', dtype=None, name=None, location='relpath', description=None, metadata=None):
-        super(CVolume, self).__init__(src, fileformat, dtype, name, location, description, metadata, )
+    def __init__(self, src=None, dtype=None, name=None, fileformat='Nifti1', description=None, metadata=None):
+        super(CVolume, self).__init__(src, dtype, name, fileformat, description, metadata, )
                   
     def get_unique_relpath(self):
         """ Return a unique relative path for this element """
@@ -312,8 +311,8 @@ supermod.CVolume.subclass = CVolume
 # end class CVolume
 
 class CTrack(supermod.CTrack, CBaseClass):
-    def __init__(self, src=None, fileformat='TrackVis', name=None, location='relpath', description=None, metadata=None):
-        super(CTrack, self).__init__(src, fileformat, name, location, description, metadata, )
+    def __init__(self, src=None, name=None, fileformat='TrackVis', description=None, metadata=None):
+        super(CTrack, self).__init__(src, name, fileformat, description, metadata, )
                         
     def get_unique_relpath(self):
         """ Return a unique relative path for this element """
@@ -330,8 +329,8 @@ supermod.CTrack.subclass = CTrack
 
 
 class CTimeserie(supermod.CTimeserie, CBaseClass):
-    def __init__(self, src=None, fileformat='HDF5', name=None, location='relpath', description=None, metadata=None):
-        super(CTimeserie, self).__init__(src, fileformat, name, location, description, metadata, )
+    def __init__(self, src=None, name=None, fileformat='HDF5', description=None, metadata=None):
+        super(CTimeserie, self).__init__(src, name, fileformat, description, metadata, )
                 
     def get_unique_relpath(self):
         """ Return a unique relative path for this element """
@@ -348,8 +347,8 @@ supermod.CTimeserie.subclass = CTimeserie
 
 
 class CData(supermod.CData, CBaseClass):
-    def __init__(self, src=None, fileformat=None, name=None, location='relpath', description=None, metadata=None):
-        super(CData, self).__init__(src, fileformat, name, location, description, metadata, )
+    def __init__(self, src=None, name=None, fileformat=None, description=None, metadata=None):
+        super(CData, self).__init__(src, name, fileformat, description, metadata, )
                 
     def get_unique_relpath(self):
         """ Return a unique relative path for this element """
@@ -370,8 +369,8 @@ supermod.CData.subclass = CData
 
 
 class CScript(supermod.CScript, CBaseClass):
-    def __init__(self, src=None, type_='Python', name=None, location='relpath', description=None, metadata=None):
-        super(CScript, self).__init__(src, type_, name, location, description, metadata, )
+    def __init__(self, src=None, type_='Python', name=None, description=None, metadata=None):
+        super(CScript, self).__init__(src, type_, name, description, metadata, )
                 
     def get_unique_relpath(self):
         """ Return a unique relative path for this element """
@@ -392,8 +391,8 @@ supermod.CScript.subclass = CScript
 
 
 class CImagestack(supermod.CImagestack, CBaseClass):
-    def __init__(self, src=None, fileformat=None, pattern=None, name=None, location='relpath', description=None, metadata=None):
-        super(CImagestack, self).__init__(src, fileformat, pattern, name, location, description, metadata, )
+    def __init__(self, src=None, fileformat=None, name=None, pattern=None, description=None, metadata=None):
+        super(CImagestack, self).__init__(src, fileformat, name, pattern, description, metadata, )
         
     def save(self):
         """ Save a loaded connectome object to a temporary file, return the path """

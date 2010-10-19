@@ -1,0 +1,12 @@
+include LICENSE
+include THANKS
+include README.rst
+
+graft cfflib
+graft datasets
+graft doc
+graft scratch
+
+prune doc/manual
+prune doc/manual/build
+prune doc/build
