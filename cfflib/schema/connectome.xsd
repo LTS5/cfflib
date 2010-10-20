@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<xsd:schema xmlns="http://www.connectomics.ch/2010/Connectome/xmlns" xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://www.connectomics.ch/2010/Connectome/xmlns">
+<xsd:schema xmlns="http://www.connectomics.org/2010/Connectome/xmlns" xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://www.connectomics.org/2010/Connectome/xmlns">
 
 <xsd:annotation xml:lang="en">
     <xsd:documentation>
@@ -423,7 +423,7 @@
     </xsd:annotation>
     </xsd:attribute>
 
-    <xsd:attribute name="fileformat" type="networkFileFormat" default="GraphML">
+    <xsd:attribute default="GraphML" name="fileformat" type="networkFileFormat">
     <xsd:annotation xml:lang="en">
 	<xsd:documentation>
 	Is the network stored it "GEXF" or "GraphML" format, or "Other" format?
@@ -431,7 +431,7 @@
     </xsd:annotation>
     </xsd:attribute>
     
-    <xsd:attribute name="dtype" type="networkEnumDType" default="AttributeNetwork">
+    <xsd:attribute default="AttributeNetwork" name="dtype" type="networkEnumDType">
     <xsd:annotation xml:lang="en">
 	<xsd:documentation>
 	- dtype="AttributeNetwork"
@@ -573,7 +573,7 @@
     </xsd:annotation>
     </xsd:attribute>
 
-    <xsd:attribute name="fileformat" type="volumeFileFormat" default="Nifti1">
+    <xsd:attribute default="Nifti1" name="fileformat" type="volumeFileFormat">
     <xsd:annotation xml:lang="en">
       <xsd:documentation>
       Set to "Nifti1" to use the only supported Nifti format. This works also
@@ -670,7 +670,7 @@
     </xsd:annotation>
     </xsd:attribute>
     
-    <xsd:attribute name="fileformat" type="trackFileFormat" default="TrackVis">
+    <xsd:attribute default="TrackVis" name="fileformat" type="trackFileFormat">
     <xsd:annotation xml:lang="en">
       <xsd:documentation>
       Set to "TrackVis" (default) to use the only supported TrackVis file format.
@@ -726,7 +726,7 @@
     </xsd:annotation>
     </xsd:attribute>
     
-    <xsd:attribute name="fileformat" type="timeserieFileFormat" default="HDF5">
+    <xsd:attribute default="HDF5" name="fileformat" type="timeserieFileFormat">
     <xsd:annotation xml:lang="en">
       <xsd:documentation>
       Set to "HDF5" (default) to use the only supported Hierarchical Data File format.
@@ -838,7 +838,7 @@
     </xsd:annotation>
     </xsd:attribute>
 
-    <xsd:attribute name="type" type="scriptEnumType" default="Python">
+    <xsd:attribute default="Python" name="type" type="scriptEnumType">
     <xsd:annotation xml:lang="en">
        <xsd:documentation>
 	What kind of script. Use one of "Python" (default), "Bash", "Matlab",
@@ -1078,4 +1078,3 @@
 </xsd:complexType>
 
 </xsd:schema>
-

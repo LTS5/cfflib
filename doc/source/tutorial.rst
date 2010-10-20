@@ -2,7 +2,7 @@
 How to use the Connectome File Format Library
 =============================================
 
-An example dataset is provided with the source distribution.
+An example Connectome File Format Version 2.0 is provided on the `homepage <http://connectomeviewer.org/viewer/datasets>`_.
 
 Import the library. Subsequently, we assume that this has been done::
 

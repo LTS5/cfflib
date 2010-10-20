@@ -32,8 +32,9 @@ def main(**extra_args):
     from distutils.core import setup
     
     setup(name='cfflib',
-          version='1.0',
+          version='0.9',
           description='Connectome File Format Library',
+          long_description = """The Connectome File Format library supports easy handling of many neuroimaging formats and metadata for research in connectomics""",
           author='EPFL LTS5 Diffusion Group',
           author_email='info@connectomics.org',
           url='http://www.connectomics.org/',

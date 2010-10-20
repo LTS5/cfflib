@@ -1,10 +1,10 @@
 include THANKS COPYING Makefile* MANIFEST.in setup* README.* LICENSE
 
 graft cfflib
-graft datasets
 graft doc
 graft scratch
 
+prune datasets/
 prune doc/manual
 prune doc/manual/build
 prune doc/build

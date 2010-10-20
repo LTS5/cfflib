@@ -4,18 +4,6 @@ python /home/stephan/Dev/Python/generateDS-2.1a/generateDS.py --subclass-suffix=
 Documentation:
 http://www.rexx.com/~dkuhlman/generateDS.html
 
-Load a meta.xml file::
-
-	import cfflib
-	a = cfflib.parse('/home/stephan/Dev/PyWorkspace/cfflib/datasets/meta.xml')
-
-Export the file::
-
-	f = open('output.xml', 'w')
-	f.write('<?xml version="1.0" encoding="UTF-8"?>\n')
-	a.export(f, 0, namespacedef_='xmlns="http://www.connectomics.ch/2010/Connectome/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.connectomics.ch/2010/Connectome/xmlns connectome.xsd"')
-	f.close()
-
 Think
 -----
      
@@ -30,7 +18,6 @@ Convention:
 .src -> refering to relative path in fs or zip file (iszip = True)
 .tmpsrc -> refering to absolute path in fs or tempfile. a tempfile is created when .content != None.
 schema to convert absolute file names to relative: CXXX / unique_name.fileformatending
-
 
 Use Case
 --------
