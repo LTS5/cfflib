@@ -158,9 +158,9 @@ class connectome(supermod.connectome):
         from StringIO import StringIO
         re = StringIO()
         re.write('<?xml version="1.0" encoding="UTF-8"?>\n')
-        ns = """xmlns="http://www.connectomics.ch/2010/Connectome/xmlns"
+        ns = """xmlns="http://www.connectomics.org/2010/Connectome/xmlns"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-      xsi:schemaLocation="http://www.connectomics.ch/2010/Connectome/xmlns connectome.xsd" """
+      xsi:schemaLocation="http://www.connectomics.org/2010/Connectome/xmlns connectome.xsd" """
         self.export(re, 0, name_= "connectome", namespacedef_=ns)
         re.seek(0)
         return re.read()
@@ -204,8 +204,8 @@ supermod.CMetadata.subclass = CMetadata
 
 
 class description(supermod.description):
-    def __init__(self, format=None, valueOf_=None):
-        super(description, self).__init__(format, valueOf_, )
+    def __init__(self, format=None, value=None):
+        super(description, self).__init__(format, value, )
 supermod.description.subclass = description
 # end class description
 
@@ -414,8 +414,8 @@ supermod.Metadata.subclass = Metadata
 
 
 class data(supermod.data):
-    def __init__(self, key=None, valueOf_=None):
-        super(data, self).__init__(key, valueOf_, )
+    def __init__(self, key=None, value=None):
+        super(data, self).__init__(key, value, )
 supermod.data.subclass = data
 # end class data
 

@@ -1,5 +1,6 @@
 Generate classes with: 
-python /home/stephan/Dev/Python/generateDS-2.1a/generateDS.py --subclass-suffix="" -f --super="cff" -o /home/stephan/Dev/PyWorkspace/cfflib/cfflib/cff.py -s /home/stephan/Dev/PyWorkspace/cfflib/cfflib/cfflib.py /home/stephan/Dev/PyWorkspace/cfflib/doc/schema/connectome.xsd
+* python /home/stephan/Dev/Python/generateDS-2.1a/generateDS.py --subclass-suffix="" -f --super="cff" -o /home/stephan/Dev/PyWorkspace/cfflib/cfflib/cff.py -s /home/stephan/Dev/PyWorkspace/cfflib/cfflib/cfflib.py /home/stephan/Dev/PyWorkspace/cfflib/doc/schema/connectome.xsd
+* do a replacement of valueOf_ with value
 
 Documentation:
 http://www.rexx.com/~dkuhlman/generateDS.html
