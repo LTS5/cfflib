@@ -79,6 +79,26 @@ ExternalEncoding = 'ascii'
 #
 
 class connectome(supermod.connectome):
+    """
+        Creates a new connectome file
+        
+        Parameters
+        ----------
+            inputs...
+        
+        Returns
+        -------
+            outputs...
+            
+        Examples
+        --------
+            use cases...
+            
+        See also
+        --------
+            related functions...
+    
+    """
     def __init__(self, connectome_meta=None, connectome_network=None, connectome_surface=None, connectome_volume=None, connectome_track=None, connectome_timeserie=None, connectome_data=None, connectome_script=None, connectome_imagestack=None):
         super(connectome, self).__init__(connectome_meta, connectome_network, connectome_surface, connectome_volume, connectome_track, connectome_timeserie, connectome_data, connectome_script, connectome_imagestack, )
         # add parent reference to all children
