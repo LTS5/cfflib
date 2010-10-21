@@ -93,7 +93,7 @@ def load_from_cff(filename, *args, **kwargs):
     
     return connectome
 
-def save_to_meta_cml(filename = 'meta.cml', connectome):
+def save_to_meta_cml(connectome, filename = 'meta.cml'):
     """ Stores a Connectome Markup File to filename """
     f = open(filename, 'w')
     f.write('<?xml version="1.0" encoding="UTF-8"?>\n')

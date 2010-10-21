@@ -251,6 +251,10 @@ class CBaseClass(object):
 
 class CNetwork(supermod.CNetwork, CBaseClass):
     def __init__(self, src=None, dtype='AttributeNetwork', name=None, fileformat='GraphML', metadata=None, network_surface=None, network_volume=None, network_track=None, network_timeserie=None, network_data=None, description=None):
+	""" Create a new Connectome Network
+
+	Parameters """
+
         super(CNetwork, self).__init__(src, dtype, name, fileformat, metadata, network_surface, network_volume, network_track, network_timeserie, network_data, description, )
         
     def get_unique_relpath(self):

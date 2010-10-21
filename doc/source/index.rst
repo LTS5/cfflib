@@ -25,6 +25,7 @@ Contents:
    
    installation
    tutorial
+   createconnectomefile
 
 Indices and tables
 ==================
