@@ -26,6 +26,7 @@ Contents:
    installation
    tutorial
    createconnectomefile
+   docstring
 
 Indices and tables
 ==================
