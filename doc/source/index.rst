@@ -25,6 +25,7 @@ Contents:
    
    installation
    tutorial
+   api/gen
 
 Indices and tables
 ==================
