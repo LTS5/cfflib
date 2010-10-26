@@ -25,8 +25,10 @@ Contents:
    
    installation
    tutorial
+   api/gen
    createconnectomefile
    docstring
+
 
 Indices and tables
 ==================

@@ -8,19 +8,22 @@ import os
 try:
     import networkx as nx
 except ImportError:
-    raise ImportError("Failed to import networkx from any known place")
+    pass
+    #raise ImportError("Failed to import networkx from any known place")
 
 # Nibabel
 try:
     import nibabel as ni
 except ImportError:
-    raise ImportError("Failed to import nibabel from any known place")
+    pass
+    #raise ImportError("Failed to import nibabel from any known place")
 
 # PyTables
 try:
     import tables
 except ImportError:
-    raise ImportError("Failed to import pytables from any known place")
+    pass
+    #raise ImportError("Failed to import pytables from any known place")
 
 # NumPy
 try:
