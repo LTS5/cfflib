@@ -101,7 +101,7 @@ def save_to_meta_cml(connectome, filename = 'meta.cml'):
     f.close()
 
 
-def save_to_cff(filename, connectome):
+def save_to_cff(connectome, filename):
     """ Save connectome file to new .cff file on disk """
     
     _newzip = ZipFile(filename, 'w', ZIP_DEFLATED)
