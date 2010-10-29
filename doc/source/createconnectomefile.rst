@@ -49,13 +49,16 @@ Then, you must add your metadata to your connectome object. Do it like this::
 Save to file
 ============
 
-After these first creations, we want to get a look at the output file this object will produce. Begin by save the file to the CML format::
+After these first creations, we want to get a look at the output file this object will produce. There are two methods to save your object to file::
 
     save_to_meta_cml(myConnectome, '/your/wanted/path/meta.cml')
-    
-Open the created file. You can see a first tag nammed *connectome* which is your connectome object. Inside, you find your metadata surrounded by the *connectome-meta* tag.
+    save_to_cff(myConnectome, '/your/wanted/path/myConnectome.cff')
 
-More precisely, your file should look like this one::
+The first one will save the connectome object to a compressed CFF file and the second one will just save in a CML file.
+
+Open the created CML file. You can see a first tag nammed *connectome* which is your connectome object. Inside, you find your metadata surrounded by the *connectome-meta* tag.
+
+More precisely, your CML file should look like this one::
 
     <?xml version="1.0" encoding="UTF-8"?>
     <connectome xmlns="http://www.connectomics.org/2010/Connectome/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.connectomics.org/2010/Connectome/xmlns connectome.xsd">
@@ -71,5 +74,9 @@ More precisely, your file should look like this one::
 Load from file
 ==============
 
+To retrieve your connectome object you can load from the previous saved file. Here again, there are two methods to do it, one for the CFF file and one for the CML::
+    
+    myConnectomeFromMeta = load_from_meta_cml('/your/wanted/path/meta.cml')
+    myConnectomeFromCFF = load_from_cff('/your/wanted/path/myconnectome.cff')
 
 
