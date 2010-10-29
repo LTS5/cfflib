@@ -84,19 +84,29 @@ class connectome(supermod.connectome):
         
         Parameters
         ----------
-            inputs...
+            connectome_meta      : CMetadata
+                                   The metadata you want to add to your connectome                         
+                                   optionnal
+            connectome_network   : CNetwork
+            connectome_surface   : CSurface
+            connectome_volume    : CVolume
+            connectome_track     : CTrack
+            connectome_timeserie : CTimeserie
+            connectome_data      : CData
+            connectome_script    : CScript
+            connectome_imagestack: CImagestack
         
         Returns
         -------
-            outputs...
+            A connectome object
             
         Examples
         --------
-            use cases...
+            myConnectome = connectome() # Empty connectome object
             
         See also
         --------
-            related functions...
+            CMetadata, CNetwork, CSurface, CVolume, CTrack, CTimeserie, CData, CScript, CImagestack
     
     """
     def __init__(self, connectome_meta=None, connectome_network=None, connectome_surface=None, connectome_volume=None, connectome_track=None, connectome_timeserie=None, connectome_data=None, connectome_script=None, connectome_imagestack=None):
@@ -217,6 +227,25 @@ supermod.connectome.subclass = connectome
 
 
 class CMetadata(supermod.CMetadata):
+    """
+        Creates a connectome metadata object, useful to add metadata to other object.
+        
+        Parameters
+        ----------
+            ...
+        
+        Returns
+        -------
+            A CMetadata object
+            
+        Examples
+        --------
+            ...
+            
+        See also
+        --------
+            ...    
+    """
     def __init__(self, version=None, generator=None, author=None, institution=None, creation_date=None, modification_date=None, name=None, species=None, legal_notice=None, reference=None, email=None, url=None, description=None, metadata=None):
         super(CMetadata, self).__init__(version, generator, author, institution, creation_date, modification_date, name, species, legal_notice, reference, email, url, description, metadata, )
 supermod.CMetadata.subclass = CMetadata

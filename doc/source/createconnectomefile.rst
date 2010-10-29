@@ -38,12 +38,13 @@ you are now able to add a lot of informations to this object. For example the fo
     myMetadata.set_creation_date('2010-10-26')
     myMetadata.set_url('www.connectome.ch')
     myMetadata.set_version('0.0.1')
+    myMetadata.set_description(description('plaintext','First connectome object created with the tutorial.'))
     
 and many more.
 
 Then, you must add your metadata to your connectome object. Do it like this::
 
-    myConnectome.set_connectome_metadata(myMetadata)
+    myConnectome.set_connectome_meta(myMetadata)
 
 Save to file
 ============
@@ -63,6 +64,12 @@ More precisely, your file should look like this one::
             <institution>Your Institution</institution>
             <creation-date>2010-10-26</creation-date>
             <url>www.connectome.ch</url>
+            <description format="plaintext">First connectome object created with the tutorial.</description>
         </connectome-meta>
     </connectome>
+
+Load from file
+==============
+
+
 
