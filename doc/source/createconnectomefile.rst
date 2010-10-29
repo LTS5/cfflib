@@ -14,7 +14,15 @@ Then your first command will be::
 
     myConnectome = connectome()
     
-in order to have a connectome object. The method ``connectome()`` can take as argument each possible object the connectome can handle. For example, you can create a new connectome with an existing network. But, we will see these possible objects later.
+in order to have a connectome object. 
+
+.. warning::
+    
+    The method ``connectome()`` can take as argument each possible object the connectome can handle. For example, you can create a new connectome with an existing network. But, we will see these possible objects later.
+
+.. note::
+    
+    Not sure about the content of the above warning...
 
 To get some informations about this new object you can try::
 
@@ -79,4 +87,12 @@ To retrieve your connectome object you can load from the previous saved file. He
     myConnectomeFromMeta = load_from_meta_cml('/your/wanted/path/meta.cml')
     myConnectomeFromCFF = load_from_cff('/your/wanted/path/myconnectome.cff')
 
+Add a network
+=============
+
+To add a network to you connectome object, you have to create a CNetwork object::
+
+    myCNetwork = CNetwork(name='FirstCNetwork')
+    
+On the exemple above, the CNetwork is created with a specified name attribute. You can specified each attribute like that.
 
