@@ -92,7 +92,41 @@ Add a network
 
 To add a network to you connectome object, you have to create a CNetwork object::
 
-    myCNetwork = CNetwork(name='FirstCNetwork')
+    myCNetwork = CNetwork(name='my1FirstCNetwork', description=description('plaintext','This is my first CNetwork created for the tutorial'))  
     
-On the exemple above, the CNetwork is created with a specified name attribute. You can specified each attribute like that.
+On the exemple above, the CNetwork is created with a specified name and description attributes. You can specified each attribute like that.
+
+Now, assume that you want to add a networkx graph to your CNetwork object. First, we'll create a basic networkx::
+
+    import networkx as nx
+    myNetworkx = nx.Graph()
+    myNetworkx.add_node(0)
+    myNetworkx.add_node(1)
+    myNetworkx.add_node(2)
+    myNetworkx.add_edge(0,1)
+    myNetworkx.add_edge(1,2)
+    
+Then we can add this simple graph to our CNetwork object::
+
+    myCNetwork.contents = myNetworkx
+    
+Finally, we add the CNetwork to our connectome object::
+
+    myConnectome.add_connectome_network(myCNetwork)
+    
+Now, you can try again *myConnectome.get_all()* function, it should return something like::
+    
+    [<cfflib.cfflib_modified.CNetwork object at 0x34364d0>]
+    
+You can access and modifiy this CNetwork object::
+
+    myConnectome.get_connectome_network()[0].set_dtype('data')
+
+for example, this function will set the data type to *data*.
+
+Add metadata to an object
+=========================
+
+We already saw that we can add come metadata to the connectome object. In fact, it's possible to add some metadata to any object, for example to a CNetwork object. That's what we're going to do in this section.
+
 
