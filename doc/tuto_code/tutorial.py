@@ -46,7 +46,6 @@ myConnectomeFromCFF = load_from_cff('myconnectome.cff')
 
 #----------------------------------------------------------------------#
 # Create and add a network
-
 # Create a networkx graph
 myNetworkx = nx.Graph()
 myNetworkx.add_node(0)
@@ -73,7 +72,12 @@ myConnectome.get_connectome_network()[0].set_dtype('data')
 #----------------------------------------------------------------------#
 # Add metadata to an object
 #----------------------------------------------------------------------#
-
+myCN1 = myConnectome.get_connectome_network()[0]
+myCN1.metadata = Metadata()
+data = data()
+data.set_key('Resolution')
+data.set_value('83')
+myCN1.metadata.set_data(data)
 
 
 

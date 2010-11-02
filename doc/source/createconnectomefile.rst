@@ -127,6 +127,45 @@ for example, this function will set the data type to *data*.
 Add metadata to an object
 =========================
 
-We already saw that we can add come metadata to the connectome object. In fact, it's possible to add some metadata to any object, for example to a CNetwork object. That's what we're going to do in this section.
+We already saw that we can add come metadata to the connectome object. In fact, it's possible to add some metadata to any object, for example to a CNetwork object. That's what we're going to do in this section. First we add some Metadata to our first CNetwork::
+
+    myCN1 = myConnectome.get_connectome_network()[0]
+    myCN1.metadata = Metadata()
+    
+Now, we have a reference on our first CNetwork *myCN1* and it contains a Metadata object.
+
+We can create a data and add it to the metadata of our CNetwork::
+    
+    data = data()
+    data.set_key('Resolution')
+    data.set_value('83')
+    myCN1.metadata.set_data(data)
+    
+At this point, we can try to save again our connectome to check the CML::
+
+    save_to_meta_cml(myConnectome, '/your/wanted/path/meta.cml')  
+    
+The output file should look like::
+
+    <?xml version="1.0" encoding="UTF-8"?>
+    <connectome xmlns="http://www.connectomics.org/2010/Connectome/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.connectomics.org/2010/Connectome/xmlns connectome.xsd">
+        <connectome-meta version="0.0.1">
+            <author>Your Name</author>
+            <institution>Your Institution</institution>
+            <creation-date>2010-10-26</creation-date>
+            <url>www.connectome.ch</url>
+            <description format="plaintext">First connectome object created with the tutorial.</description>
+        </connectome-meta>
+        <connectome-network dtype="data" name="my1stCNetwork" fileformat="GraphML">
+            <metadata>
+                <data key="Resolution">83</data>
+            </metadata>
+            <description format="plaintext">This is my first CNetwork created for the tutorial</description>
+        </connectome-network>
+    </connectome>
+    
+    
+    
+    
 
 
