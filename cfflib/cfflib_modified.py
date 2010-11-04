@@ -232,7 +232,20 @@ class CMetadata(supermod.CMetadata):
         
         Parameters
         ----------
-            ...
+            version           : string, default = None, version of the current object
+            generator         : string, default = None, generator of the current object
+            author            : string, default = None, 
+            institution       : string, default = None, 
+            creation_date     : string, default = None, 
+            modification_date : string, default = None, 
+            name              : string, default = None, 
+            species           : string, default = None, 
+            legal_notice      : string, default = None, 
+            reference         : string, default = None, 
+            email             : string, default = None, 
+            url               : string, default = None, 
+            description       : description object, default = None, 
+            metadata          : metadata object, default = None, 
         
         Returns
         -------
@@ -244,7 +257,7 @@ class CMetadata(supermod.CMetadata):
             
         See also
         --------
-            ...    
+            Metadata, description    
     """
     def __init__(self, version=None, generator=None, author=None, institution=None, creation_date=None, modification_date=None, name=None, species=None, legal_notice=None, reference=None, email=None, url=None, description=None, metadata=None):
         super(CMetadata, self).__init__(version, generator, author, institution, creation_date, modification_date, name, species, legal_notice, reference, email, url, description, metadata, )
@@ -317,7 +330,12 @@ class CNetwork(supermod.CNetwork, CBaseClass):
             fend = ''
             
         return unify('CNetwork', self.name + fend)
-
+    
+    def load_graphml(self):
+        """ Load a graphml """
+        import networkx as nx
+        return nx.read_graphml(self.src)
+    
 supermod.CNetwork.subclass = CNetwork
 # end class CNetwork
 
