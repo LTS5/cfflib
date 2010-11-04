@@ -332,8 +332,31 @@ class CNetwork(supermod.CNetwork, CBaseClass):
         return unify('CNetwork', self.name + fend)
     
     def load_graphml(self):
-        """ Load a graphml """
+        """
+        Load a graphml from the src
+        
+        Parameters
+        ----------
+            CNetwork
+        
+        Returns
+        -------
+            A graphml object
+            
+        Examples
+        --------
+            ...
+            
+        See also
+        --------
+            load, networkx    
+    """
+        if self.src == None:
+            print "Error - the src is not define"
+            return
         import networkx as nx
+        if self.fileformat != 'GraphML':
+            print "Warning - the file format is: "+self.fileformat+"; it should be GraphML"
         return nx.read_graphml(self.src)
     
 supermod.CNetwork.subclass = CNetwork
