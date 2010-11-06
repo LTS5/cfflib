@@ -350,6 +350,7 @@ class CNetwork(supermod.CNetwork, CBaseClass):
             
         return unify('CNetwork', self.name + fend)
     
+    # GraphML treatment
     def load_graphml(self):
         """
         Load a graphml from the src
@@ -368,15 +369,67 @@ class CNetwork(supermod.CNetwork, CBaseClass):
             
         See also
         --------
+            load, graphml, networkx    
+    """
+        if self.src == None:
+            print "Error - the src is not define"
+            return
+        if self.fileformat != 'GraphML':
+            print "Error - the file format is: "+self.fileformat+"; it should be GraphML"
+            return
+        import networkx as nx
+        return nx.read_graphml(self.src)
+    
+    def set_from_ml(self, graphML):
+        """
+        Set the current CNetwork from the given graphML
+        
+        Parameters
+        ----------
+            graphML: a graphML graph
+                    
+        Examples
+        --------
+            ...
+            
+        See also
+        --------
+            graphML    
+        """
+        self.name       = graphML.name
+        self.dtype      = "AttributeNetwork"
+        self.fileformat = "GraphML"
+        self.contents   = graphML
+    
+    # NetworkX treatment
+    def load_networkx(self):
+        """
+        Load a networkx from the src
+        
+        Parameters
+        ----------
+            CNetwork
+        
+        Returns
+        -------
+            A networkx object
+            
+        Examples
+        --------
+            ...
+            
+        See also
+        --------
             load, networkx    
     """
         if self.src == None:
             print "Error - the src is not define"
             return
+        if self.fileformat != 'NetworkX':
+            print "Error - the file format is: "+self.fileformat+"; it should be NetworkX"
+            return
         import networkx as nx
-        if self.fileformat != 'GraphML':
-            print "Warning - the file format is: "+self.fileformat+"; it should be GraphML"
-        return nx.read_graphml(self.src)
+        return nx.load(self.src)    
     
     def set_from_nx(self, nxGraph):
         """
