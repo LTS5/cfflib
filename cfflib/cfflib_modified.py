@@ -238,10 +238,7 @@ class connectome(supermod.connectome):
             networkx, CNetwork, connectome   
         """
         n = CNetwork()
-        n.name       = nxGraph.name
-        n.dtype      = "AttributeNetwork"
-        n.fileformat = "NetworkX"
-        n.contents   = nxGraph
+        n.set_from_nx(nxGraph)
         self.add_connectome_network(n)
         
 supermod.connectome.subclass = connectome
