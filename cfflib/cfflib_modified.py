@@ -221,7 +221,29 @@ class connectome(supermod.connectome):
                 print "Remove .tmpsrc attribute"
                 del ele.tmpsrc
         
-    
+    def add_connectome_network_from_nx(self, nxGraph):
+        """
+        Add a CNetwork from the given NetworkX graph to the connectome object
+        
+        Parameters
+        ----------
+            nxGraph: a NetworkX graph
+                    
+        Examples
+        --------
+            ...
+            
+        See also
+        --------
+            networkx, CNetwork, connectome   
+        """
+        n = CNetwork()
+        n.name       = nxGraph.name
+        n.dtype      = "AttributeNetwork"
+        n.fileformat = "NetworkX"
+        n.contents   = nxGraph
+        self.add_connectome_network(n)
+        
 supermod.connectome.subclass = connectome
 # end class connectome
 
