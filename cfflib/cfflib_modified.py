@@ -362,23 +362,35 @@ class CNetwork(supermod.CNetwork, CBaseClass):
         Returns
         -------
             A graphml object
-            
-        Examples
-        --------
-            ...
-            
+                        
         See also
         --------
             load, graphml, networkx    
-    """
+        """
         if self.src == None:
             print "Error - the src is not define"
             return
         if self.fileformat != 'GraphML':
             print "Error - the file format is: "+self.fileformat+"; it should be GraphML"
             return
-        import networkx as nx
         return nx.read_graphml(self.src)
+    
+    def load_from_ml(self, ml_filename):
+        """
+        Load a graphml into the current CNetwork
+        
+        Parameters
+        ----------
+            CNetwork
+            ml_filename : filename of the GraphML
+            
+        See also
+        --------
+            set_from_ml, graphml, networkx    
+        """
+        ml = nx.read_graphml(ml_filename)
+        self.src = ml_filename
+        self.set_from_ml(ml)
     
     def set_from_ml(self, graphML):
         """
@@ -387,11 +399,7 @@ class CNetwork(supermod.CNetwork, CBaseClass):
         Parameters
         ----------
             graphML: a graphML graph
-                    
-        Examples
-        --------
-            ...
-            
+                                
         See also
         --------
             graphML    
@@ -413,23 +421,35 @@ class CNetwork(supermod.CNetwork, CBaseClass):
         Returns
         -------
             A networkx object
-            
-        Examples
-        --------
-            ...
-            
+                        
         See also
         --------
             load, networkx    
-    """
+        """
         if self.src == None:
             print "Error - the src is not define"
             return
         if self.fileformat != 'NetworkX':
             print "Error - the file format is: "+self.fileformat+"; it should be NetworkX"
             return
-        import networkx as nx
         return nx.load(self.src)    
+    
+    def load_from_nx(self, nx_filename):
+        """
+        Load a NetworkX into the current CNetwork
+        
+        Parameters
+        ----------
+            CNetwork
+            nx_filename : filename of the NetworkX
+            
+        See also
+        --------
+            set_from_nx, NetworkX    
+        """
+        g = nx.load(nx_filename)
+        self.src = nx_filename
+        self.set_from_nx(g)
     
     def set_from_nx(self, nxGraph):
         """
@@ -438,11 +458,7 @@ class CNetwork(supermod.CNetwork, CBaseClass):
         Parameters
         ----------
             nxGraph: a NetworkX graph
-                    
-        Examples
-        --------
-            ...
-            
+                                
         See also
         --------
             networkx    
