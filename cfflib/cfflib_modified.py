@@ -359,6 +359,27 @@ class CNetwork(supermod.CNetwork, CBaseClass):
             print "Warning - the file format is: "+self.fileformat+"; it should be GraphML"
         return nx.read_graphml(self.src)
     
+    def set_from_nx(self, nxGraph):
+        """
+        Set the current CNetwork from the given NetworkX graph
+        
+        Parameters
+        ----------
+            nxGraph: a NetworkX graph
+                    
+        Examples
+        --------
+            ...
+            
+        See also
+        --------
+            networkx    
+        """
+        self.name       = nxGraph.name
+        self.dtype      = "AttributeNetwork"
+        self.fileformat = "NetworkX"
+        self.contents   = nxGraph
+    
 supermod.CNetwork.subclass = CNetwork
 # end class CNetwork
 
