@@ -26,7 +26,6 @@ Contents:
    installation
    tutorial
    api/gen
-   createconnectomefile
 
 
 Indices and tables

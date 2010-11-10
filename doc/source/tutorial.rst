@@ -10,7 +10,7 @@ Import the library. Subsequently, we assume that this has been done::
 	
 Load the dataset from the file system::
 
-	a=load_from_meta_cml('datasets/ds2/meta.cml')
+	a=load_from_meta_cml('datasets/ds1/meta.cml')
 	
 You can print all the loaded connectome objects::
 
@@ -18,7 +18,7 @@ You can print all the loaded connectome objects::
 
 If you have a zipped file with ending .cff, you can load it as well with::
 
-	a=load_from_cff('datasets/ds2/connectomefile.cff')
+	a=load_from_cff('datasets/ds1/connectomefile.cff')
 	
 
 You can get the first network and load it like this::
@@ -42,7 +42,11 @@ Show other attributes::
 	
 	print mynetwork.name
 	print mynetwork.dtype
-	print mynetwork.description.valueOf_
+	print mynetwork.description.value
+
+To show the metadata attributes as dictionary::
+
+  print mynetwork.metadata.contents
 
 You can save the currently loaded connectome file::
 
@@ -51,12 +55,12 @@ You can save the currently loaded connectome file::
 The same you can do for other connectome objects, if the corresponding Python libraries are installed correctly::
 
 	# CVolume
-	obj = a.get_by_name('T1-weighted single subject')[0]
+	obj = a.get_by_name('Example Volume')[0]
 	obj.load()
 	print obj.content
 
 	# CSurface
-	obj = a.get_by_name('Individual surfaces')[0]
+	obj = a.get_by_name('Example Surface')[0]
 	obj.load()
 	print obj.content
 
@@ -82,7 +86,7 @@ The same you can do for other connectome objects, if the corresponding Python li
 	print obj.content
 	
 	# CImagestack
-	obj = a.get_by_name('Planar anatomical segmentation')[0]
+	obj = a.get_by_name('FIB Rat Striatum')[0]
 	obj.load()
 	print obj.content
 	

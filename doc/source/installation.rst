@@ -2,9 +2,13 @@
 Installation of Connectome File Format Library
 ==============================================
 
-You can install the library using easy_install::
+You can clone the library from github using git::
 
-	pip install cfflib
+	git clone git@github.com:unidesigner/cfflib.git
+	
+And then do a install in the cloned folder::
+
+  sudo python setup.py install
 	
 Be aware that for the successfull loading of different connectome objects, you need
 to have the corresponding Python libraries installed. Here are the dependencies:
