@@ -16,13 +16,9 @@ Then your first command will be::
     
 in order to have a connectome object. 
 
-.. warning::
-    
-    The method ``connectome()`` can take as argument each possible object the connectome can handle. For example, you can create a new connectome with an existing network. But, we will see these possible objects later.
-
 .. note::
     
-    Not sure about the content of the above warning...
+    The method ``connectome()`` can take as argument each possible object the connectome can handle. For example, you can create a new connectome with an existing network. But, we will see these possible objects later.
 
 To get some informations about this new object you can try::
 
@@ -109,6 +105,7 @@ Now, assume that you want to add a networkx graph to your CNetwork object. First
 Then we can add this simple graph to our CNetwork object::
 
     myCNetwork.contents = myNetworkx
+    myCNetwork.set_from_nx(myNetworkx)
     
 Finally, we add the CNetwork to our connectome object::
 

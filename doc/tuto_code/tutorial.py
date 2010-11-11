@@ -56,8 +56,8 @@ myNetworkx.add_edge(1,2)
 
 # Create a CNetwork
 myCNet = CNetwork(name='my1stCNetwork', description=description('plaintext','This is my first CNetwork created for the tutorial'))
-#myCNet.description = description('text','This is my first CNetwork created for the tutorial')
-myCNet.contents = myNetworkx
+#myCNet.contents = myNetworkx
+myCNet.set_from_nx(myNetworkx)
 
 # Add the network to the connectome object
 myConnectome.add_connectome_network(myCNet)
