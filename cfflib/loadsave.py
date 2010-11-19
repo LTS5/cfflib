@@ -125,6 +125,10 @@ def save_to_cff(connectome, filename):
         
         if not hasattr(ele, 'content'):
             
+            # Add if iszip is undefined
+            if not hasattr(connectome, 'iszip'):
+                connectome.iszip = False
+            
             if connectome.iszip:
                 # extract zip content and add it to new zipfile
                 if not wt in connectome._zipfile.namelist():
@@ -135,6 +139,11 @@ def save_to_cff(connectome, filename):
                 else:
                     ftmp = connectome._zipfile.extract(wt)
             else:
+            
+                # if now fname
+                if not hasattr(connectome, 'fname'):
+                    connectome.fname = filename
+            
                 # create path coming from filesystem
                 ftmp = op.join(op.dirname(connectome.fname), wt)
                 

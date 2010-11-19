@@ -386,6 +386,23 @@ supermod.CMetadata.subclass = CMetadata
 
 
 class description(supermod.description):
+    """
+        Creates a description object consisting in a format and a value.
+        
+        Parameters
+        ----------
+            format : string, 
+                the format of the value
+            value  : format
+                    
+        Examples
+        --------
+            >>> myDesc = description('plaintext', 'A first description')
+            
+        See also
+        --------
+            Metadata, connectome  
+    """
     def __init__(self, format=None, value=None):
         super(description, self).__init__(format, value, )
 supermod.description.subclass = description
@@ -449,11 +466,11 @@ class CNetwork(supermod.CNetwork, CBaseClass):
                 a description (key, value) of the CNetwork
             metadata          : Metadata, optional,
                 Metadata object relative to the network
-            network_surface   : ?, optional
-            network_volume    : ?, optional
-            network_track     : ?, optional
-            network_timeserie : ?, optional
-            network_data      : ?, optional
+            network_surface   : NetworkSurface, optional
+            network_volume    : NetworkVolume, optional
+            network_track     : NetworkTrack, optional
+            network_timeserie : NetworkTimeserie, optional
+            network_data      : NetworkData, optional
                     
         Examples
         --------
@@ -467,7 +484,7 @@ class CNetwork(supermod.CNetwork, CBaseClass):
             
         See also
         --------
-            description, Metadata, connectome
+            description, Metadata, NetworkData, NetworkSurface, NetworkTimeserie, NetworkTrack, NetworkVolume, connectome
     
     """
     def __init__(self, name=None, src=None, dtype='AttributeNetwork', fileformat='GraphML', description=None, metadata=None, network_surface=None, network_volume=None, network_track=None, network_timeserie=None, network_data=None):
@@ -791,6 +808,24 @@ supermod.data.subclass = data
 
 
 class NetworkSurface(supermod.NetworkSurface):
+    """
+        The name of the surface as reference to an existing connectome-surface
+    
+        Parameters
+        ----------
+            name     : string,
+                the name of the surface
+            metadata : Metadata, optional
+        
+        Examples
+        --------
+            ...
+                                
+        See also
+        --------
+            Metadata, connectome   
+            
+    """
     def __init__(self, name=None, metadata=None):
         super(NetworkSurface, self).__init__(name, metadata, )
 supermod.NetworkSurface.subclass = NetworkSurface
@@ -798,6 +833,24 @@ supermod.NetworkSurface.subclass = NetworkSurface
 
 
 class NetworkVolume(supermod.NetworkVolume):
+    """
+        The name of the volume as reference to an existing connectome-volume. The connectome-volume can be of any dtype.
+    
+        Parameters
+        ----------
+            name     : string,
+                the name of the volume
+            metadata : Metadata, optional
+        
+        Examples
+        --------
+            ...
+                                
+        See also
+        --------
+            Metadata, connectome   
+            
+    """
     def __init__(self, name=None, metadata=None):
         super(NetworkVolume, self).__init__(name, metadata, )
 supermod.NetworkVolume.subclass = NetworkVolume
@@ -805,6 +858,24 @@ supermod.NetworkVolume.subclass = NetworkVolume
 
 
 class NetworkTrack(supermod.NetworkTrack):
+    """
+        The name of the track as reference to an existing connectome-track. 
+    
+        Parameters
+        ----------
+            name     : string,
+                the name of the track
+            metadata : Metadata, optional
+        
+        Examples
+        --------
+            ...
+                                
+        See also
+        --------
+            Metadata, connectome   
+            
+    """
     def __init__(self, name=None, metadata=None):
         super(NetworkTrack, self).__init__(name, metadata, )
 supermod.NetworkTrack.subclass = NetworkTrack
@@ -812,6 +883,24 @@ supermod.NetworkTrack.subclass = NetworkTrack
 
 
 class NetworkTimeserie(supermod.NetworkTimeserie):
+    """
+        The name of the timeserie as reference to an existing connectome-timeserie. 
+    
+        Parameters
+        ----------
+            name     : string,
+                the name of the timeserie
+            metadata : Metadata, optional
+        
+        Examples
+        --------
+            ...
+                                
+        See also
+        --------
+            Metadata, connectome   
+            
+    """
     def __init__(self, name=None, metadata=None):
         super(NetworkTimeserie, self).__init__(name, metadata, )
 supermod.NetworkTimeserie.subclass = NetworkTimeserie
@@ -819,6 +908,24 @@ supermod.NetworkTimeserie.subclass = NetworkTimeserie
 
 
 class NetworkData(supermod.NetworkData):
+    """
+        The name of the data object as reference to an existing connectome-data
+    
+        Parameters
+        ----------
+            name     : string,
+                the name of the data
+            metadata : Metadata, optional
+        
+        Examples
+        --------
+            ...
+                                
+        See also
+        --------
+            Metadata, connectome   
+            
+    """
     def __init__(self, name=None, metadata=None):
         super(NetworkData, self).__init__(name, metadata, )
 supermod.NetworkData.subclass = NetworkData
