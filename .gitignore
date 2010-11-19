@@ -7,6 +7,5 @@ build/
 doc/_build/
 doc/build/
 doc/manual/
-
-
-
+dist/
+.settings/

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 #
-# Generated Tue Oct 19 09:30:45 2010 by generateDS.py version 2.1a.
+# Generated Wed Nov 10 11:47:12 2010 by generateDS.py version 2.1a.
 #
 
 import sys
@@ -2062,7 +2062,10 @@ class Metadata(GeneratedsSuper):
     subclass = None
     superclass = None
     def __init__(self, data=None):
-        self.data = data
+        if data is None:
+            self.data = []
+        else:
+            self.data = data
     def factory(*args_, **kwargs_):
         if Metadata.subclass:
             return Metadata.subclass(*args_, **kwargs_)
@@ -2071,6 +2074,8 @@ class Metadata(GeneratedsSuper):
     factory = staticmethod(factory)
     def get_data(self): return self.data
     def set_data(self, data): self.data = data
+    def add_data(self, value): self.data.append(value)
+    def insert_data(self, index, value): self.data[index] = value
     def export(self, outfile, level, namespace_='', name_='Metadata', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
@@ -2085,11 +2090,11 @@ class Metadata(GeneratedsSuper):
     def exportAttributes(self, outfile, level, namespace_='', name_='Metadata'):
         pass
     def exportChildren(self, outfile, level, namespace_='', name_='Metadata'):
-        if self.data:
-            self.data.export(outfile, level, namespace_, name_='data')
+        for data_ in self.data:
+            data_.export(outfile, level, namespace_, name_='data')
     def hasContent_(self):
         if (
-            self.data is not None
+            self.data
             ):
             return True
         else:
@@ -2102,12 +2107,18 @@ class Metadata(GeneratedsSuper):
     def exportLiteralAttributes(self, outfile, level, name_):
         pass
     def exportLiteralChildren(self, outfile, level, name_):
-        if self.data is not None:
+        showIndent(outfile, level)
+        outfile.write('data=[\n')
+        level += 1
+        for data_ in self.data:
             showIndent(outfile, level)
-            outfile.write('data=model_.data(\n')
-            self.data.exportLiteral(outfile, level)
+            outfile.write('model_.data(\n')
+            data_.exportLiteral(outfile, level)
             showIndent(outfile, level)
             outfile.write('),\n')
+        level -= 1
+        showIndent(outfile, level)
+        outfile.write('],\n')
     def build(self, node):
         self.buildAttributes(node, node.attrib)
         for child in node:
@@ -2119,7 +2130,7 @@ class Metadata(GeneratedsSuper):
         if nodeName_ == 'data': 
             obj_ = data.factory()
             obj_.build(child_)
-            self.set_data(obj_)
+            self.data.append(obj_)
 # end class Metadata
 
 

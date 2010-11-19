@@ -1,4 +1,4 @@
-from cfflib import *
+import cfflib as cf
 
 #a = load_from_cff('/home/stephan/Dev/PyWorkspace/cfflib/datasets/ds1/c.cff')
 #w=a.get_all()[0]
@@ -13,8 +13,7 @@ from cfflib import *
 #w.save()
 
 # volume save
-from cfflib import *
-a=load_from_meta_cml('datasets/ds2/meta.cml')
+a=cf.load_from_meta_cml('../datasets/ds1/meta.cml')
 print a.get_all()
 #v=a.get_all()[1]
 #v.load()

@@ -768,6 +768,17 @@ supermod.CImagestack.subclass = CImagestack
 class Metadata(supermod.Metadata):
     def __init__(self, data=None):
         super(Metadata, self).__init__(data, )
+    
+    @property
+    def contents(self):
+        """ Returns the metadata as a dictionary """
+        dat = self.get_data()
+        ret = {}
+        for ele in dat:
+            ret[ele.key] = ele.value
+        return ret
+    
+    
 supermod.Metadata.subclass = Metadata
 # end class Metadata
 
