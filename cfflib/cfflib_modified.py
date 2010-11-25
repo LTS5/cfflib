@@ -85,7 +85,9 @@ class connectome(supermod.connectome):
         Parameters
         ----------
             connectome_meta       : list of CMetadata, optional
+                a list of CMetadata objects that described the connectome.
             connectome_network    : list of CNetwork, optional
+                a list of CNetwork objects that are the networks relating to this connectome. 
             connectome_surface    : list of CSurface, optional
             connectome_volume     : list of CVolume, optional
             connectome_track      : list of CTrack, optional
@@ -646,7 +648,36 @@ supermod.CNetwork.subclass = CNetwork
 
 
 class CSurface(supermod.CSurface, CBaseClass):
-    def __init__(self, src=None, dtype=None, name=None, fileformat=None, description=None, metadata=None):
+    """
+        Create a new CSurface object.
+        
+        Parameters
+        ----------
+            name              : string, optional
+                the surface name
+            src               : string, optional,
+                the source file of the surface
+            dtype             : string, optional,
+                the data type of the surface
+            fileformat        : string, optional,
+                the fileformat of the surface
+            description       : description, optional,
+                a description (key, value) of the CSurface
+            metadata          : Metadata, optional,
+                Metadata object relative to the surface
+                    
+        Examples
+        --------
+            Empty
+            >>> myCSurf1 = CSurface()
+            Create an empty CSurface object
+            
+        See also
+        --------
+            description, Metadata, connectome
+    
+    """
+    def __init__(self, name=None, src=None, dtype=None, fileformat=None, description=None, metadata=None):
         super(CSurface, self).__init__(src, dtype, name, fileformat, description, metadata, )
         
     def get_unique_relpath(self):

@@ -10,11 +10,6 @@ Docstrings for the cfflib follow a relative fixed format which is the following:
     ----------
          input name: possible values
                      description 
-         
-    Returns
-    -------
-        output name: possible values
-                     description 
 
     Examples
     --------
