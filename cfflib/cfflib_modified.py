@@ -79,50 +79,39 @@ ExternalEncoding = 'ascii'
 #
 
 class connectome(supermod.connectome):
-    """
-        Create a new connectome file.
+    """The connectome object is the main object of this format. It contains CMetadata, it can contain some CData, CNetwork, CSurface, CTimeserie, CTrack and CVolume. It is possible to store it to a simple CML file or to a complete compressed CFF file with all sources."""
+    def __init__(self, connectome_meta=None, connectome_network=None, connectome_surface=None, connectome_volume=None, connectome_track=None, connectome_timeserie=None, connectome_data=None, connectome_script=None, connectome_imagestack=None):
+        """Create a new connectome file.
         
         Parameters
         ----------
-            connectome_meta       : list of CMetadata, optional
-                a list of CMetadata objects that described the connectome.
-            connectome_network    : list of CNetwork, optional
-                a list of CNetwork objects that are the networks relating to this connectome. 
-            connectome_surface    : list of CSurface, optional
-            connectome_volume     : list of CVolume, optional
-            connectome_track      : list of CTrack, optional
-            connectome_timeserie  : list of CTimeserie, optional
-            connectome_data       : list of CData, optional
-            connectome_script     : list of CScript, optional
-            connectome_imagestack : list of CImagestack, optional
-                    
-        Examples
-        --------
-            Empty
-            >>> myConnectome = connectome()
-            Create an empty connectome object
-            
-            With an existing CNetwork
-            >>> myConnectome = connectome(connectome_network=[CNet1])
-            Create the connectome object with an existing CNetwork: CNet1
+        connectome_meta       : list of CMetadata
+        connectome_network    : list of CNetwork
+        connectome_surface    : list of CSurface
+        connectome_volume     : list of CVolume
+        connectome_track      : list of CTrack
+        connectome_timeserie  : list of CTimeserie
+        connectome_data       : list of CData
+        connectome_script     : list of CScript
+        connectome_imagestack : list of CImagestack
             
         See also
         --------
             CMetadata, CNetwork, CSurface, CVolume, CTrack, CTimeserie, CData, CScript, CImagestack
     
-    """
-    def __init__(self, connectome_meta=None, connectome_network=None, connectome_surface=None, connectome_volume=None, connectome_track=None, connectome_timeserie=None, connectome_data=None, connectome_script=None, connectome_imagestack=None):
+        """
         super(connectome, self).__init__(connectome_meta, connectome_network, connectome_surface, connectome_volume, connectome_track, connectome_timeserie, connectome_data, connectome_script, connectome_imagestack, )
         # add parent reference to all children
         self._update_parent_reference()
+        # add some useful attributes to the save functions
+        self.iszip = False
 
     def get_all(self):
-        """
-        Return all connectome objects mixed as a list.
+        """Return all connectome objects mixed as a list.
         
         Parameters
         ----------
-            self : connectome
+        self : connectome
             
         Examples
         --------
@@ -141,8 +130,7 @@ class connectome(supermod.connectome):
                 self.connectome_script + self.connectome_imagestack
     
     def get_by_name(self, name):
-        """
-        Return the list of connectome object(s) that have the given name.
+        """Return the list of connectome object(s) that have the given name.
         
         Parameters
         ----------
@@ -175,8 +163,7 @@ class connectome(supermod.connectome):
             
 
     def check_file_in_cff(self):
-        """
-        Checks if the files described in the meta.cml are contained in the connectome zip file
+        """Checks if the files described in the meta.cml are contained in the connectome zip file
         
         Parameters
         ----------
@@ -205,8 +192,7 @@ class connectome(supermod.connectome):
                 raise Exception(msg)
             
     def check_names_unique(self):
-        """
-        Checks whether the names are unique.
+        """Checks whether the names are unique.
         
         Parameters
         ----------
@@ -234,9 +220,29 @@ class connectome(supermod.connectome):
                 msg = "Element '%s' has a non unique name! Please change the name to make it unique." % e
                 raise Exception(msg)
     
-    def get_unique_cff_name(self):
+    def is_name_unique(self, name):
+        """Check if the given name is unique.
+        
+        Parameters
+        ----------
+        self : connectome
+        name : string
+            
+        See also
+        --------
+            check_names_unique, connectome
         """
-        Return a unique connectome file name
+        all_cobj = self.get_all()
+        namelist = []
+        for ele in all_cobj:
+            namelist.append(ele.name)
+        if name in namelist:
+            return False
+        else:
+            return True
+    
+    def get_unique_cff_name(self):
+        """Return a unique connectome file name
         
         Parameters
         ----------
@@ -254,6 +260,28 @@ class connectome(supermod.connectome):
         """
         n = self.get_connectome_meta().name
         n = n.lower()
+        n = n.replace(' ', '_')
+        return n
+        
+    def get_normalised_name(self, name):
+        """Return a normalised name, without space and in lower case
+        
+        Parameters
+        ----------
+            self : connectome
+            name : string
+            
+        Examples
+        --------
+            >>> myConnectome.get_unique_cff_name()
+            my_first_network
+            
+        See also
+        --------
+            connectome
+    
+        """
+        n = name.lower()
         n = n.replace(' ', '_')
         return n
 
@@ -302,14 +330,16 @@ class connectome(supermod.connectome):
                 print "Remove .tmpsrc attribute"
                 del ele.tmpsrc
         
-    def add_connectome_network_from_nx(self, nxGraph):
-        """
-        Add a new CNetwork from the given NetworkX graph to the connectome object.
+    def add_connectome_network_from_nxgraph(self, nxGraph, name):
+        """Add a new CNetwork from the given NetworkX graph object to the connectome.
         
         Parameters
         ----------
-            self    : connectome
-            nxGraph : a NetworkX graph
+        self    : connectome
+        nxGraph : NetworkX,
+            a NetworkX graph object
+        name : string,
+            a unique name for the NetworkX graph to add to the connectome object
                     
         Examples
         --------
@@ -317,94 +347,117 @@ class connectome(supermod.connectome):
             
         See also
         --------
-            NetworkX, NetworkX.set_from_nx, CNetwork, connectome   
+            NetworkX, CNetwork.set_from_nx, CNetwork, connectome.add_connectome_network, connectome   
             
         """
-        n = CNetwork()
-        n.set_from_nx(nxGraph)
-        self.add_connectome_network(n)
+        nName = self.get_normalised_name(name)
+        if self.is_name_unique(nName):
+            n = CNetwork()
+            n.name = nName
+            n.set_with_nxgraph(nxGraph)
+            self.add_connectome_network(n)
+        else:
+            print "ERROR - Name is not unique"
+            return
     
-    def add_connectome_network_from_ml(self, graphML):
+    def add_connectome_network_from_graphml(self, graphML, name):
         """
-        Add a new CNetwork from the given GraphML object to the connectome object.
+        Add a new CNetwork from the given GraphML file to the connectome object.
         
         Parameters
         ----------
-            self    : connectome
-            nxGraph : a GraphML object
+        self    : connectome
+        nxGraph : GraphML file,
+            a GraphML file
                     
         Examples
         --------
-            >>> myConnectome.add_connectome_network_from_ml(myGraphML)
+            >>> myConnectome.add_connectome_network_from_ml('myGraphML.graphml')
             
         See also
         --------
-            GraphML, GraphML.set_from_ml, CNetwork, connectome   
+            GraphML, GraphML.load_from_ml, CNetwork, connectome.add_connectome_network, connectome
             
         """
-        n = CNetwork()
-        n.set_from_ml(graphML)
-        self.add_connectome_network(n)
+        nName = self.get_normalised_name(name)
+        if self.is_name_unique(nName):
+            n = CNetwork()
+            n.name = nName
+            n.load_from_graphml(graphML)
+            self.add_connectome_network(n)
+        else:
+            print "ERROR - Name is not unique"
+            return            
         
 supermod.connectome.subclass = connectome
 # end class connectome
 
 
 class CMetadata(supermod.CMetadata):
-    """
-        Creates a connectome metadata object, useful to add metadata to other object.
+    """Specific metadata to the connectome. The name is the name of the connectome. The version and the generator are required and are defined by default."""
+    
+    def __init__(self, name, version='2.0', generator='cfflib', author=None, institution=None, creation_date=None, modification_date=None, species=None, legal_notice=None, reference=None, email=None, url=None, description=None, metadata=None):
+        """Creates a connectome metadata object, specific metadata to the connectome object.
         
         Parameters
         ----------
-            version           : string, optional, 
-                version of the current object
-            generator         : string, optional,
-                generator of the current object
-            author            : string, optional 
-            institution       : string, optional 
-            creation_date     : string, optional 
-            modification_date : string, optional 
-            name              : string, optional 
-            species           : string, optional 
-            legal_notice      : string, optional 
-            reference         : string, optional 
-            email             : string, optional 
-            url               : string, optional 
-            description       : description, optional 
-            metadata          : Metadata, optional 
+        name : string,
+            the name of this connectome object 
+        version : 2.0,  
+            version of the cfflib
+        generator : cfflib,
+            generator of this connectome
+        author : string, optional ,
+            the author name
+        institution : string, optional,
+            the author institution
+        creation_date : string, optional,
+            the creation date of this connectome
+        modification_date : string, optional,
+            the date of important modification to this connectome object
+        species : string, optional,
+            the specied of the subject
+        legal_notice : string, optional,
+            legal information
+        reference : string, optional,
+            reference
+        email : string, optional,
+            an email of reference (author one)
+        url : string, optional,
+            an related url
+        description : plaintext, optional,
+            a text description of the connectome
+        metadata : dictionary, optional,
+            some metadata informations as a dictionary
                     
         Examples
         --------
-            >>> myMeta = CMetadata(name='my metadata', institution='EPFL', version='0.0.0')
+            >>> myMeta = CMetadata(name='Lausanne 2010', institution='EPFL', author='Your Name')
             
         See also
         --------
-            Metadata, description, connectome  
-    """
-    def __init__(self, version=None, generator=None, author=None, institution=None, creation_date=None, modification_date=None, name=None, species=None, legal_notice=None, reference=None, email=None, url=None, description=None, metadata=None):
+            Metadata, connectome  
+        """
+        # TODO put it in connectome (cff) because I need the connectome object...
+        # Check for nam uniqueness
+#        name = name.lower()
+#        name = name.replace(' ', '_')
+#        if not connectome.is_name_unique(name):
+#            raise Exception('Name %s in not unique!', name)
         super(CMetadata, self).__init__(version, generator, author, institution, creation_date, modification_date, name, species, legal_notice, reference, email, url, description, metadata, )
+
+    # Description object hide as property
+    @property
+    def description(self):
+        return self.value
+    def description(self, value):
+        d = description('plaintext', value)
+        
 supermod.CMetadata.subclass = CMetadata
 # end class CMetadata
 
 
 class description(supermod.description):
-    """
-        Creates a description object consisting in a format and a value.
-        
-        Parameters
-        ----------
-            format : string, 
-                the format of the value
-            value  : format
-                    
-        Examples
-        --------
-            >>> myDesc = description('plaintext', 'A first description')
-            
-        See also
-        --------
-            Metadata, connectome  
-    """
     def __init__(self, format=None, value=None):
         super(description, self).__init__(format, value, )
 supermod.description.subclass = description
@@ -451,47 +504,38 @@ class CBaseClass(object):
     
 
 class CNetwork(supermod.CNetwork, CBaseClass):
-    """
-        Create a new CNetwork object.
+    """Create a new CNetwork object.
         
         Parameters
         ----------
-            name              : string, optional
-                the network name
-            src               : string, optional,
-                the source file of the network
-            dtype             : string, optional,
-                the data type of the network
-            fileformat        : string, optional,
-                the fileformat of the network
-            description       : description, optional,
-                a description (key, value) of the CNetwork
-            metadata          : Metadata, optional,
-                Metadata object relative to the network
-            network_surface   : NetworkSurface, optional
-            network_volume    : NetworkVolume, optional
-            network_track     : NetworkTrack, optional
-            network_timeserie : NetworkTimeserie, optional
-            network_data      : NetworkData, optional
-                    
-        Examples
-        --------
-            Empty
-            >>> myCNet1 = CNetwork()
-            Create an empty CNetwork object
-            
-            With a name
-            >>> myCNet2 = CNetwork(name='my first network')
-            Create a CNetwork nammed: 'my first network'
+        name : string
+            the network unique name
+        src : string, optional,
+            the source file of the network
+        dtype : 'AttributeNetwork',
+            the data type of the network. It could be: ''
+        fileformat : 'GraphML',
+            the fileformat of the network. It could be: ''
+        description : plaintext, optional,
+            a text description of the CNetwork
+        metadata : dictionary, optional,
+            Metadata dictionary relative to the network
             
         See also
         --------
-            description, Metadata, NetworkData, NetworkSurface, NetworkTimeserie, NetworkTrack, NetworkVolume, connectome
+        Metadata, connectome
     
     """
-    def __init__(self, name=None, src=None, dtype='AttributeNetwork', fileformat='GraphML', description=None, metadata=None, network_surface=None, network_volume=None, network_track=None, network_timeserie=None, network_data=None):
+    def __init__(self, name=None, src=None, dtype='AttributeNetwork', fileformat='GraphML', description=None, metadata=None):
 
-        super(CNetwork, self).__init__(src, dtype, name, fileformat, metadata, network_surface, network_volume, network_track, network_timeserie, network_data, description, )
+        super(CNetwork, self).__init__(src, dtype, name, fileformat, metadata, description, )
+
+    # Description object hide as a property
+    @property
+    def description(self):
+        return self.value
+    def description(self, value):
+        d = description('plaintext', value)
         
     def get_unique_relpath(self):
         """ Return a unique relative path for this element """
@@ -505,34 +549,8 @@ class CNetwork(supermod.CNetwork, CBaseClass):
             
         return unify('CNetwork', self.name + fend)
     
-    # GraphML treatment
-    def load_graphml(self):
-        """
-        Load a GraphML object from the src if the fileformat is GraphML.
-        
-        Parameters
-        ----------
-            self : CNetwork
-        
-        Examples
-        --------
-            ...
-                        
-        See also
-        --------
-            load_networkx, GraphML, NetworkX    
-        """
-        if self.src == None:
-            print "Error - the src is not define"
-            return
-        if self.fileformat != 'GraphML':
-            print "Error - the file format is: "+self.fileformat+"; it should be GraphML"
-            return
-        return nx.read_graphml(self.src)
-    
-    def load_from_ml(self, ml_filename):
-        """
-        Load a graphml into the current CNetwork, adding the GraphML to contents, the ml_filename to src, if not already specified in the current CNetwork the graphML name to name, the fileformat to GraphML and the dtype to AttributeNetwork.
+    def load_from_graphml(self, ml_filename):
+        """Load a graphml into the current CNetwork, adding the GraphML to contents, the ml_filename to src, if not already specified in the current CNetwork the graphML name to name, the fileformat to GraphML and the dtype to AttributeNetwork.
         
         Parameters
         ----------
@@ -551,78 +569,8 @@ class CNetwork(supermod.CNetwork, CBaseClass):
         self.src = ml_filename
         self.set_with_ml(ml)
     
-    def set_with_ml(self, graphML):
-        """
-        Set the current CNetwork with the given GraphML object. Add the name if not already specified in the current CNetwork, set the fileformat to GraphML and the dtype to AttributeNetwork. Add the GraphML object to contents.
-        
-        Parameters
-        ----------
-            self    : CNetwork
-            graphML : a graphML object
-        
-        Examples
-        --------
-            ...
-                                
-        See also
-        --------
-            set_with_nx, GraphML   
-        """
-        if self.name == '':
-            self.name       = graphML.name
-        self.dtype      = "AttributeNetwork"
-        self.fileformat = "GraphML"
-        self.contents   = graphML
-    
-    # NetworkX treatment
-    def load_networkx(self):
-        """
-        Load a NetworkX graph from the src if the fileformat is NetworkX.
-        
-        Parameters
-        ----------
-            self: CNetwork
-        
-        Examples
-        --------
-            ...
-                        
-        See also
-        --------
-            load_graphml, NetworkX   
-        """
-        if self.src == None:
-            print "Error - the src is not define"
-            return
-        if self.fileformat != 'NetworkX':
-            print "Error - the file format is: "+self.fileformat+"; it should be NetworkX"
-            return
-        return nx.load(self.src)    
-    
-    def load_from_nx(self, nx_filename):
-        """
-        Load a NetworkX into the current CNetwork, adding the NetworkX to contents, the nx_filename to src, if not already specified in the current CNetwork the NetworkX name to name, the fileformat to NetworkX and the dtype to AttributeNetwork.
-        
-        Parameters
-        ----------
-            CNetwork
-            nx_filename : filename of the NetworkX
-        
-        Examples
-        --------
-            ...
-            
-        See also
-        --------
-            set_with_nx, load_from_ml, NetworkX    
-        """
-        g = nx.load(nx_filename)
-        self.src = nx_filename
-        self.set_with_nx(g)
-    
-    def set_with_nx(self, nxGraph):
-        """
-        Set the current CNetwork with the given NetworkX graph. Add the name if not already specified in the current CNetwork, set the fileformat to NetworkX and the dtype to AttributeNetwork. Add the NetworkX object to contents.
+    def set_with_nxgraph(self, nxGraph):
+        """Set the current CNetwork with the given NetworkX graph. Add the name if not already specified in the current CNetwork, set the fileformat to NetworkX and the dtype to AttributeNetwork. Add the NetworkX object to contents.
         
         Parameters
         ----------
@@ -695,7 +643,36 @@ supermod.CSurface.subclass = CSurface
 
 
 class CVolume(supermod.CVolume, CBaseClass):
-    def __init__(self, src=None, dtype=None, name=None, fileformat='Nifti1', description=None, metadata=None):
+    """
+        Create a new CVolume object.
+        
+        Parameters
+        ----------
+            name              : string, optional
+                the volume name
+            src               : string, optional,
+                the source file of the volume
+            dtype             : string, optional,
+                the data type of the volume
+            fileformat        : string, optional,
+                the fileformat of the volume
+            description       : description, optional,
+                a description (key, value) of the CVolume
+            metadata          : Metadata, optional,
+                Metadata object relative to the volume
+                    
+        Examples
+        --------
+            Empty
+            >>> myCVol1 = CVolume()
+            Create an empty CVolume object
+            
+        See also
+        --------
+            description, Metadata, connectome
+    
+    """
+    def __init__(self, name=None, src=None, dtype=None, fileformat='Nifti1', description=None, metadata=None):
         super(CVolume, self).__init__(src, dtype, name, fileformat, description, metadata, )
                   
     def get_unique_relpath(self):
@@ -718,7 +695,34 @@ supermod.CVolume.subclass = CVolume
 # end class CVolume
 
 class CTrack(supermod.CTrack, CBaseClass):
-    def __init__(self, src=None, name=None, fileformat='TrackVis', description=None, metadata=None):
+    """
+        Create a new CTrack object.
+        
+        Parameters
+        ----------
+            name              : string, optional
+                the track name
+            src               : string, optional,
+                the source file of the track
+            fileformat        : string, optional,
+                the fileformat of the track
+            description       : description, optional,
+                a description (key, value) of the CTrack
+            metadata          : Metadata, optional,
+                Metadata object relative to the track
+                    
+        Examples
+        --------
+            Empty
+            >>> myCVol1 = CTrack()
+            Create an empty CTrack object
+            
+        See also
+        --------
+            description, Metadata, connectome
+    
+    """
+    def __init__(self, name=None, src=None, fileformat='TrackVis', description=None, metadata=None):
         super(CTrack, self).__init__(src, name, fileformat, description, metadata, )
                         
     def get_unique_relpath(self):
@@ -838,139 +842,13 @@ supermod.data.subclass = data
 # end class data
 
 
-class NetworkSurface(supermod.NetworkSurface):
-    """
-        The name of the surface as reference to an existing connectome-surface
-    
-        Parameters
-        ----------
-            name     : string,
-                the name of the surface
-            metadata : Metadata, optional
-        
-        Examples
-        --------
-            ...
-                                
-        See also
-        --------
-            Metadata, connectome   
-            
-    """
-    def __init__(self, name=None, metadata=None):
-        super(NetworkSurface, self).__init__(name, metadata, )
-supermod.NetworkSurface.subclass = NetworkSurface
-# end class NetworkSurface
-
-
-class NetworkVolume(supermod.NetworkVolume):
-    """
-        The name of the volume as reference to an existing connectome-volume. The connectome-volume can be of any dtype.
-    
-        Parameters
-        ----------
-            name     : string,
-                the name of the volume
-            metadata : Metadata, optional
-        
-        Examples
-        --------
-            ...
-                                
-        See also
-        --------
-            Metadata, connectome   
-            
-    """
-    def __init__(self, name=None, metadata=None):
-        super(NetworkVolume, self).__init__(name, metadata, )
-supermod.NetworkVolume.subclass = NetworkVolume
-# end class NetworkVolume
-
-
-class NetworkTrack(supermod.NetworkTrack):
-    """
-        The name of the track as reference to an existing connectome-track. 
-    
-        Parameters
-        ----------
-            name     : string,
-                the name of the track
-            metadata : Metadata, optional
-        
-        Examples
-        --------
-            ...
-                                
-        See also
-        --------
-            Metadata, connectome   
-            
-    """
-    def __init__(self, name=None, metadata=None):
-        super(NetworkTrack, self).__init__(name, metadata, )
-supermod.NetworkTrack.subclass = NetworkTrack
-# end class NetworkTrack
-
-
-class NetworkTimeserie(supermod.NetworkTimeserie):
-    """
-        The name of the timeserie as reference to an existing connectome-timeserie. 
-    
-        Parameters
-        ----------
-            name     : string,
-                the name of the timeserie
-            metadata : Metadata, optional
-        
-        Examples
-        --------
-            ...
-                                
-        See also
-        --------
-            Metadata, connectome   
-            
-    """
-    def __init__(self, name=None, metadata=None):
-        super(NetworkTimeserie, self).__init__(name, metadata, )
-supermod.NetworkTimeserie.subclass = NetworkTimeserie
-# end class NetworkTimeserie
-
-
-class NetworkData(supermod.NetworkData):
-    """
-        The name of the data object as reference to an existing connectome-data
-    
-        Parameters
-        ----------
-            name     : string,
-                the name of the data
-            metadata : Metadata, optional
-        
-        Examples
-        --------
-            ...
-                                
-        See also
-        --------
-            Metadata, connectome   
-            
-    """
-    def __init__(self, name=None, metadata=None):
-        super(NetworkData, self).__init__(name, metadata, )
-supermod.NetworkData.subclass = NetworkData
-# end class NetworkData
-
-
-
 def get_root_tag(node):
     tag = supermod.Tag_pattern_.match(node.tag).groups()[-1]
     rootClass = None
     if hasattr(supermod, tag):
         rootClass = getattr(supermod, tag)
     return tag, rootClass
-
+    
 
 def parse(inFilename):
     doc = parsexml_(inFilename)
@@ -985,7 +863,7 @@ def parse(inFilename):
         namespacedef_='')
     doc = None
     return rootObj
-
+    
 
 def parseString(inString):
     from StringIO import StringIO

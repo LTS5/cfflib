@@ -121,6 +121,8 @@ You can access and modifiy this CNetwork object::
 
 for example, this function will set the data type to *data*.
 
+This example is 
+
 Add metadata to an object
 =========================
 

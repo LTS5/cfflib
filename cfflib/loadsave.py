@@ -126,8 +126,8 @@ def save_to_cff(connectome, filename):
         if not hasattr(ele, 'content'):
             
             # Add if iszip is undefined
-            if not hasattr(connectome, 'iszip'):
-                connectome.iszip = False
+#            if not hasattr(connectome, 'iszip'):
+#                connectome.iszip = False
             
             if connectome.iszip:
                 # extract zip content and add it to new zipfile

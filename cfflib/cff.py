@@ -333,7 +333,32 @@ class connectome(GeneratedsSuper):
     def set_connectome_meta(self, connectome_meta): self.connectome_meta = connectome_meta
     def get_connectome_network(self): return self.connectome_network
     def set_connectome_network(self, connectome_network): self.connectome_network = connectome_network
-    def add_connectome_network(self, value): self.connectome_network.append(value)
+    def add_connectome_network(self, value, name=None):
+        """Add a CNetwork object to the current connectome object.
+        
+        Parameters
+        ----------
+        self : connectome
+        value : CNetwork,
+            the connectome network you want to add to the connectome
+        name : string, optional,
+            the unique name of the CNetwork, it is optional only if the CNetwork object already has an unique name
+        """
+        if name==None and value.name==None:
+            print "ERROR - No name specified"
+            return 
+        elif value.name!=None:
+            n = value.name
+        else:
+            n = name
+        n = self.get_normalised_name(n)
+        print n
+        if self.is_name_unique(n):
+            value.name = n
+            self.connectome_network.append(value)
+        else:
+            print "ERROR - Name is not unique"
+            return
     def insert_connectome_network(self, index, value): self.connectome_network[index] = value
     def get_connectome_surface(self): return self.connectome_surface
     def set_connectome_surface(self, connectome_surface): self.connectome_surface = connectome_surface
