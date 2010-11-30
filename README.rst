@@ -3,7 +3,7 @@ Connectome File Format Library
 Multi-Modal Neuroimaging Python Library for Data Input / Output and interlinking. Supports:
 
 * CMetadata: Connectome Markup Language (XML)
-* CNetwork: Networks, Connectomes (GraphML, GEXF)
+* CNetwork: Networks, Connectomes (GraphML, GEXF, NXGPickle)
 * CSurface: Surface data (Gifti)
 * CVolume: Volumetric data (Nifti)
 * CTrack: Fiber track data (TrackVis) 

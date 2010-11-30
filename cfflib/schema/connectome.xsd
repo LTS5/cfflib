@@ -62,6 +62,7 @@
 	<xsd:restriction base="xsd:string">
 		<xsd:enumeration value="GraphML"/>
 		<xsd:enumeration value="GEXF"/>
+		<xsd:enumeration value="NXGPickle"/>
 		<xsd:enumeration value="Other"/>
 	</xsd:restriction>
 </xsd:simpleType>

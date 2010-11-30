@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 #
-# Generated Wed Nov 10 11:47:12 2010 by generateDS.py version 2.1a.
+# Generated Tue Nov 30 10:26:39 2010 by generateDS.py version 2.1a.
 #
 
 import sys
@@ -86,8 +86,8 @@ supermod.CMetadata.subclass = CMetadata
 
 
 class description(supermod.description):
-    def __init__(self, format=None, value=None):
-        super(description, self).__init__(format, value, )
+    def __init__(self, format=None, valueOf_=None):
+        super(description, self).__init__(format, valueOf_, )
 supermod.description.subclass = description
 # end class description
 
@@ -156,8 +156,8 @@ supermod.Metadata.subclass = Metadata
 
 
 class data(supermod.data):
-    def __init__(self, key=None, value=None):
-        super(data, self).__init__(key, value, )
+    def __init__(self, key=None, valueOf_=None):
+        super(data, self).__init__(key, valueOf_, )
 supermod.data.subclass = data
 # end class data
 

@@ -40,7 +40,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'Connectome File Format Library'
-copyright = u'2010, Stephan Gerhard'
+copyright = u'2010, EPFL & UNIL-CHUV'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the

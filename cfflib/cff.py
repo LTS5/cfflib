@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 #
-# Generated Wed Nov 10 11:47:12 2010 by generateDS.py version 2.1a.
+# Generated Tue Nov 30 10:26:39 2010 by generateDS.py version 2.1a.
 #
 
 import sys
@@ -784,9 +784,9 @@ class description(GeneratedsSuper):
     """A description according to the format attribute syntax."""
     subclass = None
     superclass = None
-    def __init__(self, format=None, value=None):
+    def __init__(self, format=None, valueOf_=None):
         self.format = _cast(None, format)
-        self.value = value
+        self.valueOf_ = valueOf_
     def factory(*args_, **kwargs_):
         if description.subclass:
             return description.subclass(*args_, **kwargs_)
@@ -798,15 +798,15 @@ class description(GeneratedsSuper):
     def validate_descriptionFormat(self, value):
         # Validate type descriptionFormat, a restriction on xsd:string.
         pass
-    def get_value(self): return self.value
-    def set_value(self, value): self.value = value
+    def get_valueOf_(self): return self.valueOf_
+    def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
     def export(self, outfile, level, namespace_='', name_='description', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, namespace_, name_='description')
         if self.hasContent_():
             outfile.write('>')
-            outfile.write(self.value)
+            outfile.write(self.valueOf_)
             self.exportChildren(outfile, level + 1, namespace_, name_)
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
@@ -818,7 +818,7 @@ class description(GeneratedsSuper):
         pass
     def hasContent_(self):
         if (
-            self.value
+            self.valueOf_
             ):
             return True
         else:
@@ -834,10 +834,10 @@ class description(GeneratedsSuper):
             outfile.write('format = "%s",\n' % (self.format,))
     def exportLiteralChildren(self, outfile, level, name_):
         showIndent(outfile, level)
-        outfile.write('value = """%s""",\n' % (self.value,))
+        outfile.write('valueOf_ = """%s""",\n' % (self.valueOf_,))
     def build(self, node):
         self.buildAttributes(node, node.attrib)
-        self.value = get_all_text_(node)
+        self.valueOf_ = get_all_text_(node)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
             self.buildChildren(child, nodeName_)
@@ -2119,9 +2119,9 @@ class data(GeneratedsSuper):
     to be used later in the dictionary"""
     subclass = None
     superclass = None
-    def __init__(self, key=None, value=None):
+    def __init__(self, key=None, valueOf_=None):
         self.key = _cast(None, key)
-        self.value = value
+        self.valueOf_ = valueOf_
     def factory(*args_, **kwargs_):
         if data.subclass:
             return data.subclass(*args_, **kwargs_)
@@ -2130,15 +2130,15 @@ class data(GeneratedsSuper):
     factory = staticmethod(factory)
     def get_key(self): return self.key
     def set_key(self, key): self.key = key
-    def get_value(self): return self.value
-    def set_value(self, value): self.value = value
+    def get_valueOf_(self): return self.valueOf_
+    def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
     def export(self, outfile, level, namespace_='', name_='data', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, namespace_, name_='data')
         if self.hasContent_():
             outfile.write('>')
-            outfile.write(self.value)
+            outfile.write(self.valueOf_)
             self.exportChildren(outfile, level + 1, namespace_, name_)
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
@@ -2150,7 +2150,7 @@ class data(GeneratedsSuper):
         pass
     def hasContent_(self):
         if (
-            self.value
+            self.valueOf_
             ):
             return True
         else:
@@ -2166,10 +2166,10 @@ class data(GeneratedsSuper):
             outfile.write('key = "%s",\n' % (self.key,))
     def exportLiteralChildren(self, outfile, level, name_):
         showIndent(outfile, level)
-        outfile.write('value = """%s""",\n' % (self.value,))
+        outfile.write('valueOf_ = """%s""",\n' % (self.valueOf_,))
     def build(self, node):
         self.buildAttributes(node, node.attrib)
-        self.value = get_all_text_(node)
+        self.valueOf_ = get_all_text_(node)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
             self.buildChildren(child, nodeName_)
