@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 #
-# Generated Tue Nov 30 10:26:39 2010 by generateDS.py version 2.1a.
+# Generated Tue Nov 30 10:32:46 2010 by generateDS.py version 2.1a.
 #
 
 import sys
@@ -93,8 +93,8 @@ supermod.description.subclass = description
 
 
 class CNetwork(supermod.CNetwork):
-    def __init__(self, src=None, dtype='AttributeNetwork', name=None, fileformat='GraphML', metadata=None, network_surface=None, network_volume=None, network_track=None, network_timeserie=None, network_data=None, description=None):
-        super(CNetwork, self).__init__(src, dtype, name, fileformat, metadata, network_surface, network_volume, network_track, network_timeserie, network_data, description, )
+    def __init__(self, src=None, dtype='AttributeNetwork', name=None, fileformat='GraphML', metadata=None, description=None):
+        super(CNetwork, self).__init__(src, dtype, name, fileformat, metadata, description, )
 supermod.CNetwork.subclass = CNetwork
 # end class CNetwork
 
@@ -160,41 +160,6 @@ class data(supermod.data):
         super(data, self).__init__(key, valueOf_, )
 supermod.data.subclass = data
 # end class data
-
-
-class NetworkSurface(supermod.NetworkSurface):
-    def __init__(self, name=None, metadata=None):
-        super(NetworkSurface, self).__init__(name, metadata, )
-supermod.NetworkSurface.subclass = NetworkSurface
-# end class NetworkSurface
-
-
-class NetworkVolume(supermod.NetworkVolume):
-    def __init__(self, name=None, metadata=None):
-        super(NetworkVolume, self).__init__(name, metadata, )
-supermod.NetworkVolume.subclass = NetworkVolume
-# end class NetworkVolume
-
-
-class NetworkTrack(supermod.NetworkTrack):
-    def __init__(self, name=None, metadata=None):
-        super(NetworkTrack, self).__init__(name, metadata, )
-supermod.NetworkTrack.subclass = NetworkTrack
-# end class NetworkTrack
-
-
-class NetworkTimeserie(supermod.NetworkTimeserie):
-    def __init__(self, name=None, metadata=None):
-        super(NetworkTimeserie, self).__init__(name, metadata, )
-supermod.NetworkTimeserie.subclass = NetworkTimeserie
-# end class NetworkTimeserie
-
-
-class NetworkData(supermod.NetworkData):
-    def __init__(self, name=None, metadata=None):
-        super(NetworkData, self).__init__(name, metadata, )
-supermod.NetworkData.subclass = NetworkData
-# end class NetworkData
 
 
 
