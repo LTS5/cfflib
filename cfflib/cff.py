@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 #
-# Generated Wed Nov 10 11:47:12 2010 by generateDS.py version 2.1a.
+# Generated Tue Nov 30 10:32:46 2010 by generateDS.py version 2.1a.
 #
 
 import sys
@@ -804,9 +804,9 @@ class description(GeneratedsSuper):
     """A description according to the format attribute syntax."""
     subclass = None
     superclass = None
-    def __init__(self, format=None, value=None):
+    def __init__(self, format=None, valueOf_=None):
         self.format = _cast(None, format)
-        self.value = value
+        self.valueOf_ = valueOf_
     def factory(*args_, **kwargs_):
         if description.subclass:
             return description.subclass(*args_, **kwargs_)
@@ -818,15 +818,15 @@ class description(GeneratedsSuper):
     def validate_descriptionFormat(self, value):
         # Validate type descriptionFormat, a restriction on xsd:string.
         pass
-    def get_value(self): return self.value
-    def set_value(self, value): self.value = value
+    def get_valueOf_(self): return self.valueOf_
+    def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
     def export(self, outfile, level, namespace_='', name_='description', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, namespace_, name_='description')
         if self.hasContent_():
             outfile.write('>')
-            outfile.write(self.value)
+            outfile.write(self.valueOf_)
             self.exportChildren(outfile, level + 1, namespace_, name_)
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
@@ -838,7 +838,7 @@ class description(GeneratedsSuper):
         pass
     def hasContent_(self):
         if (
-            self.value
+            self.valueOf_
             ):
             return True
         else:
@@ -854,10 +854,10 @@ class description(GeneratedsSuper):
             outfile.write('format = "%s",\n' % (self.format,))
     def exportLiteralChildren(self, outfile, level, name_):
         showIndent(outfile, level)
-        outfile.write('value = """%s""",\n' % (self.value,))
+        outfile.write('valueOf_ = """%s""",\n' % (self.valueOf_,))
     def build(self, node):
         self.buildAttributes(node, node.attrib)
-        self.value = get_all_text_(node)
+        self.valueOf_ = get_all_text_(node)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
             self.buildChildren(child, nodeName_)
@@ -874,40 +874,21 @@ class description(GeneratedsSuper):
 class CNetwork(GeneratedsSuper):
     """The short name of the network The path to the file according to
     location attribute Is the network stored it "GEXF" or "GraphML"
-    format, or "Other" format? - dtype="AttributeNetwork" A network
-    with arbitrary number of attributes for nodes and edges. -
+    format, "NXGPickle" as NetworkX pickled object, or "Other"
+    format? - dtype="AttributeNetwork" A network with arbitrary
+    number of attributes for nodes and edges. -
     dtype="DynamicNetwork" Network with either with lifespan
     attributes for nodes and edges (See GEXF) or timeseries on nodes
     and edges. - dtype="HierarchicalNetwork" Network with
     hierarchical structure. - dtype="Other" Other kind of network."""
     subclass = None
     superclass = None
-    def __init__(self, src=None, dtype='AttributeNetwork', name=None, fileformat='GraphML', metadata=None, network_surface=None, network_volume=None, network_track=None, network_timeserie=None, network_data=None, description=None):
+    def __init__(self, src=None, dtype='AttributeNetwork', name=None, fileformat='GraphML', metadata=None, description=None):
         self.src = _cast(None, src)
         self.dtype = _cast(None, dtype)
         self.name = _cast(None, name)
         self.fileformat = _cast(None, fileformat)
         self.metadata = metadata
-        if network_surface is None:
-            self.network_surface = []
-        else:
-            self.network_surface = network_surface
-        if network_volume is None:
-            self.network_volume = []
-        else:
-            self.network_volume = network_volume
-        if network_track is None:
-            self.network_track = []
-        else:
-            self.network_track = network_track
-        if network_timeserie is None:
-            self.network_timeserie = []
-        else:
-            self.network_timeserie = network_timeserie
-        if network_data is None:
-            self.network_data = []
-        else:
-            self.network_data = network_data
         self.description = description
     def factory(*args_, **kwargs_):
         if CNetwork.subclass:
@@ -917,26 +898,6 @@ class CNetwork(GeneratedsSuper):
     factory = staticmethod(factory)
     def get_metadata(self): return self.metadata
     def set_metadata(self, metadata): self.metadata = metadata
-    def get_network_surface(self): return self.network_surface
-    def set_network_surface(self, network_surface): self.network_surface = network_surface
-    def add_network_surface(self, value): self.network_surface.append(value)
-    def insert_network_surface(self, index, value): self.network_surface[index] = value
-    def get_network_volume(self): return self.network_volume
-    def set_network_volume(self, network_volume): self.network_volume = network_volume
-    def add_network_volume(self, value): self.network_volume.append(value)
-    def insert_network_volume(self, index, value): self.network_volume[index] = value
-    def get_network_track(self): return self.network_track
-    def set_network_track(self, network_track): self.network_track = network_track
-    def add_network_track(self, value): self.network_track.append(value)
-    def insert_network_track(self, index, value): self.network_track[index] = value
-    def get_network_timeserie(self): return self.network_timeserie
-    def set_network_timeserie(self, network_timeserie): self.network_timeserie = network_timeserie
-    def add_network_timeserie(self, value): self.network_timeserie.append(value)
-    def insert_network_timeserie(self, index, value): self.network_timeserie[index] = value
-    def get_network_data(self): return self.network_data
-    def set_network_data(self, network_data): self.network_data = network_data
-    def add_network_data(self, value): self.network_data.append(value)
-    def insert_network_data(self, index, value): self.network_data[index] = value
     def get_description(self): return self.description
     def set_description(self, description): self.description = description
     def get_src(self): return self.src
@@ -976,26 +937,11 @@ class CNetwork(GeneratedsSuper):
     def exportChildren(self, outfile, level, namespace_='', name_='CNetwork'):
         if self.metadata:
             self.metadata.export(outfile, level, namespace_, name_='metadata')
-        for network_surface_ in self.network_surface:
-            network_surface_.export(outfile, level, namespace_, name_='network-surface')
-        for network_volume_ in self.network_volume:
-            network_volume_.export(outfile, level, namespace_, name_='network-volume')
-        for network_track_ in self.network_track:
-            network_track_.export(outfile, level, namespace_, name_='network-track')
-        for network_timeserie_ in self.network_timeserie:
-            network_timeserie_.export(outfile, level, namespace_, name_='network-timeserie')
-        for network_data_ in self.network_data:
-            network_data_.export(outfile, level, namespace_, name_='network-data')
         if self.description:
             self.description.export(outfile, level, namespace_, name_='description')
     def hasContent_(self):
         if (
             self.metadata is not None or
-            self.network_surface or
-            self.network_volume or
-            self.network_track or
-            self.network_timeserie or
-            self.network_data or
             self.description is not None
             ):
             return True
@@ -1026,66 +972,6 @@ class CNetwork(GeneratedsSuper):
             self.metadata.exportLiteral(outfile, level, name_='metadata')
             showIndent(outfile, level)
             outfile.write('),\n')
-        showIndent(outfile, level)
-        outfile.write('network_surface=[\n')
-        level += 1
-        for network_surface_ in self.network_surface:
-            showIndent(outfile, level)
-            outfile.write('model_.NetworkSurface(\n')
-            network_surface_.exportLiteral(outfile, level, name_='NetworkSurface')
-            showIndent(outfile, level)
-            outfile.write('),\n')
-        level -= 1
-        showIndent(outfile, level)
-        outfile.write('],\n')
-        showIndent(outfile, level)
-        outfile.write('network_volume=[\n')
-        level += 1
-        for network_volume_ in self.network_volume:
-            showIndent(outfile, level)
-            outfile.write('model_.NetworkVolume(\n')
-            network_volume_.exportLiteral(outfile, level, name_='NetworkVolume')
-            showIndent(outfile, level)
-            outfile.write('),\n')
-        level -= 1
-        showIndent(outfile, level)
-        outfile.write('],\n')
-        showIndent(outfile, level)
-        outfile.write('network_track=[\n')
-        level += 1
-        for network_track_ in self.network_track:
-            showIndent(outfile, level)
-            outfile.write('model_.NetworkTrack(\n')
-            network_track_.exportLiteral(outfile, level, name_='NetworkTrack')
-            showIndent(outfile, level)
-            outfile.write('),\n')
-        level -= 1
-        showIndent(outfile, level)
-        outfile.write('],\n')
-        showIndent(outfile, level)
-        outfile.write('network_timeserie=[\n')
-        level += 1
-        for network_timeserie_ in self.network_timeserie:
-            showIndent(outfile, level)
-            outfile.write('model_.NetworkTimeserie(\n')
-            network_timeserie_.exportLiteral(outfile, level, name_='NetworkTimeserie')
-            showIndent(outfile, level)
-            outfile.write('),\n')
-        level -= 1
-        showIndent(outfile, level)
-        outfile.write('],\n')
-        showIndent(outfile, level)
-        outfile.write('network_data=[\n')
-        level += 1
-        for network_data_ in self.network_data:
-            showIndent(outfile, level)
-            outfile.write('model_.NetworkData(\n')
-            network_data_.exportLiteral(outfile, level, name_='NetworkData')
-            showIndent(outfile, level)
-            outfile.write('),\n')
-        level -= 1
-        showIndent(outfile, level)
-        outfile.write('],\n')
         if self.description is not None:
             showIndent(outfile, level)
             outfile.write('description=model_.description(\n')
@@ -1117,26 +1003,6 @@ class CNetwork(GeneratedsSuper):
             obj_ = Metadata.factory()
             obj_.build(child_)
             self.set_metadata(obj_)
-        elif nodeName_ == 'network-surface': 
-            obj_ = NetworkSurface.factory()
-            obj_.build(child_)
-            self.network_surface.append(obj_)
-        elif nodeName_ == 'network-volume': 
-            obj_ = NetworkVolume.factory()
-            obj_.build(child_)
-            self.network_volume.append(obj_)
-        elif nodeName_ == 'network-track': 
-            obj_ = NetworkTrack.factory()
-            obj_.build(child_)
-            self.network_track.append(obj_)
-        elif nodeName_ == 'network-timeserie': 
-            obj_ = NetworkTimeserie.factory()
-            obj_.build(child_)
-            self.network_timeserie.append(obj_)
-        elif nodeName_ == 'network-data': 
-            obj_ = NetworkData.factory()
-            obj_.build(child_)
-            self.network_data.append(obj_)
         elif nodeName_ == 'description': 
             obj_ = description.factory()
             obj_.build(child_)
@@ -2139,9 +2005,9 @@ class data(GeneratedsSuper):
     to be used later in the dictionary"""
     subclass = None
     superclass = None
-    def __init__(self, key=None, value=None):
+    def __init__(self, key=None, valueOf_=None):
         self.key = _cast(None, key)
-        self.value = value
+        self.valueOf_ = valueOf_
     def factory(*args_, **kwargs_):
         if data.subclass:
             return data.subclass(*args_, **kwargs_)
@@ -2150,15 +2016,15 @@ class data(GeneratedsSuper):
     factory = staticmethod(factory)
     def get_key(self): return self.key
     def set_key(self, key): self.key = key
-    def get_value(self): return self.value
-    def set_value(self, value): self.value = value
+    def get_valueOf_(self): return self.valueOf_
+    def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
     def export(self, outfile, level, namespace_='', name_='data', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, namespace_, name_='data')
         if self.hasContent_():
             outfile.write('>')
-            outfile.write(self.value)
+            outfile.write(self.valueOf_)
             self.exportChildren(outfile, level + 1, namespace_, name_)
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
@@ -2170,7 +2036,7 @@ class data(GeneratedsSuper):
         pass
     def hasContent_(self):
         if (
-            self.value
+            self.valueOf_
             ):
             return True
         else:
@@ -2186,10 +2052,10 @@ class data(GeneratedsSuper):
             outfile.write('key = "%s",\n' % (self.key,))
     def exportLiteralChildren(self, outfile, level, name_):
         showIndent(outfile, level)
-        outfile.write('value = """%s""",\n' % (self.value,))
+        outfile.write('valueOf_ = """%s""",\n' % (self.valueOf_,))
     def build(self, node):
         self.buildAttributes(node, node.attrib)
-        self.value = get_all_text_(node)
+        self.valueOf_ = get_all_text_(node)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
             self.buildChildren(child, nodeName_)
@@ -2200,380 +2066,6 @@ class data(GeneratedsSuper):
     def buildChildren(self, child_, nodeName_):
         pass
 # end class data
-
-
-class NetworkSurface(GeneratedsSuper):
-    """The name of the surface as reference to an existing connectome-
-    surface"""
-    subclass = None
-    superclass = None
-    def __init__(self, name=None, metadata=None):
-        self.name = _cast(None, name)
-        self.metadata = metadata
-    def factory(*args_, **kwargs_):
-        if NetworkSurface.subclass:
-            return NetworkSurface.subclass(*args_, **kwargs_)
-        else:
-            return NetworkSurface(*args_, **kwargs_)
-    factory = staticmethod(factory)
-    def get_metadata(self): return self.metadata
-    def set_metadata(self, metadata): self.metadata = metadata
-    def get_name(self): return self.name
-    def set_name(self, name): self.name = name
-    def export(self, outfile, level, namespace_='', name_='NetworkSurface', namespacedef_=''):
-        showIndent(outfile, level)
-        outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
-        self.exportAttributes(outfile, level, namespace_, name_='NetworkSurface')
-        if self.hasContent_():
-            outfile.write('>\n')
-            self.exportChildren(outfile, level + 1, namespace_, name_)
-            showIndent(outfile, level)
-            outfile.write('</%s%s>\n' % (namespace_, name_))
-        else:
-            outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, namespace_='', name_='NetworkSurface'):
-        if self.name is not None:
-            outfile.write(' name=%s' % (self.format_string(quote_attrib(self.name).encode(ExternalEncoding), input_name='name'), ))
-    def exportChildren(self, outfile, level, namespace_='', name_='NetworkSurface'):
-        if self.metadata:
-            self.metadata.export(outfile, level, namespace_, name_='metadata')
-    def hasContent_(self):
-        if (
-            self.metadata is not None
-            ):
-            return True
-        else:
-            return False
-    def exportLiteral(self, outfile, level, name_='NetworkSurface'):
-        level += 1
-        self.exportLiteralAttributes(outfile, level, name_)
-        if self.hasContent_():
-            self.exportLiteralChildren(outfile, level, name_)
-    def exportLiteralAttributes(self, outfile, level, name_):
-        if self.name is not None:
-            showIndent(outfile, level)
-            outfile.write('name = "%s",\n' % (self.name,))
-    def exportLiteralChildren(self, outfile, level, name_):
-        if self.metadata is not None:
-            showIndent(outfile, level)
-            outfile.write('metadata=model_.Metadata(\n')
-            self.metadata.exportLiteral(outfile, level, name_='metadata')
-            showIndent(outfile, level)
-            outfile.write('),\n')
-    def build(self, node):
-        self.buildAttributes(node, node.attrib)
-        for child in node:
-            nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, nodeName_)
-    def buildAttributes(self, node, attrs):
-        value = attrs.get('name')
-        if value is not None:
-            self.name = value
-    def buildChildren(self, child_, nodeName_):
-        if nodeName_ == 'metadata': 
-            obj_ = Metadata.factory()
-            obj_.build(child_)
-            self.set_metadata(obj_)
-# end class NetworkSurface
-
-
-class NetworkVolume(GeneratedsSuper):
-    """The name of the volume as reference to an existing connectome-
-    volume. The connectome-volume can be of any dtype."""
-    subclass = None
-    superclass = None
-    def __init__(self, name=None, metadata=None):
-        self.name = _cast(None, name)
-        self.metadata = metadata
-    def factory(*args_, **kwargs_):
-        if NetworkVolume.subclass:
-            return NetworkVolume.subclass(*args_, **kwargs_)
-        else:
-            return NetworkVolume(*args_, **kwargs_)
-    factory = staticmethod(factory)
-    def get_metadata(self): return self.metadata
-    def set_metadata(self, metadata): self.metadata = metadata
-    def get_name(self): return self.name
-    def set_name(self, name): self.name = name
-    def export(self, outfile, level, namespace_='', name_='NetworkVolume', namespacedef_=''):
-        showIndent(outfile, level)
-        outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
-        self.exportAttributes(outfile, level, namespace_, name_='NetworkVolume')
-        if self.hasContent_():
-            outfile.write('>\n')
-            self.exportChildren(outfile, level + 1, namespace_, name_)
-            showIndent(outfile, level)
-            outfile.write('</%s%s>\n' % (namespace_, name_))
-        else:
-            outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, namespace_='', name_='NetworkVolume'):
-        if self.name is not None:
-            outfile.write(' name=%s' % (self.format_string(quote_attrib(self.name).encode(ExternalEncoding), input_name='name'), ))
-    def exportChildren(self, outfile, level, namespace_='', name_='NetworkVolume'):
-        if self.metadata:
-            self.metadata.export(outfile, level, namespace_, name_='metadata')
-    def hasContent_(self):
-        if (
-            self.metadata is not None
-            ):
-            return True
-        else:
-            return False
-    def exportLiteral(self, outfile, level, name_='NetworkVolume'):
-        level += 1
-        self.exportLiteralAttributes(outfile, level, name_)
-        if self.hasContent_():
-            self.exportLiteralChildren(outfile, level, name_)
-    def exportLiteralAttributes(self, outfile, level, name_):
-        if self.name is not None:
-            showIndent(outfile, level)
-            outfile.write('name = "%s",\n' % (self.name,))
-    def exportLiteralChildren(self, outfile, level, name_):
-        if self.metadata is not None:
-            showIndent(outfile, level)
-            outfile.write('metadata=model_.Metadata(\n')
-            self.metadata.exportLiteral(outfile, level, name_='metadata')
-            showIndent(outfile, level)
-            outfile.write('),\n')
-    def build(self, node):
-        self.buildAttributes(node, node.attrib)
-        for child in node:
-            nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, nodeName_)
-    def buildAttributes(self, node, attrs):
-        value = attrs.get('name')
-        if value is not None:
-            self.name = value
-    def buildChildren(self, child_, nodeName_):
-        if nodeName_ == 'metadata': 
-            obj_ = Metadata.factory()
-            obj_.build(child_)
-            self.set_metadata(obj_)
-# end class NetworkVolume
-
-
-class NetworkTrack(GeneratedsSuper):
-    """The name of the track as reference to an existing connectome-track"""
-    subclass = None
-    superclass = None
-    def __init__(self, name=None, metadata=None):
-        self.name = _cast(None, name)
-        self.metadata = metadata
-    def factory(*args_, **kwargs_):
-        if NetworkTrack.subclass:
-            return NetworkTrack.subclass(*args_, **kwargs_)
-        else:
-            return NetworkTrack(*args_, **kwargs_)
-    factory = staticmethod(factory)
-    def get_metadata(self): return self.metadata
-    def set_metadata(self, metadata): self.metadata = metadata
-    def get_name(self): return self.name
-    def set_name(self, name): self.name = name
-    def export(self, outfile, level, namespace_='', name_='NetworkTrack', namespacedef_=''):
-        showIndent(outfile, level)
-        outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
-        self.exportAttributes(outfile, level, namespace_, name_='NetworkTrack')
-        if self.hasContent_():
-            outfile.write('>\n')
-            self.exportChildren(outfile, level + 1, namespace_, name_)
-            showIndent(outfile, level)
-            outfile.write('</%s%s>\n' % (namespace_, name_))
-        else:
-            outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, namespace_='', name_='NetworkTrack'):
-        if self.name is not None:
-            outfile.write(' name=%s' % (self.format_string(quote_attrib(self.name).encode(ExternalEncoding), input_name='name'), ))
-    def exportChildren(self, outfile, level, namespace_='', name_='NetworkTrack'):
-        if self.metadata:
-            self.metadata.export(outfile, level, namespace_, name_='metadata')
-    def hasContent_(self):
-        if (
-            self.metadata is not None
-            ):
-            return True
-        else:
-            return False
-    def exportLiteral(self, outfile, level, name_='NetworkTrack'):
-        level += 1
-        self.exportLiteralAttributes(outfile, level, name_)
-        if self.hasContent_():
-            self.exportLiteralChildren(outfile, level, name_)
-    def exportLiteralAttributes(self, outfile, level, name_):
-        if self.name is not None:
-            showIndent(outfile, level)
-            outfile.write('name = "%s",\n' % (self.name,))
-    def exportLiteralChildren(self, outfile, level, name_):
-        if self.metadata is not None:
-            showIndent(outfile, level)
-            outfile.write('metadata=model_.Metadata(\n')
-            self.metadata.exportLiteral(outfile, level, name_='metadata')
-            showIndent(outfile, level)
-            outfile.write('),\n')
-    def build(self, node):
-        self.buildAttributes(node, node.attrib)
-        for child in node:
-            nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, nodeName_)
-    def buildAttributes(self, node, attrs):
-        value = attrs.get('name')
-        if value is not None:
-            self.name = value
-    def buildChildren(self, child_, nodeName_):
-        if nodeName_ == 'metadata': 
-            obj_ = Metadata.factory()
-            obj_.build(child_)
-            self.set_metadata(obj_)
-# end class NetworkTrack
-
-
-class NetworkTimeserie(GeneratedsSuper):
-    """The name of the timeserie as reference to an existing connectome-
-    timeserie"""
-    subclass = None
-    superclass = None
-    def __init__(self, name=None, metadata=None):
-        self.name = _cast(None, name)
-        self.metadata = metadata
-    def factory(*args_, **kwargs_):
-        if NetworkTimeserie.subclass:
-            return NetworkTimeserie.subclass(*args_, **kwargs_)
-        else:
-            return NetworkTimeserie(*args_, **kwargs_)
-    factory = staticmethod(factory)
-    def get_metadata(self): return self.metadata
-    def set_metadata(self, metadata): self.metadata = metadata
-    def get_name(self): return self.name
-    def set_name(self, name): self.name = name
-    def export(self, outfile, level, namespace_='', name_='NetworkTimeserie', namespacedef_=''):
-        showIndent(outfile, level)
-        outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
-        self.exportAttributes(outfile, level, namespace_, name_='NetworkTimeserie')
-        if self.hasContent_():
-            outfile.write('>\n')
-            self.exportChildren(outfile, level + 1, namespace_, name_)
-            showIndent(outfile, level)
-            outfile.write('</%s%s>\n' % (namespace_, name_))
-        else:
-            outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, namespace_='', name_='NetworkTimeserie'):
-        if self.name is not None:
-            outfile.write(' name=%s' % (self.format_string(quote_attrib(self.name).encode(ExternalEncoding), input_name='name'), ))
-    def exportChildren(self, outfile, level, namespace_='', name_='NetworkTimeserie'):
-        if self.metadata:
-            self.metadata.export(outfile, level, namespace_, name_='metadata')
-    def hasContent_(self):
-        if (
-            self.metadata is not None
-            ):
-            return True
-        else:
-            return False
-    def exportLiteral(self, outfile, level, name_='NetworkTimeserie'):
-        level += 1
-        self.exportLiteralAttributes(outfile, level, name_)
-        if self.hasContent_():
-            self.exportLiteralChildren(outfile, level, name_)
-    def exportLiteralAttributes(self, outfile, level, name_):
-        if self.name is not None:
-            showIndent(outfile, level)
-            outfile.write('name = "%s",\n' % (self.name,))
-    def exportLiteralChildren(self, outfile, level, name_):
-        if self.metadata is not None:
-            showIndent(outfile, level)
-            outfile.write('metadata=model_.Metadata(\n')
-            self.metadata.exportLiteral(outfile, level, name_='metadata')
-            showIndent(outfile, level)
-            outfile.write('),\n')
-    def build(self, node):
-        self.buildAttributes(node, node.attrib)
-        for child in node:
-            nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, nodeName_)
-    def buildAttributes(self, node, attrs):
-        value = attrs.get('name')
-        if value is not None:
-            self.name = value
-    def buildChildren(self, child_, nodeName_):
-        if nodeName_ == 'metadata': 
-            obj_ = Metadata.factory()
-            obj_.build(child_)
-            self.set_metadata(obj_)
-# end class NetworkTimeserie
-
-
-class NetworkData(GeneratedsSuper):
-    """The name of the data object as reference to an existing connectome-
-    data"""
-    subclass = None
-    superclass = None
-    def __init__(self, name=None, metadata=None):
-        self.name = _cast(None, name)
-        self.metadata = metadata
-    def factory(*args_, **kwargs_):
-        if NetworkData.subclass:
-            return NetworkData.subclass(*args_, **kwargs_)
-        else:
-            return NetworkData(*args_, **kwargs_)
-    factory = staticmethod(factory)
-    def get_metadata(self): return self.metadata
-    def set_metadata(self, metadata): self.metadata = metadata
-    def get_name(self): return self.name
-    def set_name(self, name): self.name = name
-    def export(self, outfile, level, namespace_='', name_='NetworkData', namespacedef_=''):
-        showIndent(outfile, level)
-        outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
-        self.exportAttributes(outfile, level, namespace_, name_='NetworkData')
-        if self.hasContent_():
-            outfile.write('>\n')
-            self.exportChildren(outfile, level + 1, namespace_, name_)
-            showIndent(outfile, level)
-            outfile.write('</%s%s>\n' % (namespace_, name_))
-        else:
-            outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, namespace_='', name_='NetworkData'):
-        if self.name is not None:
-            outfile.write(' name=%s' % (self.format_string(quote_attrib(self.name).encode(ExternalEncoding), input_name='name'), ))
-    def exportChildren(self, outfile, level, namespace_='', name_='NetworkData'):
-        if self.metadata:
-            self.metadata.export(outfile, level, namespace_, name_='metadata')
-    def hasContent_(self):
-        if (
-            self.metadata is not None
-            ):
-            return True
-        else:
-            return False
-    def exportLiteral(self, outfile, level, name_='NetworkData'):
-        level += 1
-        self.exportLiteralAttributes(outfile, level, name_)
-        if self.hasContent_():
-            self.exportLiteralChildren(outfile, level, name_)
-    def exportLiteralAttributes(self, outfile, level, name_):
-        if self.name is not None:
-            showIndent(outfile, level)
-            outfile.write('name = "%s",\n' % (self.name,))
-    def exportLiteralChildren(self, outfile, level, name_):
-        if self.metadata is not None:
-            showIndent(outfile, level)
-            outfile.write('metadata=model_.Metadata(\n')
-            self.metadata.exportLiteral(outfile, level, name_='metadata')
-            showIndent(outfile, level)
-            outfile.write('),\n')
-    def build(self, node):
-        self.buildAttributes(node, node.attrib)
-        for child in node:
-            nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, nodeName_)
-    def buildAttributes(self, node, attrs):
-        value = attrs.get('name')
-        if value is not None:
-            self.name = value
-    def buildChildren(self, child_, nodeName_):
-        if nodeName_ == 'metadata': 
-            obj_ = Metadata.factory()
-            obj_.build(child_)
-            self.set_metadata(obj_)
-# end class NetworkData
 
 
 USAGE_TEXT = """

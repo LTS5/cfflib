@@ -62,6 +62,7 @@
 	<xsd:restriction base="xsd:string">
 		<xsd:enumeration value="GraphML"/>
 		<xsd:enumeration value="GEXF"/>
+		<xsd:enumeration value="NXGPickle"/>
 		<xsd:enumeration value="Other"/>
 	</xsd:restriction>
 </xsd:simpleType>
@@ -346,48 +347,6 @@
           </xsd:annotation>
           </xsd:element>
 
-
-          <xsd:element maxOccurs="unbounded" minOccurs="0" name="network-surface" type="NetworkSurface">
-          <xsd:annotation xml:lang="en">
-            <xsd:documentation>
-            Reference to the connectome-surface using the name attribute. The surface file must exist.
-            </xsd:documentation>
-          </xsd:annotation>
-          </xsd:element>
-
-          
-          <xsd:element maxOccurs="unbounded" minOccurs="0" name="network-volume" type="NetworkVolume">
-          <xsd:annotation xml:lang="en">
-            <xsd:documentation>
-            Reference to the connectome-volume using the name attribute. The volume file must exist.
-            </xsd:documentation>
-          </xsd:annotation>
-          </xsd:element>
-       
-          <xsd:element maxOccurs="unbounded" minOccurs="0" name="network-track" type="NetworkTrack">
-          <xsd:annotation xml:lang="en">
-            <xsd:documentation>
-            Reference to the connectome-track using the name attribute. The track file must exist.
-            </xsd:documentation>
-          </xsd:annotation>
-          </xsd:element>
-
-          <xsd:element maxOccurs="unbounded" minOccurs="0" name="network-timeserie" type="NetworkTimeserie">
-          <xsd:annotation xml:lang="en">
-            <xsd:documentation>
-            Reference to the connectome-timeserie using the name attribute. The timeserie file must exist.
-            </xsd:documentation>
-          </xsd:annotation>
-          </xsd:element>
-	  
-          <xsd:element maxOccurs="unbounded" minOccurs="0" name="network-data" type="NetworkData">
-          <xsd:annotation xml:lang="en">
-            <xsd:documentation>
-            Reference to the connectome-data using the name attribute. The data file must exist.
-            </xsd:documentation>
-          </xsd:annotation>
-          </xsd:element>
-
 	    <xsd:element maxOccurs="1" minOccurs="0" name="description">
 	     <xsd:annotation xml:lang="en">
 	       <xsd:documentation>
@@ -426,7 +385,8 @@
     <xsd:attribute default="GraphML" name="fileformat" type="networkFileFormat">
     <xsd:annotation xml:lang="en">
 	<xsd:documentation>
-	Is the network stored it "GEXF" or "GraphML" format, or "Other" format?
+	Is the network stored it "GEXF" or "GraphML" format, "NXGPickle" as NetworkX pickled object,
+	or "Other" format?
       </xsd:documentation>
     </xsd:annotation>
     </xsd:attribute>

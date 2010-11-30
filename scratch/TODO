@@ -1,6 +1,6 @@
 Generate classes with: 
-* python /home/stephan/Dev/Python/generateDS-2.1a/generateDS.py --subclass-suffix="" -f --super="cff" -o /home/stephan/Dev/PyWorkspace/cfflib/cfflib/cff.py -s /home/stephan/Dev/PyWorkspace/cfflib/cfflib/cfflib.py /home/stephan/Dev/PyWorkspace/cfflib/cfflib/schema/connectome.xsd
-* do a replacement of valueOf_ with value
+* python /home/stephan/Dev/Python/generateDS-2.1a/generateDS.py --subclass-suffix="" -f --super="cff" -o /home/stephan/dev/cfflib/cfflib/cff.py -s /home/stephan/dev/cfflib/cfflib/cfflib.py /home/stephan/dev/cfflib/cfflib/schema/connectome.xsd
+(* do a replacement of valueOf_ with value -> not do it anymore, since we are wrapping the save/retrieve logic)
 
 Documentation:
 http://www.rexx.com/~dkuhlman/generateDS.html
@@ -46,12 +46,4 @@ In cfflib
 * [METHOD] add / remove methods for connectome objects, set parent_cfile, check file name consistency
 		   cdat = cdata_from_numpy(...); add_cdata(cdat) -> add_cdata_from_numpy(np.array)
 
-Between datatype mapping
-------------------------
 
-link to hdf?
-* time series (ts) on nodes only -> directly as hdf tag? n x t
-* edges ones e x t
-* surface vertices, v x t
-* surface faces, v x t
-* network to HDF: hdffilename:/group/group/dsetarray[:,0]
