@@ -79,6 +79,36 @@ ExternalEncoding = 'ascii'
 #
 
 class connectome(supermod.connectome):
+    """
+        Creates a new connectome file
+        
+        Parameters
+        ----------
+            connectome_meta      : CMetadata
+                                   The metadata you want to add to your connectome                         
+                                   optionnal
+            connectome_network   : CNetwork
+            connectome_surface   : CSurface
+            connectome_volume    : CVolume
+            connectome_track     : CTrack
+            connectome_timeserie : CTimeserie
+            connectome_data      : CData
+            connectome_script    : CScript
+            connectome_imagestack: CImagestack
+        
+        Returns
+        -------
+            A connectome object
+            
+        Examples
+        --------
+            myConnectome = connectome() # Empty connectome object
+            
+        See also
+        --------
+            CMetadata, CNetwork, CSurface, CVolume, CTrack, CTimeserie, CData, CScript, CImagestack
+    
+    """
     def __init__(self, connectome_meta=None, connectome_network=None, connectome_surface=None, connectome_volume=None, connectome_track=None, connectome_timeserie=None, connectome_data=None, connectome_script=None, connectome_imagestack=None):
         super(connectome, self).__init__(connectome_meta, connectome_network, connectome_surface, connectome_volume, connectome_track, connectome_timeserie, connectome_data, connectome_script, connectome_imagestack, )
         # add parent reference to all children
@@ -191,12 +221,63 @@ class connectome(supermod.connectome):
                 print "Remove .tmpsrc attribute"
                 del ele.tmpsrc
         
-    
+    def add_connectome_network_from_nx(self, nxGraph):
+        """
+        Add a CNetwork from the given NetworkX graph to the connectome object
+        
+        Parameters
+        ----------
+            nxGraph: a NetworkX graph
+                    
+        Examples
+        --------
+            ...
+            
+        See also
+        --------
+            networkx, CNetwork, connectome   
+        """
+        n = CNetwork()
+        n.set_from_nx(nxGraph)
+        self.add_connectome_network(n)
+        
 supermod.connectome.subclass = connectome
 # end class connectome
 
 
 class CMetadata(supermod.CMetadata):
+    """
+        Creates a connectome metadata object, useful to add metadata to other object.
+        
+        Parameters
+        ----------
+            version           : string, default = None, version of the current object
+            generator         : string, default = None, generator of the current object
+            author            : string, default = None, 
+            institution       : string, default = None, 
+            creation_date     : string, default = None, 
+            modification_date : string, default = None, 
+            name              : string, default = None, 
+            species           : string, default = None, 
+            legal_notice      : string, default = None, 
+            reference         : string, default = None, 
+            email             : string, default = None, 
+            url               : string, default = None, 
+            description       : description object, default = None, 
+            metadata          : metadata object, default = None, 
+        
+        Returns
+        -------
+            A CMetadata object
+            
+        Examples
+        --------
+            ...
+            
+        See also
+        --------
+            Metadata, description    
+    """
     def __init__(self, version=None, generator=None, author=None, institution=None, creation_date=None, modification_date=None, name=None, species=None, legal_notice=None, reference=None, email=None, url=None, description=None, metadata=None):
         super(CMetadata, self).__init__(version, generator, author, institution, creation_date, modification_date, name, species, legal_notice, reference, email, url, description, metadata, )
 supermod.CMetadata.subclass = CMetadata
@@ -268,7 +349,125 @@ class CNetwork(supermod.CNetwork, CBaseClass):
             fend = ''
             
         return unify('CNetwork', self.name + fend)
-
+    
+    # GraphML treatment
+    def load_graphml(self):
+        """
+        Load a graphml from the src
+        
+        Parameters
+        ----------
+            CNetwork
+        
+        Returns
+        -------
+            A graphml object
+                        
+        See also
+        --------
+            load, graphml, networkx    
+        """
+        if self.src == None:
+            print "Error - the src is not define"
+            return
+        if self.fileformat != 'GraphML':
+            print "Error - the file format is: "+self.fileformat+"; it should be GraphML"
+            return
+        return nx.read_graphml(self.src)
+    
+    def load_from_ml(self, ml_filename):
+        """
+        Load a graphml into the current CNetwork
+        
+        Parameters
+        ----------
+            CNetwork
+            ml_filename : filename of the GraphML
+            
+        See also
+        --------
+            set_from_ml, graphml, networkx    
+        """
+        ml = nx.read_graphml(ml_filename)
+        self.src = ml_filename
+        self.set_from_ml(ml)
+    
+    def set_from_ml(self, graphML):
+        """
+        Set the current CNetwork from the given graphML
+        
+        Parameters
+        ----------
+            graphML: a graphML graph
+                                
+        See also
+        --------
+            graphML    
+        """
+        self.name       = graphML.name
+        self.dtype      = "AttributeNetwork"
+        self.fileformat = "GraphML"
+        self.contents   = graphML
+    
+    # NetworkX treatment
+    def load_networkx(self):
+        """
+        Load a networkx from the src
+        
+        Parameters
+        ----------
+            CNetwork
+        
+        Returns
+        -------
+            A networkx object
+                        
+        See also
+        --------
+            load, networkx    
+        """
+        if self.src == None:
+            print "Error - the src is not define"
+            return
+        if self.fileformat != 'NetworkX':
+            print "Error - the file format is: "+self.fileformat+"; it should be NetworkX"
+            return
+        return nx.load(self.src)    
+    
+    def load_from_nx(self, nx_filename):
+        """
+        Load a NetworkX into the current CNetwork
+        
+        Parameters
+        ----------
+            CNetwork
+            nx_filename : filename of the NetworkX
+            
+        See also
+        --------
+            set_from_nx, NetworkX    
+        """
+        g = nx.load(nx_filename)
+        self.src = nx_filename
+        self.set_from_nx(g)
+    
+    def set_from_nx(self, nxGraph):
+        """
+        Set the current CNetwork from the given NetworkX graph
+        
+        Parameters
+        ----------
+            nxGraph: a NetworkX graph
+                                
+        See also
+        --------
+            networkx    
+        """
+        self.name       = nxGraph.name
+        self.dtype      = "AttributeNetwork"
+        self.fileformat = "NetworkX"
+        self.contents   = nxGraph
+    
 supermod.CNetwork.subclass = CNetwork
 # end class CNetwork
 

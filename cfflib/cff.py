@@ -267,6 +267,26 @@ def _cast(typ, value):
 #
 
 class connectome(GeneratedsSuper):
+    """
+        Creates a new connectome file
+        
+        Parameters
+        ----------
+            inputs...
+        
+        Returns
+        -------
+            outputs...
+            
+        Examples
+        --------
+            use cases...
+            
+        See also
+        --------
+            related functions...
+    
+    """
     subclass = None
     superclass = None
     def __init__(self, connectome_meta=None, connectome_network=None, connectome_surface=None, connectome_volume=None, connectome_track=None, connectome_timeserie=None, connectome_data=None, connectome_script=None, connectome_imagestack=None):
