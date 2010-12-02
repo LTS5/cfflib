@@ -95,6 +95,12 @@ def load_from_cff(filename, *args, **kwargs):
 
 def save_to_meta_cml(connectome, filename = 'meta.cml'):
     """ Stores a Connectome Markup File to filename """
+    if connectome.get_connectome_meta() == None:
+        print "ERROR - there is no connectome metadata in this connectome"
+        return
+    elif connectome.get_connectome_meta().name == None or connectome.get_connectome_meta().name == '':
+        print "ERROR - the connectome metadata have to contain a unique name"
+        return
     f = open(filename, 'w')
     f.write('<?xml version="1.0" encoding="UTF-8"?>\n')
     connectome.export(f, 0, namespacedef_='xmlns="http://www.connectomics.org/2010/Connectome/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.connectomics.org/2010/Connectome/xmlns connectome.xsd"')
@@ -103,6 +109,12 @@ def save_to_meta_cml(connectome, filename = 'meta.cml'):
 
 def save_to_cff(connectome, filename):
     """ Save connectome file to new .cff file on disk """
+    if connectome.get_connectome_meta() == None:
+        print "ERROR - there is no connectome metadata in this connectome"
+        return
+    elif connectome.get_connectome_meta().name == None or connectome.get_connectome_meta().name == '':
+        print "ERROR - the connectome metadata have to contain a unique name"
+        return
     
     _newzip = ZipFile(filename, 'w', ZIP_DEFLATED)
     
