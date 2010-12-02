@@ -831,12 +831,14 @@ class Metadata(supermod.Metadata):
         dat = self.get_data()
         for k in dictionary:
             test = False
+            # check if the key already exists
             for ele in dat:
-                if ele == k:
-                    ele.value = dictionary[k] 
+                if ele.key == k:
+                    # always change the value to a string
+                    ele.valueOf_ = str(dictionary[k])
                     test = True
             if not test:
-                self.data.append(data(k,dictionary[k]))        
+                self.data.append(data(str(k),str(dictionary[k])))        
     
 supermod.Metadata.subclass = Metadata
 # end class Metadata
