@@ -20,13 +20,12 @@ myConnectome.hasContent_()
 
 #----------------------------------------------------------------------#
 # Create the metadata
-myMetadata = CMetadata()
-myMetadata.set_author('Your Name')
-myMetadata.set_institution('Your Institution')
+myMetadata = CMetadata('My first connectome')
+myMetadata.set_author('Connectome Tutorial')
+myMetadata.set_institution('EPFL')
 myMetadata.set_creation_date('2010-10-26')
 myMetadata.set_url('www.connectome.ch')
-myMetadata.set_version('0.0.1')
-myMetadata.set_description(description('plaintext','First connectome object created with the tutorial.'))
+myMetadata.set_description('First connectome object created with the tutorial.')
 
 # Add the metadata
 myConnectome.set_connectome_meta(myMetadata)

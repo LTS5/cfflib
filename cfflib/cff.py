@@ -330,7 +330,23 @@ class connectome(GeneratedsSuper):
             return connectome(*args_, **kwargs_)
     factory = staticmethod(factory)
     def get_connectome_meta(self): return self.connectome_meta
-    def set_connectome_meta(self, connectome_meta): self.connectome_meta = connectome_meta
+    def set_connectome_meta(self, connectome_meta): 
+        """Add a CMetadata object to the current connectome object.
+        
+        Parameters
+        ----------
+        self : connectome
+        connectome_meta : CMetadata,
+            the connectome metadata you want to set to the connectome
+        """
+        n = self.get_normalised_name(connectome_meta.name)
+        print n
+        if self.is_name_unique(n) and n != None and n != '':
+            connectome_meta.name = n
+            self.connectome_meta = connectome_meta
+        else:
+            print "ERROR - Name is not unique"
+            return
     def get_connectome_network(self): return self.connectome_network
     def set_connectome_network(self, connectome_network): self.connectome_network = connectome_network
     def add_connectome_network(self, value, name=None):
@@ -344,10 +360,10 @@ class connectome(GeneratedsSuper):
         name : string, optional,
             the unique name of the CNetwork, it is optional only if the CNetwork object already has an unique name
         """
-        if name==None and value.name==None:
+        if (name==None or name=='') and (value.name==None or value.name==''):
             print "ERROR - No name specified"
             return 
-        elif value.name!=None:
+        elif value.name!=None and value.name!='':
             n = value.name
         else:
             n = name
@@ -640,8 +656,8 @@ class CMetadata(GeneratedsSuper):
     def set_email(self, email): self.email = email
     def get_url(self): return self.url
     def set_url(self, url): self.url = url
-    def get_description(self): return self.description
-    def set_description(self, description): self.description = description
+#    def get_description(self): return self.description
+#    def set_description(self, description): self.description = description
     def get_metadata(self): return self.metadata
     def set_metadata(self, metadata): self.metadata = metadata
     def get_version(self): return self.version
@@ -923,8 +939,8 @@ class CNetwork(GeneratedsSuper):
     factory = staticmethod(factory)
     def get_metadata(self): return self.metadata
     def set_metadata(self, metadata): self.metadata = metadata
-    def get_description(self): return self.description
-    def set_description(self, description): self.description = description
+#    def get_description(self): return self.description
+#    def set_description(self, description): self.description = description
     def get_src(self): return self.src
     def set_src(self, src): self.src = src
     def get_dtype(self): return self.dtype
