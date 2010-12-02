@@ -77,16 +77,17 @@ def save_data(obj):
             ni.save(obj.content, tmpfname)
             print "Done."
         elif 'CNetwork' in objrep:
+            print "Saving CNetwork"
             if obj.fileformat == "GraphML":
                 # write graph to temporary file
-                print "Saving CNetwork"
                 nx.write_graphml(obj.content, tmpfname)
-                print "Done."
             elif obj.fileformat == "GEXF":
-                # XXX: networkx 1.4 / read_gexf
-                pass
+                nx.write_gexf(obj.content, tmpfname)
+            elif obj.fileformat == "NXGPickle":
+                nx.write_gpickle(obj.content, tmpfname)
             else:
                 raise NotSupportedFormat("Other", str(obj))
+            print "Done."
             
         elif 'CSurface' in objrep:
             if obj.fileformat == "Gifti":
@@ -99,7 +100,6 @@ def save_data(obj):
             if obj.fileformat == "TrackVis":
                 ni.trackvis.write(tmpfname, obj.content[0], obj.content[1])
                 # XXX: correct?
-                
             else:
                 raise NotSupportedFormat("Other", str(obj))
             
@@ -153,8 +153,10 @@ def load_data(obj):
         if obj.fileformat == "GraphML":
             load = nx.read_graphml
         elif obj.fileformat == "GEXF":
-            # XXX: networkx 1.4 / read_gexf
-            pass
+            # works with networkx 1.4
+            load = nx.read_gexf
+        elif obj.fileformat == "NXGPickle":
+            load = nx.read_gpickle
         else:
             raise NotSupportedFormat("Other", str(obj))
         

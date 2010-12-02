@@ -345,6 +345,8 @@ class CNetwork(supermod.CNetwork, CBaseClass):
             fend = '.graphml'
         elif self.fileformat == 'GEXF':
             fend = '.gexf'
+        elif self.fileformat == 'NXGPickle':
+            fend = '.gpickle'
         elif self.fileformat == 'Other':
             fend = ''
             
