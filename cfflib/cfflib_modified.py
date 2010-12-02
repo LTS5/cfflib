@@ -385,7 +385,7 @@ supermod.connectome.subclass = connectome
 class CMetadata(supermod.CMetadata):
     """Specific metadata to the connectome. The name is the name of the connectome. The version and the generator are required and are defined by default."""
     
-    def __init__(self, name, version='2.0', generator='cfflib', author=None, institution=None, creation_date=None, modification_date=None, species=None, legal_notice=None, reference=None, email=None, url=None, description=None, metadata=None):
+    def __init__(self, name='myconnectome', version='2.0', generator='cfflib', author=None, institution=None, creation_date=None, modification_date=None, species=None, legal_notice=None, reference=None, email=None, url=None, description=None, metadata=None):
         """Creates a connectome metadata object, specific metadata to the connectome object.
         
         Parameters
@@ -519,7 +519,7 @@ class CNetwork(supermod.CNetwork, CBaseClass):
         Metadata, connectome
     
     """
-    def __init__(self, name, dtype='AttributeNetwork', fileformat='GraphML', src=None, description=None, metadata=None):
+    def __init__(self, name='mynetwork', dtype='AttributeNetwork', fileformat='GraphML', src=None, description=None, metadata=None):
         super(CNetwork, self).__init__(src, dtype, name, fileformat, metadata, description, )
 
     # Description object hide as a property
@@ -572,7 +572,7 @@ class CNetwork(supermod.CNetwork, CBaseClass):
         
         """
         cnet = CNetwork(name) 
-        cnet.tmpsrc     = ml_filename
+        cnet.tmpsrc     = op.abspath(ml_filename)
         cnet.fileformat = "GraphML"
         cnet.dtype      = "AttributeNetwork"
         cnet.content    = nx.read_graphml(ml_filename)

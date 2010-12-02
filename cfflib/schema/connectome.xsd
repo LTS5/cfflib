@@ -245,7 +245,7 @@
     </xsd:annotation>
     </xsd:element>
 
-   <xsd:element minOccurs="1" name="name" type="xsd:string">
+   <xsd:element minOccurs="1" name="name" type="xsd:string" use="required">
     <xsd:annotation xml:lang="en">
       <xsd:documentation>
       Short name of this Connectome File?
@@ -366,7 +366,7 @@
   </xsd:sequence>
   
   
-    <xsd:attribute name="name" type="xsd:string">
+    <xsd:attribute name="name" type="xsd:string" use="required">
     <xsd:annotation xml:lang="en">
       <xsd:documentation>
       The short name of the network
