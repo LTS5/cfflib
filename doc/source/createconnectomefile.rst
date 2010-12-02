@@ -31,7 +31,7 @@ The first line is just to show that you have a connectome object, the function `
 Add the connectome metadata
 ===========================
 
-The connectome's metadata are required. So you have to create a CMetadata object with a name::
+The connectome's metadata is required. So you have to create a CMetadata object with a name::
 
     myMetadata = CMetadata(name)
     
@@ -131,9 +131,9 @@ Finally, we add the CNetwork to our connectome object::
 
     myConnectome.add_connectome_network(myCNetwork)
 
-These two function can be done by one::
+You can add a CNetwork object based on a NetworkX graph directly from the connectome with this function::
 
-    myConnectome.add_connectome_network_from_nxgraph(myNetworkx)
+    myConnectome.add_connectome_network_from_nxgraph(myNetworkx, 'My first CNetwork')
     
 .. warning::
     When you add a CNetwork, but it's true for any CObject, to your connectome, the name of your object is checked and has to be unique. If not, an error will be return and the CObject will not be added to the connectome.
@@ -144,16 +144,17 @@ Now, you can try again *myConnectome.get_all()* function, it should return somet
     
 You can access and modifiy this CNetwork object::
 
-    myConnectome.get_connectome_network()[0].set_dtype('data')
+    myConnectome.get_connectome_network()[0].set_name('A CNetwork')
 
-for example, this function will set the data type to *data*.
+for example, this function will modify the name to "*A CNetwork*".
 
-This example is 
 
 Add metadata to an object
 =========================
 
-We already saw that we can add come metadata to the connectome object. In fact, it's possible to add some metadata to any object, for example to a CNetwork object. That's what we're going to do in this section. First we add some Metadata to our first CNetwork::
+We already saw that we can add some metadata to the connectome object with CMetadata. In fact, it's possible to add some metadata to any CObject, for example to a CNetwork object. That's what we're going to do in this section with the Metadata object. 
+
+First we add some Metadata to our first CNetwork::
 
     myCN1 = myConnectome.get_connectome_network()[0]
     myCN1.metadata = Metadata()

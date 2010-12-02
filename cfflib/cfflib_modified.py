@@ -818,15 +818,25 @@ class Metadata(supermod.Metadata):
     def __init__(self, data=None):
         super(Metadata, self).__init__(data, )
     
-    @property
-    def contents(self):
-        """ Returns the metadata as a dictionary """
+    def get_metadata(self):
+        """Return the metadata as a dictionary"""
         dat = self.get_data()
         ret = {}
         for ele in dat:
-            ret[ele.key] = ele.value
+            ret[ele.key] = ele.valueOf_
         return ret
     
+    def set_metadata(self, dictionary):
+        """Set the metadata with a dictionary"""
+        dat = self.get_data()
+        for k in dictionary:
+            test = False
+            for ele in dat:
+                if ele == k:
+                    ele.value = dictionary[k] 
+                    test = True
+            if not test:
+                self.data.append(data(k,dictionary[k]))        
     
 supermod.Metadata.subclass = Metadata
 # end class Metadata

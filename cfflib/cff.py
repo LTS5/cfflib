@@ -658,8 +658,8 @@ class CMetadata(GeneratedsSuper):
     def set_url(self, url): self.url = url
 #    def get_description(self): return self.description
 #    def set_description(self, description): self.description = description
-    def get_metadata(self): return self.metadata
-    def set_metadata(self, metadata): self.metadata = metadata
+#    def get_metadata(self): return self.metadata
+#    def set_metadata(self, metadata): self.metadata = metadata
     def get_version(self): return self.version
     def set_version(self, version): self.version = version
     def export(self, outfile, level, namespace_='', name_='CMetadata', namespacedef_=''):
@@ -937,8 +937,8 @@ class CNetwork(GeneratedsSuper):
         else:
             return CNetwork(*args_, **kwargs_)
     factory = staticmethod(factory)
-    def get_metadata(self): return self.metadata
-    def set_metadata(self, metadata): self.metadata = metadata
+    def get_metadata(self): return self.metadata.get_metadata()
+    def set_metadata(self, meta): self.metadata.set_metadata(meta)
 #    def get_description(self): return self.description
 #    def set_description(self, description): self.description = description
     def get_src(self): return self.src
