@@ -66,6 +66,8 @@ def save_data(obj):
         if hasattr(obj, 'tmpsrc'):
             tmpfname = obj.tmpsrc
         else:
+            # if it has no .tmpsrc, i.e. it is not loaded from a file path
+            # but it has a .content set
             raise Exception('Element %s cannot be saved. (It was never loaded)' % str(obj))
         
         dname = op.dirname(tmpfname)

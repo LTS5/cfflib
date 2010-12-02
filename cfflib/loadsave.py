@@ -129,11 +129,21 @@ def save_to_cff(connectome, filename):
     connectome.check_names_unique()
 
     for ele in allcobj:
+        print "----"
+        print "Storing element: ", str(ele)
         
-        if not hasattr(ele, 'src') or ele.src == '':
-            wt = ele.get_unique_relpath()
-        else:
+        # discover the relative path to use for the save
+        if hasattr(ele, 'src'):
+            if ele.src == '':
+                wt = ele.get_unique_relpath()
+                print "Created a unique path for element %s: %s" % (str(ele), wt)
+            else:
+                wt = ele.src
+                print "Used .src attribute for relative path: %s" % wt
+        else:            
+            ele.src = ele.get_unique_relpath()
             wt = ele.src
+            print "Element has no .src attribute. Create it and set it to %s" % ele.src
         
         if not hasattr(ele, 'content'):
             
@@ -144,24 +154,31 @@ def save_to_cff(connectome, filename):
             if connectome.iszip:
                 # extract zip content and add it to new zipfile
                 if not wt in connectome._zipfile.namelist():
-                    msg = "There exists no file %s in the connectome file from where " + \
-                    "you want to save. Please create .content and set the attributes right" + \
-                    "according to the documentation"
+                    msg = """There exists no file %s in the connectome file you want to save to
+                    "Please create .content and set the attributes right
+                    "according to the documentation"""
                     raise Exception(msg)
                 else:
                     ftmp = connectome._zipfile.extract(wt)
             else:
-            
+                # connectome was not created from a zip
+                # but for example in an IPython session
+                
                 # if now fname
                 if not hasattr(connectome, 'fname'):
-                    connectome.fname = filename
+                    connectome.fname = op.abspath(filename)
             
+                # save the element
+                ele.save()
+                # use the saved location
+                ftmp = ele.tmpsrc
+                
                 # create path coming from filesystem
-                ftmp = op.join(op.dirname(connectome.fname), wt)
+                #ftmp = op.join(op.dirname(connectome.fname), wt)
                 
                 if not op.exists(ftmp):
-                    msg = "There exists no file %s for element %s. " + \
-                    "Cannot save it. Either create it or assign a valid .content to element. " % (ftmp, str(ele))
+                    msg = """There exists no file %s for element %s. 
+                    "Cannot save connectome file. Please update the element or bug report if it should work.""" % (ftmp, str(ele))
                     raise Exception(msg)
             
             _newzip.write(ftmp, wt)
@@ -169,7 +186,10 @@ def save_to_cff(connectome, filename):
         else:
             
             # save content to a temporary file according to the objects specs
-            ftmp = ele.save()
+            ele.save()
+            
+            # get the path
+            ftmp = ele.tmpsrc
             
             _newzip.write(ftmp, wt)
         

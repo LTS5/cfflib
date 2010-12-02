@@ -481,8 +481,8 @@ class CBaseClass(object):
         """ Save a loaded connectome object to a temporary file, return the path """
         rval = save_data(self)
         if not rval == '':
-            self.tmpsrc = rval 
-            return rval
+            self.tmpsrc = rval
+            print "Updated storage path of file: %s" % rval
         else:
             raise Exception('There is nothing to save.')
         
@@ -555,31 +555,38 @@ class CNetwork(supermod.CNetwork, CBaseClass):
             
         return unify('CNetwork', self.name + fend)
     
-    def load_from_graphml(self, ml_filename):
-        """Load a GraphML into the current CNetwork, adding the GraphML to contents, the ml_filename to src, the fileformat to GraphML and the dtype to AttributeNetwork.
+    @classmethod
+    def create_from_graphml(cls, name, ml_filename):
+        """ Return a CNetwork object from a given ml_filename pointint to
+        a GraphML file in your file system
         
         Parameters
         ----------
-        self        : CNetwork
+        name : name of the CNetwork
         ml_filename : string,
             filename of the GraphML to load.
-            
-        See also
-        --------
-            NetworkX, CNetwork   
+        
+        Returns
+        -------
+        cnet : CNetwork
+        
         """
-        ml              = nx.read_graphml(ml_filename)
-        self.src        = ml_filename
-        self.fileformat = "GraphML"
-        self.dtype      = "AttributeNetwork"
-        self.content    = ml
+        cnet = CNetwork(name) 
+        cnet.tmpsrc     = ml_filename
+        cnet.fileformat = "GraphML"
+        cnet.dtype      = "AttributeNetwork"
+        cnet.content    = nx.read_graphml(ml_filename)
+        cnet.src = cnet.get_unique_relpath()
+        return cnet
     
-    def set_with_nxgraph(self, nxGraph):
-        """Set the current CNetwork with the given NetworkX graph. Set the fileformat to NetworkX and the dtype to AttributeNetwork. Add the NetworkX object to contents.
+    def set_with_nxgraph(self, name, nxGraph):
+        """Set the current CNetwork with the given NetworkX graph.
+        Set the fileformat to NetworkX and the dtype to AttributeNetwork.
+        Add the NetworkX object to contents.
         
         Parameters
         ----------
-        self : CNetwork
+        name : name of the CNetwork
         nxGraph : NetworkX graph object,
             the NetworkX graph object to add to the current CNetwork.
                                 
@@ -587,9 +594,13 @@ class CNetwork(supermod.CNetwork, CBaseClass):
         --------
             NetworkX, CNetwork   
         """
+        self.name = name
         self.dtype      = "AttributeNetwork"
         self.fileformat = "NXGPickle"
-        self.contents   = nxGraph
+        self.content   = nxGraph
+        import tempfile
+        self.tmpsrc = tempfile.mkstemp(suffix = '.gpickle')[1]
+        self.src = self.get_unique_relpath()
     
 supermod.CNetwork.subclass = CNetwork
 # end class CNetwork
