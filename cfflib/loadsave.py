@@ -145,7 +145,7 @@ def save_to_cff(connectome, filename):
             wt = ele.src
             print "Element has no .src attribute. Create it and set it to %s" % ele.src
         
-        if not hasattr(ele, 'content'):
+        if not hasattr(ele, 'data'):
             
             # Add if iszip is undefined
 #            if not hasattr(connectome, 'iszip'):
@@ -155,7 +155,7 @@ def save_to_cff(connectome, filename):
                 # extract zip content and add it to new zipfile
                 if not wt in connectome._zipfile.namelist():
                     msg = """There exists no file %s in the connectome file you want to save to
-                    "Please create .content and set the attributes right
+                    "Please create .data and set the attributes right
                     "according to the documentation"""
                     raise Exception(msg)
                 else:

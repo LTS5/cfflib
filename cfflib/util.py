@@ -55,19 +55,19 @@ def save_data(obj):
         
     objrep = str(type(obj))
         
-    if hasattr(obj, 'content'):
+    if hasattr(obj, 'data'):
 
         # it appears that there is no remove function for zip archives implemented to date
         # http://bugs.python.org/issue6818
                 
         # the file was loaded, thus it exists a .tmpsrc pointing to
         # its absolute path. Use this path to overwrite the file by the
-        # current .content data
+        # current .data data
         if hasattr(obj, 'tmpsrc'):
             tmpfname = obj.tmpsrc
         else:
             # if it has no .tmpsrc, i.e. it is not loaded from a file path
-            # but it has a .content set
+            # but it has a .data set
             raise Exception('Element %s cannot be saved. (It was never loaded)' % str(obj))
         
         dname = op.dirname(tmpfname)
@@ -76,17 +76,17 @@ def save_data(obj):
 
         if 'CVolume' in objrep:
             print "Saving CVolume ..."
-            ni.save(obj.content, tmpfname)
+            ni.save(obj.data, tmpfname)
             print "Done."
         elif 'CNetwork' in objrep:
             print "Saving CNetwork"
             if obj.fileformat == "GraphML":
                 # write graph to temporary file
-                nx.write_graphml(obj.content, tmpfname)
+                nx.write_graphml(obj.data, tmpfname)
             elif obj.fileformat == "GEXF":
-                nx.write_gexf(obj.content, tmpfname)
+                nx.write_gexf(obj.data, tmpfname)
             elif obj.fileformat == "NXGPickle":
-                nx.write_gpickle(obj.content, tmpfname)
+                nx.write_gpickle(obj.data, tmpfname)
             else:
                 raise NotSupportedFormat("Other", str(obj))
             print "Done."
@@ -94,45 +94,45 @@ def save_data(obj):
         elif 'CSurface' in objrep:
             if obj.fileformat == "Gifti":
                 import nibabel.gifti as nig
-                nig.write(obj.content, tmpfname)
+                nig.write(obj.data, tmpfname)
             else:
                 raise NotSupportedFormat("Other", str(obj))
             
         elif 'CTrack' in objrep:
             if obj.fileformat == "TrackVis":
-                ni.trackvis.write(tmpfname, obj.content[0], obj.content[1])
+                ni.trackvis.write(tmpfname, obj.data[0], obj.data[1])
                 # XXX: correct?
             else:
                 raise NotSupportedFormat("Other", str(obj))
             
         elif 'CTimeserie' in objrep:
             if obj.fileformat == "HDF5":
-                # flush the content of the buffers
-                obj.content.flush()
+                # flush the data of the buffers
+                obj.data.flush()
                 # close the file
-                obj.content.close()
+                obj.data.close()
             else:
                 raise NotSupportedFormat("Other", str(obj))
             
         elif 'CData' in objrep:
             
             if obj.fileformat == "NumPy":
-                load = np.save(tmpfname, obj.content)
+                load = np.save(tmpfname, obj.data)
             elif obj.fileformat == "HDF5":
-                # flush the content of the buffers
-                obj.content.flush()
+                # flush the data of the buffers
+                obj.data.flush()
                 # close the file
-                obj.content.close()
+                obj.data.close()
             elif obj.fileformat == "XML":
                 f = open(tmpfname, 'w')
-                f.write(obj.content)
+                f.write(obj.data)
                 f.close()
             else:
                 raise NotSupportedFormat("Other", str(obj))
             
         elif 'CScript' in objrep:
                 f = open(tmpfname, 'w')
-                f.write(obj.content)
+                f.write(obj.data)
                 f.close()
         
         return tmpfname

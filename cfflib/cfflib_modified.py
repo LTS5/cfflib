@@ -307,15 +307,15 @@ class connectome(supermod.connectome):
         
         for ele in all_cobj:
             
-            if hasattr(ele, 'content') and hasattr(ele, 'tmpsrc') and op.exists(ele.tmpsrc):
+            if hasattr(ele, 'data') and hasattr(ele, 'tmpsrc') and op.exists(ele.tmpsrc):
                 
                 if save:
                     ele.save()
                 
-                # remove .content and .tmpsrc
+                # remove .data and .tmpsrc
                 print "Will not remove file %s from file system" % ele.tmpsrc
-                print "Remove .content attribute"
-                del ele.content
+                print "Remove .data attribute"
+                del ele.data
                 print "Remove .tmpsrc attribute"
                 del ele.tmpsrc
         
@@ -460,7 +460,7 @@ supermod.description.subclass = description
 class CBaseClass(object):
 
     def load(self, custom_loader = None):
-        """ Load the element. The loaded object is stored in the content attribute.
+        """ Load the element. The loaded object is stored in the data attribute.
         
         Parameters
         ----------
@@ -473,9 +473,9 @@ class CBaseClass(object):
         See cfflib.util.load_data for example. """
         
         if not custom_loader is None:
-            self.content = custom_loader(self)
+            self.data = custom_loader(self)
         else:
-            self.content = load_data(self)
+            self.data = load_data(self)
     
     def save(self):
         """ Save a loaded connectome object to a temporary file, return the path """
@@ -575,14 +575,14 @@ class CNetwork(supermod.CNetwork, CBaseClass):
         cnet.tmpsrc     = op.abspath(ml_filename)
         cnet.fileformat = "GraphML"
         cnet.dtype      = "AttributeNetwork"
-        cnet.content    = nx.read_graphml(ml_filename)
+        cnet.data    = nx.read_graphml(ml_filename)
         cnet.src = cnet.get_unique_relpath()
         return cnet
     
     def set_with_nxgraph(self, name, nxGraph):
         """Set the current CNetwork with the given NetworkX graph.
         Set the fileformat to NetworkX and the dtype to AttributeNetwork.
-        Add the NetworkX object to contents.
+        Add the NetworkX object to data.
         
         Parameters
         ----------
@@ -597,7 +597,7 @@ class CNetwork(supermod.CNetwork, CBaseClass):
         self.name = name
         self.dtype      = "AttributeNetwork"
         self.fileformat = "NXGPickle"
-        self.content   = nxGraph
+        self.data   = nxGraph
         import tempfile
         self.tmpsrc = tempfile.mkstemp(suffix = '.gpickle')[1]
         self.src = self.get_unique_relpath()
