@@ -324,7 +324,6 @@ class connectome(supermod.connectome):
         
         Parameters
         ----------
-        self    : connectome
         nxGraph : NetworkX,
             a NetworkX graph object
         name : string,
@@ -332,7 +331,7 @@ class connectome(supermod.connectome):
                     
         Examples
         --------
-            >>> myConnectome.add_connectome_network_from_nx(myNXGraph)
+            >>> myConnectome.add_connectome_network_from_nx(myNXGraph,'nxG1')
             
         See also
         --------
@@ -562,7 +561,8 @@ class CNetwork(supermod.CNetwork, CBaseClass):
         
         Parameters
         ----------
-        name : name of the CNetwork
+        name : string, 
+            name of the CNetwork
         ml_filename : string,
             filename of the GraphML to load.
         
@@ -579,28 +579,32 @@ class CNetwork(supermod.CNetwork, CBaseClass):
         cnet.src = cnet.get_unique_relpath()
         return cnet
     
-    def set_with_nxgraph(self, name, nxGraph):
+    def set_with_nxgraph(self, nxGraph, name=None):
         """Set the current CNetwork with the given NetworkX graph.
-        Set the fileformat to NetworkX and the dtype to AttributeNetwork.
+        Set the fileformat to NXGPickle and the dtype to AttributeNetwork.
         Add the NetworkX object to contents.
         
         Parameters
         ----------
-        name : name of the CNetwork
         nxGraph : NetworkX graph object,
             the NetworkX graph object to add to the current CNetwork.
+        name : string, optional,
+            the name of the network, it is optional when the CNetwork already have a name
                                 
         See also
         --------
             NetworkX, CNetwork   
         """
-        self.name = name
+        if (self.name == None or self.name == '') and (name == None or name == ''):
+            print "ERROR - the CNetwork requires a name"
+        if name != None and name != '':
+            self.name == name
         self.dtype      = "AttributeNetwork"
         self.fileformat = "NXGPickle"
         self.content   = nxGraph
         import tempfile
         self.tmpsrc = tempfile.mkstemp(suffix = '.gpickle')[1]
-        self.src = self.get_unique_relpath()
+        self.src    = self.get_unique_relpath()
     
 supermod.CNetwork.subclass = CNetwork
 # end class CNetwork
