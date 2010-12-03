@@ -876,8 +876,15 @@ class CNetwork(GeneratedsSuper):
         else:
             return CNetwork(*args_, **kwargs_)
     factory = staticmethod(factory)
-    def get_metadata(self): return self.metadata
-    def set_metadata(self, metadata): self.metadata = metadata
+    def get_metadata(self): 
+        """Return the metadata as a dictionary"""
+        return self.metadata.get_as_dictionary()
+    def set_metadata(self, metadata): 
+        """Set the metadata with a dictionary"""
+        if self.metadata == None:
+            self.metadata
+            self.metadata = Metadata()
+        self.metadata.set_with_dictionary(metadata)
     def get_description(self): return self.description
     def set_description(self, description): self.description = description
     def get_src(self): return self.src
@@ -1917,6 +1924,29 @@ class Metadata(GeneratedsSuper):
         else:
             return Metadata(*args_, **kwargs_)
     factory = staticmethod(factory)
+    # TEST 
+    def get_as_dictionary(self):
+        """Return the metadata as a dictionary"""
+        dat = self.get_data()
+        ret = {}
+        for ele in dat:
+            ret[ele.key] = ele.valueOf_
+        return ret
+    
+    def set_with_dictionary(self, dictionary):
+        """Set the metadata with a dictionary"""
+        dat = self.get_data()
+        for k in dictionary:
+            test = False
+            # check if the key already exists
+            for ele in dat:
+                if ele.key == k:
+                    # always change the value to a string
+                    ele.valueOf_ = str(dictionary[k])
+                    test = True
+            if not test:
+                self.data.append(data(str(k),str(dictionary[k])))  
+    # END TEST 
     def get_data(self): return self.data
     def set_data(self, data): self.data = data
     def add_data(self, value): self.data.append(value)

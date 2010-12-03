@@ -830,30 +830,7 @@ supermod.CImagestack.subclass = CImagestack
 
 class Metadata(supermod.Metadata):
     def __init__(self, data=None):
-        super(Metadata, self).__init__(data, )
-    
-    def get_metadata(self):
-        """Return the metadata as a dictionary"""
-        dat = self.get_data()
-        ret = {}
-        for ele in dat:
-            ret[ele.key] = ele.valueOf_
-        return ret
-    
-    def set_metadata(self, dictionary):
-        """Set the metadata with a dictionary"""
-        dat = self.get_data()
-        for k in dictionary:
-            test = False
-            # check if the key already exists
-            for ele in dat:
-                if ele.key == k:
-                    # always change the value to a string
-                    ele.valueOf_ = str(dictionary[k])
-                    test = True
-            if not test:
-                self.data.append(data(str(k),str(dictionary[k])))        
-    
+        super(Metadata, self).__init__(data, )  
 supermod.Metadata.subclass = Metadata
 # end class Metadata
 
