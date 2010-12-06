@@ -320,7 +320,31 @@ class connectome(supermod.connectome):
                 del ele.content
                 print "Remove .tmpsrc attribute"
                 del ele.tmpsrc
+    
+    def set_connectome_meta(self, cmeta):
+        """Set the connectome metadata object for this connectome object
         
+        Parameters
+        ----------
+        self : connectome
+        cmeta : CMetadata,
+            the connectome metadata to add to the connectome object
+            
+        See also
+        --------
+        CMetadata, connectome   
+        """
+        nName = self.get_normalised_name(cmeta.name)        
+        if nName == None or nName == '':
+            print "ERROR - the CNetwork requires a name"
+            return
+        if self.is_name_unique(nName):
+            cmeta.name = nName
+            self.connectome_meta = cmeta
+        else:
+            print "ERROR - Name is not unique"
+            return 
+    
     def add_connectome_network_from_nxgraph(self, nxGraph, name):
         """Add a new CNetwork from the given NetworkX graph object to the connectome.
         
@@ -651,36 +675,32 @@ supermod.CNetwork.subclass = CNetwork
 
 
 class CSurface(supermod.CSurface, CBaseClass):
-    """
+    """A connectome surface object"""
+    
+    def __init__(self, name=None, src=None, dtype=None, fileformat=None, description=None, metadata=None):
+        """
         Create a new CSurface object.
         
         Parameters
         ----------
-            name              : string, optional
-                the surface name
-            src               : string, optional,
-                the source file of the surface
-            dtype             : string, optional,
-                the data type of the surface
-            fileformat        : string, optional,
-                the fileformat of the surface
-            description       : description, optional,
-                a description (key, value) of the CSurface
-            metadata          : Metadata, optional,
-                Metadata object relative to the surface
-                    
-        Examples
-        --------
-            Empty
-            >>> myCSurf1 = CSurface()
-            Create an empty CSurface object
+        name : string, optional
+            the surface name
+        src : string, optional,
+            the source file of the surface
+        dtype : string, optional,
+            the data type of the surface
+        fileformat : string, optional,
+            the fileformat of the surface
+        description : description, optional,
+            a description (key, value) of the CSurface
+        metadata : Metadata, optional,
+            Metadata object relative to the surface
             
         See also
         --------
-            description, Metadata, connectome
+        description, Metadata, connectome
     
-    """
-    def __init__(self, name=None, src=None, dtype=None, fileformat=None, description=None, metadata=None):
+        """
         super(CSurface, self).__init__(src, dtype, name, fileformat, description, metadata, )
         
     def get_unique_relpath(self):

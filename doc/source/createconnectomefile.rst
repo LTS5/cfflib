@@ -27,13 +27,13 @@ The first line is just to show that you have a connectome object, the function `
 Add the connectome metadata
 ===========================
 
-The connectome's metadata is required. So you have to create a CMetadata object with a name::
+The connectome's metadata is required. So you have to create a CMetadata object ::
 
-    myMetadata = CMetadata(name)
+    myMetadata = CMetadata()
     
 you are able to add a lot of informations to this object but three are required:
 
-    - *name* : the unique name of your connectome object
+    - *name* : the unique name of your connectome object, by default **myconnectome**
     
     - *version* : the version of the cfflib, by default **2.0**
     
@@ -41,6 +41,7 @@ you are able to add a lot of informations to this object but three are required:
 
 For example the followings::
 
+    myMetadata.set_name('My first connectome')
     myMetadata.set_author('Connectome Tutorial')
     myMetadata.set_institution('EPFL')
     myMetadata.set_creation_date('2010-10-26')
@@ -91,7 +92,7 @@ Add a network
 
 To add a network to you connectome object, you have to create a CNetwork object. This object has three required parameters:
 
-    - *name* : the unique name of this network
+    - *name* : the unique name of this network, **mynetwork** by default
     
     - *fileformat* : the fileformat of the network, which can be :
     
