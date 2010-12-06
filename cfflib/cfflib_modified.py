@@ -389,11 +389,11 @@ class CMetadata(supermod.CMetadata):
         
         Parameters
         ----------
-        name : string,
+        name : 'myconnectome',
             the name of this connectome object 
-        version : 2.0,  
+        version : '2.0',  
             version of the cfflib
-        generator : cfflib,
+        generator : 'cfflib',
             generator of this connectome
         author : string, optional ,
             the author name
@@ -496,11 +496,14 @@ class CBaseClass(object):
     
 
 class CNetwork(supermod.CNetwork, CBaseClass):
-    """Create a new CNetwork object.
+    """A connectome network object"""
+    
+    def __init__(self, name='mynetwork', dtype='AttributeNetwork', fileformat='GraphML', src=None, description=None, metadata=None):
+        """Create a new CNetwork object.
         
         Parameters
         ----------
-        name : string
+        name : 'mynetwork',
             the network unique name
         dtype : 'AttributeNetwork',
             the data type of the network. It could be: "AttributeNetwork", "DynamicNetwork", "HierarchicalNetwork" or "Other".
@@ -517,8 +520,7 @@ class CNetwork(supermod.CNetwork, CBaseClass):
         --------
         Metadata, connectome
     
-    """
-    def __init__(self, name='mynetwork', dtype='AttributeNetwork', fileformat='GraphML', src=None, description=None, metadata=None):
+        """
         super(CNetwork, self).__init__(src, dtype, name, fileformat, metadata, description, )
 
     # Description object hide as a property
@@ -529,17 +531,26 @@ class CNetwork(supermod.CNetwork, CBaseClass):
         else:
             print "ERROR - description must be set first"
             return
-        
     def get_description_format(self):
         if hasattr(self.description, 'format'):
             return self.description.format
         else:
             print "ERROR - description must be set first"
-            return
-        
+            return        
     def set_description(self, value):
         self.description = description('plaintext', value)
-        
+    
+    # Metadata
+    def get_metadata(self): 
+        """Return the metadata as a dictionary"""
+        return self.metadata.get_as_dictionary()
+    def set_metadata(self, metadata): 
+        """Set the metadata with a dictionary"""
+        if self.metadata == None:
+            self.metadata
+            self.metadata = Metadata()
+        self.metadata.set_with_dictionary(metadata)
+    
     def get_unique_relpath(self):
         """ Return a unique relative path for this element """
         
@@ -835,6 +846,27 @@ supermod.CImagestack.subclass = CImagestack
 class Metadata(supermod.Metadata):
     def __init__(self, data=None):
         super(Metadata, self).__init__(data, )  
+    def get_as_dictionary(self):
+        """Return the metadata as a dictionary"""
+        dat = self.get_data()
+        ret = {}
+        for ele in dat:
+            ret[ele.key] = ele.valueOf_
+        return ret
+    
+    def set_with_dictionary(self, dictionary):
+        """Set the metadata with a dictionary"""
+        dat = self.get_data()
+        for k in dictionary:
+            test = False
+            # check if the key already exists
+            for ele in dat:
+                if ele.key == k:
+                    # always change the value to a string
+                    ele.valueOf_ = str(dictionary[k])
+                    test = True
+            if not test:
+                self.data.append(data(str(k),str(dictionary[k])))  
 supermod.Metadata.subclass = Metadata
 # end class Metadata
 
