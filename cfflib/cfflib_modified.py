@@ -85,7 +85,7 @@ class connectome(supermod.connectome):
             
         See also
         --------
-            CMetadata, CNetwork, CSurface, CVolume, CTrack, CTimeserie, CData, CScript, CImagestack
+        CMetadata, CNetwork, CSurface, CVolume, CTrack, CTimeserie, CData, CScript, CImagestack
     
         """
         super(connectome, self).__init__(connectome_meta, connectome_network, connectome_surface, connectome_volume, connectome_track, connectome_timeserie, connectome_data, connectome_script, connectome_imagestack, )
@@ -103,13 +103,13 @@ class connectome(supermod.connectome):
             
         Examples
         --------
-            >>> myConnectome.get_all()
+        >>> myConnectome.get_all()
             [<cfflib.cfflib_modified.CNetwork object at 0x2c46b10>,
             <cfflib.cfflib_modified.CNetwork object at 0x2ca5490>]
             
         See also
         --------
-            connectome, get_by_name
+        connectome, get_by_name
     
         """        
         return self.connectome_network + self.connectome_surface + \
@@ -122,18 +122,18 @@ class connectome(supermod.connectome):
         
         Parameters
         ----------
-            self : connectome
-            name : string
-                name of the wanted object(s)
+        self : connectome
+        name : string
+            name of the wanted object(s)
             
         Examples
         --------
-            >>> myConnectome.get_by_name('my first network')
+        >>> myConnectome.get_by_name('my first network')
             [<cfflib.cfflib_modified.CNetwork object at 0x2c46b10>]
             
         See also
         --------
-            connectome, get_all
+        connectome, get_all
     
         """         
         n = get_normalised_name(name)
@@ -156,15 +156,15 @@ class connectome(supermod.connectome):
         
         Parameters
         ----------
-            self : connectome
+        self : connectome
             
         Examples
         --------
-            >>> myConnectome.check_file_in_cff()
+        >>> myConnectome.check_file_in_cff()
             
         See also
         --------
-            connectome
+        connectome
     
         """  
         
@@ -185,15 +185,15 @@ class connectome(supermod.connectome):
         
         Parameters
         ----------
-            self : connectome
+        self : connectome
             
         Examples
         --------
-            >>> myConnectome.check_names_unique()
+        >>> myConnectome.check_names_unique()
             
         See also
         --------
-            connectome
+        connectome
     
         """  
         all_cobj = self.get_all()
@@ -214,11 +214,12 @@ class connectome(supermod.connectome):
         Parameters
         ----------
         self : connectome
-        name : string
+        name : string,
+            the name to check if it is unique
             
         See also
         --------
-            check_names_unique, connectome
+        check_names_unique, connectome
         """
         n = self.get_normalised_name(name)
         all_cobj = self.get_all()
@@ -235,16 +236,16 @@ class connectome(supermod.connectome):
         
         Parameters
         ----------
-            self : connectome
+        self : connectome
             
         Examples
         --------
-            >>> myConnectome.get_unique_cff_name()
+        >>> myConnectome.get_unique_cff_name()
             my_first_network
             
         See also
         --------
-            connectome
+        connectome
     
         """
         n = self.get_connectome_meta().name
@@ -257,17 +258,18 @@ class connectome(supermod.connectome):
         
         Parameters
         ----------
-            self : connectome
-            name : string
+        self : connectome
+        name : string,
+            the name to be normalised
             
         Examples
         --------
-            >>> myConnectome.get_unique_cff_name()
+        >>> myConnectome.get_unique_cff_name()
             my_first_network
             
         See also
         --------
-            connectome
+        connectome
     
         """
         n = name.lower()
@@ -298,7 +300,7 @@ class connectome(supermod.connectome):
         
         Parameters
         ----------
-        save : bool
+        save : bool,
             Save the content before closing.
             
         """
@@ -331,11 +333,11 @@ class connectome(supermod.connectome):
                     
         Examples
         --------
-            >>> myConnectome.add_connectome_network_from_nx(myNXGraph,'nxG1')
+        >>> myConnectome.add_connectome_network_from_nx(myNXGraph,'nxG1')
             
         See also
         --------
-            NetworkX, CNetwork.set_with_nxgraph, CNetwork, connectome.add_connectome_network, connectome   
+        NetworkX, CNetwork.set_with_nxgraph, CNetwork, connectome.add_connectome_network, connectome   
             
         """
         nName = self.get_normalised_name(name)
@@ -349,8 +351,7 @@ class connectome(supermod.connectome):
             return
     
     def add_connectome_network_from_graphml(self, graphML, name):
-        """
-        Add a new CNetwork from the given GraphML file to the connectome object.
+        """Add a new CNetwork from the given GraphML file to the connectome object.
         
         Parameters
         ----------
@@ -360,11 +361,11 @@ class connectome(supermod.connectome):
                     
         Examples
         --------
-            >>> myConnectome.add_connectome_network_from_ml('myGraphML.graphml')
+        >>> myConnectome.add_connectome_network_from_ml('myGraphML.graphml')
             
         See also
         --------
-            GraphML, CNetwork.load_from_graphml, CNetwork, connectome.add_connectome_network, connectome
+        GraphML, CNetwork.load_from_graphml, CNetwork, connectome.add_connectome_network, connectome
             
         """
         nName = self.get_normalised_name(name)
@@ -376,7 +377,33 @@ class connectome(supermod.connectome):
         else:
             print "ERROR - Name is not unique"
             return            
+    
+    def add_connectome_network(self, cnet):
+        """Add the given CNetwork to the connectome object.
         
+        Parameters
+        ----------
+        self    : connectome
+        cnet : CNetwork,
+            the connectome network to add to the connectome.
+            
+        See also
+        --------
+        CNetwork, connectome
+            
+        """
+        nName = self.get_normalised_name(cnet.name)        
+        if nName == None or nName == '':
+            print "ERROR - the CNetwork requires a name"
+            return
+        if self.is_name_unique(nName):
+            cnet.name = nName
+            self.connectome_network.append(cnet)
+        else:
+            print "ERROR - Name is not unique"
+            return      
+        
+    
 supermod.connectome.subclass = connectome
 # end class connectome
 
@@ -417,14 +444,10 @@ class CMetadata(supermod.CMetadata):
             a text description of the connectome
         metadata : dictionary, optional,
             some metadata informations as a dictionary
-                    
-        Examples
-        --------
-            >>> myMeta = CMetadata(name='Lausanne 2010', institution='EPFL', author='Your Name')
             
         See also
         --------
-            Metadata, connectome  
+        Metadata, connectome  
         """
         super(CMetadata, self).__init__(version, generator, author, institution, creation_date, modification_date, name, species, legal_notice, reference, email, url, description, metadata, )
 
@@ -566,22 +589,27 @@ class CNetwork(supermod.CNetwork, CBaseClass):
         return unify('CNetwork', self.name + fend)
     
     @classmethod
-    def create_from_graphml(cls, name, ml_filename):
+    def create_from_graphml(cls, ml_filename, name=None):
         """ Return a CNetwork object from a given ml_filename pointint to
         a GraphML file in your file system
         
         Parameters
         ----------
-        name : string, 
-            name of the CNetwork
         ml_filename : string,
-            filename of the GraphML to load.
+            filename of the GraphML to load
+        name : string, optional
+            name of the CNetwork, it is optional if the network already have a name
         
         Returns
         -------
         cnet : CNetwork
         
         """
+        if (self.name == None or self.name == '') and (name == None or name == ''):
+            print "ERROR - the CNetwork requires a name"
+            return
+        if name != None and name != '':
+            self.name == name
         cnet = CNetwork(name) 
         cnet.tmpsrc     = op.abspath(ml_filename)
         cnet.fileformat = "GraphML"
@@ -604,10 +632,11 @@ class CNetwork(supermod.CNetwork, CBaseClass):
                                 
         See also
         --------
-            NetworkX, CNetwork   
+        NetworkX, CNetwork   
         """
         if (self.name == None or self.name == '') and (name == None or name == ''):
             print "ERROR - the CNetwork requires a name"
+            return
         if name != None and name != '':
             self.name == name
         self.dtype      = "AttributeNetwork"
