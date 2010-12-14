@@ -345,7 +345,7 @@ class connectome(supermod.connectome):
             print "ERROR - Name is not unique"
             return 
     
-    def add_connectome_network_from_nxgraph(self, nxGraph, name):
+    def add_connectome_network_from_nxgraph(self, nxGraph, name, dtype='AttributeNetwork', fileformat='NXGPickle'):
         """Add a new CNetwork from the given NetworkX graph object to the connectome.
         
         Parameters
@@ -354,6 +354,10 @@ class connectome(supermod.connectome):
             a NetworkX graph object
         name : string,
             a unique name for the NetworkX graph to add to the connectome object
+        dtype : AttributeNetwork,
+            the data type of this CNetwork
+        fileformat : NXGPickle,
+            the fileformat of the file of this CNetwork
                     
         Examples
         --------
@@ -368,7 +372,7 @@ class connectome(supermod.connectome):
         if self.is_name_unique(nName):
             n = CNetwork()
             n.name = nName
-            n.set_with_nxgraph(nxGraph)
+            n.set_with_nxgraph(nxGraph, dtype, fileformat)
             self.add_connectome_network(n)
         else:
             print "ERROR - Name is not unique"
