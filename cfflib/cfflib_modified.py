@@ -636,7 +636,7 @@ class CNetwork(supermod.CNetwork, CBaseClass):
         cnet.src        = cnet.get_unique_relpath()
         return cnet
     
-    def set_with_nxgraph(self, nxGraph, name=None):
+    def set_with_nxgraph(self, nxGraph, name=None, dtype='AttributeNetwork', fileformat='NXGPickle'):
         """Set the current CNetwork with the given NetworkX graph.
         Set the fileformat to NXGPickle and the dtype to AttributeNetwork.
         Add the NetworkX object to contents.
@@ -647,6 +647,10 @@ class CNetwork(supermod.CNetwork, CBaseClass):
             the NetworkX graph object to add to the current CNetwork.
         name : string, optional,
             the name of the network, it is optional when the CNetwork already have a name
+        dtype : AttributeNetwork,
+            the data type of this CNetwork
+        fileformat : NXGPickle,
+            the fileformat of the file of this CNetwork
                                 
         See also
         --------
@@ -657,12 +661,12 @@ class CNetwork(supermod.CNetwork, CBaseClass):
             return
         if name != None and name != '':
             self.name == name
-        self.dtype      = "AttributeNetwork"
-        self.fileformat = "NXGPickle"
-        self.content   = nxGraph
+        self.dtype = dtype
+        self.fileformat = fileformat
+        self.content = nxGraph
         import tempfile
         self.tmpsrc = tempfile.mkstemp(suffix = '.gpickle')[1]
-        self.src    = self.get_unique_relpath()
+        self.src = self.get_unique_relpath()
     
 supermod.CNetwork.subclass = CNetwork
 # end class CNetwork
