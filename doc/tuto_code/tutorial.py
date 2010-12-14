@@ -19,7 +19,7 @@ myConnectome.hasContent_()
 #----------------------------------------------------------------------#
 
 #----------------------------------------------------------------------#
-# Create the metadata
+# Create the connectome metadata
 myMetadata = CMetadata()
 myMetadata.set_name('My first connectome')
 myMetadata.set_author('Connectome Tutorial')
@@ -68,6 +68,14 @@ myConnectome.get_all()
 
 # Modify the CNetwork through the connectome object
 myConnectome.get_connectome_network()[0].set_description('A first CNetwork created with the tutorial')
+
+# From a graphml file 
+# way 1
+my2ndCNetwork = CNetwork.create_from_graphml('network_res83.graphml','My GraphML Network')
+myConnectome.add_connectome_network(my2ndCNetwork)
+
+#way 2
+myConnectome.add_connectome_network_from_graphml('network_res83.graphml','My GraphML Network')
 #----------------------------------------------------------------------#
 
 #----------------------------------------------------------------------#
@@ -78,7 +86,7 @@ myCN.set_metadata({'sd':1234})
 
 # Try to save again
 save_to_meta_cml(myConnectome, 'meta2.cml')#'/your/wanted/path/meta.cml')
-
+save_to_cff(myConnectome, 'myconnectome2.cff')
 
 
 

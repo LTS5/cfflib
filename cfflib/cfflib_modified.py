@@ -379,9 +379,10 @@ class connectome(supermod.connectome):
         
         Parameters
         ----------
-        self    : connectome
         nxGraph : GraphML file,
             the filename of the GraphML to add to the connectome.
+        name : string,
+            the unique name of the new CNetwork
                     
         Examples
         --------
@@ -389,14 +390,12 @@ class connectome(supermod.connectome):
             
         See also
         --------
-        GraphML, CNetwork.load_from_graphml, CNetwork, connectome.add_connectome_network, connectome
+        GraphML, CNetwork.create_from_graphml, CNetwork, connectome.add_connectome_network, connectome
             
         """
         nName = self.get_normalised_name(name)
         if self.is_name_unique(nName):
-            n      = CNetwork()
-            n.name = nName
-            n.load_from_graphml(graphML)
+            n = CNetwork.create_from_graphml(graphML, nName)
             self.add_connectome_network(n)
         else:
             print "ERROR - Name is not unique"
@@ -613,7 +612,7 @@ class CNetwork(supermod.CNetwork, CBaseClass):
         return unify('CNetwork', self.name + fend)
     
     @classmethod
-    def create_from_graphml(cls, ml_filename, name=None):
+    def create_from_graphml(cls, ml_filename, name):
         """ Return a CNetwork object from a given ml_filename pointint to
         a GraphML file in your file system
         
@@ -622,24 +621,19 @@ class CNetwork(supermod.CNetwork, CBaseClass):
         ml_filename : string,
             filename of the GraphML to load
         name : string, optional
-            name of the CNetwork, it is optional if the network already have a name
+            unique name of the CNetwork
         
         Returns
         -------
         cnet : CNetwork
         
         """
-        if (self.name == None or self.name == '') and (name == None or name == ''):
-            print "ERROR - the CNetwork requires a name"
-            return
-        if name != None and name != '':
-            self.name == name
-        cnet = CNetwork(name) 
+        cnet            = CNetwork(name) 
         cnet.tmpsrc     = op.abspath(ml_filename)
         cnet.fileformat = "GraphML"
         cnet.dtype      = "AttributeNetwork"
         cnet.content    = nx.read_graphml(ml_filename)
-        cnet.src = cnet.get_unique_relpath()
+        cnet.src        = cnet.get_unique_relpath()
         return cnet
     
     def set_with_nxgraph(self, nxGraph, name=None):

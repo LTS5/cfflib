@@ -126,6 +126,9 @@ On the exemple above, the CNetwork is created with a specified name and the defa
     
     - *metadata* : some meta data of the network 
 
+From a NetworkX object
+----------------------
+
 Now, assume that you want to add a NetworkX graph to your CNetwork object. First, we'll create a basic NetworkX graph::
 
     import networkx as nx
@@ -161,6 +164,25 @@ You can access and modifiy this CNetwork object::
 
 for example, this function will add a description to this CNetwork.
 
+From a GraphML file
+-------------------
+
+It is possible to create a CNetwork from a GraphML file. There are two ways to do it:
+
+    1. first create a CNetwork from the GraphML and then add it to the connectome::
+    
+        my2ndCNetwork = CNetwork.create_from_graphml('your/path/to/graph.graphml','My GraphML network')
+        myConnectome.add_connectome_network(my2ndCNetwork)
+
+    2. directly add a CNetwork based on the GraphML file from the connectome::
+
+        myConnectome.add_connectome_network_from_graphml('your/path/to/graph.graphml','My GraphML network')        
+
+After you used one of the methods above, if you ask again the connectome for its objects::
+    
+    myConnectome.get_all()
+    
+You should get two CNetwork.
 
 Add metadata to an object
 =========================
@@ -181,28 +203,29 @@ At this point, we can try to save again our connectome to check the CML::
 
     save_to_meta_cml(myConnectome, '/your/wanted/path/meta.cml')  
     
-The output file should look like::
+The output file should look like (with your paths)::
 
     <?xml version="1.0" encoding="UTF-8"?>
     <connectome xmlns="http://www.connectomics.org/2010/Connectome/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.connectomics.org/2010/Connectome/xmlns connectome.xsd">
-        <connectome-meta version="2.0">
-            <generator>cfflib</generator>
-            <author>Connectome Tutorial</author>
-            <institution>EPFL</institution>
-            <creation-date>2010-10-26</creation-date>
-            <name>My first connectome</name>
-            <url>www.connectome.ch</url>
-            <description format="plaintext">First connectome object created with the tutorial.</description>
-        </connectome-meta>
-        <connectome-network src="CNetwork/my_first_cnetwork.gpickle" dtype="AttributeNetwork" name="My First CNetwork" fileformat="NXGPickle">
-            <metadata>
-                <data key="sd">1234</data>
-            </metadata>
-            <description format="plaintext">A first CNetwork created with the tutorial</description>
-        </connectome-network>
+     <connectome-meta version="2.0">
+      <generator>cfflib</generator>
+      <author>Connectome Tutorial</author>
+      <institution>EPFL</institution>
+      <creation-date>2010-10-26</creation-date>
+      <name>my_first_connectome</name>
+      <url>www.connectome.ch</url>
+      <description format="plaintext">First connectome object created with the tutorial.</description>
+     </connectome-meta>
+     <connectome-network src="CNetwork/my_first_cnetwork.gpickle" dtype="AttributeNetwork" name="my_first_cnetwork" fileformat="NXGPickle">
+      <metadata>
+       <data key="sd">1234</data>
+      </metadata>
+      <description format="plaintext">A first CNetwork created with the tutorial</description>
+     </connectome-network>
+     <connectome-network src="CNetwork/my_graphml_network.graphml" dtype="AttributeNetwork" name="my_graphml_network" fileformat="GraphML"/>
     </connectome>
     
-Now you can see there is a new block with the tag *connectome-network* which is the added CNetwork with the given attributes. There are the metadata and the description in this block too.
+Now you can see there are two new blocks with the tag *connectome-network* which are the added CNetwork with the given attributes. The first one is the CNetwork added from the NetworkX object and contains the metadata and the description. The second one is the one created from the GraphML file.
     
     
 
