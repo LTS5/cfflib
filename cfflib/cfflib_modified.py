@@ -720,37 +720,32 @@ supermod.CSurface.subclass = CSurface
 
 
 class CVolume(supermod.CVolume, CBaseClass):
-    """
-        Create a new CVolume object.
+    """Connectome volume object"""
+    
+    def __init__(self, name='myvolume', dtype=None, fileformat='Nifti1', src=None, description=None, metadata=None):
+        """Create a new CVolume object.
         
         Parameters
         ----------
-            name              : string, optional
-                the volume name
-            src               : string, optional,
-                the source file of the volume
-            dtype             : string, optional,
-                the data type of the volume
-            fileformat        : string, optional,
-                the fileformat of the volume
-            description       : description, optional,
-                a description (key, value) of the CVolume
-            metadata          : Metadata, optional,
-                Metadata object relative to the volume
-                    
-        Examples
-        --------
-            Empty
-            >>> myCVol1 = CVolume()
-            Create an empty CVolume object
-            
+        name : 'myvolume',
+            the unique name of the volume
+        dtype : string, optional,
+            the data type of the volume. It could be: 'T1-weighted', 'T2-weighted', 'PD-weighted', 'fMRI', 'MD', 'FA', 'LD', 'TD', 'FLAIR', 'MRA' or 'MRS depending on your dataset.
+        fileformat : 'Nifti1',
+            the fileformat of the volume. It could be: 'Nifti1', 'ANALYZE', 'DICOM' ... But only 'Nifti1' is supported, its compressed version '.nii.gz' too.
+        src : string, optional,
+            the source file of the volume
+        description : string, optional,
+	       A description according to the format attribute syntax.
+        metadata : Metadata, optional,
+            More metadata relative to the volume
+                                
         See also
         --------
-            description, Metadata, connectome
-    
-    """
-    def __init__(self, name=None, src=None, dtype=None, fileformat='Nifti1', description=None, metadata=None):
+        Metadata, connectome
+        """
         super(CVolume, self).__init__(src, dtype, name, fileformat, description, metadata, )
+#        self.src = self.get_unique_relpath()
                   
     def get_unique_relpath(self):
         """ Return a unique relative path for this element """
@@ -767,6 +762,61 @@ class CVolume(supermod.CVolume, CBaseClass):
             fend = ''
             
         return unify('CVolume', self.name + fend)
+    
+    # Description object hide as a property
+    @property
+    def get_description(self):
+        if hasattr(self.description, 'valueOf_'):
+            return self.description.get_valueOf_()
+        else:
+            print "ERROR - description must be set first"
+            return
+    def get_description_format(self):
+        if hasattr(self.description, 'format'):
+            return self.description.format
+        else:
+            print "ERROR - description must be set first"
+            return        
+    def set_description(self, value):
+        self.description = description('plaintext', value)
+    
+    # Metadata
+    def get_metadata(self): 
+        """Return the metadata as a dictionary"""
+        return self.metadata.get_as_dictionary()
+    def set_metadata(self, metadata): 
+        """Set the metadata with a dictionary"""
+        if self.metadata == None:
+            self.metadata
+            self.metadata = Metadata()
+        self.metadata.set_with_dictionary(metadata)
+    
+    # Create a CVolume from a Nifti1 file
+    @classmethod
+    def create_from_nifti(cls, nii_filename, name='myvolume', dtype=None):
+        """ Return a CVolume object from a given Nifti1 filename in your file system
+        
+        Parameters
+        ----------
+        nii_filename : string,
+            the filename of the Nifti1 file to load
+        name : 'myvolume',
+            te unique name of the CVolume
+        dtype : string, optional,
+            the datatype of the new CVolume
+        
+        Returns
+        -------
+        cvol : CVolume
+        
+        """
+        cvol            = CVolume(name) 
+        cvol.tmpsrc     = op.abspath(nii_filename)
+        cvol.fileformat = "Nifti1"
+        cvol.dtype      = dtype
+        cvol.content    = ni.load(nii_filename)
+        cvol.src        = cvol.get_unique_relpath()
+        return cvol
     
 supermod.CVolume.subclass = CVolume
 # end class CVolume

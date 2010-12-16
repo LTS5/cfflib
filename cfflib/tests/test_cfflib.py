@@ -1,4 +1,6 @@
+# TESTS file 
 
+# test to save a CNetwork from scratch to cff 
 def test_savecff():
     import cfflib
     c=cfflib.connectome()
@@ -11,7 +13,7 @@ def test_savecff():
     net.set_with_nxgraph('tet', nx.Graph())
     cc.save_to_cff(c,'test.cff')
 
-
+# test to save a CNetwork from scratch to cml 
 def test_savecml():
     import cfflib
     c=cfflib.connectome()
@@ -22,4 +24,25 @@ def test_savecml():
     c.add_connectome_network(net)
     cc.save_to_cff(c,'test2.cff')
        
+# test to save a CVolume from nifti1 file to cff 
+def test_load_save_cvol():
+    from cfflib import *
+    cv = CVolume.create_from_nifti('T1.nii.gz') # Path to the nifti1 file
+    cv.set_description('My first CVolume')
+    cv.set_metadata({'meta1':'only T1 scan of this patient'})
+    c = connectome()
+    c.connectome_meta = CMetadata()
+    c.add_connectome_volume(cv)
+    save_to_cff(c,'test_cvol.cff')
     
+# test to save a CVolume from scratch to cff 
+# ERROR - it doesn't work: "there is nothing to save"
+def test_load_save_cvol_ERROR():
+    from cfflib import *
+    cv = CVolume()
+    cv.set_description('my first cvolume')
+    cv.set_metadata({'m1':1234,'m2':'test'})
+    c = connectome()
+    c.connectome_meta = CMetadata()
+    c.add_connectome_volume(cv)
+    save_to_cff(c,'c.cff')
