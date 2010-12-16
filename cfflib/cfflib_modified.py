@@ -419,6 +419,36 @@ class connectome(supermod.connectome):
             self.connectome_volume.append(cvol)
         else:
             print "ERROR - Name is not unique"
+            return         
+        
+    # CSurface
+    def add_connectome_surface(self, csurf):
+        """Add the given CSurface to the connectome object.
+        
+        Parameters
+        ----------
+        csurf : CSurface,
+            the connectome surface to add to the connectome, the CSurface name have to be unique.
+            
+        See also
+        --------
+        CSurface, connectome
+            
+        """
+        
+        # Normalised the CNetwork name
+        nName = self.get_normalised_name(csurf.name)   
+          
+        # Check if the name is not null   
+        if nName == None or nName == '':
+            print "ERROR - the CSurface requires a name"
+            return
+            
+        # Check if the name is unique
+        if self.is_name_unique(nName):
+            self.connectome_surface.append(csurf)
+        else:
+            print "ERROR - Name is not unique"
             return      
     
 supermod.connectome.subclass = connectome

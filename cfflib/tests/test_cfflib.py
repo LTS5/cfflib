@@ -46,3 +46,14 @@ def test_load_save_cvol_ERROR():
     c.connectome_meta = CMetadata()
     c.add_connectome_volume(cv)
     save_to_cff(c,'c.cff')
+    
+# test to save a CSurface from gifti file to cff 
+def test_load_save_csurf():
+    from cfflib import *
+    cs = CSurface.create_from_gifti('testsubject_labels.gii', 'My first surface') # Path to the gifti file
+    cs.set_description('My first CSurface')
+    cs.set_metadata({'meta1':'a metadata for my CSurface'})
+    c = connectome()
+    c.connectome_meta = CMetadata()
+    c.add_connectome_surface(cs)
+    save_to_cff(c,'test_csurf.cff')
