@@ -192,7 +192,7 @@ class connectome(supermod.connectome):
         all_cobj = self.get_all()
         namelist = []
         for ele in all_cobj:
-            namelist.append(ele.name)
+            namelist.append(self.get_normalised_name(ele.name))
         if n in namelist:
             return False
         else:
@@ -285,12 +285,17 @@ class connectome(supermod.connectome):
         --------
         CMetadata, connectome   
         """
-        nName = self.get_normalised_name(cmeta.name)        
+        
+        # Normalised the name
+        nName = self.get_normalised_name(cmeta.name)   
+        
+        # Check if the name is set     
         if nName == None or nName == '':
             print "ERROR - the CNetwork requires a name"
             return
+            
+        # Check if the name is unique
         if self.is_name_unique(nName):
-            cmeta.name = nName
             self.connectome_meta = cmeta
         else:
             print "ERROR - Name is not unique"
