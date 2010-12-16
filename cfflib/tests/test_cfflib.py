@@ -27,7 +27,7 @@ def test_savecml():
 # test to save a CVolume from nifti1 file to cff 
 def test_load_save_cvol():
     from cfflib import *
-    cv = CVolume.create_from_nifti('T1.nii.gz') # Path to the nifti1 file
+    cv = CVolume.create_from_nifti('T1.nii.gz', 'My first volume') # Path to the nifti1 file
     cv.set_description('My first CVolume')
     cv.set_metadata({'meta1':'only T1 scan of this patient'})
     c = connectome()

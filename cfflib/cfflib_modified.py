@@ -80,12 +80,13 @@ ExternalEncoding = 'ascii'
 
 class connectome(supermod.connectome):
     """The connectome object is the main object of this format. It contains CMetadata, it can contain some CData, CNetwork, CSurface, CTimeserie, CTrack and CVolume. It is possible to store it to a simple CML file or to a complete compressed CFF file with all sources."""
+    
     def __init__(self, connectome_meta=None, connectome_network=None, connectome_surface=None, connectome_volume=None, connectome_track=None, connectome_timeserie=None, connectome_data=None, connectome_script=None, connectome_imagestack=None):
         """Create a new connectome object.
             
         See also
         --------
-        CMetadata, CNetwork, CSurface, CVolume, CTrack, CTimeserie, CData, CScript, CImagestack
+        CMetadata, CNetwork, CSurface, CVolume, CTrack, CTimeserie, CData, CScript and CImagestack
     
         """
         super(connectome, self).__init__(connectome_meta, connectome_network, connectome_surface, connectome_volume, connectome_track, connectome_timeserie, connectome_data, connectome_script, connectome_imagestack, )
@@ -96,11 +97,7 @@ class connectome(supermod.connectome):
 
     def get_all(self):
         """Return all connectome objects mixed as a list.
-        
-        Parameters
-        ----------
-        self : connectome
-            
+                    
         Examples
         --------
         >>> myConnectome.get_all()
@@ -122,7 +119,6 @@ class connectome(supermod.connectome):
         
         Parameters
         ----------
-        self : connectome
         name : string
             name of the wanted object(s)
             
@@ -152,21 +148,7 @@ class connectome(supermod.connectome):
             
 
     def check_file_in_cff(self):
-        """Checks if the files described in the meta.cml are contained in the connectome zip file
-        
-        Parameters
-        ----------
-        self : connectome
-            
-        Examples
-        --------
-        >>> myConnectome.check_file_in_cff()
-            
-        See also
-        --------
-        connectome
-    
-        """  
+        """Checks if the files described in the meta.cml are contained in the connectome zip file."""  
         
         if not self.iszip:
             return
@@ -181,21 +163,7 @@ class connectome(supermod.connectome):
                 raise Exception(msg)
             
     def check_names_unique(self):
-        """Checks whether the names are unique.
-        
-        Parameters
-        ----------
-        self : connectome
-            
-        Examples
-        --------
-        >>> myConnectome.check_names_unique()
-            
-        See also
-        --------
-        connectome
-    
-        """  
+        """Checks whether the names are unique."""  
         all_cobj = self.get_all()
         namelist = []
         for ele in all_cobj:
@@ -213,7 +181,6 @@ class connectome(supermod.connectome):
         
         Parameters
         ----------
-        self : connectome
         name : string,
             the name to check if it is unique
             
@@ -232,22 +199,7 @@ class connectome(supermod.connectome):
             return True
     
     def get_unique_cff_name(self):
-        """Return a unique connectome file name
-        
-        Parameters
-        ----------
-        self : connectome
-            
-        Examples
-        --------
-        >>> myConnectome.get_unique_cff_name()
-            my_first_network
-            
-        See also
-        --------
-        connectome
-    
-        """
+        """Return a unique connectome file name"""
         n = self.get_connectome_meta().name
         n = n.lower()
         n = n.replace(' ', '_')
@@ -258,7 +210,6 @@ class connectome(supermod.connectome):
         
         Parameters
         ----------
-        self : connectome
         name : string,
             the name to be normalised
             
@@ -277,7 +228,7 @@ class connectome(supermod.connectome):
         return n
 
     def _update_parent_reference(self):
-        """ Updates the parent reference to the connectome file super-object """
+        """Updates the parent reference to the connectome file super-object"""
 
         all_cobj = self.get_all() 
         
@@ -321,12 +272,12 @@ class connectome(supermod.connectome):
                 print "Remove .tmpsrc attribute"
                 del ele.tmpsrc
     
+    # CMetadata setter
     def set_connectome_meta(self, cmeta):
         """Set the connectome metadata object for this connectome object
         
         Parameters
         ----------
-        self : connectome
         cmeta : CMetadata,
             the connectome metadata to add to the connectome object
             
@@ -345,6 +296,7 @@ class connectome(supermod.connectome):
             print "ERROR - Name is not unique"
             return 
     
+    # CNetwork
     def add_connectome_network_from_nxgraph(self, nxGraph, name, dtype='AttributeNetwork', fileformat='NXGPickle'):
         """Add a new CNetwork from the given NetworkX graph object to the connectome.
         
@@ -410,26 +362,59 @@ class connectome(supermod.connectome):
         
         Parameters
         ----------
-        self    : connectome
         cnet : CNetwork,
-            the connectome network to add to the connectome.
+            the connectome network to add to the connectome, the CNetwork name have to be unique.
             
         See also
         --------
         CNetwork, connectome
             
         """
-        nName = self.get_normalised_name(cnet.name)        
+        
+        # Normalised the CNetwork name
+        nName = self.get_normalised_name(cnet.name)   
+          
+        # Check if the name is not null   
         if nName == None or nName == '':
             print "ERROR - the CNetwork requires a name"
             return
+            
+        # Check if the name is unique
         if self.is_name_unique(nName):
-            cnet.name = nName
             self.connectome_network.append(cnet)
         else:
             print "ERROR - Name is not unique"
             return      
         
+    # CVolume
+    def add_connectome_volume(self, cvol):
+        """Add the given CVolume to the connectome object.
+        
+        Parameters
+        ----------
+        cnet : CVolume,
+            the connectome volume to add to the connectome, the CVolume name have to be unique.
+            
+        See also
+        --------
+        CVolume, connectome
+            
+        """
+        
+        # Normalised the CNetwork name
+        nName = self.get_normalised_name(cvol.name)   
+          
+        # Check if the name is not null   
+        if nName == None or nName == '':
+            print "ERROR - the CVolume requires a name"
+            return
+            
+        # Check if the name is unique
+        if self.is_name_unique(nName):
+            self.connectome_volume.append(cvol)
+        else:
+            print "ERROR - Name is not unique"
+            return      
     
 supermod.connectome.subclass = connectome
 # end class connectome
