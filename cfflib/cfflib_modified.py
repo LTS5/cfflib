@@ -669,28 +669,28 @@ supermod.CNetwork.subclass = CNetwork
 class CSurface(supermod.CSurface, CBaseClass):
     """A connectome surface object"""
     
-    def __init__(self, name=None, src=None, dtype=None, fileformat=None, description=None, metadata=None):
+    def __init__(self, name='mysurface', dtype='label', fileformat='gifti', src=None, description=None, metadata=None):
         """
         Create a new CSurface object.
         
         Parameters
         ----------
-        name : string, optional
-            the surface name
+        name : 'mysurface'
+            the unique surface name
+        dtype : 'label',
+            the type of data that the Gifti file contain. It could be (for Gifti only): 'label', 'surfaceset', 'surfaceset+label' or 'other'.
+        fileformat : 'gifti',
+            the fileformat of the surface, use default 'gifti' to use the only supported Gifti format by cfflib, use 'Other' for others format and custom support.
         src : string, optional,
             the source file of the surface
-        dtype : string, optional,
-            the data type of the surface
-        fileformat : string, optional,
-            the fileformat of the surface
-        description : description, optional,
-            a description (key, value) of the CSurface
+        description : string, optional,
+            a description of the CSurface
         metadata : Metadata, optional,
-            Metadata object relative to the surface
+            more metadata relative to the surface
             
         See also
         --------
-        description, Metadata, connectome
+        Metadata, connectome
     
         """
         super(CSurface, self).__init__(src, dtype, name, fileformat, description, metadata, )
@@ -704,6 +704,63 @@ class CSurface(supermod.CSurface, CBaseClass):
             fend = ''
             
         return unify('CSurface', self.name + fend)
+    
+    # Description object hide as a property
+    @property
+    def get_description(self):
+        if hasattr(self.description, 'valueOf_'):
+            return self.description.get_valueOf_()
+        else:
+            print "ERROR - description must be set first"
+            return
+    def get_description_format(self):
+        if hasattr(self.description, 'format'):
+            return self.description.format
+        else:
+            print "ERROR - description must be set first"
+            return        
+    def set_description(self, value):
+        self.description = description('plaintext', value)
+    
+    # Metadata
+    def get_metadata(self): 
+        """Return the metadata as a dictionary"""
+        return self.metadata.get_as_dictionary()
+    def set_metadata(self, metadata): 
+        """Set the metadata with a dictionary"""
+        if self.metadata == None:
+            self.metadata
+            self.metadata = Metadata()
+        self.metadata.set_with_dictionary(metadata)
+    
+    # Create from a Gifti file
+    @classmethod
+    def create_from_gifti(cls, gii_filename, name, dtype='label'):
+        """ Return a CSurface object from a given gii_filename pointint to
+        a Gifti file in your file system
+        
+        Parameters
+        ----------
+        gii_filename : string,
+            filename of the Gifti to load
+        name : string,
+            unique name of the CSurface
+        dtype : 'label',
+            the type of data the Gifti file contains
+        
+        Returns
+        -------
+        csurf : CSurface
+        
+        """
+        csurf            = CSurface(name) 
+        csurf.tmpsrc     = op.abspath(gii_filename)
+        csurf.fileformat = "Gifti"
+        csurf.dtype      = dtype
+        import nibabel.gifti as nig
+        csurf.content    = nig.read(gii_filename)
+        csurf.src        = csurf.get_unique_relpath()
+        return csurf
     
 supermod.CSurface.subclass = CSurface
 # end class CSurface
