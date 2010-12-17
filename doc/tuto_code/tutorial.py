@@ -19,8 +19,9 @@ myConnectome.hasContent_()
 #----------------------------------------------------------------------#
 
 #----------------------------------------------------------------------#
-# Create the metadata
-myMetadata = CMetadata('My first connectome')
+# Create the connectome metadata
+myMetadata = CMetadata()
+myMetadata.set_name('My first connectome')
 myMetadata.set_author('Connectome Tutorial')
 myMetadata.set_institution('EPFL')
 myMetadata.set_creation_date('2010-10-26')
@@ -54,9 +55,10 @@ myNetworkx.add_edge(0,1)
 myNetworkx.add_edge(1,2)
 
 # Create a CNetwork
-myCNet = CNetwork(name='my1stCNetwork', description=description('plaintext','This is my first CNetwork created for the tutorial'))
-#myCNet.contents = myNetworkx
-myCNet.set_from_nx(myNetworkx)
+myCNet = CNetwork('My First CNetwork')
+
+# Set with the NetworkX graph
+myCNet.set_with_nxgraph(myNetworkx)
 
 # Add the network to the connectome object
 myConnectome.add_connectome_network(myCNet)
@@ -65,19 +67,26 @@ myConnectome.add_connectome_network(myCNet)
 myConnectome.get_all()
 
 # Modify the CNetwork through the connectome object
-myConnectome.get_connectome_network()[0].set_dtype('data')
+myConnectome.get_connectome_network()[0].set_description('A first CNetwork created with the tutorial')
+
+# From a graphml file 
+# way 1
+my2ndCNetwork = CNetwork.create_from_graphml('network_res83.graphml','My GraphML Network')
+myConnectome.add_connectome_network(my2ndCNetwork)
+
+#way 2
+myConnectome.add_connectome_network_from_graphml('network_res83.graphml','My GraphML Network')
 #----------------------------------------------------------------------#
 
 #----------------------------------------------------------------------#
 # Add metadata to an object
 #----------------------------------------------------------------------#
-myCN1 = myConnectome.get_connectome_network()[0]
-myCN1.metadata = Metadata()
-data = data()
-data.set_key('Resolution')
-data.set_value('83')
-myCN1.metadata.set_data(data)
+myCN = myConnectome.get_connectome_network()[0]
+myCN.set_metadata({'sd':1234})
 
+# Try to save again
+save_to_meta_cml(myConnectome, 'meta2.cml')#'/your/wanted/path/meta.cml')
+save_to_cff(myConnectome, 'myconnectome2.cff')
 
 
 

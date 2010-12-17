@@ -1,7 +1,7 @@
 How to create a Connectome File
 *******************************
 
-This short tutorial will give you the basics in creating a new connectome file with the **cfflib**.
+This short tutorial will give you the basics in creating a new connectome file with the **cfflib 2.0**.
 
 Create the connectome object
 ============================
@@ -16,10 +16,6 @@ Then your first command will be::
     
 in order to have a connectome object. 
 
-.. note::
-    
-    The method ``connectome()`` can take as argument each possible object the connectome can handle. For example, you can create a new connectome with an existing network. But, we will see these possible objects later.
-
 To get some informations about this new object you can try::
 
     myConnectome
@@ -31,13 +27,13 @@ The first line is just to show that you have a connectome object, the function `
 Add the connectome metadata
 ===========================
 
-The connectome's metadata is required. So you have to create a CMetadata object with a name::
+The connectome's metadata is required. So you have to create a CMetadata object ::
 
-    myMetadata = CMetadata(name)
+    myMetadata = CMetadata()
     
-you are now able to add a lot of informations to this object but three are required:
+you are able to add a lot of informations to this object but three are required:
 
-    - *name* : the unique name of your connectome object
+    - *name* : the unique name of your connectome object, by default **myconnectome**
     
     - *version* : the version of the cfflib, by default **2.0**
     
@@ -45,6 +41,7 @@ you are now able to add a lot of informations to this object but three are requi
 
 For example the followings::
 
+    myMetadata.set_name('My first connectome')
     myMetadata.set_author('Connectome Tutorial')
     myMetadata.set_institution('EPFL')
     myMetadata.set_creation_date('2010-10-26')
@@ -95,11 +92,27 @@ Add a network
 
 To add a network to you connectome object, you have to create a CNetwork object. This object has three required parameters:
 
-    - *name* : the unique name of this network
+    - *name* : the unique name of this network, **mynetwork** by default
     
-    - *fileformat* : the fileformat of the network, by default **GraphML**
+    - *fileformat* : the fileformat of the network, which can be :
     
-    - *dtype* : the data type of the network, by default **AttributeNetwork**
+        - **GraphML**, by default
+        
+        - *GEXF*
+        
+        - *NXGPickle*
+        
+        - *Other*
+    
+    - *dtype* : the data type of the network, which can be : 
+    
+        - **AttributeNetwork**, by default
+        
+        - *DynamicNetwork*
+        
+        - *HierarchicalNetwork*
+        
+        - *Other*
 
 You can create a new CNetwork like this::
 
@@ -113,7 +126,10 @@ On the exemple above, the CNetwork is created with a specified name and the defa
     
     - *metadata* : some meta data of the network 
 
-Now, assume that you want to add a networkx graph to your CNetwork object. First, we'll create a basic networkx::
+From a NetworkX object
+----------------------
+
+Now, assume that you want to add a NetworkX graph to your CNetwork object. First, we'll create a basic NetworkX graph::
 
     import networkx as nx
     myNetworkx = nx.Graph()
@@ -123,7 +139,7 @@ Now, assume that you want to add a networkx graph to your CNetwork object. First
     myNetworkx.add_edge(0,1)
     myNetworkx.add_edge(1,2)
     
-Then we can add this simple graph to our CNetwork object::
+Then we can set our CNetwork object with this graph::
 
     myCNetwork.set_with_nxgraph(myNetworkx)
     
@@ -144,54 +160,72 @@ Now, you can try again *myConnectome.get_all()* function, it should return somet
     
 You can access and modifiy this CNetwork object::
 
-    myConnectome.get_connectome_network()[0].set_name('A CNetwork')
+    myConnectome.get_connectome_network()[0].set_description('A first CNetwork created with the tutorial')
 
-for example, this function will modify the name to "*A CNetwork*".
+for example, this function will add a description to this CNetwork.
 
+From a GraphML file
+-------------------
+
+It is possible to create a CNetwork from a GraphML file. There are two ways to do it:
+
+    1. first create a CNetwork from the GraphML and then add it to the connectome::
+    
+        my2ndCNetwork = CNetwork.create_from_graphml('your/path/to/graph.graphml','My GraphML network')
+        myConnectome.add_connectome_network(my2ndCNetwork)
+
+    2. directly add a CNetwork based on the GraphML file from the connectome::
+
+        myConnectome.add_connectome_network_from_graphml('your/path/to/graph.graphml','My GraphML network')        
+
+After you used one of the methods above, if you ask again the connectome for its objects::
+    
+    myConnectome.get_all()
+    
+You should get two CNetwork.
 
 Add metadata to an object
 =========================
 
-We already saw that we can add some metadata to the connectome object with CMetadata. In fact, it's possible to add some metadata to any CObject, for example to a CNetwork object. That's what we're going to do in this section with the Metadata object. 
+We already saw that we can add some metadata to the connectome object with CMetadata. In fact, it is possible to add some metadata to any CObject, for example to a CNetwork object. That's what we're going to do in this section with the Metadata object. 
 
-First we add some Metadata to our first CNetwork::
+First need a reference on our previous CNetwork object to make things easier::
 
-    myCN1 = myConnectome.get_connectome_network()[0]
-    myCN1.metadata = Metadata()
+    myCN = myConnectome.get_connectome_network()[0]
+
+We can add some metadata to this object by using a dictionary structure::
     
-Now, we have a reference on our first CNetwork *myCN1* and it contains a Metadata object.
-
-We can create a data and add it to the metadata of our CNetwork::
+    myCN.set_metadata({'sd':1234})
     
-    data = data()
-    data.set_key('Resolution')
-    data.set_value('83')
-    myCN1.metadata.set_data(data)
+this command will create the Metadata object and add the key *sd* with the value *1234*. You can use a dictionary of the length you want.
     
 At this point, we can try to save again our connectome to check the CML::
 
     save_to_meta_cml(myConnectome, '/your/wanted/path/meta.cml')  
     
-The output file should look like::
+The output file should look like (with your paths)::
 
     <?xml version="1.0" encoding="UTF-8"?>
     <connectome xmlns="http://www.connectomics.org/2010/Connectome/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.connectomics.org/2010/Connectome/xmlns connectome.xsd">
-        <connectome-meta version="0.0.1">
-            <author>Your Name</author>
-            <institution>Your Institution</institution>
-            <creation-date>2010-10-26</creation-date>
-            <url>www.connectome.ch</url>
-            <description format="plaintext">First connectome object created with the tutorial.</description>
-        </connectome-meta>
-        <connectome-network dtype="data" name="my1stCNetwork" fileformat="GraphML">
-            <metadata>
-                <data key="Resolution">83</data>
-            </metadata>
-            <description format="plaintext">This is my first CNetwork created for the tutorial</description>
-        </connectome-network>
+     <connectome-meta version="2.0">
+      <generator>cfflib</generator>
+      <author>Connectome Tutorial</author>
+      <institution>EPFL</institution>
+      <creation-date>2010-10-26</creation-date>
+      <name>my_first_connectome</name>
+      <url>www.connectome.ch</url>
+      <description format="plaintext">First connectome object created with the tutorial.</description>
+     </connectome-meta>
+     <connectome-network src="CNetwork/my_first_cnetwork.gpickle" dtype="AttributeNetwork" name="my_first_cnetwork" fileformat="NXGPickle">
+      <metadata>
+       <data key="sd">1234</data>
+      </metadata>
+      <description format="plaintext">A first CNetwork created with the tutorial</description>
+     </connectome-network>
+     <connectome-network src="CNetwork/my_graphml_network.graphml" dtype="AttributeNetwork" name="my_graphml_network" fileformat="GraphML"/>
     </connectome>
     
-    
+Now you can see there are two new blocks with the tag *connectome-network* which are the added CNetwork with the given attributes. The first one is the CNetwork added from the NetworkX object and contains the metadata and the description. The second one is the one created from the GraphML file.
     
     
 
