@@ -419,7 +419,7 @@
     </xsd:annotation>
     </xsd:attribute>
     
-    <xsd:attribute name="dtype" type="surfaceEnumDType">
+    <xsd:attribute default="Surfaceset" name="dtype" type="surfaceEnumDType">
     <xsd:annotation xml:lang="en">
       <xsd:documentation>
       What type of surface does the Gifti file contain:
@@ -495,7 +495,7 @@
       <xsd:documentation>
       The Nifti file contains information about the coordinate system used.
       Set type of volume the Nifti file contains:
-      - type="segmentation"
+      - type="Segmentation"
       The Nifti file contains a single volume where the voxel values are integers,
       representing a segmented Region of Interest. If this volume is referenced by
       a connectome-network, its nodes dn_intensityvalue attribute may match these
@@ -510,7 +510,7 @@
       The voxel values represent a proton-density weighted signal.
       - type="fMRI"
       The Nifti file contains functional MRI time series data.
-      - type="probabilitymap"
+      - type="Probabilitymap"
       Voxel values are in the range [0,1]. Can stand for tissue probability maps.
       - type="MD"
       Diffusion-related signal. Stands for mean diffusivity.
