@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 #
-# Generated Thu Dec  2 16:13:24 2010 by generateDS.py version 2.1a.
+# Generated Fri Dec 17 12:21:52 2010 by generateDS.py version 2.1a.
 #
 
 import sys
@@ -79,17 +79,10 @@ supermod.connectome.subclass = connectome
 
 
 class CMetadata(supermod.CMetadata):
-    def __init__(self, version=None, generator=None, author=None, institution=None, creation_date=None, modification_date=None, name=None, species=None, legal_notice=None, reference=None, email=None, url=None, description=None, metadata=None):
-        super(CMetadata, self).__init__(version, generator, author, institution, creation_date, modification_date, name, species, legal_notice, reference, email, url, description, metadata, )
+    def __init__(self, version=None, generator=None, name=None, author=None, email=None, institution=None, creation_date=None, modification_date=None, species=None, legal_notice=None, reference=None, url=None, description=None, metadata=None):
+        super(CMetadata, self).__init__(version, generator, name, author, email, institution, creation_date, modification_date, species, legal_notice, reference, url, description, metadata, )
 supermod.CMetadata.subclass = CMetadata
 # end class CMetadata
-
-
-class description(supermod.description):
-    def __init__(self, format=None, valueOf_=None):
-        super(description, self).__init__(format, valueOf_, )
-supermod.description.subclass = description
-# end class description
 
 
 class CNetwork(supermod.CNetwork):
@@ -100,7 +93,7 @@ supermod.CNetwork.subclass = CNetwork
 
 
 class CSurface(supermod.CSurface):
-    def __init__(self, src=None, dtype=None, name=None, fileformat=None, description=None, metadata=None):
+    def __init__(self, src=None, dtype='Surfaceset', name=None, fileformat=None, description=None, metadata=None):
         super(CSurface, self).__init__(src, dtype, name, fileformat, description, metadata, )
 supermod.CSurface.subclass = CSurface
 # end class CSurface

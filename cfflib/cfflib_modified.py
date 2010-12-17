@@ -549,6 +549,19 @@ class CBaseClass(object):
 #    def __repr__(self):
 #        pass
         # XXX: give a representation of the object. for print
+
+    # Metadata
+    def get_metadata_as_dict(self): 
+        """Return the metadata as a dictionary"""
+        return self.metadata.get_as_dictionary()
+    
+    def update_metadata(self, metadata): 
+        """Set the metadata with a dictionary"""
+        if self.metadata is None:
+            self.metadata
+            self.metadata = Metadata()
+        self.metadata.set_with_dictionary(metadata)
+        
         
     def get_type(self):
         """ Returns the class name """
@@ -598,18 +611,7 @@ class CNetwork(supermod.CNetwork, CBaseClass):
             raise Exception('The description has to be set first.')      
     def set_description(self, value):
         self.description = description('plaintext', value)
-    
-    # Metadata
-    def get_metadata(self): 
-        """Return the metadata as a dictionary"""
-        return self.metadata.get_as_dictionary()
-    def set_metadata(self, metadata): 
-        """Set the metadata with a dictionary"""
-        if self.metadata is None:
-            self.metadata
-            self.metadata = Metadata()
-        self.metadata.set_with_dictionary(metadata)
-    
+        
     def get_unique_relpath(self):
         """ Return a unique relative path for this element """
         
@@ -744,17 +746,7 @@ class CSurface(supermod.CSurface, CBaseClass):
             raise Exception('The description has to be set first.')      
     def set_description(self, value):
         self.description = description('plaintext', value)
-    
-    # Metadata
-    def get_metadata(self): 
-        """Return the metadata as a dictionary"""
-        return self.metadata.get_as_dictionary()
-    def set_metadata(self, metadata): 
-        """Set the metadata with a dictionary"""
-        if self.metadata is None:
-            self.metadata
-            self.metadata = Metadata()
-        self.metadata.set_with_dictionary(metadata)
+
     
     # Create from a Gifti file
     @classmethod
@@ -847,18 +839,7 @@ class CVolume(supermod.CVolume, CBaseClass):
             raise Exception('The description has to be set first.')    
     def set_description(self, value):
         self.description = description('plaintext', value)
-    
-    # Metadata
-    def get_metadata(self): 
-        """Return the metadata as a dictionary"""
-        return self.metadata.get_as_dictionary()
-    def set_metadata(self, metadata): 
-        """Set the metadata with a dictionary"""
-        if self.metadata is None:
-            self.metadata
-            self.metadata = Metadata()
-        self.metadata.set_with_dictionary(metadata)
-    
+       
     # Create a CVolume from a Nifti1 file
     @classmethod
     def create_from_nifti(cls, name, nii_filename, dtype=None):
