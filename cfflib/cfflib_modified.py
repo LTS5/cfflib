@@ -146,20 +146,13 @@ class connectome(supermod.connectome):
         connectome, get_all
     
         """         
-        n = get_normalised_name(name)
+        #n = self.get_normalised_name(name)
         all_cobj = self.get_all() 
         
-        ret = []
-        
         for ele in all_cobj:
-            if n == ele.name:
-                ret.append(ele)
-                
-        if len(ret) > 1:
-            warnings.warn('More than one element found. Non-unique name could lead to problems!')
-            
-        return ret
-            
+            if name == ele.name:
+                return ele
+        return None            
 
     def check_file_in_cff(self):
         """Checks if the files described in the meta.cml are contained in the connectome zip file."""  
