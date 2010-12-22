@@ -133,8 +133,8 @@ class connectome(supermod.connectome):
         
         Parameters
         ----------
-        name : string
-            name of the wanted object(s)
+        name : string or list of strings
+            name(s) of the requested object(s)
             
         Examples
         --------
@@ -145,14 +145,21 @@ class connectome(supermod.connectome):
         --------
         connectome, get_all
     
-        """         
-        #n = self.get_normalised_name(name)
-        all_cobj = self.get_all() 
-        
-        for ele in all_cobj:
-            if name == ele.name:
-                return ele
-        return None            
+        """        
+        if isinstance(name, list):
+            ret = []
+            all_cobj = self.get_all()             
+            for ele in all_cobj:
+                if ele.name in name:
+                    ret.append(ele)
+            return ret
+        else: 
+            #n = self.get_normalised_name(name)
+            all_cobj = self.get_all()             
+            for ele in all_cobj:
+                if name == ele.name:
+                    return ele
+            return None            
 
     def check_file_in_cff(self):
         """Checks if the files described in the meta.cml are contained in the connectome zip file."""  
