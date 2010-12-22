@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 #
-# Generated Fri Dec 17 12:21:52 2010 by generateDS.py version 2.1a.
+# Generated Wed Dec 22 15:53:22 2010 by generateDS.py version 2.1a.
 #
 
 import sys
@@ -1572,10 +1572,11 @@ class CScript(GeneratedsSuper):
     "Bash", "Matlab", or "Other"."""
     subclass = None
     superclass = None
-    def __init__(self, src=None, type_='Python', name=None, description=None, metadata=None):
+    def __init__(self, src=None, dtype='Python', name=None, fileformat='UTF-8', description=None, metadata=None):
         self.src = _cast(None, src)
-        self.type_ = _cast(None, type_)
+        self.dtype = _cast(None, dtype)
         self.name = _cast(None, name)
+        self.fileformat = _cast(None, fileformat)
         self.description = description
         self.metadata = metadata
     def factory(*args_, **kwargs_):
@@ -1590,13 +1591,18 @@ class CScript(GeneratedsSuper):
     def set_metadata(self, metadata): self.metadata = metadata
     def get_src(self): return self.src
     def set_src(self, src): self.src = src
-    def get_type(self): return self.type_
-    def set_type(self, type_): self.type_ = type_
+    def get_dtype(self): return self.dtype
+    def set_dtype(self, dtype): self.dtype = dtype
     def validate_scriptEnumType(self, value):
         # Validate type scriptEnumType, a restriction on xsd:string.
         pass
     def get_name(self): return self.name
     def set_name(self, name): self.name = name
+    def get_fileformat(self): return self.fileformat
+    def set_fileformat(self, fileformat): self.fileformat = fileformat
+    def validate_scriptFileFormat(self, value):
+        # Validate type scriptFileFormat, a restriction on xsd:string.
+        pass
     def export(self, outfile, level, namespace_='', name_='CScript', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
@@ -1611,10 +1617,12 @@ class CScript(GeneratedsSuper):
     def exportAttributes(self, outfile, level, namespace_='', name_='CScript'):
         if self.src is not None:
             outfile.write(' src=%s' % (self.format_string(quote_attrib(self.src).encode(ExternalEncoding), input_name='src'), ))
-        if self.type_ is not None:
-            outfile.write(' type=%s' % (quote_attrib(self.type_), ))
+        if self.dtype is not None:
+            outfile.write(' dtype=%s' % (quote_attrib(self.dtype), ))
         if self.name is not None:
             outfile.write(' name=%s' % (self.format_string(quote_attrib(self.name).encode(ExternalEncoding), input_name='name'), ))
+        if self.fileformat is not None:
+            outfile.write(' fileformat=%s' % (quote_attrib(self.fileformat), ))
     def exportChildren(self, outfile, level, namespace_='', name_='CScript'):
         if self.description is not None:
             showIndent(outfile, level)
@@ -1638,12 +1646,15 @@ class CScript(GeneratedsSuper):
         if self.src is not None:
             showIndent(outfile, level)
             outfile.write('src = "%s",\n' % (self.src,))
-        if self.type_ is not None:
+        if self.dtype is not None:
             showIndent(outfile, level)
-            outfile.write('type_ = "%s",\n' % (self.type_,))
+            outfile.write('dtype = "%s",\n' % (self.dtype,))
         if self.name is not None:
             showIndent(outfile, level)
             outfile.write('name = "%s",\n' % (self.name,))
+        if self.fileformat is not None:
+            showIndent(outfile, level)
+            outfile.write('fileformat = "%s",\n' % (self.fileformat,))
     def exportLiteralChildren(self, outfile, level, name_):
         if self.description is not None:
             showIndent(outfile, level)
@@ -1663,13 +1674,17 @@ class CScript(GeneratedsSuper):
         value = attrs.get('src')
         if value is not None:
             self.src = value
-        value = attrs.get('type')
+        value = attrs.get('dtype')
         if value is not None:
-            self.type_ = value
-            self.validate_scriptEnumType(self.type_)    # validate type scriptEnumType
+            self.dtype = value
+            self.validate_scriptEnumType(self.dtype)    # validate type scriptEnumType
         value = attrs.get('name')
         if value is not None:
             self.name = value
+        value = attrs.get('fileformat')
+        if value is not None:
+            self.fileformat = value
+            self.validate_scriptFileFormat(self.fileformat)    # validate type scriptFileFormat
     def buildChildren(self, child_, nodeName_):
         if nodeName_ == 'description':
             description_ = child_.text

@@ -718,7 +718,10 @@
     </xsd:annotation>
     </xsd:attribute>
 
-    <xsd:attribute default="Python" name="type" type="scriptEnumType">
+    <xsd:attribute default="UTF-8" name="fileformat" type="scriptFileFormat">
+    </xsd:attribute>
+       
+    <xsd:attribute default="Python" name="dtype" type="scriptEnumType">
     <xsd:annotation xml:lang="en">
        <xsd:documentation>
 	What kind of script. Use one of "Python" (default), "Bash", "Matlab",

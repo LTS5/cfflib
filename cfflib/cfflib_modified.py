@@ -949,23 +949,52 @@ supermod.CData.subclass = CData
 
 
 class CScript(supermod.CScript, CBaseClass):
-    def __init__(self, src=None, type_='Python', name=None, description=None, metadata=None):
-        super(CScript, self).__init__(src, type_, name, description, metadata, )
-                
+    def __init__(self, src=None, dtype='Python', name=None, fileformat='UTF-8', description=None, metadata=None):
+        super(CScript, self).__init__(src, dtype, name, fileformat, description, metadata, )
+        
     def get_unique_relpath(self):
         """ Return a unique relative path for this element """
         
-        if self.type == 'Python':
+        if self.dtype == 'Python':
             fend = '.py'
-        if self.type == 'Bash':
+        elif self.dtype == 'Bash':
             fend = '.sh'
-        if self.tyoe == 'Matlab':
+        elif self.dtype == 'Matlab':
             fend = '.m'
-        elif self.fileformat == 'Other':
-            fend = ''
+        else:
+            fend = '.txt'
             
-        return unify('CScript', self.name + fname)
+        return unify('CScript', self.name + fend)
 
+    @classmethod
+    def create_from_file(cls, name, filename, dtype= 'Python', fileformat = 'UTF-8'):
+        """ Return a CScript object from a given script/text file
+        
+        Parameters
+        ----------
+        name : string,
+            the unique name of the CScript
+        filename : string,
+            the absolute to the filename of the script/text file
+        dtype : string, optional,
+            the datatype of the new CScript
+        fileformat : string, optional
+            the file format of the file, usually UTF-8
+        
+        Returns
+        -------
+        cscr : CScript
+        
+        """
+        cscr            = CScript(name=name) 
+        cscr.tmpsrc     = op.abspath(filename)
+        cscr.fileformat = fileformat
+        cscr.dtype      = dtype
+        # not load it by default!
+        # cscr.data       = open(filename, 'r')
+        cscr.src        = cscr.get_unique_relpath()
+        return cscr
+    
 supermod.CScript.subclass = CScript
 # end class CScript
 

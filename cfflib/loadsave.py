@@ -167,11 +167,23 @@ def save_to_cff(connectome, filename):
                 # if now fname
                 if not hasattr(connectome, 'fname'):
                     connectome.fname = op.abspath(filename)
-            
-                # save the element
-                ele.save()
+                
+                if hasattr(ele, 'tmpsrc'):
+                    try:
+                        ele.save()
+                    except:
+                        pass
+                    ftmp = ele.tmpsrc
+                else:
+                    # save the element
+                    try:
+                        ele.save()
+                    except:
+                        # e.g. there is nothing to save exception
+                        ftmp = op.join(op.dirname(connectome.fname), wt)
+
                 # use the saved location
-                ftmp = ele.tmpsrc
+#                ftmp = ele.tmpsrc
                 
                 # create path coming from filesystem
                 #ftmp = op.join(op.dirname(connectome.fname), wt)

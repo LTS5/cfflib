@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 #
-# Generated Fri Dec 17 12:21:52 2010 by generateDS.py version 2.1a.
+# Generated Wed Dec 22 15:53:22 2010 by generateDS.py version 2.1a.
 #
 
 import sys
@@ -128,8 +128,8 @@ supermod.CData.subclass = CData
 
 
 class CScript(supermod.CScript):
-    def __init__(self, src=None, type_='Python', name=None, description=None, metadata=None):
-        super(CScript, self).__init__(src, type_, name, description, metadata, )
+    def __init__(self, src=None, dtype='Python', name=None, fileformat='UTF-8', description=None, metadata=None):
+        super(CScript, self).__init__(src, dtype, name, fileformat, description, metadata, )
 supermod.CScript.subclass = CScript
 # end class CScript
 
