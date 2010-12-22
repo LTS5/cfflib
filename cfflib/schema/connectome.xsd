@@ -359,6 +359,8 @@
 	or timeseries on nodes and edges.
 	- dtype="HierarchicalNetwork"
 	Network with hierarchical structure.
+  - dtype="StructuralNetwork"
+  A structural network e.g. derived from Diffusion MRI
   - dtype="FunctionalNetwork"
   Networks derived from functional measures such as EEG/MEG/fMRI/PET etc.
   - dtype="EffectiveNetwork"
@@ -581,6 +583,8 @@
     </xsd:annotation>
     </xsd:attribute>
     
+    <xsd:attribute name="dtype" type="xsd:string"></xsd:attribute>
+    
 </xsd:complexType>
 
 <xsd:complexType name="CTimeserie">
@@ -629,6 +633,8 @@
     </xsd:annotation>
     </xsd:attribute>
     
+    <xsd:attribute name="dtype" type="xsd:string"></xsd:attribute>
+    
 </xsd:complexType>
 
 
@@ -673,10 +679,11 @@
     <xsd:annotation xml:lang="en">
        <xsd:documentation>
 	Use one of 'NumPy', 'HDF5', 'XML', 'Other'
-	
       </xsd:documentation>
     </xsd:annotation>
     </xsd:attribute>
+    
+    <xsd:attribute name="dtype" type="xsd:string"></xsd:attribute>
     
 </xsd:complexType>
 
