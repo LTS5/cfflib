@@ -145,14 +145,16 @@ class connectome(supermod.connectome):
         --------
         connectome, get_all
     
-        """         
-        #n = self.get_normalised_name(name)
+        """   
+        n = self.get_normed_name(name) 
+        print n     
         all_cobj = self.get_all() 
-        
+        obj_list = []
         for ele in all_cobj:
-            if name == ele.name:
-                return ele
-        return None            
+            print self.get_normed_name(ele.name)
+            if n ==self.get_normed_name(ele.name):
+                obj_list.append(ele)
+        return obj_list            
 
     def check_file_in_cff(self):
         """Checks if the files described in the meta.cml are contained in the connectome zip file."""  
@@ -195,11 +197,11 @@ class connectome(supermod.connectome):
         --------
         check_names_unique, connectome
         """
-        n = self.get_normalised_name(name)
+        n = self.get_normed_name(name)
         all_cobj = self.get_all()
         namelist = []
         for ele in all_cobj:
-            namelist.append(self.get_normalised_name(ele.name))
+            namelist.append(self.get_normed_name(ele.name))
         if n in namelist:
             return False
         else:
@@ -212,13 +214,13 @@ class connectome(supermod.connectome):
         n = n.replace(' ', '_')
         return n
         
-    def get_normalised_name(self, name):
-        """Return a normalised name, without space and in lower case
+    def get_normed_name(self, name):
+        """Return a normed name, without space and in lower case
         
         Parameters
         ----------
         name : string,
-            the name to be normalised
+            the name to be normed
             
         Examples
         --------
@@ -484,20 +486,22 @@ class CMetadata(supermod.CMetadata):
         """
         super(CMetadata, self).__init__(version, generator, author, institution, creation_date, modification_date, name, species, legal_notice, reference, email, url, description, metadata, )
 
+        self.name = name
+
     # Description object hide as a property
-    @property
-    def get_description(self):
-        if hasattr(self.description, 'valueOf_'):
-            return self.description.get_valueOf_()
-        else:
-            raise Exception('The description has to be set first.')
-    def get_description_format(self):
-        if hasattr(self.description, 'format'):
-            return self.description.format
-        else:
-            raise Exception('The description has to be set first.')
-    def set_description(self, value):
-        self.description = description('plaintext', value)
+#    @property
+#    def get_description(self):
+#        if hasattr(self.description, 'valueOf_'):
+#            return self.description.get_valueOf_()
+#        else:
+#            raise Exception('The description has to be set first.')
+#    def get_description_format(self):
+#        if hasattr(self.description, 'format'):
+#            return self.description.format
+#        else:
+#            raise Exception('The description has to be set first.')
+#    def set_description(self, value):
+#        self.description = description('plaintext', value)
         
 supermod.CMetadata.subclass = CMetadata
 # end class CMetadata
@@ -573,9 +577,9 @@ class CNetwork(supermod.CNetwork, CBaseClass):
         name : 'mynetwork',
             the network unique name
         dtype : 'AttributeNetwork',
-            the data type of the network. It could be: "AttributeNetwork", "DynamicNetwork", "HierarchicalNetwork" or "Other".
+            the data type of the network. It can be: "AttributeNetwork", "DynamicNetwork", "HierarchicalNetwork" or "Other".
         fileformat : 'GraphML',
-            the fileformat of the network. It could be: "GEXF", "GraphML", "NXGPickle" or "Other".
+            the fileformat of the network. It can be: "GEXF", "GraphML", "NXGPickle" or "Other".
         src : string, optional,
             the source file of the network
         description : plaintext, optional,
@@ -591,19 +595,19 @@ class CNetwork(supermod.CNetwork, CBaseClass):
         super(CNetwork, self).__init__(src, dtype, name, fileformat, metadata, description, )
 
     # Description object hide as a property
-    @property
-    def get_description(self):
-        if hasattr(self.description, 'valueOf_'):
-            return self.description.get_valueOf_()
-        else:
-            raise Exception('The description has to be set first.')
-    def get_description_format(self):
-        if hasattr(self.description, 'format'):
-            return self.description.format
-        else:
-            raise Exception('The description has to be set first.')      
-    def set_description(self, value):
-        self.description = description('plaintext', value)
+#    @property
+#    def get_description(self):
+#        if hasattr(self.description, 'valueOf_'):
+#            return self.description.get_valueOf_()
+#        else:
+#            raise Exception('The description has to be set first.')
+#    def get_description_format(self):
+#        if hasattr(self.description, 'format'):
+#            return self.description.format
+#        else:
+#            raise Exception('The description has to be set first.')      
+#    def set_description(self, value):
+#        self.description = description('plaintext', value)
         
     def get_unique_relpath(self):
         """ Return a unique relative path for this element """
@@ -698,7 +702,7 @@ class CSurface(supermod.CSurface, CBaseClass):
         name : 'mysurface'
             the unique surface name
         dtype : 'label',
-            the type of data that the Gifti file contain. It could be (for Gifti only): 'label', 'surfaceset', 'surfaceset+label' or 'other'.
+            the type of data that the Gifti file contain. It can be (for Gifti only): 'Labeling', 'Surfaceset', 'Surfaceset+Labeling' or 'Other'.
         fileformat : 'gifti',
             the fileformat of the surface, use default 'gifti' to use the only supported Gifti format by cfflib, use 'Other' for others format and custom support.
         src : string, optional,
@@ -718,7 +722,7 @@ class CSurface(supermod.CSurface, CBaseClass):
     def get_unique_relpath(self):
         """ Return a unique relative path for this element """
 
-        if self.fileformat == 'Gifti':
+        if self.fileformat == 'gifti':
             fend = '.gii'
         elif self.fileformat == 'Other':
             fend = ''
@@ -726,19 +730,19 @@ class CSurface(supermod.CSurface, CBaseClass):
         return unify('CSurface', self.name + fend)
     
     # Description object hide as a property
-    @property
-    def get_description(self):
-        if hasattr(self.description, 'valueOf_'):
-            return self.description.get_valueOf_()
-        else:
-            raise Exception('The description has to be set first.')
-    def get_description_format(self):
-        if hasattr(self.description, 'format'):
-            return self.description.format
-        else:
-            raise Exception('The description has to be set first.')      
-    def set_description(self, value):
-        self.description = description('plaintext', value)
+#    @property
+#    def get_description(self):
+#        if hasattr(self.description, 'valueOf_'):
+#            return self.description.get_valueOf_()
+#        else:
+#            raise Exception('The description has to be set first.')
+#    def get_description_format(self):
+#        if hasattr(self.description, 'format'):
+#            return self.description.format
+#        else:
+#            raise Exception('The description has to be set first.')      
+#    def set_description(self, value):
+#        self.description = description('plaintext', value)
 
     
     # Create from a Gifti file
@@ -785,9 +789,9 @@ class CVolume(supermod.CVolume, CBaseClass):
         name : 'myvolume',
             the unique name of the volume
         dtype : string, optional,
-            the data type of the volume. It could be: 'T1-weighted', 'T2-weighted', 'PD-weighted', 'fMRI', 'MD', 'FA', 'LD', 'TD', 'FLAIR', 'MRA' or 'MRS depending on your dataset.
+            the data type of the volume. It can be: 'Segmentation', 'T1-weighted', 'T2-weighted', 'PD-weighted', 'fMRI', 'MD', 'FA', 'LD', 'TD', 'FLAIR', 'MRA' or 'MRS depending on your dataset.
         fileformat : 'Nifti1',
-            the fileformat of the volume. It could be: 'Nifti1', 'ANALYZE', 'DICOM' ... But only 'Nifti1' is supported, its compressed version '.nii.gz' too.
+            the fileformat of the volume. Only 'Nifti1' is supported, its compressed version '.nii.gz' too.
         src : string, optional,
             the source file of the volume
         description : string, optional,
@@ -819,19 +823,19 @@ class CVolume(supermod.CVolume, CBaseClass):
         return unify('CVolume', self.name + fend)
     
     # Description object hide as a property
-    @property
-    def get_description(self):
-        if hasattr(self.description, 'valueOf_'):
-            return self.description.get_valueOf_()
-        else:
-            raise Exception('The description has to be set first.')
-    def get_description_format(self):
-        if hasattr(self.description, 'format'):
-            return self.description.format
-        else:
-            raise Exception('The description has to be set first.')    
-    def set_description(self, value):
-        self.description = description('plaintext', value)
+#    @property
+#    def get_description(self):
+#        if hasattr(self.description, 'valueOf_'):
+#            return self.description.get_valueOf_()
+#        else:
+#            raise Exception('The description has to be set first.')
+#    def get_description_format(self):
+#        if hasattr(self.description, 'format'):
+#            return self.description.format
+#        else:
+#            raise Exception('The description has to be set first.')    
+#    def set_description(self, value):
+#        self.description = description('plaintext', value)
        
     # Create a CVolume from a Nifti1 file
     @classmethod
@@ -1018,6 +1022,8 @@ supermod.CImagestack.subclass = CImagestack
 class Metadata(supermod.Metadata):
     def __init__(self, data=None):
         super(Metadata, self).__init__(data, )  
+        
+    # get the Metadata as a dictionary
     def get_as_dictionary(self):
         """Return the metadata as a dictionary"""
         dat = self.get_data()
@@ -1026,6 +1032,7 @@ class Metadata(supermod.Metadata):
             ret[ele.key] = ele.valueOf_
         return ret
     
+    # Set the Metadata with a dictionary
     def set_with_dictionary(self, dictionary):
         """Set the metadata with a dictionary"""
         dat = self.get_data()
@@ -1039,6 +1046,7 @@ class Metadata(supermod.Metadata):
                     test = True
             if not test:
                 self.data.append(data(str(k),str(dictionary[k])))  
+                
 supermod.Metadata.subclass = Metadata
 # end class Metadata
 
