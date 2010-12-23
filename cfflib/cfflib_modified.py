@@ -342,6 +342,8 @@ class connectome(supermod.connectome):
         n = CNetwork(name)
         n.set_with_nxgraph(nxGraph, dtype, fileformat)
         self.add_connectome_network(n)
+        # need to update the reference to the parent connectome file
+        self._update_parent_reference()
     
     def add_connectome_network_from_graphml(self, name, graphML):
         """Add a new CNetwork from the given GraphML file to the connectome object.
@@ -369,7 +371,21 @@ class connectome(supermod.connectome):
         
         n = CNetwork.create_from_graphml(nName, graphML)
         self.add_connectome_network(n)      
-    
+        # need to update the reference to the parent connectome file
+        self._update_parent_reference()
+
+    def add_connectome_script_from_file(self, name, filename, dtype = 'Python', fileformat = 'UTF-8'):
+        """ Add a CScript from a file """
+        
+        if not self.is_name_unique(name):
+            raise Exception('The name is not unique.')
+        
+        s = CScript.create_from_file(name, filename, dtype= dtype, fileformat = dtype)
+        self.add_connectome_script(s)
+        # need to update the reference to the parent connectome file
+        self._update_parent_reference()
+
+        
     def add_connectome_network(self, cnet):
         """Add the given CNetwork to the connectome object.
         
@@ -393,6 +409,10 @@ class connectome(supermod.connectome):
             raise Exception('The name is not unique.')
             
         self.connectome_network.append(cnet)
+        
+        # need to update the reference to the parent connectome file
+        self._update_parent_reference()
+
         
     # CVolume
     def add_connectome_volume(self, cvol):
@@ -686,8 +706,11 @@ class CNetwork(supermod.CNetwork, CBaseClass):
         self.fileformat = fileformat
         self.data       = nxGraph
         import tempfile
+        # create a path to the temporary pickled file
         self.tmpsrc = tempfile.mkstemp(suffix = '.gpickle')[1]
         self.src    = self.get_unique_relpath()
+        # save the object for the first time
+        self.save()
     
 supermod.CNetwork.subclass = CNetwork
 # end class CNetwork
