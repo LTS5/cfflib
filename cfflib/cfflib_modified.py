@@ -439,6 +439,31 @@ class connectome(supermod.connectome):
         
         self.connectome_surface.append(csurf)
     
+    # CTrack
+    def add_connectome_track(self, ctrack):
+        """Add the given CTrack to the connectome object.
+        
+        Parameters
+        ----------
+        ctrack : CTrack,
+            the connectome surface to add to the connectome, the CTrack name have to be unique.
+            
+        See also
+        --------
+        CTrack, connectome
+            
+        """
+              
+        # Check if the name is set     
+        if ctrack.name is None or ctrack.name == '':
+            raise Exception('A name is required.')
+        
+        # Check if the name is unique
+        if not self.is_name_unique(ctrack.name):
+            raise Exception('The name is not unique.')
+        
+        self.connectome_surface.append(ctrack)
+    
 supermod.connectome.subclass = connectome
 # end class connectome
 
