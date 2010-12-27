@@ -512,21 +512,6 @@ class CMetadata(supermod.CMetadata):
         super(CMetadata, self).__init__(version, generator, author, institution, creation_date, modification_date, name, species, legal_notice, reference, email, url, description, metadata, )
 
         self.name = name
-
-    # Description object hide as a property
-#    @property
-#    def get_description(self):
-#        if hasattr(self.description, 'valueOf_'):
-#            return self.description.get_valueOf_()
-#        else:
-#            raise Exception('The description has to be set first.')
-#    def get_description_format(self):
-#        if hasattr(self.description, 'format'):
-#            return self.description.format
-#        else:
-#            raise Exception('The description has to be set first.')
-#    def set_description(self, value):
-#        self.description = description('plaintext', value)
         
 supermod.CMetadata.subclass = CMetadata
 # end class CMetadata
@@ -567,10 +552,6 @@ class CBaseClass(object):
             print "Updated storage path of file: %s" % rval
         else:
             raise Exception('There is nothing to save.')
-        
-#    def __repr__(self):
-#        pass
-        # XXX: give a representation of the object. for print
 
     # Metadata
     def get_metadata_as_dict(self): 
@@ -618,21 +599,6 @@ class CNetwork(supermod.CNetwork, CBaseClass):
     
         """
         super(CNetwork, self).__init__(src, dtype, name, fileformat, metadata, description, )
-
-    # Description object hide as a property
-#    @property
-#    def get_description(self):
-#        if hasattr(self.description, 'valueOf_'):
-#            return self.description.get_valueOf_()
-#        else:
-#            raise Exception('The description has to be set first.')
-#    def get_description_format(self):
-#        if hasattr(self.description, 'format'):
-#            return self.description.format
-#        else:
-#            raise Exception('The description has to be set first.')      
-#    def set_description(self, value):
-#        self.description = description('plaintext', value)
         
     def get_unique_relpath(self):
         """ Return a unique relative path for this element """
@@ -754,22 +720,6 @@ class CSurface(supermod.CSurface, CBaseClass):
             
         return unify('CSurface', self.name + fend)
     
-    # Description object hide as a property
-#    @property
-#    def get_description(self):
-#        if hasattr(self.description, 'valueOf_'):
-#            return self.description.get_valueOf_()
-#        else:
-#            raise Exception('The description has to be set first.')
-#    def get_description_format(self):
-#        if hasattr(self.description, 'format'):
-#            return self.description.format
-#        else:
-#            raise Exception('The description has to be set first.')      
-#    def set_description(self, value):
-#        self.description = description('plaintext', value)
-
-    
     # Create from a Gifti file
     @classmethod
     def create_from_gifti(cls, name, gii_filename, dtype='label'):
@@ -829,7 +779,6 @@ class CVolume(supermod.CVolume, CBaseClass):
         Metadata, connectome
         """
         super(CVolume, self).__init__(src, dtype, name, fileformat, description, metadata, )
-#        self.src = self.get_unique_relpath()
                   
     def get_unique_relpath(self):
         """ Return a unique relative path for this element """
@@ -846,21 +795,6 @@ class CVolume(supermod.CVolume, CBaseClass):
             fend = ''
             
         return unify('CVolume', self.name + fend)
-    
-    # Description object hide as a property
-#    @property
-#    def get_description(self):
-#        if hasattr(self.description, 'valueOf_'):
-#            return self.description.get_valueOf_()
-#        else:
-#            raise Exception('The description has to be set first.')
-#    def get_description_format(self):
-#        if hasattr(self.description, 'format'):
-#            return self.description.format
-#        else:
-#            raise Exception('The description has to be set first.')    
-#    def set_description(self, value):
-#        self.description = description('plaintext', value)
        
     # Create a CVolume from a Nifti1 file
     @classmethod
@@ -957,7 +891,28 @@ supermod.CTrack.subclass = CTrack
 
 
 class CTimeserie(supermod.CTimeserie, CBaseClass):
-    def __init__(self, src=None, name=None, fileformat='HDF5', description=None, metadata=None):
+    """Connectome timeserie object"""
+    
+    def __init__(self, name='mytimeserie', fileformat='HDF5', src=None, description=None, metadata=None):
+        """Create a connectome timeserie object
+        
+        Parameters
+        ----------
+        name : 'mytimeserie',
+            the unique name of the timeserie
+        fileformat : 'HDF5',
+            the fileformat of the timeserie, only 'HDF5' is supported
+        src : string, optional,
+            the source file of the timeserie
+        description : string, optional,
+            a description of the timeserie
+        metadata : dictionary, optional,
+            some metadata related to the timeserie
+            
+        See also
+        --------
+        Metadata, connectome 
+        """
         super(CTimeserie, self).__init__(src, name, fileformat, description, metadata, )
                 
     def get_unique_relpath(self):
@@ -975,6 +930,8 @@ supermod.CTimeserie.subclass = CTimeserie
 
 
 class CData(supermod.CData, CBaseClass):
+    """Connectome data object"""
+    
     def __init__(self, src=None, name=None, fileformat=None, description=None, metadata=None):
         super(CData, self).__init__(src, name, fileformat, description, metadata, )
                 
@@ -997,6 +954,8 @@ supermod.CData.subclass = CData
 
 
 class CScript(supermod.CScript, CBaseClass):
+    """Connectome script object"""
+
     def __init__(self, src=None, dtype='Python', name=None, fileformat='UTF-8', description=None, metadata=None):
         super(CScript, self).__init__(src, dtype, name, fileformat, description, metadata, )
         
