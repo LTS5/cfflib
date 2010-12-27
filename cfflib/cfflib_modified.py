@@ -767,7 +767,7 @@ class CSurface(supermod.CSurface, CBaseClass):
         """
         csurf            = CSurface(name) 
         csurf.tmpsrc     = op.abspath(gii_filename)
-        csurf.fileformat = "Gifti"
+        csurf.fileformat = "gifti"
         csurf.dtype      = dtype
         import nibabel.gifti as nig
         csurf.data       = nig.read(gii_filename)
@@ -868,34 +868,29 @@ supermod.CVolume.subclass = CVolume
 # end class CVolume
 
 class CTrack(supermod.CTrack, CBaseClass):
-    """
-        Create a new CTrack object.
-        
-        Parameters
-        ----------
-            name              : string, optional
-                the track name
-            src               : string, optional,
-                the source file of the track
-            fileformat        : string, optional,
-                the fileformat of the track
-            description       : description, optional,
-                a description (key, value) of the CTrack
-            metadata          : Metadata, optional,
-                Metadata object relative to the track
-                    
-        Examples
-        --------
-            Empty
-            >>> myCVol1 = CTrack()
-            Create an empty CTrack object
-            
-        See also
-        --------
-            description, Metadata, connectome
+    """ Connectome track object"""
     
-    """
-    def __init__(self, name=None, src=None, fileformat='TrackVis', description=None, metadata=None):
+    def __init__(self, name='mytrack', fileformat='TrackVis', src=None, description=None, metadata=None):
+        """Create a new CTrack object.
+            
+            Parameters
+            ----------
+            name : 'mytrack', 
+                the unique name of track
+            fileformat : 'TrackVis',
+                the fileformat of the track, only 'TrackVis' is supported
+            src : string, optional,
+                the source file of the track
+            description : string, optional,
+                a description of the track
+            metadata : Metadata, optional,
+                Metadata object relative to the track
+                
+            See also
+            --------
+            Metadata, connectome
+        
+        """
         super(CTrack, self).__init__(src, name, fileformat, description, metadata, )
                         
     def get_unique_relpath(self):
@@ -907,6 +902,30 @@ class CTrack(supermod.CTrack, CBaseClass):
             fend = ''
             
         return unify('CTrack', self.name + fend)
+    
+    # Create a CTrack from a TrackVis file
+    @classmethod
+    def create_from_trackvis(cls, name, trk_filename):
+        """ Return a CTrack object from a given TrackVis filename in your file system
+        
+        Parameters
+        ----------
+        name : string,
+            the unique name of the CTrack
+        trk_filename : string,
+            the filename of the TrackVis file to load
+        
+        Returns
+        -------
+        ctrack : CTrack
+        
+        """
+        ctrack            = CTrack(name) 
+        ctrack.tmpsrc     = op.abspath(trk_filename)
+        ctrack.fileformat = "TrackVis"
+        ctrack.data       = ni.trackvis.read(trk_filename)
+        ctrack.src        = ctrack.get_unique_relpath()
+        return ctrack
     
 supermod.CTrack.subclass = CTrack
 # end class CTrack
