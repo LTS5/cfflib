@@ -509,32 +509,53 @@ class CMetadata(supermod.CMetadata):
         --------
         Metadata, connectome  
         """
-        super(CMetadata, self).__init__(version, generator, author, institution, creation_date, modification_date, name, species, legal_notice, reference, email, url, description, metadata, )
+        super(CMetadata, self).__init__(version = version,
+                                        generator = generator,
+                                        name = name,
+                                        author = author,
+                                        email = email,
+                                        institution = institution,
+                                        creation_date = creation_date,
+                                        modification_date = modification_date,
+                                        species = species,
+                                        legal_notice = legal_notice,
+                                        reference = reference,
+                                        url = url,
+                                        description = description,)
+        if not metadata is None:
+            self.update_metadata(metadata)
 
-    # Description object hide as a property
-    @property
-    def get_description(self):
-        if hasattr(self.description, 'valueOf_'):
-            return self.description.get_valueOf_()
+    def get_metadata_as_dict(self): 
+        """Return the metadata as a dictionary"""
+        if not self.metadata is None:
+            return self.metadata.get_as_dictionary()
         else:
-            raise Exception('The description has to be set first.')
-    def get_description_format(self):
-        if hasattr(self.description, 'format'):
-            return self.description.format
-        else:
-            raise Exception('The description has to be set first.')
-    def set_description(self, value):
-        self.description = description('plaintext', value)
+            return None
+    
+    def update_metadata(self, metadata): 
+        """Set the metadata with a dictionary"""
+        if self.metadata is None:
+            self.metadata = Metadata()
+        self.metadata.set_with_dictionary(metadata)
+        
+#    # Description object hide as a property
+#    @property
+#    def get_description(self):
+#        if hasattr(self.description, 'valueOf_'):
+#            return self.description.get_valueOf_()
+#        else:
+#            raise Exception('The description has to be set first.')
+#    def get_description_format(self):
+#        if hasattr(self.description, 'format'):
+#            return self.description.format
+#        else:
+#            raise Exception('The description has to be set first.')
+#    def set_description(self, value):
+#        self.description = description('plaintext', value)
         
 supermod.CMetadata.subclass = CMetadata
 # end class CMetadata
 
-
-class description(supermod.description):
-    def __init__(self, format=None, value=None):
-        super(description, self).__init__(format, value, )
-supermod.description.subclass = description
-# end class description
 
 
 class CBaseClass(object):
@@ -573,15 +594,16 @@ class CBaseClass(object):
     # Metadata
     def get_metadata_as_dict(self): 
         """Return the metadata as a dictionary"""
-        return self.metadata.get_as_dictionary()
+        if not self.metadata is None:
+            return self.metadata.get_as_dictionary()
+        else:
+            return None
     
     def update_metadata(self, metadata): 
         """Set the metadata with a dictionary"""
         if self.metadata is None:
-            self.metadata
             self.metadata = Metadata()
         self.metadata.set_with_dictionary(metadata)
-        
         
     def get_type(self):
         """ Returns the class name """
