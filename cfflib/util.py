@@ -2,6 +2,7 @@ from zipfile import ZipFile, ZIP_DEFLATED
 from glob import glob
 import os.path as op
 import os
+import json
 
 
 # NetworkX
@@ -127,6 +128,15 @@ def save_data(obj):
                 f = open(tmpfname, 'w')
                 f.write(obj.data)
                 f.close()
+            elif obj.fileformat == "JSON":
+                f = open(tmpfname, 'w')
+                json.dump(obj.data, f)
+                f.close()
+            elif obj.fileformat == "CSV":
+                # write as text
+                f = open(tmpfname, 'w')
+                f.write(obj.data)
+                f.close()
             else:
                 raise NotSupportedFormat("Other", str(obj))
             
@@ -187,6 +197,11 @@ def load_data(obj):
         elif obj.fileformat == "HDF5":
             load = tables.openFile
         elif obj.fileformat == "XML":
+            load = open
+        elif obj.fileformat == "JSON":
+            load = json.load
+        elif obj.fileformat == "CSV":
+            # can use import csv on the returned object
             load = open
         else:
             raise NotSupportedFormat("Other", str(obj))

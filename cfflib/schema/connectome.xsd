@@ -36,6 +36,7 @@
     <xsd:enumeration value="HDF5"/>
     <xsd:enumeration value="XML"/>
     <xsd:enumeration value="JSON"/>
+    <xsd:enumeration value="CSV"/>
     <xsd:enumeration value="Other"/>
   </xsd:restriction>
 </xsd:simpleType>
