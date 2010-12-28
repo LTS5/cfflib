@@ -639,20 +639,6 @@ class CNetwork(supermod.CNetwork, CBaseClass):
         """
         super(CNetwork, self).__init__(src, dtype, name, fileformat, metadata, description, )
 
-    # Description object hide as a property
-    @property
-    def get_description(self):
-        if hasattr(self.description, 'valueOf_'):
-            return self.description.get_valueOf_()
-        else:
-            raise Exception('The description has to be set first.')
-    def get_description_format(self):
-        if hasattr(self.description, 'format'):
-            return self.description.format
-        else:
-            raise Exception('The description has to be set first.')      
-    def set_description(self, value):
-        self.description = description('plaintext', value)
         
     def get_unique_relpath(self):
         """ Return a unique relative path for this element """
