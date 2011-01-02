@@ -235,6 +235,33 @@ The output file should look like (with your paths)::
     
 Now you can see there are two new blocks with the tag *connectome-network* which are the added CNetwork with the given attributes. The first one is the CNetwork added from the NetworkX object and contains the metadata and the description. The second one is the one created from the GraphML file.
     
-    
+Add a volume
+============
 
+To add a volume to your connectome object, you have to use a CVolume object. This object has the following parameters:
 
+    - *name* : **'myvolume'**,
+            the unique name of the volume
+    - *dtype* : string, optional,
+            the data type of the volume. It can be: 'Segmentation', 'T1-weighted', 'T2-weighted', 'PD-weighted', 'fMRI', 'MD', 'FA', 'LD', 'TD', 'FLAIR', 'MRA' or 'MRS depending on your dataset.
+    - *fileformat* : **'Nifti1'**,
+            the fileformat of the volume. Only 'Nifti1' is supported, its compressed version '.nii.gz' too.
+    - *src* : string, optional,
+            the source file of the volume
+    - *description* : string, optional,
+	       A description according to the format attribute syntax.
+    - *metadataDict* : dictionary, optional,
+            More metadata relative to the volume as a dictionary
+
+First create a CVolume from a Nifti file and then add it to the connectome object::
+        
+    cv = CVolume.create_from_nifti('My first volume', 'T1.nii.gz') # Path to the nifti1 file
+    myConnectome.add_connectome_volume(cv)
+       
+Again, you can add some more informations with the description and the metadata::
+
+    cv.set_description('A first CVolume created with the cfflib tutorial')
+    cv.update_metadata({'meta1': 123})        
+        
+        
+        

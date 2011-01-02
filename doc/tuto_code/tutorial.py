@@ -91,4 +91,13 @@ save_to_meta_cml(myConnectome, 'meta2.cml')#'/your/wanted/path/meta.cml')
 save_to_cff(myConnectome, 'myconnectome2.cff')
 
 
+#----------------------------------------------------------------------#
+# Add a  CVolume
+#----------------------------------------------------------------------#
+cv = CVolume.create_from_nifti('My first volume', 'T1.nii.gz') # Path to the nifti1 file
+myConnectome.add_connectome_volume(cv)
+cv.set_description('A first CVolume created with the cfflib tutorial')
+cv.update_metadata({'meta1': 123})      
+#----------------------------------------------------------------------#
+
 
