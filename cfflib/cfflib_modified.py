@@ -820,6 +820,7 @@ class CVolume(supermod.CVolume, CBaseClass):
 supermod.CVolume.subclass = CVolume
 # end class CVolume
 
+
 class CTrack(supermod.CTrack, CBaseClass):
     """ Connectome track object"""
     
