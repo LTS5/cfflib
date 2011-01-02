@@ -11,6 +11,7 @@ from cfflib import *
 #----------------------------------------------------------------------#
 # Create the connectome object
 myConnectome = connectome()
+myConnectome = connectome('1st connectome')
 
 # Check what's inside the object
 myConnectome
@@ -20,7 +21,7 @@ myConnectome.hasContent_()
 
 #----------------------------------------------------------------------#
 # Create the connectome metadata
-myMetadata = CMetadata()
+myMetadata = myConnectome.get_connectome_meta()
 myMetadata.set_name('My first connectome')
 myMetadata.set_author('Connectome Tutorial')
 myMetadata.set_institution('EPFL')
@@ -29,7 +30,7 @@ myMetadata.set_url('www.connectome.ch')
 myMetadata.set_description('First connectome object created with the tutorial.')
 
 # Add the metadata
-myConnectome.set_connectome_meta(myMetadata)
+#myConnectome.set_connectome_meta(myMetadata)
 #----------------------------------------------------------------------#
 
 # Save the connectome to file
@@ -71,18 +72,19 @@ myConnectome.get_connectome_network()[0].set_description('A first CNetwork creat
 
 # From a graphml file 
 # way 1
-my2ndCNetwork = CNetwork.create_from_graphml('network_res83.graphml','My GraphML Network')
+my2ndCNetwork = CNetwork.create_from_graphml('My GraphML Network', 'network_res83.graphml')
 myConnectome.add_connectome_network(my2ndCNetwork)
 
 #way 2
-myConnectome.add_connectome_network_from_graphml('network_res83.graphml','My GraphML Network')
+myConnectome.add_connectome_network_from_graphml('My GraphML Network', 'network_res83.graphml')
 #----------------------------------------------------------------------#
 
 #----------------------------------------------------------------------#
 # Add metadata to an object
 #----------------------------------------------------------------------#
 myCN = myConnectome.get_connectome_network()[0]
-myCN.set_metadata({'sd':1234})
+myCN.update_metadata({'sd':1234})
+myCN.get_metadata_as_dict()
 
 # Try to save again
 save_to_meta_cml(myConnectome, 'meta2.cml')#'/your/wanted/path/meta.cml')

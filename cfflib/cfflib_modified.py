@@ -351,7 +351,7 @@ class connectome(supermod.connectome):
         if not self.is_name_unique(name):
             raise Exception('The name is not unique.')
         
-        n = CNetwork.create_from_graphml(nName, graphML)
+        n = CNetwork.create_from_graphml(name, graphML)
         self.add_connectome_network(n)      
     
     def add_connectome_network(self, cnet):
@@ -673,7 +673,7 @@ supermod.CNetwork.subclass = CNetwork
 class CSurface(supermod.CSurface, CBaseClass):
     """A connectome surface object"""
     
-    def __init__(self, name='mysurface', dtype='label', fileformat='gifti', src=None, description=None, metadataDict=None):
+    def __init__(self, name='mysurface', dtype='label', fileformat='Gifti', src=None, description=None, metadataDict=None):
         """Create a new CSurface object.
         
         Parameters
@@ -682,8 +682,8 @@ class CSurface(supermod.CSurface, CBaseClass):
             the unique surface name
         dtype : 'label',
             the type of data that the Gifti file contain. It can be (for Gifti only): 'Labeling', 'Surfaceset', 'Surfaceset+Labeling' or 'Other'.
-        fileformat : 'gifti',
-            the fileformat of the surface, use default 'gifti' to use the only supported Gifti format by cfflib, use 'Other' for others format and custom support.
+        fileformat : 'Gifti',
+            the fileformat of the surface, use default 'Gifti' to use the only supported Gifti format by cfflib, use 'Other' for others format and custom support.
         src : string, optional,
             the source file of the surface
         description : string, optional,
@@ -704,7 +704,7 @@ class CSurface(supermod.CSurface, CBaseClass):
     def get_unique_relpath(self):
         """ Return a unique relative path for this element """
 
-        if self.fileformat == 'gifti':
+        if self.fileformat == 'Gifti':
             fend = '.gii'
         elif self.fileformat == 'Other':
             fend = ''
@@ -733,7 +733,7 @@ class CSurface(supermod.CSurface, CBaseClass):
         """
         csurf            = CSurface(name) 
         csurf.tmpsrc     = op.abspath(gii_filename)
-        csurf.fileformat = "gifti"
+        csurf.fileformat = "Gifti"
         csurf.dtype      = dtype
         import nibabel.gifti as nig
         csurf.data       = nig.read(gii_filename)
