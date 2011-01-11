@@ -3,7 +3,7 @@ from glob import glob
 import os.path as op
 import os
 import json
-
+import pickle
 
 # NetworkX
 try:
@@ -134,6 +134,10 @@ def save_data(obj):
                 f = open(tmpfname, 'w')
                 json.dump(obj.data, f)
                 f.close()
+            elif obj.fileformat == "Pickle":
+                f = open(tmpfname, 'w')
+                pickle.dump(obj.data, f)
+                f.close()
             elif obj.fileformat == "CSV":
                 # write as text
                 f = open(tmpfname, 'w')
@@ -204,6 +208,8 @@ def load_data(obj):
             load = open
         elif obj.fileformat == "JSON":
             load = json.load
+        elif obj.fileformat == "Pickle":
+            load = pickle.load
         elif obj.fileformat == "CSV":
             # can use import csv on the returned object
             load = open

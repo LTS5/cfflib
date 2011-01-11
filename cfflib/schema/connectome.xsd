@@ -19,7 +19,7 @@
 <xsd:simpleType name="volumeFileFormat">
 	<xsd:restriction base="xsd:string">
 		<xsd:enumeration value="Nifti1"/>
-    <xsd:enumeration value="Other"/>
+        <xsd:enumeration value="Other"/>
 	</xsd:restriction>
 </xsd:simpleType>
 
@@ -37,6 +37,7 @@
     <xsd:enumeration value="XML"/>
     <xsd:enumeration value="JSON"/>
     <xsd:enumeration value="CSV"/>
+    <xsd:enumeration value="Pickle"/>
     <xsd:enumeration value="Other"/>
   </xsd:restriction>
 </xsd:simpleType>
