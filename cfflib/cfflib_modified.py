@@ -79,10 +79,18 @@ ExternalEncoding = 'ascii'
 #
 
 class connectome(supermod.connectome):
-    """The connectome object is the main object of this format. It contains CMetadata, it can contain some CData, CNetwork, CSurface, CTimeserie, CTrack and CVolume. It is possible to store it to a simple CML file or to a complete compressed CFF file with all sources."""
+    """The connectome object is the main object of this format.
+    It contains CMetadata, it can contain some CData, CNetwork,
+    CSurface, CTimeserie, CTrack, CVolume, CScript or CImagestack
+    objects.
+    
+    It is possible to store it to a simple connectome markup .cml file
+    with appropriate relative references to the data files, or to a 
+    compressed (zipped) connectome file with ending .cff containing all
+    source data objects."""
     
     def __init__(self, name=None, connectome_meta=None, connectome_network=None, connectome_surface=None, connectome_volume=None, connectome_track=None, connectome_timeserie=None, connectome_data=None, connectome_script=None, connectome_imagestack=None):
-        """Create a new connectome object.
+        """Create a new connectome object
         
         Parameters
         ----------
@@ -110,14 +118,13 @@ class connectome(supermod.connectome):
                 self.connectome_meta = CMetadata(name)
         
     def get_all(self):
-        """Return all connectome objects mixed as a list.
+        """ Return all connectome objects as a list
                     
         Examples
         --------
-        >> myConnectome.get_all()
-            [<cfflib.cfflib_modified.CNetwork object at 0x2c46b10>,
-            <cfflib.cfflib_modified.CNetwork object at 0x2ca5490>]
-            
+        >>> allcobj = myConnectome.get_all()
+        >>> first_ele = allcobj[0]
+         
         See also
         --------
         connectome, get_by_name
@@ -128,8 +135,55 @@ class connectome(supermod.connectome):
                 self.connectome_timeserie + self.connectome_data + \
                 self.connectome_script + self.connectome_imagestack
     
+    def get_grouping_by_key(self, metadata_key, cobj_type = None, exclude_values = None):
+        """ Specifying the connectome object type and metadata key, a
+        dictionary is returned keyed by the values of the given metadata
+        key.
+        
+        Parameter
+        ---------
+        metadata_key : string
+            The metadata key you want to use for grouping
+        cobj_type : string
+            If you want to confine your result to a particular connectome
+            object type such as 'CNetwork', 'CVolume' etc.
+        exclude_values : list of string
+            If you want to discard particular metadata values
+            in the returned dictionary.
+        
+        Notes
+        -----
+        This function is helpful to retrieve groups of connectome
+        objects for further analysis, e.g. statistical comparison.
+        The metadata works as a kind of "intersubject" grouping
+        criteria. For example you can have a metadata key "sex" with
+        values M, F and unknown. You can exclude the unknown value
+        by setting exclude_values = ['unknown'].
+        
+        If the metadata key does not exists for the connectome
+        object, just skip this object.
+        """
+        rdict = {}
+
+        cobjs = self.get_all()
+        for cob in cobjs:
+            if cobj_type is None or cobj_type in cob.__class__:
+                mdi = cob.get_metadata_as_dict()
+                if not mdi is None and metadata_key in mdi.keys():
+                    if rdict.has_key(mdi[metadata_key]):
+                        rdict[mdi[metadata_key]].append(cob)
+                    else:
+                        rdict[mdi[metadata_key]] = [cob]
+        # eventually, remove not desired values
+        if not exclude_values is None:
+            for k in exclude_values:
+                if rdict.has_key(k):
+                    del rdict[k]
+                
+        return rdict
+    
     def get_by_name(self, name):
-        """Return the list of connectome object(s) that have the given name.
+        """ Return the list of connectome object(s) that have the given name.
         
         Parameters
         ----------
@@ -605,11 +659,6 @@ class CBaseClass(object):
             self.metadata = Metadata()
         self.metadata.set_with_dictionary(metadata)
         
-    def get_type(self):
-        """ Returns the class name """
-        pass
-        # XXX: as single string 
-    
 
 class CNetwork(supermod.CNetwork, CBaseClass):
     """A connectome network object"""

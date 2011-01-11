@@ -112,6 +112,8 @@ def save_data(obj):
                 obj.data.flush()
                 # close the file
                 obj.data.close()
+            elif obj.fileformat == "NumPy":
+                load = np.save(tmpfname, obj.data)
             else:
                 raise NotSupportedFormat("Other", str(obj))
             
@@ -188,6 +190,8 @@ def load_data(obj):
     elif 'CTimeserie' in objrep:
         if obj.fileformat == "HDF5":
             load = tables.openFile
+        elif obj.fileformat == "NumPy":
+            load = np.load 
         else:
             raise NotSupportedFormat("Other", str(obj))
         

@@ -1,21 +1,47 @@
-""" Routines to load, save a connectome file
-
-Dependencies
-------------
-* NetworkX
-* Nibabel (Nifti, Gifti IO)
-* PyTables (HDF5)
-* Numexpr
-* NumPy
-
-"""
+""" Routines to load, save a connectome files """
 
 import cfflib_modified as cfflib
 
 import os.path as op
 from zipfile import ZipFile, ZIP_DEFLATED
 
-def load_from_meta_cml(filename):
+def load(filename):
+    """ Load a connectome file either from meta.cml (default)
+    or from a zipped .cff file
+    
+    Parameter
+    ---------
+    filename : string
+        File to load, either a connectome markup file with ending .cml
+        or a zipped connectome file with ending .cff
+        
+    Notes
+    -----
+    By the file name ending, the appropriate load function is selected.
+    They can be either .cml or .cff for unzipped or zipped connectome
+    files respectively.
+    """
+
+    if isinstance(filename, basestring):
+        # check if file exists
+        from os.path import isfile, abspath
+        
+        if isfile(filename):
+            if filename.endswith('.cff'):
+                fname = abspath(filename)
+                return _load_from_cff(fname)
+            elif filename.endswith('.cml'):
+                fname = abspath(filename)
+                return _load_from_meta_cml(fname)
+            else:
+                raise RuntimeError('%s must end with either .cml or .cff' % filename)       
+        else:
+            raise RuntimeError('%s seems not to be a valid file string' % filename)
+    else:
+        raise RuntimeError('%s seems not to be a valid file string' % filename)
+
+
+def _load_from_meta_cml(filename):
     """ Load connectome file from a meta.cml file. """
     
     with open(filename, 'r') as metacml:
@@ -29,7 +55,7 @@ def load_from_meta_cml(filename):
     
     return connectome
 
-def load_from_url(url, to_filename):
+def _load_from_url(url, to_filename):
     """ First downloads the connectome file to a file to_filename
     load it and return the reference to the connectome object
     
@@ -38,10 +64,10 @@ def load_from_url(url, to_filename):
     
     from util import download    
     download(url, to_filename)
-    return load_from_cff(to_filename)
+    return _load_from_cff(to_filename)
     
     
-def load_from_cff(filename, *args, **kwargs):
+def _load_from_cff(filename, *args, **kwargs):
     """ Load connectome file given filename
     
         Returns
@@ -51,21 +77,6 @@ def load_from_cff(filename, *args, **kwargs):
                 
     """
     
-    if isinstance(filename, basestring):
-        # check if file exists
-        from os.path import isfile, abspath
-        
-        if isfile(filename):
-            if filename.endswith('.cff'):
-                fname = abspath(filename)
-            else:
-                raise RuntimeError('%s must end with .cff' % filename)
-            
-        else:
-            raise RuntimeError('%s seems not to be a valid file string' % filename)
-    else:
-        raise RuntimeError('%s seems not to be a valid file string' % filename)
-
     # XXX: take care to have allowZip64 = True (but not supported by unix zip/unzip, same for ubuntu?) ?
     _zipfile = ZipFile(fname, 'a', ZIP_DEFLATED)
     try:

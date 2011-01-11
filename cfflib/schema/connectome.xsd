@@ -44,6 +44,7 @@
 <xsd:simpleType name="timeserieFileFormat">
   <xsd:restriction base="xsd:string">
     <xsd:enumeration value="HDF5"/>
+    <xsd:enumeration value="NumPy"/>
     <xsd:enumeration value="Other"/>
   </xsd:restriction>
 </xsd:simpleType>
