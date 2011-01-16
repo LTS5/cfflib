@@ -453,6 +453,31 @@ class connectome(supermod.connectome):
         
         self.connectome_surface.append(ctrack)
     
+    # CTimeserie
+    def add_connectome_timeserie(self, cts):
+        """Add the given CTimeserie to the connectome object.
+        
+        Parameters
+        ----------
+        cts : CTimeserie,
+            the connectome timeserie to add to the connectome, the CTimeserie name have to be unique.
+            
+        See also
+        --------
+        CTimeserie, connectome
+            
+        """
+              
+        # Check if the name is set     
+        if cts.name is None or cts.name == '':
+            raise Exception('A name is required.')
+        
+        # Check if the name is unique
+        if not self.is_name_unique(cts.name):
+            raise Exception('The name is not unique.')
+        
+        self.connectome_timeserie.append(cts)
+    
 supermod.connectome.subclass = connectome
 # end class connectome
 
