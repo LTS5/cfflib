@@ -1,12 +1,12 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*- 
 
 #
-# Generated Wed Dec 22 15:53:22 2010 by generateDS.py version 2.1a.
+# Generated Mon Jan 17 18:32:32 2011 by generateDS.py version 2.3b.
 #
 
 import sys
 import getopt
-from string import lower as str_lower
 import re as re_
 
 etree_ = None
@@ -73,17 +73,20 @@ try:
 except ImportError, exp:
 
     class GeneratedsSuper(object):
-        def format_string(self, input_data, input_name=''):
+        def gds_format_string(self, input_data, input_name=''):
             return input_data
-        def format_integer(self, input_data, input_name=''):
+        def gds_format_integer(self, input_data, input_name=''):
             return '%d' % input_data
-        def format_float(self, input_data, input_name=''):
+        def gds_format_float(self, input_data, input_name=''):
             return '%f' % input_data
-        def format_double(self, input_data, input_name=''):
+        def gds_format_double(self, input_data, input_name=''):
             return '%e' % input_data
-        def format_boolean(self, input_data, input_name=''):
+        def gds_format_boolean(self, input_data, input_name=''):
             return '%s' % input_data
-
+        def gds_str_lower(self, instring):
+            return instring.lower()
+                    
+                    
 
 #
 # If you have installed IPython you can uncomment and use the following.
@@ -106,6 +109,7 @@ except ImportError, exp:
 
 ExternalEncoding = 'ascii'
 Tag_pattern_ = re_.compile(r'({.*})?(.*)')
+STRING_CLEANUP_PAT = re_.compile(r"[\n\r\s]+")
 
 #
 # Support/utility functions.
@@ -116,6 +120,8 @@ def showIndent(outfile, level):
         outfile.write('    ')
 
 def quote_xml(inStr):
+    if not inStr:
+        return ''
     s1 = (isinstance(inStr, basestring) and inStr or
           '%s' % inStr)
     s1 = s1.replace('&', '&amp;')
@@ -155,7 +161,10 @@ def quote_python(inStr):
 
 
 def get_all_text_(node):
-    text = node.text if node.text is not None else ''
+    if node.text is not None:
+        text = node.text
+    else:
+        text = ''
     for child in node:
         if child.tail is not None:
             text += child.tail
@@ -203,7 +212,9 @@ class MixedContainer:
         return self.name
     def export(self, outfile, level, name, namespace):
         if self.category == MixedContainer.CategoryText:
-            outfile.write(self.value)
+            # Prevent exporting empty content as empty lines.
+            if self.value.strip(): 
+                outfile.write(self.value)
         elif self.category == MixedContainer.CategorySimple:
             self.exportSimple(outfile, level, name)
         else:    # category == MixedContainer.CategoryComplex
@@ -346,7 +357,7 @@ class connectome(GeneratedsSuper):
     def export(self, outfile, level, namespace_='', name_='connectome', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
-        self.exportAttributes(outfile, level, namespace_, name_='connectome')
+        self.exportAttributes(outfile, level, [], namespace_, name_='connectome')
         if self.hasContent_():
             outfile.write('>\n')
             self.exportChildren(outfile, level + 1, namespace_, name_)
@@ -354,7 +365,7 @@ class connectome(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, namespace_='', name_='connectome'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='connectome'):
         pass
     def exportChildren(self, outfile, level, namespace_='', name_='connectome'):
         if self.connectome_meta:
@@ -392,10 +403,10 @@ class connectome(GeneratedsSuper):
             return False
     def exportLiteral(self, outfile, level, name_='connectome'):
         level += 1
-        self.exportLiteralAttributes(outfile, level, name_)
+        self.exportLiteralAttributes(outfile, level, [], name_)
         if self.hasContent_():
             self.exportLiteralChildren(outfile, level, name_)
-    def exportLiteralAttributes(self, outfile, level, name_):
+    def exportLiteralAttributes(self, outfile, level, already_processed, name_):
         pass
     def exportLiteralChildren(self, outfile, level, name_):
         if self.connectome_meta is not None:
@@ -501,13 +512,13 @@ class connectome(GeneratedsSuper):
         showIndent(outfile, level)
         outfile.write('],\n')
     def build(self, node):
-        self.buildAttributes(node, node.attrib)
+        self.buildAttributes(node, node.attrib, [])
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
             self.buildChildren(child, nodeName_)
-    def buildAttributes(self, node, attrs):
+    def buildAttributes(self, node, attrs, already_processed):
         pass
-    def buildChildren(self, child_, nodeName_):
+    def buildChildren(self, child_, nodeName_, from_subclass=False):
         if nodeName_ == 'connectome-meta': 
             obj_ = CMetadata.factory()
             obj_.build(child_)
@@ -552,20 +563,21 @@ class CMetadata(GeneratedsSuper):
     Connectome File is compatible with. Should be 2.0"""
     subclass = None
     superclass = None
-    def __init__(self, version=None, generator=None, name=None, author=None, email=None, institution=None, creation_date=None, modification_date=None, species=None, legal_notice=None, reference=None, url=None, description=None, metadata=None):
+    def __init__(self, version=None, title=None, creator=None, publisher=None, created=None, modified=None, rights=None, license=None, references=None, relation=None, generator=None, species=None, email=None, metadata=None):
         self.version = _cast(None, version)
+        self.title = title
+        self.creator = creator
+        self.publisher = publisher
+        self.created = created
+        self.modified = modified
+        self.rights = rights
+        self.license = license
+        self.references = references
+        self.relation = relation
+        self.modified = modified
         self.generator = generator
-        self.name = name
-        self.author = author
-        self.email = email
-        self.institution = institution
-        self.creation_date = creation_date
-        self.modification_date = modification_date
         self.species = species
-        self.legal_notice = legal_notice
-        self.reference = reference
-        self.url = url
-        self.description = description
+        self.email = email
         self.metadata = metadata
     def factory(*args_, **kwargs_):
         if CMetadata.subclass:
@@ -573,30 +585,32 @@ class CMetadata(GeneratedsSuper):
         else:
             return CMetadata(*args_, **kwargs_)
     factory = staticmethod(factory)
+    def get_title(self): return self.title
+    def set_title(self, title): self.title = title
+    def get_creator(self): return self.creator
+    def set_creator(self, creator): self.creator = creator
+    def get_publisher(self): return self.publisher
+    def set_publisher(self, publisher): self.publisher = publisher
+    def get_created(self): return self.created
+    def set_created(self, created): self.created = created
+    def get_modified(self): return self.modified
+    def set_modified(self, modified): self.modified = modified
+    def get_rights(self): return self.rights
+    def set_rights(self, rights): self.rights = rights
+    def get_license(self): return self.license
+    def set_license(self, license): self.license = license
+    def get_references(self): return self.references
+    def set_references(self, references): self.references = references
+    def get_relation(self): return self.relation
+    def set_relation(self, relation): self.relation = relation
+    def get_modified(self): return self.modified
+    def set_modified(self, modified): self.modified = modified
     def get_generator(self): return self.generator
     def set_generator(self, generator): self.generator = generator
-    def get_name(self): return self.name
-    def set_name(self, name): self.name = name
-    def get_author(self): return self.author
-    def set_author(self, author): self.author = author
-    def get_email(self): return self.email
-    def set_email(self, email): self.email = email
-    def get_institution(self): return self.institution
-    def set_institution(self, institution): self.institution = institution
-    def get_creation_date(self): return self.creation_date
-    def set_creation_date(self, creation_date): self.creation_date = creation_date
-    def get_modification_date(self): return self.modification_date
-    def set_modification_date(self, modification_date): self.modification_date = modification_date
     def get_species(self): return self.species
     def set_species(self, species): self.species = species
-    def get_legal_notice(self): return self.legal_notice
-    def set_legal_notice(self, legal_notice): self.legal_notice = legal_notice
-    def get_reference(self): return self.reference
-    def set_reference(self, reference): self.reference = reference
-    def get_url(self): return self.url
-    def set_url(self, url): self.url = url
-    def get_description(self): return self.description
-    def set_description(self, description): self.description = description
+    def get_email(self): return self.email
+    def set_email(self, email): self.email = email
     def get_metadata(self): return self.metadata
     def set_metadata(self, metadata): self.metadata = metadata
     def get_version(self): return self.version
@@ -604,7 +618,7 @@ class CMetadata(GeneratedsSuper):
     def export(self, outfile, level, namespace_='', name_='CMetadata', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
-        self.exportAttributes(outfile, level, namespace_, name_='CMetadata')
+        self.exportAttributes(outfile, level, [], namespace_, name_='CMetadata')
         if self.hasContent_():
             outfile.write('>\n')
             self.exportChildren(outfile, level + 1, namespace_, name_)
@@ -612,61 +626,65 @@ class CMetadata(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, namespace_='', name_='CMetadata'):
-        outfile.write(' version=%s' % (self.format_string(quote_attrib(self.version).encode(ExternalEncoding), input_name='version'), ))
+    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='CMetadata'):
+        outfile.write(' version=%s' % (self.gds_format_string(quote_attrib(self.version).encode(ExternalEncoding), input_name='version'), ))
     def exportChildren(self, outfile, level, namespace_='', name_='CMetadata'):
+        if self.title is not None:
+            showIndent(outfile, level)
+            outfile.write('<%stitle>%s</%stitle>\n' % (namespace_, self.gds_format_string(quote_xml(self.title).encode(ExternalEncoding), input_name='title'), namespace_))
+        if self.creator is not None:
+            showIndent(outfile, level)
+            outfile.write('<%screator>%s</%screator>\n' % (namespace_, self.gds_format_string(quote_xml(self.creator).encode(ExternalEncoding), input_name='creator'), namespace_))
+        if self.publisher is not None:
+            showIndent(outfile, level)
+            outfile.write('<%spublisher>%s</%spublisher>\n' % (namespace_, self.gds_format_string(quote_xml(self.publisher).encode(ExternalEncoding), input_name='publisher'), namespace_))
+        if self.created is not None:
+            showIndent(outfile, level)
+            outfile.write('<%screated>%s</%screated>\n' % (namespace_, self.gds_format_string(quote_xml(self.created).encode(ExternalEncoding), input_name='created'), namespace_))
+        if self.modified is not None:
+            showIndent(outfile, level)
+            outfile.write('<%smodified>%s</%smodified>\n' % (namespace_, self.gds_format_string(quote_xml(self.modified).encode(ExternalEncoding), input_name='modified'), namespace_))
+        if self.rights is not None:
+            showIndent(outfile, level)
+            outfile.write('<%srights>%s</%srights>\n' % (namespace_, self.gds_format_string(quote_xml(self.rights).encode(ExternalEncoding), input_name='rights'), namespace_))
+        if self.license is not None:
+            showIndent(outfile, level)
+            outfile.write('<%slicense>%s</%slicense>\n' % (namespace_, self.gds_format_string(quote_xml(self.license).encode(ExternalEncoding), input_name='license'), namespace_))
+        if self.references is not None:
+            showIndent(outfile, level)
+            outfile.write('<%sreferences>%s</%sreferences>\n' % (namespace_, self.gds_format_string(quote_xml(self.references).encode(ExternalEncoding), input_name='references'), namespace_))
+        if self.relation is not None:
+            showIndent(outfile, level)
+            outfile.write('<%srelation>%s</%srelation>\n' % (namespace_, self.gds_format_string(quote_xml(self.relation).encode(ExternalEncoding), input_name='relation'), namespace_))
+        if self.modified is not None:
+            showIndent(outfile, level)
+            outfile.write('<%smodified>%s</%smodified>\n' % (namespace_, self.gds_format_string(quote_xml(self.modified).encode(ExternalEncoding), input_name='modified'), namespace_))
         if self.generator is not None:
             showIndent(outfile, level)
-            outfile.write('<%sgenerator>%s</%sgenerator>\n' % (namespace_, self.format_string(quote_xml(self.generator).encode(ExternalEncoding), input_name='generator'), namespace_))
-        if self.name is not None:
-            showIndent(outfile, level)
-            outfile.write('<%sname>%s</%sname>\n' % (namespace_, self.format_string(quote_xml(self.name).encode(ExternalEncoding), input_name='name'), namespace_))
-        if self.author is not None:
-            showIndent(outfile, level)
-            outfile.write('<%sauthor>%s</%sauthor>\n' % (namespace_, self.format_string(quote_xml(self.author).encode(ExternalEncoding), input_name='author'), namespace_))
-        if self.email is not None:
-            showIndent(outfile, level)
-            outfile.write('<%semail>%s</%semail>\n' % (namespace_, self.format_string(quote_xml(self.email).encode(ExternalEncoding), input_name='email'), namespace_))
-        if self.institution is not None:
-            showIndent(outfile, level)
-            outfile.write('<%sinstitution>%s</%sinstitution>\n' % (namespace_, self.format_string(quote_xml(self.institution).encode(ExternalEncoding), input_name='institution'), namespace_))
-        if self.creation_date is not None:
-            showIndent(outfile, level)
-            outfile.write('<%screation-date>%s</%screation-date>\n' % (namespace_, self.format_string(quote_xml(self.creation_date).encode(ExternalEncoding), input_name='creation-date'), namespace_))
-        if self.modification_date is not None:
-            showIndent(outfile, level)
-            outfile.write('<%smodification-date>%s</%smodification-date>\n' % (namespace_, self.format_string(quote_xml(self.modification_date).encode(ExternalEncoding), input_name='modification-date'), namespace_))
+            outfile.write('<%sgenerator>%s</%sgenerator>\n' % (namespace_, self.gds_format_string(quote_xml(self.generator).encode(ExternalEncoding), input_name='generator'), namespace_))
         if self.species is not None:
             showIndent(outfile, level)
-            outfile.write('<%sspecies>%s</%sspecies>\n' % (namespace_, self.format_string(quote_xml(self.species).encode(ExternalEncoding), input_name='species'), namespace_))
-        if self.legal_notice is not None:
+            outfile.write('<%sspecies>%s</%sspecies>\n' % (namespace_, self.gds_format_string(quote_xml(self.species).encode(ExternalEncoding), input_name='species'), namespace_))
+        if self.email is not None:
             showIndent(outfile, level)
-            outfile.write('<%slegal-notice>%s</%slegal-notice>\n' % (namespace_, self.format_string(quote_xml(self.legal_notice).encode(ExternalEncoding), input_name='legal-notice'), namespace_))
-        if self.reference is not None:
-            showIndent(outfile, level)
-            outfile.write('<%sreference>%s</%sreference>\n' % (namespace_, self.format_string(quote_xml(self.reference).encode(ExternalEncoding), input_name='reference'), namespace_))
-        if self.url is not None:
-            showIndent(outfile, level)
-            outfile.write('<%surl>%s</%surl>\n' % (namespace_, self.format_string(quote_xml(self.url).encode(ExternalEncoding), input_name='url'), namespace_))
-        if self.description is not None:
-            showIndent(outfile, level)
-            outfile.write('<%sdescription>%s</%sdescription>\n' % (namespace_, self.format_string(quote_xml(self.description).encode(ExternalEncoding), input_name='description'), namespace_))
+            outfile.write('<%semail>%s</%semail>\n' % (namespace_, self.gds_format_string(quote_xml(self.email).encode(ExternalEncoding), input_name='email'), namespace_))
         if self.metadata:
             self.metadata.export(outfile, level, namespace_, name_='metadata')
     def hasContent_(self):
         if (
+            self.title is not None or
+            self.creator is not None or
+            self.publisher is not None or
+            self.created is not None or
+            self.modified is not None or
+            self.rights is not None or
+            self.license is not None or
+            self.references is not None or
+            self.relation is not None or
+            self.modified is not None or
             self.generator is not None or
-            self.name is not None or
-            self.author is not None or
-            self.email is not None or
-            self.institution is not None or
-            self.creation_date is not None or
-            self.modification_date is not None or
             self.species is not None or
-            self.legal_notice is not None or
-            self.reference is not None or
-            self.url is not None or
-            self.description is not None or
+            self.email is not None or
             self.metadata is not None
             ):
             return True
@@ -674,50 +692,54 @@ class CMetadata(GeneratedsSuper):
             return False
     def exportLiteral(self, outfile, level, name_='CMetadata'):
         level += 1
-        self.exportLiteralAttributes(outfile, level, name_)
+        self.exportLiteralAttributes(outfile, level, [], name_)
         if self.hasContent_():
             self.exportLiteralChildren(outfile, level, name_)
-    def exportLiteralAttributes(self, outfile, level, name_):
-        if self.version is not None:
+    def exportLiteralAttributes(self, outfile, level, already_processed, name_):
+        if self.version is not None and 'version' not in already_processed:
+            already_processed.append('version')
             showIndent(outfile, level)
             outfile.write('version = "%s",\n' % (self.version,))
     def exportLiteralChildren(self, outfile, level, name_):
+        if self.title is not None:
+            showIndent(outfile, level)
+            outfile.write('title=%s,\n' % quote_python(self.title).encode(ExternalEncoding))
+        if self.creator is not None:
+            showIndent(outfile, level)
+            outfile.write('creator=%s,\n' % quote_python(self.creator).encode(ExternalEncoding))
+        if self.publisher is not None:
+            showIndent(outfile, level)
+            outfile.write('publisher=%s,\n' % quote_python(self.publisher).encode(ExternalEncoding))
+        if self.created is not None:
+            showIndent(outfile, level)
+            outfile.write('created=%s,\n' % quote_python(self.created).encode(ExternalEncoding))
+        if self.modified is not None:
+            showIndent(outfile, level)
+            outfile.write('modified=%s,\n' % quote_python(self.modified).encode(ExternalEncoding))
+        if self.rights is not None:
+            showIndent(outfile, level)
+            outfile.write('rights=%s,\n' % quote_python(self.rights).encode(ExternalEncoding))
+        if self.license is not None:
+            showIndent(outfile, level)
+            outfile.write('license=%s,\n' % quote_python(self.license).encode(ExternalEncoding))
+        if self.references is not None:
+            showIndent(outfile, level)
+            outfile.write('references=%s,\n' % quote_python(self.references).encode(ExternalEncoding))
+        if self.relation is not None:
+            showIndent(outfile, level)
+            outfile.write('relation=%s,\n' % quote_python(self.relation).encode(ExternalEncoding))
+        if self.modified is not None:
+            showIndent(outfile, level)
+            outfile.write('modified=%s,\n' % quote_python(self.modified).encode(ExternalEncoding))
         if self.generator is not None:
             showIndent(outfile, level)
             outfile.write('generator=%s,\n' % quote_python(self.generator).encode(ExternalEncoding))
-        if self.name is not None:
-            showIndent(outfile, level)
-            outfile.write('name=%s,\n' % quote_python(self.name).encode(ExternalEncoding))
-        if self.author is not None:
-            showIndent(outfile, level)
-            outfile.write('author=%s,\n' % quote_python(self.author).encode(ExternalEncoding))
-        if self.email is not None:
-            showIndent(outfile, level)
-            outfile.write('email=%s,\n' % quote_python(self.email).encode(ExternalEncoding))
-        if self.institution is not None:
-            showIndent(outfile, level)
-            outfile.write('institution=%s,\n' % quote_python(self.institution).encode(ExternalEncoding))
-        if self.creation_date is not None:
-            showIndent(outfile, level)
-            outfile.write('creation_date=%s,\n' % quote_python(self.creation_date).encode(ExternalEncoding))
-        if self.modification_date is not None:
-            showIndent(outfile, level)
-            outfile.write('modification_date=%s,\n' % quote_python(self.modification_date).encode(ExternalEncoding))
         if self.species is not None:
             showIndent(outfile, level)
             outfile.write('species=%s,\n' % quote_python(self.species).encode(ExternalEncoding))
-        if self.legal_notice is not None:
+        if self.email is not None:
             showIndent(outfile, level)
-            outfile.write('legal_notice=%s,\n' % quote_python(self.legal_notice).encode(ExternalEncoding))
-        if self.reference is not None:
-            showIndent(outfile, level)
-            outfile.write('reference=%s,\n' % quote_python(self.reference).encode(ExternalEncoding))
-        if self.url is not None:
-            showIndent(outfile, level)
-            outfile.write('url=%s,\n' % quote_python(self.url).encode(ExternalEncoding))
-        if self.description is not None:
-            showIndent(outfile, level)
-            outfile.write('description=%s,\n' % quote_python(self.description).encode(ExternalEncoding))
+            outfile.write('email=%s,\n' % quote_python(self.email).encode(ExternalEncoding))
         if self.metadata is not None:
             showIndent(outfile, level)
             outfile.write('metadata=model_.Metadata(\n')
@@ -725,51 +747,55 @@ class CMetadata(GeneratedsSuper):
             showIndent(outfile, level)
             outfile.write('),\n')
     def build(self, node):
-        self.buildAttributes(node, node.attrib)
+        self.buildAttributes(node, node.attrib, [])
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
             self.buildChildren(child, nodeName_)
-    def buildAttributes(self, node, attrs):
+    def buildAttributes(self, node, attrs, already_processed):
         value = attrs.get('version')
-        if value is not None:
+        if value is not None and 'version' not in already_processed:
+            already_processed.append('version')
             self.version = value
-    def buildChildren(self, child_, nodeName_):
-        if nodeName_ == 'generator':
+    def buildChildren(self, child_, nodeName_, from_subclass=False):
+        if nodeName_ == 'title':
+            title_ = child_.text
+            self.title = title_
+        elif nodeName_ == 'creator':
+            creator_ = child_.text
+            self.creator = creator_
+        elif nodeName_ == 'publisher':
+            publisher_ = child_.text
+            self.publisher = publisher_
+        elif nodeName_ == 'created':
+            created_ = child_.text
+            self.created = created_
+        elif nodeName_ == 'modified':
+            modified_ = child_.text
+            self.modified = modified_
+        elif nodeName_ == 'rights':
+            rights_ = child_.text
+            self.rights = rights_
+        elif nodeName_ == 'license':
+            license_ = child_.text
+            self.license = license_
+        elif nodeName_ == 'references':
+            references_ = child_.text
+            self.references = references_
+        elif nodeName_ == 'relation':
+            relation_ = child_.text
+            self.relation = relation_
+        elif nodeName_ == 'modified':
+            modified_ = child_.text
+            self.modified = modified_
+        elif nodeName_ == 'generator':
             generator_ = child_.text
             self.generator = generator_
-        elif nodeName_ == 'name':
-            name_ = child_.text
-            self.name = name_
-        elif nodeName_ == 'author':
-            author_ = child_.text
-            self.author = author_
-        elif nodeName_ == 'email':
-            email_ = child_.text
-            self.email = email_
-        elif nodeName_ == 'institution':
-            institution_ = child_.text
-            self.institution = institution_
-        elif nodeName_ == 'creation-date':
-            creation_date_ = child_.text
-            self.creation_date = creation_date_
-        elif nodeName_ == 'modification-date':
-            modification_date_ = child_.text
-            self.modification_date = modification_date_
         elif nodeName_ == 'species':
             species_ = child_.text
             self.species = species_
-        elif nodeName_ == 'legal-notice':
-            legal_notice_ = child_.text
-            self.legal_notice = legal_notice_
-        elif nodeName_ == 'reference':
-            reference_ = child_.text
-            self.reference = reference_
-        elif nodeName_ == 'url':
-            url_ = child_.text
-            self.url = url_
-        elif nodeName_ == 'description':
-            description_ = child_.text
-            self.description = description_
+        elif nodeName_ == 'email':
+            email_ = child_.text
+            self.email = email_
         elif nodeName_ == 'metadata': 
             obj_ = Metadata.factory()
             obj_.build(child_)
@@ -786,8 +812,10 @@ class CNetwork(GeneratedsSuper):
     dtype="DynamicNetwork" Network with either with lifespan
     attributes for nodes and edges (See GEXF) or timeseries on nodes
     and edges. - dtype="HierarchicalNetwork" Network with
-    hierarchical structure. - dtype="FunctionalNetwork" Networks
-    derived from functional measures such as EEG/MEG/fMRI/PET etc. -
+    hierarchical structure. - dtype="StructuralNetwork" A structural
+    network e.g. derived from Diffusion MRI -
+    dtype="FunctionalNetwork" Networks derived from functional
+    measures such as EEG/MEG/fMRI/PET etc. -
     dtype="EffectiveNetwork" Networks representing effective
     connectivities - dtype="Other" Other kind of network."""
     subclass = None
@@ -826,7 +854,7 @@ class CNetwork(GeneratedsSuper):
     def export(self, outfile, level, namespace_='', name_='CNetwork', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
-        self.exportAttributes(outfile, level, namespace_, name_='CNetwork')
+        self.exportAttributes(outfile, level, [], namespace_, name_='CNetwork')
         if self.hasContent_():
             outfile.write('>\n')
             self.exportChildren(outfile, level + 1, namespace_, name_)
@@ -834,20 +862,23 @@ class CNetwork(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, namespace_='', name_='CNetwork'):
-        if self.src is not None:
-            outfile.write(' src=%s' % (self.format_string(quote_attrib(self.src).encode(ExternalEncoding), input_name='src'), ))
-        if self.dtype is not None:
+    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='CNetwork'):
+        if self.src is not None and 'src' not in already_processed:
+            already_processed.append('src')
+            outfile.write(' src=%s' % (self.gds_format_string(quote_attrib(self.src).encode(ExternalEncoding), input_name='src'), ))
+        if self.dtype is not None and 'dtype' not in already_processed:
+            already_processed.append('dtype')
             outfile.write(' dtype=%s' % (quote_attrib(self.dtype), ))
-        outfile.write(' name=%s' % (self.format_string(quote_attrib(self.name).encode(ExternalEncoding), input_name='name'), ))
-        if self.fileformat is not None:
+        outfile.write(' name=%s' % (self.gds_format_string(quote_attrib(self.name).encode(ExternalEncoding), input_name='name'), ))
+        if self.fileformat is not None and 'fileformat' not in already_processed:
+            already_processed.append('fileformat')
             outfile.write(' fileformat=%s' % (quote_attrib(self.fileformat), ))
     def exportChildren(self, outfile, level, namespace_='', name_='CNetwork'):
         if self.metadata:
             self.metadata.export(outfile, level, namespace_, name_='metadata')
         if self.description is not None:
             showIndent(outfile, level)
-            outfile.write('<%sdescription>%s</%sdescription>\n' % (namespace_, self.format_string(quote_xml(self.description).encode(ExternalEncoding), input_name='description'), namespace_))
+            outfile.write('<%sdescription>%s</%sdescription>\n' % (namespace_, self.gds_format_string(quote_xml(self.description).encode(ExternalEncoding), input_name='description'), namespace_))
     def hasContent_(self):
         if (
             self.metadata is not None or
@@ -858,20 +889,24 @@ class CNetwork(GeneratedsSuper):
             return False
     def exportLiteral(self, outfile, level, name_='CNetwork'):
         level += 1
-        self.exportLiteralAttributes(outfile, level, name_)
+        self.exportLiteralAttributes(outfile, level, [], name_)
         if self.hasContent_():
             self.exportLiteralChildren(outfile, level, name_)
-    def exportLiteralAttributes(self, outfile, level, name_):
-        if self.src is not None:
+    def exportLiteralAttributes(self, outfile, level, already_processed, name_):
+        if self.src is not None and 'src' not in already_processed:
+            already_processed.append('src')
             showIndent(outfile, level)
             outfile.write('src = "%s",\n' % (self.src,))
-        if self.dtype is not None:
+        if self.dtype is not None and 'dtype' not in already_processed:
+            already_processed.append('dtype')
             showIndent(outfile, level)
             outfile.write('dtype = "%s",\n' % (self.dtype,))
-        if self.name is not None:
+        if self.name is not None and 'name' not in already_processed:
+            already_processed.append('name')
             showIndent(outfile, level)
             outfile.write('name = "%s",\n' % (self.name,))
-        if self.fileformat is not None:
+        if self.fileformat is not None and 'fileformat' not in already_processed:
+            already_processed.append('fileformat')
             showIndent(outfile, level)
             outfile.write('fileformat = "%s",\n' % (self.fileformat,))
     def exportLiteralChildren(self, outfile, level, name_):
@@ -885,26 +920,28 @@ class CNetwork(GeneratedsSuper):
             showIndent(outfile, level)
             outfile.write('description=%s,\n' % quote_python(self.description).encode(ExternalEncoding))
     def build(self, node):
-        self.buildAttributes(node, node.attrib)
+        self.buildAttributes(node, node.attrib, [])
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
             self.buildChildren(child, nodeName_)
-    def buildAttributes(self, node, attrs):
+    def buildAttributes(self, node, attrs, already_processed):
         value = attrs.get('src')
-        if value is not None:
+        if value is not None and 'src' not in already_processed:
+            already_processed.append('src')
             self.src = value
         value = attrs.get('dtype')
-        if value is not None:
+        if value is not None and 'dtype' not in already_processed:
+            already_processed.append('dtype')
             self.dtype = value
-            self.validate_networkEnumDType(self.dtype)    # validate type networkEnumDType
         value = attrs.get('name')
-        if value is not None:
+        if value is not None and 'name' not in already_processed:
+            already_processed.append('name')
             self.name = value
         value = attrs.get('fileformat')
-        if value is not None:
+        if value is not None and 'fileformat' not in already_processed:
+            already_processed.append('fileformat')
             self.fileformat = value
-            self.validate_networkFileFormat(self.fileformat)    # validate type networkFileFormat
-    def buildChildren(self, child_, nodeName_):
+    def buildChildren(self, child_, nodeName_, from_subclass=False):
         if nodeName_ == 'metadata': 
             obj_ = Metadata.factory()
             obj_.build(child_)
@@ -974,7 +1011,7 @@ class CSurface(GeneratedsSuper):
     def export(self, outfile, level, namespace_='', name_='CSurface', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
-        self.exportAttributes(outfile, level, namespace_, name_='CSurface')
+        self.exportAttributes(outfile, level, [], namespace_, name_='CSurface')
         if self.hasContent_():
             outfile.write('>\n')
             self.exportChildren(outfile, level + 1, namespace_, name_)
@@ -982,19 +1019,23 @@ class CSurface(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, namespace_='', name_='CSurface'):
-        if self.src is not None:
-            outfile.write(' src=%s' % (self.format_string(quote_attrib(self.src).encode(ExternalEncoding), input_name='src'), ))
-        if self.dtype is not None:
+    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='CSurface'):
+        if self.src is not None and 'src' not in already_processed:
+            already_processed.append('src')
+            outfile.write(' src=%s' % (self.gds_format_string(quote_attrib(self.src).encode(ExternalEncoding), input_name='src'), ))
+        if self.dtype is not None and 'dtype' not in already_processed:
+            already_processed.append('dtype')
             outfile.write(' dtype=%s' % (quote_attrib(self.dtype), ))
-        if self.name is not None:
-            outfile.write(' name=%s' % (self.format_string(quote_attrib(self.name).encode(ExternalEncoding), input_name='name'), ))
-        if self.fileformat is not None:
+        if self.name is not None and 'name' not in already_processed:
+            already_processed.append('name')
+            outfile.write(' name=%s' % (self.gds_format_string(quote_attrib(self.name).encode(ExternalEncoding), input_name='name'), ))
+        if self.fileformat is not None and 'fileformat' not in already_processed:
+            already_processed.append('fileformat')
             outfile.write(' fileformat=%s' % (quote_attrib(self.fileformat), ))
     def exportChildren(self, outfile, level, namespace_='', name_='CSurface'):
         if self.description is not None:
             showIndent(outfile, level)
-            outfile.write('<%sdescription>%s</%sdescription>\n' % (namespace_, self.format_string(quote_xml(self.description).encode(ExternalEncoding), input_name='description'), namespace_))
+            outfile.write('<%sdescription>%s</%sdescription>\n' % (namespace_, self.gds_format_string(quote_xml(self.description).encode(ExternalEncoding), input_name='description'), namespace_))
         if self.metadata:
             self.metadata.export(outfile, level, namespace_, name_='metadata', )
     def hasContent_(self):
@@ -1007,20 +1048,24 @@ class CSurface(GeneratedsSuper):
             return False
     def exportLiteral(self, outfile, level, name_='CSurface'):
         level += 1
-        self.exportLiteralAttributes(outfile, level, name_)
+        self.exportLiteralAttributes(outfile, level, [], name_)
         if self.hasContent_():
             self.exportLiteralChildren(outfile, level, name_)
-    def exportLiteralAttributes(self, outfile, level, name_):
-        if self.src is not None:
+    def exportLiteralAttributes(self, outfile, level, already_processed, name_):
+        if self.src is not None and 'src' not in already_processed:
+            already_processed.append('src')
             showIndent(outfile, level)
             outfile.write('src = "%s",\n' % (self.src,))
-        if self.dtype is not None:
+        if self.dtype is not None and 'dtype' not in already_processed:
+            already_processed.append('dtype')
             showIndent(outfile, level)
             outfile.write('dtype = "%s",\n' % (self.dtype,))
-        if self.name is not None:
+        if self.name is not None and 'name' not in already_processed:
+            already_processed.append('name')
             showIndent(outfile, level)
             outfile.write('name = "%s",\n' % (self.name,))
-        if self.fileformat is not None:
+        if self.fileformat is not None and 'fileformat' not in already_processed:
+            already_processed.append('fileformat')
             showIndent(outfile, level)
             outfile.write('fileformat = "%s",\n' % (self.fileformat,))
     def exportLiteralChildren(self, outfile, level, name_):
@@ -1034,26 +1079,28 @@ class CSurface(GeneratedsSuper):
             showIndent(outfile, level)
             outfile.write('),\n')
     def build(self, node):
-        self.buildAttributes(node, node.attrib)
+        self.buildAttributes(node, node.attrib, [])
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
             self.buildChildren(child, nodeName_)
-    def buildAttributes(self, node, attrs):
+    def buildAttributes(self, node, attrs, already_processed):
         value = attrs.get('src')
-        if value is not None:
+        if value is not None and 'src' not in already_processed:
+            already_processed.append('src')
             self.src = value
         value = attrs.get('dtype')
-        if value is not None:
+        if value is not None and 'dtype' not in already_processed:
+            already_processed.append('dtype')
             self.dtype = value
-            self.validate_surfaceEnumDType(self.dtype)    # validate type surfaceEnumDType
         value = attrs.get('name')
-        if value is not None:
+        if value is not None and 'name' not in already_processed:
+            already_processed.append('name')
             self.name = value
         value = attrs.get('fileformat')
-        if value is not None:
+        if value is not None and 'fileformat' not in already_processed:
+            already_processed.append('fileformat')
             self.fileformat = value
-            self.validate_surfaceFileFormat(self.fileformat)    # validate type surfaceFileFormat
-    def buildChildren(self, child_, nodeName_):
+    def buildChildren(self, child_, nodeName_, from_subclass=False):
         if nodeName_ == 'description':
             description_ = child_.text
             self.description = description_
@@ -1129,7 +1176,7 @@ class CVolume(GeneratedsSuper):
     def export(self, outfile, level, namespace_='', name_='CVolume', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
-        self.exportAttributes(outfile, level, namespace_, name_='CVolume')
+        self.exportAttributes(outfile, level, [], namespace_, name_='CVolume')
         if self.hasContent_():
             outfile.write('>\n')
             self.exportChildren(outfile, level + 1, namespace_, name_)
@@ -1137,19 +1184,23 @@ class CVolume(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, namespace_='', name_='CVolume'):
-        if self.src is not None:
-            outfile.write(' src=%s' % (self.format_string(quote_attrib(self.src).encode(ExternalEncoding), input_name='src'), ))
-        if self.dtype is not None:
+    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='CVolume'):
+        if self.src is not None and 'src' not in already_processed:
+            already_processed.append('src')
+            outfile.write(' src=%s' % (self.gds_format_string(quote_attrib(self.src).encode(ExternalEncoding), input_name='src'), ))
+        if self.dtype is not None and 'dtype' not in already_processed:
+            already_processed.append('dtype')
             outfile.write(' dtype=%s' % (quote_attrib(self.dtype), ))
-        if self.name is not None:
-            outfile.write(' name=%s' % (self.format_string(quote_attrib(self.name).encode(ExternalEncoding), input_name='name'), ))
-        if self.fileformat is not None:
+        if self.name is not None and 'name' not in already_processed:
+            already_processed.append('name')
+            outfile.write(' name=%s' % (self.gds_format_string(quote_attrib(self.name).encode(ExternalEncoding), input_name='name'), ))
+        if self.fileformat is not None and 'fileformat' not in already_processed:
+            already_processed.append('fileformat')
             outfile.write(' fileformat=%s' % (quote_attrib(self.fileformat), ))
     def exportChildren(self, outfile, level, namespace_='', name_='CVolume'):
         if self.description is not None:
             showIndent(outfile, level)
-            outfile.write('<%sdescription>%s</%sdescription>\n' % (namespace_, self.format_string(quote_xml(self.description).encode(ExternalEncoding), input_name='description'), namespace_))
+            outfile.write('<%sdescription>%s</%sdescription>\n' % (namespace_, self.gds_format_string(quote_xml(self.description).encode(ExternalEncoding), input_name='description'), namespace_))
         if self.metadata:
             self.metadata.export(outfile, level, namespace_, name_='metadata', )
     def hasContent_(self):
@@ -1162,20 +1213,24 @@ class CVolume(GeneratedsSuper):
             return False
     def exportLiteral(self, outfile, level, name_='CVolume'):
         level += 1
-        self.exportLiteralAttributes(outfile, level, name_)
+        self.exportLiteralAttributes(outfile, level, [], name_)
         if self.hasContent_():
             self.exportLiteralChildren(outfile, level, name_)
-    def exportLiteralAttributes(self, outfile, level, name_):
-        if self.src is not None:
+    def exportLiteralAttributes(self, outfile, level, already_processed, name_):
+        if self.src is not None and 'src' not in already_processed:
+            already_processed.append('src')
             showIndent(outfile, level)
             outfile.write('src = "%s",\n' % (self.src,))
-        if self.dtype is not None:
+        if self.dtype is not None and 'dtype' not in already_processed:
+            already_processed.append('dtype')
             showIndent(outfile, level)
             outfile.write('dtype = "%s",\n' % (self.dtype,))
-        if self.name is not None:
+        if self.name is not None and 'name' not in already_processed:
+            already_processed.append('name')
             showIndent(outfile, level)
             outfile.write('name = "%s",\n' % (self.name,))
-        if self.fileformat is not None:
+        if self.fileformat is not None and 'fileformat' not in already_processed:
+            already_processed.append('fileformat')
             showIndent(outfile, level)
             outfile.write('fileformat = "%s",\n' % (self.fileformat,))
     def exportLiteralChildren(self, outfile, level, name_):
@@ -1189,26 +1244,28 @@ class CVolume(GeneratedsSuper):
             showIndent(outfile, level)
             outfile.write('),\n')
     def build(self, node):
-        self.buildAttributes(node, node.attrib)
+        self.buildAttributes(node, node.attrib, [])
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
             self.buildChildren(child, nodeName_)
-    def buildAttributes(self, node, attrs):
+    def buildAttributes(self, node, attrs, already_processed):
         value = attrs.get('src')
-        if value is not None:
+        if value is not None and 'src' not in already_processed:
+            already_processed.append('src')
             self.src = value
         value = attrs.get('dtype')
-        if value is not None:
+        if value is not None and 'dtype' not in already_processed:
+            already_processed.append('dtype')
             self.dtype = value
-            self.validate_volumeEnumDType(self.dtype)    # validate type volumeEnumDType
         value = attrs.get('name')
-        if value is not None:
+        if value is not None and 'name' not in already_processed:
+            already_processed.append('name')
             self.name = value
         value = attrs.get('fileformat')
-        if value is not None:
+        if value is not None and 'fileformat' not in already_processed:
+            already_processed.append('fileformat')
             self.fileformat = value
-            self.validate_volumeFileFormat(self.fileformat)    # validate type volumeFileFormat
-    def buildChildren(self, child_, nodeName_):
+    def buildChildren(self, child_, nodeName_, from_subclass=False):
         if nodeName_ == 'description':
             description_ = child_.text
             self.description = description_
@@ -1227,8 +1284,9 @@ class CTrack(GeneratedsSuper):
     fibers."""
     subclass = None
     superclass = None
-    def __init__(self, src=None, name=None, fileformat='TrackVis', description=None, metadata=None):
+    def __init__(self, src=None, dtype=None, name=None, fileformat='TrackVis', description=None, metadata=None):
         self.src = _cast(None, src)
+        self.dtype = _cast(None, dtype)
         self.name = _cast(None, name)
         self.fileformat = _cast(None, fileformat)
         self.description = description
@@ -1245,6 +1303,8 @@ class CTrack(GeneratedsSuper):
     def set_metadata(self, metadata): self.metadata = metadata
     def get_src(self): return self.src
     def set_src(self, src): self.src = src
+    def get_dtype(self): return self.dtype
+    def set_dtype(self, dtype): self.dtype = dtype
     def get_name(self): return self.name
     def set_name(self, name): self.name = name
     def get_fileformat(self): return self.fileformat
@@ -1255,7 +1315,7 @@ class CTrack(GeneratedsSuper):
     def export(self, outfile, level, namespace_='', name_='CTrack', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
-        self.exportAttributes(outfile, level, namespace_, name_='CTrack')
+        self.exportAttributes(outfile, level, [], namespace_, name_='CTrack')
         if self.hasContent_():
             outfile.write('>\n')
             self.exportChildren(outfile, level + 1, namespace_, name_)
@@ -1263,17 +1323,23 @@ class CTrack(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, namespace_='', name_='CTrack'):
-        if self.src is not None:
-            outfile.write(' src=%s' % (self.format_string(quote_attrib(self.src).encode(ExternalEncoding), input_name='src'), ))
-        if self.name is not None:
-            outfile.write(' name=%s' % (self.format_string(quote_attrib(self.name).encode(ExternalEncoding), input_name='name'), ))
-        if self.fileformat is not None:
+    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='CTrack'):
+        if self.src is not None and 'src' not in already_processed:
+            already_processed.append('src')
+            outfile.write(' src=%s' % (self.gds_format_string(quote_attrib(self.src).encode(ExternalEncoding), input_name='src'), ))
+        if self.dtype is not None and 'dtype' not in already_processed:
+            already_processed.append('dtype')
+            outfile.write(' dtype=%s' % (self.gds_format_string(quote_attrib(self.dtype).encode(ExternalEncoding), input_name='dtype'), ))
+        if self.name is not None and 'name' not in already_processed:
+            already_processed.append('name')
+            outfile.write(' name=%s' % (self.gds_format_string(quote_attrib(self.name).encode(ExternalEncoding), input_name='name'), ))
+        if self.fileformat is not None and 'fileformat' not in already_processed:
+            already_processed.append('fileformat')
             outfile.write(' fileformat=%s' % (quote_attrib(self.fileformat), ))
     def exportChildren(self, outfile, level, namespace_='', name_='CTrack'):
         if self.description is not None:
             showIndent(outfile, level)
-            outfile.write('<%sdescription>%s</%sdescription>\n' % (namespace_, self.format_string(quote_xml(self.description).encode(ExternalEncoding), input_name='description'), namespace_))
+            outfile.write('<%sdescription>%s</%sdescription>\n' % (namespace_, self.gds_format_string(quote_xml(self.description).encode(ExternalEncoding), input_name='description'), namespace_))
         if self.metadata:
             self.metadata.export(outfile, level, namespace_, name_='metadata', )
     def hasContent_(self):
@@ -1286,17 +1352,24 @@ class CTrack(GeneratedsSuper):
             return False
     def exportLiteral(self, outfile, level, name_='CTrack'):
         level += 1
-        self.exportLiteralAttributes(outfile, level, name_)
+        self.exportLiteralAttributes(outfile, level, [], name_)
         if self.hasContent_():
             self.exportLiteralChildren(outfile, level, name_)
-    def exportLiteralAttributes(self, outfile, level, name_):
-        if self.src is not None:
+    def exportLiteralAttributes(self, outfile, level, already_processed, name_):
+        if self.src is not None and 'src' not in already_processed:
+            already_processed.append('src')
             showIndent(outfile, level)
             outfile.write('src = "%s",\n' % (self.src,))
-        if self.name is not None:
+        if self.dtype is not None and 'dtype' not in already_processed:
+            already_processed.append('dtype')
+            showIndent(outfile, level)
+            outfile.write('dtype = "%s",\n' % (self.dtype,))
+        if self.name is not None and 'name' not in already_processed:
+            already_processed.append('name')
             showIndent(outfile, level)
             outfile.write('name = "%s",\n' % (self.name,))
-        if self.fileformat is not None:
+        if self.fileformat is not None and 'fileformat' not in already_processed:
+            already_processed.append('fileformat')
             showIndent(outfile, level)
             outfile.write('fileformat = "%s",\n' % (self.fileformat,))
     def exportLiteralChildren(self, outfile, level, name_):
@@ -1310,22 +1383,28 @@ class CTrack(GeneratedsSuper):
             showIndent(outfile, level)
             outfile.write('),\n')
     def build(self, node):
-        self.buildAttributes(node, node.attrib)
+        self.buildAttributes(node, node.attrib, [])
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
             self.buildChildren(child, nodeName_)
-    def buildAttributes(self, node, attrs):
+    def buildAttributes(self, node, attrs, already_processed):
         value = attrs.get('src')
-        if value is not None:
+        if value is not None and 'src' not in already_processed:
+            already_processed.append('src')
             self.src = value
+        value = attrs.get('dtype')
+        if value is not None and 'dtype' not in already_processed:
+            already_processed.append('dtype')
+            self.dtype = value
         value = attrs.get('name')
-        if value is not None:
+        if value is not None and 'name' not in already_processed:
+            already_processed.append('name')
             self.name = value
         value = attrs.get('fileformat')
-        if value is not None:
+        if value is not None and 'fileformat' not in already_processed:
+            already_processed.append('fileformat')
             self.fileformat = value
-            self.validate_trackFileFormat(self.fileformat)    # validate type trackFileFormat
-    def buildChildren(self, child_, nodeName_):
+    def buildChildren(self, child_, nodeName_, from_subclass=False):
         if nodeName_ == 'description':
             description_ = child_.text
             self.description = description_
@@ -1343,8 +1422,9 @@ class CTimeserie(GeneratedsSuper):
     number of time series or other large homogeneous data."""
     subclass = None
     superclass = None
-    def __init__(self, src=None, name=None, fileformat='HDF5', description=None, metadata=None):
+    def __init__(self, src=None, dtype=None, name=None, fileformat='HDF5', description=None, metadata=None):
         self.src = _cast(None, src)
+        self.dtype = _cast(None, dtype)
         self.name = _cast(None, name)
         self.fileformat = _cast(None, fileformat)
         self.description = description
@@ -1361,6 +1441,8 @@ class CTimeserie(GeneratedsSuper):
     def set_metadata(self, metadata): self.metadata = metadata
     def get_src(self): return self.src
     def set_src(self, src): self.src = src
+    def get_dtype(self): return self.dtype
+    def set_dtype(self, dtype): self.dtype = dtype
     def get_name(self): return self.name
     def set_name(self, name): self.name = name
     def get_fileformat(self): return self.fileformat
@@ -1371,7 +1453,7 @@ class CTimeserie(GeneratedsSuper):
     def export(self, outfile, level, namespace_='', name_='CTimeserie', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
-        self.exportAttributes(outfile, level, namespace_, name_='CTimeserie')
+        self.exportAttributes(outfile, level, [], namespace_, name_='CTimeserie')
         if self.hasContent_():
             outfile.write('>\n')
             self.exportChildren(outfile, level + 1, namespace_, name_)
@@ -1379,17 +1461,23 @@ class CTimeserie(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, namespace_='', name_='CTimeserie'):
-        if self.src is not None:
-            outfile.write(' src=%s' % (self.format_string(quote_attrib(self.src).encode(ExternalEncoding), input_name='src'), ))
-        if self.name is not None:
-            outfile.write(' name=%s' % (self.format_string(quote_attrib(self.name).encode(ExternalEncoding), input_name='name'), ))
-        if self.fileformat is not None:
+    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='CTimeserie'):
+        if self.src is not None and 'src' not in already_processed:
+            already_processed.append('src')
+            outfile.write(' src=%s' % (self.gds_format_string(quote_attrib(self.src).encode(ExternalEncoding), input_name='src'), ))
+        if self.dtype is not None and 'dtype' not in already_processed:
+            already_processed.append('dtype')
+            outfile.write(' dtype=%s' % (self.gds_format_string(quote_attrib(self.dtype).encode(ExternalEncoding), input_name='dtype'), ))
+        if self.name is not None and 'name' not in already_processed:
+            already_processed.append('name')
+            outfile.write(' name=%s' % (self.gds_format_string(quote_attrib(self.name).encode(ExternalEncoding), input_name='name'), ))
+        if self.fileformat is not None and 'fileformat' not in already_processed:
+            already_processed.append('fileformat')
             outfile.write(' fileformat=%s' % (quote_attrib(self.fileformat), ))
     def exportChildren(self, outfile, level, namespace_='', name_='CTimeserie'):
         if self.description is not None:
             showIndent(outfile, level)
-            outfile.write('<%sdescription>%s</%sdescription>\n' % (namespace_, self.format_string(quote_xml(self.description).encode(ExternalEncoding), input_name='description'), namespace_))
+            outfile.write('<%sdescription>%s</%sdescription>\n' % (namespace_, self.gds_format_string(quote_xml(self.description).encode(ExternalEncoding), input_name='description'), namespace_))
         if self.metadata:
             self.metadata.export(outfile, level, namespace_, name_='metadata', )
     def hasContent_(self):
@@ -1402,17 +1490,24 @@ class CTimeserie(GeneratedsSuper):
             return False
     def exportLiteral(self, outfile, level, name_='CTimeserie'):
         level += 1
-        self.exportLiteralAttributes(outfile, level, name_)
+        self.exportLiteralAttributes(outfile, level, [], name_)
         if self.hasContent_():
             self.exportLiteralChildren(outfile, level, name_)
-    def exportLiteralAttributes(self, outfile, level, name_):
-        if self.src is not None:
+    def exportLiteralAttributes(self, outfile, level, already_processed, name_):
+        if self.src is not None and 'src' not in already_processed:
+            already_processed.append('src')
             showIndent(outfile, level)
             outfile.write('src = "%s",\n' % (self.src,))
-        if self.name is not None:
+        if self.dtype is not None and 'dtype' not in already_processed:
+            already_processed.append('dtype')
+            showIndent(outfile, level)
+            outfile.write('dtype = "%s",\n' % (self.dtype,))
+        if self.name is not None and 'name' not in already_processed:
+            already_processed.append('name')
             showIndent(outfile, level)
             outfile.write('name = "%s",\n' % (self.name,))
-        if self.fileformat is not None:
+        if self.fileformat is not None and 'fileformat' not in already_processed:
+            already_processed.append('fileformat')
             showIndent(outfile, level)
             outfile.write('fileformat = "%s",\n' % (self.fileformat,))
     def exportLiteralChildren(self, outfile, level, name_):
@@ -1426,22 +1521,28 @@ class CTimeserie(GeneratedsSuper):
             showIndent(outfile, level)
             outfile.write('),\n')
     def build(self, node):
-        self.buildAttributes(node, node.attrib)
+        self.buildAttributes(node, node.attrib, [])
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
             self.buildChildren(child, nodeName_)
-    def buildAttributes(self, node, attrs):
+    def buildAttributes(self, node, attrs, already_processed):
         value = attrs.get('src')
-        if value is not None:
+        if value is not None and 'src' not in already_processed:
+            already_processed.append('src')
             self.src = value
+        value = attrs.get('dtype')
+        if value is not None and 'dtype' not in already_processed:
+            already_processed.append('dtype')
+            self.dtype = value
         value = attrs.get('name')
-        if value is not None:
+        if value is not None and 'name' not in already_processed:
+            already_processed.append('name')
             self.name = value
         value = attrs.get('fileformat')
-        if value is not None:
+        if value is not None and 'fileformat' not in already_processed:
+            already_processed.append('fileformat')
             self.fileformat = value
-            self.validate_timeserieFileFormat(self.fileformat)    # validate type timeserieFileFormat
-    def buildChildren(self, child_, nodeName_):
+    def buildChildren(self, child_, nodeName_, from_subclass=False):
         if nodeName_ == 'description':
             description_ = child_.text
             self.description = description_
@@ -1457,8 +1558,9 @@ class CData(GeneratedsSuper):
     attribute Use one of 'NumPy', 'HDF5', 'XML', 'Other'"""
     subclass = None
     superclass = None
-    def __init__(self, src=None, name=None, fileformat=None, description=None, metadata=None):
+    def __init__(self, src=None, dtype=None, name=None, fileformat=None, description=None, metadata=None):
         self.src = _cast(None, src)
+        self.dtype = _cast(None, dtype)
         self.name = _cast(None, name)
         self.fileformat = _cast(None, fileformat)
         self.description = description
@@ -1475,6 +1577,8 @@ class CData(GeneratedsSuper):
     def set_metadata(self, metadata): self.metadata = metadata
     def get_src(self): return self.src
     def set_src(self, src): self.src = src
+    def get_dtype(self): return self.dtype
+    def set_dtype(self, dtype): self.dtype = dtype
     def get_name(self): return self.name
     def set_name(self, name): self.name = name
     def get_fileformat(self): return self.fileformat
@@ -1485,7 +1589,7 @@ class CData(GeneratedsSuper):
     def export(self, outfile, level, namespace_='', name_='CData', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
-        self.exportAttributes(outfile, level, namespace_, name_='CData')
+        self.exportAttributes(outfile, level, [], namespace_, name_='CData')
         if self.hasContent_():
             outfile.write('>\n')
             self.exportChildren(outfile, level + 1, namespace_, name_)
@@ -1493,17 +1597,23 @@ class CData(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, namespace_='', name_='CData'):
-        if self.src is not None:
-            outfile.write(' src=%s' % (self.format_string(quote_attrib(self.src).encode(ExternalEncoding), input_name='src'), ))
-        if self.name is not None:
-            outfile.write(' name=%s' % (self.format_string(quote_attrib(self.name).encode(ExternalEncoding), input_name='name'), ))
-        if self.fileformat is not None:
+    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='CData'):
+        if self.src is not None and 'src' not in already_processed:
+            already_processed.append('src')
+            outfile.write(' src=%s' % (self.gds_format_string(quote_attrib(self.src).encode(ExternalEncoding), input_name='src'), ))
+        if self.dtype is not None and 'dtype' not in already_processed:
+            already_processed.append('dtype')
+            outfile.write(' dtype=%s' % (self.gds_format_string(quote_attrib(self.dtype).encode(ExternalEncoding), input_name='dtype'), ))
+        if self.name is not None and 'name' not in already_processed:
+            already_processed.append('name')
+            outfile.write(' name=%s' % (self.gds_format_string(quote_attrib(self.name).encode(ExternalEncoding), input_name='name'), ))
+        if self.fileformat is not None and 'fileformat' not in already_processed:
+            already_processed.append('fileformat')
             outfile.write(' fileformat=%s' % (quote_attrib(self.fileformat), ))
     def exportChildren(self, outfile, level, namespace_='', name_='CData'):
         if self.description is not None:
             showIndent(outfile, level)
-            outfile.write('<%sdescription>%s</%sdescription>\n' % (namespace_, self.format_string(quote_xml(self.description).encode(ExternalEncoding), input_name='description'), namespace_))
+            outfile.write('<%sdescription>%s</%sdescription>\n' % (namespace_, self.gds_format_string(quote_xml(self.description).encode(ExternalEncoding), input_name='description'), namespace_))
         if self.metadata:
             self.metadata.export(outfile, level, namespace_, name_='metadata', )
     def hasContent_(self):
@@ -1516,17 +1626,24 @@ class CData(GeneratedsSuper):
             return False
     def exportLiteral(self, outfile, level, name_='CData'):
         level += 1
-        self.exportLiteralAttributes(outfile, level, name_)
+        self.exportLiteralAttributes(outfile, level, [], name_)
         if self.hasContent_():
             self.exportLiteralChildren(outfile, level, name_)
-    def exportLiteralAttributes(self, outfile, level, name_):
-        if self.src is not None:
+    def exportLiteralAttributes(self, outfile, level, already_processed, name_):
+        if self.src is not None and 'src' not in already_processed:
+            already_processed.append('src')
             showIndent(outfile, level)
             outfile.write('src = "%s",\n' % (self.src,))
-        if self.name is not None:
+        if self.dtype is not None and 'dtype' not in already_processed:
+            already_processed.append('dtype')
+            showIndent(outfile, level)
+            outfile.write('dtype = "%s",\n' % (self.dtype,))
+        if self.name is not None and 'name' not in already_processed:
+            already_processed.append('name')
             showIndent(outfile, level)
             outfile.write('name = "%s",\n' % (self.name,))
-        if self.fileformat is not None:
+        if self.fileformat is not None and 'fileformat' not in already_processed:
+            already_processed.append('fileformat')
             showIndent(outfile, level)
             outfile.write('fileformat = "%s",\n' % (self.fileformat,))
     def exportLiteralChildren(self, outfile, level, name_):
@@ -1540,22 +1657,28 @@ class CData(GeneratedsSuper):
             showIndent(outfile, level)
             outfile.write('),\n')
     def build(self, node):
-        self.buildAttributes(node, node.attrib)
+        self.buildAttributes(node, node.attrib, [])
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
             self.buildChildren(child, nodeName_)
-    def buildAttributes(self, node, attrs):
+    def buildAttributes(self, node, attrs, already_processed):
         value = attrs.get('src')
-        if value is not None:
+        if value is not None and 'src' not in already_processed:
+            already_processed.append('src')
             self.src = value
+        value = attrs.get('dtype')
+        if value is not None and 'dtype' not in already_processed:
+            already_processed.append('dtype')
+            self.dtype = value
         value = attrs.get('name')
-        if value is not None:
+        if value is not None and 'name' not in already_processed:
+            already_processed.append('name')
             self.name = value
         value = attrs.get('fileformat')
-        if value is not None:
+        if value is not None and 'fileformat' not in already_processed:
+            already_processed.append('fileformat')
             self.fileformat = value
-            self.validate_dataFileFormat(self.fileformat)    # validate type dataFileFormat
-    def buildChildren(self, child_, nodeName_):
+    def buildChildren(self, child_, nodeName_, from_subclass=False):
         if nodeName_ == 'description':
             description_ = child_.text
             self.description = description_
@@ -1606,7 +1729,7 @@ class CScript(GeneratedsSuper):
     def export(self, outfile, level, namespace_='', name_='CScript', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
-        self.exportAttributes(outfile, level, namespace_, name_='CScript')
+        self.exportAttributes(outfile, level, [], namespace_, name_='CScript')
         if self.hasContent_():
             outfile.write('>\n')
             self.exportChildren(outfile, level + 1, namespace_, name_)
@@ -1614,19 +1737,23 @@ class CScript(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, namespace_='', name_='CScript'):
-        if self.src is not None:
-            outfile.write(' src=%s' % (self.format_string(quote_attrib(self.src).encode(ExternalEncoding), input_name='src'), ))
-        if self.dtype is not None:
+    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='CScript'):
+        if self.src is not None and 'src' not in already_processed:
+            already_processed.append('src')
+            outfile.write(' src=%s' % (self.gds_format_string(quote_attrib(self.src).encode(ExternalEncoding), input_name='src'), ))
+        if self.dtype is not None and 'dtype' not in already_processed:
+            already_processed.append('dtype')
             outfile.write(' dtype=%s' % (quote_attrib(self.dtype), ))
-        if self.name is not None:
-            outfile.write(' name=%s' % (self.format_string(quote_attrib(self.name).encode(ExternalEncoding), input_name='name'), ))
-        if self.fileformat is not None:
+        if self.name is not None and 'name' not in already_processed:
+            already_processed.append('name')
+            outfile.write(' name=%s' % (self.gds_format_string(quote_attrib(self.name).encode(ExternalEncoding), input_name='name'), ))
+        if self.fileformat is not None and 'fileformat' not in already_processed:
+            already_processed.append('fileformat')
             outfile.write(' fileformat=%s' % (quote_attrib(self.fileformat), ))
     def exportChildren(self, outfile, level, namespace_='', name_='CScript'):
         if self.description is not None:
             showIndent(outfile, level)
-            outfile.write('<%sdescription>%s</%sdescription>\n' % (namespace_, self.format_string(quote_xml(self.description).encode(ExternalEncoding), input_name='description'), namespace_))
+            outfile.write('<%sdescription>%s</%sdescription>\n' % (namespace_, self.gds_format_string(quote_xml(self.description).encode(ExternalEncoding), input_name='description'), namespace_))
         if self.metadata:
             self.metadata.export(outfile, level, namespace_, name_='metadata', )
     def hasContent_(self):
@@ -1639,20 +1766,24 @@ class CScript(GeneratedsSuper):
             return False
     def exportLiteral(self, outfile, level, name_='CScript'):
         level += 1
-        self.exportLiteralAttributes(outfile, level, name_)
+        self.exportLiteralAttributes(outfile, level, [], name_)
         if self.hasContent_():
             self.exportLiteralChildren(outfile, level, name_)
-    def exportLiteralAttributes(self, outfile, level, name_):
-        if self.src is not None:
+    def exportLiteralAttributes(self, outfile, level, already_processed, name_):
+        if self.src is not None and 'src' not in already_processed:
+            already_processed.append('src')
             showIndent(outfile, level)
             outfile.write('src = "%s",\n' % (self.src,))
-        if self.dtype is not None:
+        if self.dtype is not None and 'dtype' not in already_processed:
+            already_processed.append('dtype')
             showIndent(outfile, level)
             outfile.write('dtype = "%s",\n' % (self.dtype,))
-        if self.name is not None:
+        if self.name is not None and 'name' not in already_processed:
+            already_processed.append('name')
             showIndent(outfile, level)
             outfile.write('name = "%s",\n' % (self.name,))
-        if self.fileformat is not None:
+        if self.fileformat is not None and 'fileformat' not in already_processed:
+            already_processed.append('fileformat')
             showIndent(outfile, level)
             outfile.write('fileformat = "%s",\n' % (self.fileformat,))
     def exportLiteralChildren(self, outfile, level, name_):
@@ -1666,26 +1797,28 @@ class CScript(GeneratedsSuper):
             showIndent(outfile, level)
             outfile.write('),\n')
     def build(self, node):
-        self.buildAttributes(node, node.attrib)
+        self.buildAttributes(node, node.attrib, [])
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
             self.buildChildren(child, nodeName_)
-    def buildAttributes(self, node, attrs):
+    def buildAttributes(self, node, attrs, already_processed):
         value = attrs.get('src')
-        if value is not None:
+        if value is not None and 'src' not in already_processed:
+            already_processed.append('src')
             self.src = value
         value = attrs.get('dtype')
-        if value is not None:
+        if value is not None and 'dtype' not in already_processed:
+            already_processed.append('dtype')
             self.dtype = value
-            self.validate_scriptEnumType(self.dtype)    # validate type scriptEnumType
         value = attrs.get('name')
-        if value is not None:
+        if value is not None and 'name' not in already_processed:
+            already_processed.append('name')
             self.name = value
         value = attrs.get('fileformat')
-        if value is not None:
+        if value is not None and 'fileformat' not in already_processed:
+            already_processed.append('fileformat')
             self.fileformat = value
-            self.validate_scriptFileFormat(self.fileformat)    # validate type scriptFileFormat
-    def buildChildren(self, child_, nodeName_):
+    def buildChildren(self, child_, nodeName_, from_subclass=False):
         if nodeName_ == 'description':
             description_ = child_.text
             self.description = description_
@@ -1734,7 +1867,7 @@ class CImagestack(GeneratedsSuper):
     def export(self, outfile, level, namespace_='', name_='CImagestack', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
-        self.exportAttributes(outfile, level, namespace_, name_='CImagestack')
+        self.exportAttributes(outfile, level, [], namespace_, name_='CImagestack')
         if self.hasContent_():
             outfile.write('>\n')
             self.exportChildren(outfile, level + 1, namespace_, name_)
@@ -1742,19 +1875,23 @@ class CImagestack(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, namespace_='', name_='CImagestack'):
-        if self.src is not None:
-            outfile.write(' src=%s' % (self.format_string(quote_attrib(self.src).encode(ExternalEncoding), input_name='src'), ))
-        if self.fileformat is not None:
+    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='CImagestack'):
+        if self.src is not None and 'src' not in already_processed:
+            already_processed.append('src')
+            outfile.write(' src=%s' % (self.gds_format_string(quote_attrib(self.src).encode(ExternalEncoding), input_name='src'), ))
+        if self.fileformat is not None and 'fileformat' not in already_processed:
+            already_processed.append('fileformat')
             outfile.write(' fileformat=%s' % (quote_attrib(self.fileformat), ))
-        if self.name is not None:
-            outfile.write(' name=%s' % (self.format_string(quote_attrib(self.name).encode(ExternalEncoding), input_name='name'), ))
-        if self.pattern is not None:
-            outfile.write(' pattern=%s' % (self.format_string(quote_attrib(self.pattern).encode(ExternalEncoding), input_name='pattern'), ))
+        if self.name is not None and 'name' not in already_processed:
+            already_processed.append('name')
+            outfile.write(' name=%s' % (self.gds_format_string(quote_attrib(self.name).encode(ExternalEncoding), input_name='name'), ))
+        if self.pattern is not None and 'pattern' not in already_processed:
+            already_processed.append('pattern')
+            outfile.write(' pattern=%s' % (self.gds_format_string(quote_attrib(self.pattern).encode(ExternalEncoding), input_name='pattern'), ))
     def exportChildren(self, outfile, level, namespace_='', name_='CImagestack'):
         if self.description is not None:
             showIndent(outfile, level)
-            outfile.write('<%sdescription>%s</%sdescription>\n' % (namespace_, self.format_string(quote_xml(self.description).encode(ExternalEncoding), input_name='description'), namespace_))
+            outfile.write('<%sdescription>%s</%sdescription>\n' % (namespace_, self.gds_format_string(quote_xml(self.description).encode(ExternalEncoding), input_name='description'), namespace_))
         if self.metadata:
             self.metadata.export(outfile, level, namespace_, name_='metadata', )
     def hasContent_(self):
@@ -1767,20 +1904,24 @@ class CImagestack(GeneratedsSuper):
             return False
     def exportLiteral(self, outfile, level, name_='CImagestack'):
         level += 1
-        self.exportLiteralAttributes(outfile, level, name_)
+        self.exportLiteralAttributes(outfile, level, [], name_)
         if self.hasContent_():
             self.exportLiteralChildren(outfile, level, name_)
-    def exportLiteralAttributes(self, outfile, level, name_):
-        if self.src is not None:
+    def exportLiteralAttributes(self, outfile, level, already_processed, name_):
+        if self.src is not None and 'src' not in already_processed:
+            already_processed.append('src')
             showIndent(outfile, level)
             outfile.write('src = "%s",\n' % (self.src,))
-        if self.fileformat is not None:
+        if self.fileformat is not None and 'fileformat' not in already_processed:
+            already_processed.append('fileformat')
             showIndent(outfile, level)
             outfile.write('fileformat = "%s",\n' % (self.fileformat,))
-        if self.name is not None:
+        if self.name is not None and 'name' not in already_processed:
+            already_processed.append('name')
             showIndent(outfile, level)
             outfile.write('name = "%s",\n' % (self.name,))
-        if self.pattern is not None:
+        if self.pattern is not None and 'pattern' not in already_processed:
+            already_processed.append('pattern')
             showIndent(outfile, level)
             outfile.write('pattern = "%s",\n' % (self.pattern,))
     def exportLiteralChildren(self, outfile, level, name_):
@@ -1794,25 +1935,28 @@ class CImagestack(GeneratedsSuper):
             showIndent(outfile, level)
             outfile.write('),\n')
     def build(self, node):
-        self.buildAttributes(node, node.attrib)
+        self.buildAttributes(node, node.attrib, [])
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
             self.buildChildren(child, nodeName_)
-    def buildAttributes(self, node, attrs):
+    def buildAttributes(self, node, attrs, already_processed):
         value = attrs.get('src')
-        if value is not None:
+        if value is not None and 'src' not in already_processed:
+            already_processed.append('src')
             self.src = value
         value = attrs.get('fileformat')
-        if value is not None:
+        if value is not None and 'fileformat' not in already_processed:
+            already_processed.append('fileformat')
             self.fileformat = value
-            self.validate_imagestackFileFormat(self.fileformat)    # validate type imagestackFileFormat
         value = attrs.get('name')
-        if value is not None:
+        if value is not None and 'name' not in already_processed:
+            already_processed.append('name')
             self.name = value
         value = attrs.get('pattern')
-        if value is not None:
+        if value is not None and 'pattern' not in already_processed:
+            already_processed.append('pattern')
             self.pattern = value
-    def buildChildren(self, child_, nodeName_):
+    def buildChildren(self, child_, nodeName_, from_subclass=False):
         if nodeName_ == 'description':
             description_ = child_.text
             self.description = description_
@@ -1840,7 +1984,7 @@ class description(GeneratedsSuper):
     def export(self, outfile, level, namespace_='', name_='description', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
-        self.exportAttributes(outfile, level, namespace_, name_='description')
+        self.exportAttributes(outfile, level, [], namespace_, name_='description')
         if self.hasContent_():
             outfile.write('>')
             outfile.write(self.valueOf_)
@@ -1848,7 +1992,7 @@ class description(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, namespace_='', name_='description'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='description'):
         pass
     def exportChildren(self, outfile, level, namespace_='', name_='description'):
         pass
@@ -1861,23 +2005,24 @@ class description(GeneratedsSuper):
             return False
     def exportLiteral(self, outfile, level, name_='description'):
         level += 1
-        self.exportLiteralAttributes(outfile, level, name_)
+        self.exportLiteralAttributes(outfile, level, [], name_)
         if self.hasContent_():
             self.exportLiteralChildren(outfile, level, name_)
-    def exportLiteralAttributes(self, outfile, level, name_):
-        pass
-    def exportLiteralChildren(self, outfile, level, name_):
         showIndent(outfile, level)
         outfile.write('valueOf_ = """%s""",\n' % (self.valueOf_,))
+    def exportLiteralAttributes(self, outfile, level, already_processed, name_):
+        pass
+    def exportLiteralChildren(self, outfile, level, name_):
+        pass
     def build(self, node):
-        self.buildAttributes(node, node.attrib)
+        self.buildAttributes(node, node.attrib, [])
         self.valueOf_ = get_all_text_(node)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
             self.buildChildren(child, nodeName_)
-    def buildAttributes(self, node, attrs):
+    def buildAttributes(self, node, attrs, already_processed):
         pass
-    def buildChildren(self, child_, nodeName_):
+    def buildChildren(self, child_, nodeName_, from_subclass=False):
         pass
 # end class description
 
@@ -1903,7 +2048,7 @@ class Metadata(GeneratedsSuper):
     def export(self, outfile, level, namespace_='', name_='Metadata', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
-        self.exportAttributes(outfile, level, namespace_, name_='Metadata')
+        self.exportAttributes(outfile, level, [], namespace_, name_='Metadata')
         if self.hasContent_():
             outfile.write('>\n')
             self.exportChildren(outfile, level + 1, namespace_, name_)
@@ -1911,7 +2056,7 @@ class Metadata(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, namespace_='', name_='Metadata'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='Metadata'):
         pass
     def exportChildren(self, outfile, level, namespace_='', name_='Metadata'):
         for data_ in self.data:
@@ -1925,10 +2070,10 @@ class Metadata(GeneratedsSuper):
             return False
     def exportLiteral(self, outfile, level, name_='Metadata'):
         level += 1
-        self.exportLiteralAttributes(outfile, level, name_)
+        self.exportLiteralAttributes(outfile, level, [], name_)
         if self.hasContent_():
             self.exportLiteralChildren(outfile, level, name_)
-    def exportLiteralAttributes(self, outfile, level, name_):
+    def exportLiteralAttributes(self, outfile, level, already_processed, name_):
         pass
     def exportLiteralChildren(self, outfile, level, name_):
         showIndent(outfile, level)
@@ -1944,13 +2089,13 @@ class Metadata(GeneratedsSuper):
         showIndent(outfile, level)
         outfile.write('],\n')
     def build(self, node):
-        self.buildAttributes(node, node.attrib)
+        self.buildAttributes(node, node.attrib, [])
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
             self.buildChildren(child, nodeName_)
-    def buildAttributes(self, node, attrs):
+    def buildAttributes(self, node, attrs, already_processed):
         pass
-    def buildChildren(self, child_, nodeName_):
+    def buildChildren(self, child_, nodeName_, from_subclass=False):
         if nodeName_ == 'data': 
             obj_ = data.factory()
             obj_.build(child_)
@@ -1979,7 +2124,7 @@ class data(GeneratedsSuper):
     def export(self, outfile, level, namespace_='', name_='data', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
-        self.exportAttributes(outfile, level, namespace_, name_='data')
+        self.exportAttributes(outfile, level, [], namespace_, name_='data')
         if self.hasContent_():
             outfile.write('>')
             outfile.write(self.valueOf_)
@@ -1987,9 +2132,10 @@ class data(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, namespace_='', name_='data'):
-        if self.key is not None:
-            outfile.write(' key=%s' % (self.format_string(quote_attrib(self.key).encode(ExternalEncoding), input_name='key'), ))
+    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='data'):
+        if self.key is not None and 'key' not in already_processed:
+            already_processed.append('key')
+            outfile.write(' key=%s' % (self.gds_format_string(quote_attrib(self.key).encode(ExternalEncoding), input_name='key'), ))
     def exportChildren(self, outfile, level, namespace_='', name_='data'):
         pass
     def hasContent_(self):
@@ -2001,27 +2147,30 @@ class data(GeneratedsSuper):
             return False
     def exportLiteral(self, outfile, level, name_='data'):
         level += 1
-        self.exportLiteralAttributes(outfile, level, name_)
+        self.exportLiteralAttributes(outfile, level, [], name_)
         if self.hasContent_():
             self.exportLiteralChildren(outfile, level, name_)
-    def exportLiteralAttributes(self, outfile, level, name_):
-        if self.key is not None:
+        showIndent(outfile, level)
+        outfile.write('valueOf_ = """%s""",\n' % (self.valueOf_,))
+    def exportLiteralAttributes(self, outfile, level, already_processed, name_):
+        if self.key is not None and 'key' not in already_processed:
+            already_processed.append('key')
             showIndent(outfile, level)
             outfile.write('key = "%s",\n' % (self.key,))
     def exportLiteralChildren(self, outfile, level, name_):
-        showIndent(outfile, level)
-        outfile.write('valueOf_ = """%s""",\n' % (self.valueOf_,))
+        pass
     def build(self, node):
-        self.buildAttributes(node, node.attrib)
+        self.buildAttributes(node, node.attrib, [])
         self.valueOf_ = get_all_text_(node)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
             self.buildChildren(child, nodeName_)
-    def buildAttributes(self, node, attrs):
+    def buildAttributes(self, node, attrs, already_processed):
         value = attrs.get('key')
-        if value is not None:
+        if value is not None and 'key' not in already_processed:
+            already_processed.append('key')
             self.key = value
-    def buildChildren(self, child_, nodeName_):
+    def buildChildren(self, child_, nodeName_, from_subclass=False):
         pass
 # end class data
 
@@ -2045,6 +2194,9 @@ def parse(inFileName):
     doc = parsexml_(inFileName)
     rootNode = doc.getroot()
     rootTag, rootClass = get_root_tag(rootNode)
+    if rootClass is None:
+        rootTag = 'connectome'
+        rootClass = connectome
     rootObj = rootClass.factory()
     rootObj.build(rootNode)
     # Enable Python to collect the space used by the DOM.
@@ -2060,6 +2212,9 @@ def parseString(inString):
     doc = parsexml_(StringIO(inString))
     rootNode = doc.getroot()
     rootTag, rootClass = get_root_tag(rootNode)
+    if rootClass is None:
+        rootTag = 'connectome'
+        rootClass = connectome
     rootObj = rootClass.factory()
     rootObj.build(rootNode)
     # Enable Python to collect the space used by the DOM.
@@ -2074,6 +2229,9 @@ def parseLiteral(inFileName):
     doc = parsexml_(inFileName)
     rootNode = doc.getroot()
     rootTag, rootClass = get_root_tag(rootNode)
+    if rootClass is None:
+        rootTag = 'connectome'
+        rootClass = connectome
     rootObj = rootClass.factory()
     rootObj.build(rootNode)
     # Enable Python to collect the space used by the DOM.
@@ -2098,3 +2256,19 @@ if __name__ == '__main__':
     #import pdb; pdb.set_trace()
     main()
 
+
+__all__ = [
+    "CData",
+    "CImagestack",
+    "CMetadata",
+    "CNetwork",
+    "CScript",
+    "CSurface",
+    "CTimeserie",
+    "CTrack",
+    "CVolume",
+    "Metadata",
+    "connectome",
+    "data",
+    "description"
+    ]

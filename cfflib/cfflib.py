@@ -1,11 +1,10 @@
 #!/usr/bin/env python
 
 #
-# Generated Wed Dec 22 15:53:22 2010 by generateDS.py version 2.1a.
+# Generated Mon Jan 17 18:32:32 2011 by generateDS.py version 2.3b.
 #
 
 import sys
-from string import lower as str_lower
 
 import cff as supermod
 
@@ -79,8 +78,8 @@ supermod.connectome.subclass = connectome
 
 
 class CMetadata(supermod.CMetadata):
-    def __init__(self, version=None, generator=None, name=None, author=None, email=None, institution=None, creation_date=None, modification_date=None, species=None, legal_notice=None, reference=None, url=None, description=None, metadata=None):
-        super(CMetadata, self).__init__(version, generator, name, author, email, institution, creation_date, modification_date, species, legal_notice, reference, url, description, metadata, )
+    def __init__(self, version=None, title=None, creator=None, publisher=None, created=None, modified=None, rights=None, license=None, references=None, relation=None, generator=None, species=None, email=None, metadata=None):
+        super(CMetadata, self).__init__(version, title, creator, publisher, created, modified, rights, license, references, relation, generator, species, email, metadata, )
 supermod.CMetadata.subclass = CMetadata
 # end class CMetadata
 
@@ -107,22 +106,22 @@ supermod.CVolume.subclass = CVolume
 
 
 class CTrack(supermod.CTrack):
-    def __init__(self, src=None, name=None, fileformat='TrackVis', description=None, metadata=None):
-        super(CTrack, self).__init__(src, name, fileformat, description, metadata, )
+    def __init__(self, src=None, dtype=None, name=None, fileformat='TrackVis', description=None, metadata=None):
+        super(CTrack, self).__init__(src, dtype, name, fileformat, description, metadata, )
 supermod.CTrack.subclass = CTrack
 # end class CTrack
 
 
 class CTimeserie(supermod.CTimeserie):
-    def __init__(self, src=None, name=None, fileformat='HDF5', description=None, metadata=None):
-        super(CTimeserie, self).__init__(src, name, fileformat, description, metadata, )
+    def __init__(self, src=None, dtype=None, name=None, fileformat='HDF5', description=None, metadata=None):
+        super(CTimeserie, self).__init__(src, dtype, name, fileformat, description, metadata, )
 supermod.CTimeserie.subclass = CTimeserie
 # end class CTimeserie
 
 
 class CData(supermod.CData):
-    def __init__(self, src=None, name=None, fileformat=None, description=None, metadata=None):
-        super(CData, self).__init__(src, name, fileformat, description, metadata, )
+    def __init__(self, src=None, dtype=None, name=None, fileformat=None, description=None, metadata=None):
+        super(CData, self).__init__(src, dtype, name, fileformat, description, metadata, )
 supermod.CData.subclass = CData
 # end class CData
 
@@ -168,6 +167,9 @@ def parse(inFilename):
     doc = parsexml_(inFilename)
     rootNode = doc.getroot()
     rootTag, rootClass = get_root_tag(rootNode)
+    if rootClass is None:
+        rootTag = 'connectome'
+        rootClass = supermod.connectome
     rootObj = rootClass.factory()
     rootObj.build(rootNode)
     # Enable Python to collect the space used by the DOM.
@@ -184,6 +186,9 @@ def parseString(inString):
     doc = parsexml_(StringIO(inString))
     rootNode = doc.getroot()
     rootTag, rootClass = get_root_tag(rootNode)
+    if rootClass is None:
+        rootTag = 'connectome'
+        rootClass = supermod.connectome
     rootObj = rootClass.factory()
     rootObj.build(rootNode)
     # Enable Python to collect the space used by the DOM.
@@ -198,6 +203,9 @@ def parseLiteral(inFilename):
     doc = parsexml_(inFilename)
     rootNode = doc.getroot()
     rootTag, rootClass = get_root_tag(rootNode)
+    if rootClass is None:
+        rootTag = 'connectome'
+        rootClass = supermod.connectome
     rootObj = rootClass.factory()
     rootObj.build(rootNode)
     # Enable Python to collect the space used by the DOM.
