@@ -1,9 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<xsd:schema xmlns="http://www.connectomics.org/2010/Connectome/xmlns" xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://www.connectomics.org/2010/Connectome/xmlns">
+<xsd:schema elementFormDefault="qualified"
+	targetNamespace="http://www.connectomics.org/cff-2"
+	xmlns="http://www.connectomics.org/cff-2"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:dc="http://purl.org/dc/elements/1.1/" >
+
+<import namespace="http://purl.org/dc/elements/1.1/" 
+        schemaLocation="http://dublincore.org/schemas/xmls/qdc/2008/02/11/dc.xsd"/>
 
 <xsd:annotation xml:lang="en">
     <xsd:documentation>
-    Stephan Gerhard, Version 2.0
+    Connectome File Markup, Version 2.0
+    Created 17-01-2011 by Stephan Gerhard (connectome@unidesign.ch)
     </xsd:documentation>
 </xsd:annotation>
 
@@ -192,15 +200,15 @@
     </xsd:annotation>
   </xsd:element>
   
-   <xsd:element minOccurs="1" name="name" type="xsd:string" use="required">
+   <xsd:element minOccurs="1" name="title" type="dc:title" use="required">
     <xsd:annotation xml:lang="en">
       <xsd:documentation>
-      Short name for this connectome file
+      Title of the connectome resource
       </xsd:documentation>
     </xsd:annotation>
     </xsd:element>  
   
-   <xsd:element minOccurs="1" name="author" type="xsd:string">
+   <xsd:element minOccurs="1" ref="dc:creator">
     <xsd:annotation xml:lang="en">
       <xsd:documentation>
       Author(s) of the data
