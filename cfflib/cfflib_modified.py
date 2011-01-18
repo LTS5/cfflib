@@ -1028,7 +1028,7 @@ class CTimeserie(supermod.CTimeserie, CBaseClass):
 supermod.CTimeserie.subclass = CTimeserie
 # end class CTimeserie
 
-# TODO add classmethod and adders in connectome
+
 class CData(supermod.CData, CBaseClass):
     """Connectome data object"""
     
@@ -1130,7 +1130,6 @@ supermod.CScript.subclass = CScript
 # end class CScript
 
 
-# TODO add classmethod and adders in connectome
 class CImagestack(supermod.CImagestack, CBaseClass):
     def __init__(self, src=None, fileformat=None, name=None, pattern=None, description=None, metadata=None):
         super(CImagestack, self).__init__(src, fileformat, name, pattern, description, metadata, )
