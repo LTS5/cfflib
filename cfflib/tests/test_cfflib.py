@@ -1,19 +1,24 @@
 # ================================================================================== #
-# TESTS functions for the cfflib 
+# TEST functions for the cfflib 
 # ================================================================================== #
 
 
+# ---------------------------------------------------------------------------------- #
 from nose.tools import assert_true, assert_false, assert_equal, assert_almost_equal, assert_not_equal
 from numpy.testing import assert_array_equal, assert_array_almost_equal
 from cfflib import *
 import tempfile
 import os.path as op
+# ---------------------------------------------------------------------------------- #
 
 
+# ---------------------------------------------------------------------------------- #
 # Load and store data locations
-TMP        = tempfile.gettempdir()
+TMP = tempfile.gettempdir()
+# ---------------------------------------------------------------------------------- #
 
 
+# ---------------------------------------------------------------------------------- #
 # Test the connectome object and the CMetadata
 def test_connectome():
 
@@ -45,8 +50,10 @@ def test_connectome():
     
     c.connectome_meta.set_description('First connectome object created with the tutorial.')
     assert_equal(c.connectome_meta.get_description(), 'First connectome object created with the tutorial.')
+# ---------------------------------------------------------------------------------- #
 
 
+# ---------------------------------------------------------------------------------- #
 # Test the connectome network
 # With nxgraph
 def test_cnetwork_nxgraph():
@@ -99,8 +106,10 @@ def test_cnetwork_graphml():
     c.add_connectome_network_from_graphml('2nd graphml', 'data/Networks/network_res83.graphml')
     assert_equal(len(c.get_connectome_network()), 2)
     assert_equal(c.get_connectome_network()[1].get_name(), '2nd graphml')
+# ---------------------------------------------------------------------------------- #
 
 
+# ---------------------------------------------------------------------------------- #
 # Test the description and metadata
 def test_desc_meta():
 
@@ -117,8 +126,10 @@ def test_desc_meta():
     
     n.set_description('An useless description...')
     assert_equal(n.get_description(),'An useless description...')
+# ---------------------------------------------------------------------------------- #
     
     
+# ---------------------------------------------------------------------------------- #
 # Test SAVE and LOAD 
 def test_save_load():
 
@@ -141,11 +152,14 @@ def test_save_load():
     assert_equal(c2.get_connectome_meta().get_version(), '2.0')
     assert_equal(c2.get_connectome_network()[0].get_src(), 'CNetwork/graphml_net.graphml')
     assert_true(c2.get_connectome_network()[0].get_metadata_as_dict().has_key('nb'))
+# ---------------------------------------------------------------------------------- #
 
 
+# ---------------------------------------------------------------------------------- #
 # Test CVolume
 # With a Nifti1 file 
 def test_cvolume_nifti1():
+
     c = connectome()
     
     v = CVolume.create_from_nifti('CVolume', 'data/Volumes/T1.nii.gz')
@@ -163,11 +177,14 @@ def test_cvolume_nifti1():
     c.add_connectome_volume(v)
     assert_not_equal(c.get_connectome_volume(), [])
     assert_equal(len(c.get_connectome_volume()), 1)
+# ---------------------------------------------------------------------------------- #
 
 
+# ---------------------------------------------------------------------------------- #
 # Test CTrack
 # with a trk file 
 def test_ctrack_trk():
+
     c = connectome()
     
     t = CTrack.create_from_trackvis('my track', 'data/Tracks/fibers_transformed.trk')
@@ -177,11 +194,14 @@ def test_ctrack_trk():
     c.add_connectome_track(t)
     assert_not_equal(c.get_connectome_track(), [])
     assert_equal(len(c.get_connectome_track()), 1)
+# ---------------------------------------------------------------------------------- #
 
 
+# ---------------------------------------------------------------------------------- #
 # Test CTimeserie
 # with a HDF5 file 
 def test_ctimeserie_hdf5():
+
     c = connectome()
     
     t = CTimeserie.create_from_hdf5('my timeserie', 'data/Timeseries/generatedseries.hdf5')
@@ -191,11 +211,14 @@ def test_ctimeserie_hdf5():
     c.add_connectome_timeserie(t)
     assert_not_equal(c.get_connectome_timeserie(), [])
     assert_equal(len(c.get_connectome_timeserie()), 1)
+# ---------------------------------------------------------------------------------- #
+   
     
-
+# ---------------------------------------------------------------------------------- #
 # Test CSurface
 # with a Gifti file 
 def test_csurface_gifti():
+
     c = connectome()
     
     s = CSurface.create_from_gifti('my surface', 'data/Surfaces/testsubject_labels.gii')
@@ -205,24 +228,8 @@ def test_csurface_gifti():
     c.add_connectome_surface(s)
     assert_not_equal(c.get_connectome_surface(), [])
     assert_equal(len(c.get_connectome_surface()), 1)
+# ---------------------------------------------------------------------------------- #
 
 
-
-
-
-
-
-
-
-## test to save a CSurface from gifti file to cff 
-#def test_load_save_csurf():
-#    
-#    cs = CSurface.create_from_gifti('My first surface', op.join(DATAFOLDER, 'testsubject_labels.gii')) # Path to the gifti file
-#    cs.set_description('My first CSurface')
-#    cs.update_metadata({'meta1':'a metadata for my CSurface'})
-#    c = connectome('test CSurface')
-#    c.add_connectome_surface(cs)
-#    save_to_cff(c,'test4.cff')
-#    
-#    
-#    
+# ================================================================================== #
+   
