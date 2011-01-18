@@ -9,7 +9,6 @@ import tempfile
 import os.path as op
 
 # Load and store data locations
-DATAFOLDER = '/home/cwis/data_cff/tuto/'
 TMP        = tempfile.gettempdir()
 
 # Test the connectome object and the CMetadata
@@ -86,23 +85,23 @@ def test_cnetwork_graphml():
 
     c = connectome()
     
-    n = CNetwork.create_from_graphml('GraphML net', op.join(DATAFOLDER, 'network_res83.graphml'))
+    n = CNetwork.create_from_graphml('GraphML net', 'data/Networks/network_res83.graphml')
     assert_equal(n.name, 'GraphML net')
     assert_equal(n.fileformat, 'GraphML')
     c.add_connectome_network(n)
     assert_not_equal(c.get_connectome_network(), [])
     assert_equal(c.get_connectome_network()[0].src, 'CNetwork/graphml_net.graphml')
     
-    c.add_connectome_network_from_graphml('2nd graphml', op.join(DATAFOLDER, 'network_res83.graphml'))
+    c.add_connectome_network_from_graphml('2nd graphml', 'data/Networks/network_res83.graphml')
     assert_equal(len(c.get_connectome_network()), 2)
     assert_equal(c.get_connectome_network()[1].name, '2nd graphml')
 
 # Test the description and metadata
-#def test_desc_meta():
-#    c = connectome('desc & meta connectome')
-#    n = CNetwork()
-#    n.update_metadata({'m1':'v1', 'm2':121})
-#    assert_equal(n.get_metadata_as_dict(), {'m1':'v1', 'm2':121})
+def test_desc_meta():
+    c = connectome('desc & meta connectome')
+    n = CNetwork()
+    n.update_metadata({'m1':'v1', 'm2':121})
+    assert_not_equal(n.get_metadata_as_dict(), None)
 
 # Test SAVE and LOAD 
 def test_save_load():
@@ -112,7 +111,7 @@ def test_save_load():
     assert_equal(c.get_connectome_meta().generator, 'cfflib')
     assert_equal(c.get_connectome_meta().version, '2.0')
     
-    c.add_connectome_network_from_graphml('GraphML net', op.join(DATAFOLDER, 'network_res83.graphml'))
+    c.add_connectome_network_from_graphml('GraphML net', 'data/Networks/network_res83.graphml')
     assert_equal(c.get_connectome_network()[0].src, 'CNetwork/graphml_net.graphml')
     n = c.get_connectome_network()[0]
     n.update_metadata({'nb':123})
