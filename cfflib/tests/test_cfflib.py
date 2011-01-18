@@ -179,6 +179,21 @@ def test_ctrack_trk():
     assert_equal(len(c.get_connectome_track()), 1)
 
 
+# Test CTimeserie
+# with a HDF5 file 
+def test_ctimeserie_hdf5():
+    c = connectome()
+    
+    t = CTimeserie.create_from_hdf5('my timeserie', 'data/Timeseries/generatedseries.hdf5')
+    assert_equal(t.get_name(), 'my timeserie')
+    assert_equal(t.get_src(), 'CTimeserie/my_timeserie.h5')
+
+    c.add_connectome_timeserie(t)
+    assert_not_equal(c.get_connectome_timeserie(), [])
+    assert_equal(len(c.get_connectome_timeserie()), 1)
+    
+
+
 
 
 

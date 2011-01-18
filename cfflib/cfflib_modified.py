@@ -988,6 +988,11 @@ class CTimeserie(supermod.CTimeserie, CBaseClass):
         ctime : CTimeserie
         
         """
+        
+        # Check if the HDF5 file exists
+        if not os.path.exists(hdf_filename):
+            raise Exception('Input file not found')
+            
         ctime            = CTimeserie(name) 
         ctime.tmpsrc     = op.abspath(hdf_filename)
         ctime.fileformat = "HDF5"
