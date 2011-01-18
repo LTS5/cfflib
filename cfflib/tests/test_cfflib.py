@@ -102,6 +102,7 @@ def test_desc_meta():
     n = CNetwork()
     n.update_metadata({'m1':'v1', 'm2':121})
     assert_not_equal(n.get_metadata_as_dict(), None)
+    assert_equal(n.get_metadata_as_dict()['m1'], 'v1')
 
 # Test SAVE and LOAD 
 def test_save_load():
