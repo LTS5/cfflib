@@ -478,6 +478,31 @@ class connectome(supermod.connectome):
         
         self.connectome_timeserie.append(cts)
     
+    # CScript
+    def add_connectome_script(self, cts):
+        """Add the given CScript to the connectome object.
+        
+        Parameters
+        ----------
+        cscr : CScript,
+            the connectome script to add to the connectome, the CScript name have to be unique.
+            
+        See also
+        --------
+        CScript, connectome
+            
+        """
+              
+        # Check if the name is set     
+        if cscr.name is None or cscr.name == '':
+            raise Exception('A name is required.')
+        
+        # Check if the name is unique
+        if not self.is_name_unique(cscr.name):
+            raise Exception('The name is not unique.')
+        
+        self.connectome_script.append(cscr)
+    
 supermod.connectome.subclass = connectome
 # end class connectome
 
@@ -1047,7 +1072,6 @@ supermod.CData.subclass = CData
 # end class CData
 
 
-# TODO add adders in connectome
 class CScript(supermod.CScript, CBaseClass):
     """Connectome script object"""
 
@@ -1088,6 +1112,11 @@ class CScript(supermod.CScript, CBaseClass):
         cscr : CScript
         
         """
+        
+        # Check if the file exists
+        if not os.path.exists(filename):
+            raise Exception('Input file not found')
+                    
         cscr            = CScript(name=name) 
         cscr.tmpsrc     = op.abspath(filename)
         cscr.fileformat = fileformat
