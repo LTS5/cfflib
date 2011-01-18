@@ -451,7 +451,7 @@ class connectome(supermod.connectome):
         if not self.is_name_unique(ctrack.name):
             raise Exception('The name is not unique.')
         
-        self.connectome_surface.append(ctrack)
+        self.connectome_track.append(ctrack)
     
     # CTimeserie
     def add_connectome_timeserie(self, cts):
@@ -758,6 +758,11 @@ class CSurface(supermod.CSurface, CBaseClass):
         csurf : CSurface
         
         """
+        
+        # Check if the Gifti file exists
+        if not os.path.exists(gii_filename):
+            raise Exception('Input file not found')
+            
         csurf            = CSurface(name) 
         csurf.tmpsrc     = op.abspath(gii_filename)
         csurf.fileformat = "Gifti"
@@ -836,6 +841,11 @@ class CVolume(supermod.CVolume, CBaseClass):
         cvol : CVolume
         
         """
+        
+        # Check if the Nifti1 file exists
+        if not os.path.exists(nii_filename):
+            raise Exception('Input file not found')
+            
         cvol            = CVolume(name) 
         cvol.tmpsrc     = op.abspath(nii_filename)
         cvol.fileformat = "Nifti1"
@@ -876,6 +886,8 @@ class CTrack(supermod.CTrack, CBaseClass):
         
         if metadataDict is not None:
             self.update_metadata(metadataDict)
+        else:
+            self.metadata = Metadata()
                         
     def get_unique_relpath(self):
         """ Return a unique relative path for this element """
@@ -904,6 +916,11 @@ class CTrack(supermod.CTrack, CBaseClass):
         ctrack : CTrack
         
         """
+        
+        # Check if the TrackVis file exists
+        if not os.path.exists(trk_filename):
+            raise Exception('Input file not found')
+            
         ctrack            = CTrack(name) 
         ctrack.tmpsrc     = op.abspath(trk_filename)
         ctrack.fileformat = "TrackVis"

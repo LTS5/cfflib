@@ -2,14 +2,17 @@
 # TESTS functions for the cfflib 
 # ================================================================================== #
 
+
 from nose.tools import assert_true, assert_false, assert_equal, assert_almost_equal, assert_not_equal
 from numpy.testing import assert_array_equal, assert_array_almost_equal
 from cfflib import *
 import tempfile
 import os.path as op
 
+
 # Load and store data locations
 TMP        = tempfile.gettempdir()
+
 
 # Test the connectome object and the CMetadata
 def test_connectome():
@@ -42,6 +45,7 @@ def test_connectome():
     
     c.connectome_meta.set_description('First connectome object created with the tutorial.')
     assert_equal(c.connectome_meta.get_description(), 'First connectome object created with the tutorial.')
+
 
 # Test the connectome network
 # With nxgraph
@@ -96,14 +100,25 @@ def test_cnetwork_graphml():
     assert_equal(len(c.get_connectome_network()), 2)
     assert_equal(c.get_connectome_network()[1].get_name(), '2nd graphml')
 
+
 # Test the description and metadata
 def test_desc_meta():
+
     c = connectome('desc & meta connectome')
     n = CNetwork()
+    
     n.update_metadata({'m1':'v1', 'm2':121})
     assert_not_equal(n.get_metadata_as_dict(), None)
     assert_equal(n.get_metadata_as_dict()['m1'], 'v1')
-
+    assert_equal(n.get_metadata_as_dict()['m2'], '121')
+    
+    n.update_metadata({'m1':'v2'})
+    assert_equal(n.get_metadata_as_dict()['m1'], 'v2')
+    
+    n.set_description('An useless description...')
+    assert_equal(n.get_description(),'An useless description...')
+    
+    
 # Test SAVE and LOAD 
 def test_save_load():
 
@@ -127,35 +142,52 @@ def test_save_load():
     assert_equal(c2.get_connectome_network()[0].get_src(), 'CNetwork/graphml_net.graphml')
     assert_true(c2.get_connectome_network()[0].get_metadata_as_dict().has_key('nb'))
 
-#def test_save_nx2cff():
-#    c = connectome('test networkx')
-#    net = CNetwork('test')
-#    assert_equal(net.get_metadata_as_dict(), {})
-#    net.update_metadata({'sd':1234})
-#    assert_true(net.get_metadata_as_dict().has_key('sd'))
-#    assert_equal(net.get_metadata_as_dict(), {})
-#    c.add_connectome_network(net)
-#    net.set_with_nxgraph('tet', nx.Graph())
-#    save_to_cff(c,'test.cff')
+
+# Test CVolume
+# With a Nifti1 file 
+def test_cvolume_nifti1():
+    c = connectome()
+    
+    v = CVolume.create_from_nifti('CVolume', 'data/Volumes/T1.nii.gz')
+    assert_equal(v.get_name(), 'CVolume')
+    
+    v.set_name('My volume')
+    assert_equal(v.get_name(), 'My volume')
+    
+    v.set_description('My first CVolume')
+    assert_equal(v.get_description(), 'My first CVolume')
+    
+    v.update_metadata({'meta1':'only T1 scan of this patient'})
+    assert_equal(v.get_metadata_as_dict()['meta1'], 'only T1 scan of this patient')
+    
+    c.add_connectome_volume(v)
+    assert_not_equal(c.get_connectome_volume(), [])
+    assert_equal(len(c.get_connectome_volume()), 1)
 
 
-## test to save a CNetwork from GraphML to cff 
-#def test_save_gml2cff():
-#    c = connectome('test graphml')
-#    net = CNetwork.create_from_graphml('my net', op.join(DATAFOLDER, 'network_res83.graphml'))
-#    net.update_metadata({'sd':1234})
-#    c.add_connectome_network(net)
-#    save_to_cff(c,op.join(TMP,'test2.cff'))
-#       
-## test to save a CVolume from nifti1 file to cff 
-#def test_load_save_cvol():
-#    cv = CVolume.create_from_nifti('My first volume', op.join(DATAFOLDER, 'T1.nii.gz')) # Path to the nifti1 file
-#    cv.set_description('My first CVolume')
-#    cv.update_metadata({'meta1':'only T1 scan of this patient'})
-#    c = connectome('test CVolume')
-#    c.add_connectome_volume(cv)
-#    save_to_cff(c,'test3.cff')
-#        
+# Test CTrack
+# with a trk file 
+def test_ctrack_trk():
+    c = connectome()
+    
+    t = CTrack.create_from_trackvis('my track', 'data/Tracks/fibers_transformed.trk')
+    assert_equal(t.get_name(), 'my track')
+    assert_equal(t.get_src(), 'CTrack/my_track.trk')
+
+    c.add_connectome_track(t)
+    assert_not_equal(c.get_connectome_track(), [])
+    assert_equal(len(c.get_connectome_track()), 1)
+
+
+
+
+
+
+
+
+
+
+
 ## test to save a CSurface from gifti file to cff 
 #def test_load_save_csurf():
 #    
