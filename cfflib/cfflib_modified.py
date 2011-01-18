@@ -613,6 +613,8 @@ class CNetwork(supermod.CNetwork, CBaseClass):
         super(CNetwork, self).__init__(src, dtype, name, fileformat, None, description, )
         if metadataDict is not None:
             self.update_metadata(metadataDict)
+        else:
+            self.update_metadata({})
         
     def get_unique_relpath(self):
         """ Return a unique relative path for this element """
@@ -979,11 +981,30 @@ class CTimeserie(supermod.CTimeserie, CBaseClass):
 supermod.CTimeserie.subclass = CTimeserie
 # end class CTimeserie
 
-
+# TODO add classmethod and adders in connectome
 class CData(supermod.CData, CBaseClass):
     """Connectome data object"""
     
-    def __init__(self, src=None, name=None, fileformat=None, description=None, metadata=None):
+    def __init__(self, name='mydata', fileformat=None, src=None, description=None, metadata=None):
+        """Create a connectome data object
+        
+        Parameters
+        ----------
+        name : 'mydata',
+            the unique name of the data
+        fileformat : 'HDF5',
+            the fileformat of the timeserie, only 'HDF5' is supported
+        src : string, optional,
+            the source file of the timeserie
+        description : string, optional,
+            a description of the timeserie
+        metadataDict : dictionary, optional,
+            some metadata related to the timeserie as a dictionary
+            
+        See also
+        --------
+        Metadata, connectome 
+        """
         super(CData, self).__init__(src, name, fileformat, description, metadata, )
                 
     def get_unique_relpath(self):
@@ -1004,6 +1025,7 @@ supermod.CData.subclass = CData
 # end class CData
 
 
+# TODO add adders in connectome
 class CScript(supermod.CScript, CBaseClass):
     """Connectome script object"""
 
@@ -1057,6 +1079,7 @@ supermod.CScript.subclass = CScript
 # end class CScript
 
 
+# TODO add classmethod and adders in connectome
 class CImagestack(supermod.CImagestack, CBaseClass):
     def __init__(self, src=None, fileformat=None, name=None, pattern=None, description=None, metadata=None):
         super(CImagestack, self).__init__(src, fileformat, name, pattern, description, metadata, )
