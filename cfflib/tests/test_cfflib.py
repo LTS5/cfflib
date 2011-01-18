@@ -193,7 +193,18 @@ def test_ctimeserie_hdf5():
     assert_equal(len(c.get_connectome_timeserie()), 1)
     
 
+# Test CSurface
+# with a Gifti file 
+def test_csurface_gifti():
+    c = connectome()
+    
+    s = CSurface.create_from_gifti('my surface', 'data/Surfaces/testsubject_labels.gii')
+    assert_equal(s.get_name(), 'my surface')
+    assert_equal(s.get_src(), 'CSurface/my_surface.gii')
 
+    c.add_connectome_surface(s)
+    assert_not_equal(c.get_connectome_surface(), [])
+    assert_equal(len(c.get_connectome_surface()), 1)
 
 
 
