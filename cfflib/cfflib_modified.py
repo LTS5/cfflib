@@ -752,7 +752,7 @@ class CSurface(supermod.CSurface, CBaseClass):
         
         if metadataDict is not None:
             self.update_metadata(metadataDict)
-        else
+        else:
             self.metadata = Metadata()
         
     def get_unique_relpath(self):
