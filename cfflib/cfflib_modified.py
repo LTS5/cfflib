@@ -639,7 +639,7 @@ class CNetwork(supermod.CNetwork, CBaseClass):
         if metadataDict is not None:
             self.update_metadata(metadataDict)
         else:
-            self.update_metadata({})
+            self.metadata = Metadata()
         
     def get_unique_relpath(self):
         """ Return a unique relative path for this element """
@@ -752,6 +752,8 @@ class CSurface(supermod.CSurface, CBaseClass):
         
         if metadataDict is not None:
             self.update_metadata(metadataDict)
+        else
+            self.metadata = Metadata()
         
     def get_unique_relpath(self):
         """ Return a unique relative path for this element """
@@ -830,6 +832,8 @@ class CVolume(supermod.CVolume, CBaseClass):
         
         if metadataDict is not None:
             self.update_metadata(metadataDict)
+        else:
+            self.metadata = Metadata()
                   
     def get_unique_relpath(self):
         """ Return a unique relative path for this element """
@@ -984,6 +988,8 @@ class CTimeserie(supermod.CTimeserie, CBaseClass):
         
         if metadataDict is not None:
             self.update_metadata(metadataDict)
+        else:
+            self.metadata = Metadata()
                 
     def get_unique_relpath(self):
         """ Return a unique relative path for this element """
@@ -1032,27 +1038,32 @@ supermod.CTimeserie.subclass = CTimeserie
 class CData(supermod.CData, CBaseClass):
     """Connectome data object"""
     
-    def __init__(self, name='mydata', fileformat=None, src=None, description=None, metadata=None):
+    def __init__(self, name='mydata', fileformat=None, src=None, description=None, metadataDict=None):
         """Create a connectome data object
         
         Parameters
         ----------
         name : 'mydata',
             the unique name of the data
-        fileformat : 'HDF5',
-            the fileformat of the timeserie, only 'HDF5' is supported
+        fileformat : string,
+            the fileformat of the data, it can be: 'NumPy', 'HDF5', 'XML', 'Other'
         src : string, optional,
-            the source file of the timeserie
+            The path to the file according to location attribute
         description : string, optional,
-            a description of the timeserie
+            a description of the data
         metadataDict : dictionary, optional,
-            some metadata related to the timeserie as a dictionary
+            some metadata related to the data as a dictionary
             
         See also
         --------
         Metadata, connectome 
         """
         super(CData, self).__init__(src, name, fileformat, description, metadata, )
+        
+        if metadataDict is not None:
+            self.update_metadata(metadataDict)
+        else:
+            self.metadata = Metadata()
                 
     def get_unique_relpath(self):
         """ Return a unique relative path for this element """
