@@ -1086,8 +1086,34 @@ supermod.CData.subclass = CData
 class CScript(supermod.CScript, CBaseClass):
     """Connectome script object"""
 
-    def __init__(self, src=None, dtype='Python', name=None, fileformat='UTF-8', description=None, metadata=None):
+    def __init__(self, name='myscript', dtype='Python', fileformat='UTF-8', src=None, description=None, metadataDict=None):
+        """Create a connectome script object
+        
+        Parameters
+        ----------
+        name : 'myscript',
+            the unique name of the script
+        dtype : 'Python',
+            the data type of the script, it can be: 'Python', 'Bash', 'Matlab', 'Other'
+        fileformat : 'UTF-8',
+            the fileformat of the script
+        src : string, optional,
+            The path to the file according to location attribute
+        description : string, optional,
+            a description of the script
+        metadataDict : dictionary, optional,
+            some metadata related to the script as a dictionary
+            
+        See also
+        --------
+        Metadata, connectome 
+        """
         super(CScript, self).__init__(src, dtype, name, fileformat, description, metadata, )
+        
+        if metadataDict is not None:
+            self.update_metadata(metadataDict)
+        else:
+            self.metadata = Metadata()
         
     def get_unique_relpath(self):
         """ Return a unique relative path for this element """
@@ -1141,6 +1167,7 @@ supermod.CScript.subclass = CScript
 # end class CScript
 
 
+# TODO leave it for the moment
 class CImagestack(supermod.CImagestack, CBaseClass):
     def __init__(self, src=None, fileformat=None, name=None, pattern=None, description=None, metadata=None):
         super(CImagestack, self).__init__(src, fileformat, name, pattern, description, metadata, )
