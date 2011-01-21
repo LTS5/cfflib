@@ -307,6 +307,18 @@ def test_csurface_gifti():
 
     c = connectome()
     
+    # Check default values
+    s = CSurface()
+    assert_equal(s.get_name(), 'mysurface')
+    assert_equal(s.get_fileformat(), 'HDF5')
+    assert_equal(s.get_metadata_as_dict(), {})
+    
+    # Check the specified values
+    s = CSurface('Spec surface', metadataDict={'surf':'ace'})
+    assert_equal(s.get_name(), 'Spec surface')
+    assert_true(s.get_metadata_as_dict().has_key('surf'))
+    assert_equal(s.get_metadata_as_dict()['surf'], 'ace')
+    
     s = CSurface.create_from_gifti('my surface', 'data/Surfaces/testsubject_labels.gii')
     assert_equal(s.get_name(), 'my surface')
     assert_equal(s.get_src(), 'CSurface/my_surface.gii')
