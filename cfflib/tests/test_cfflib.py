@@ -302,7 +302,6 @@ def test_ctimeserie_hdf5():
     
 # ---------------------------------------------------------------------------------- #
 # Test CSurface
-# with a Gifti file 
 def test_csurface_gifti():
 
     c = connectome()
@@ -310,7 +309,8 @@ def test_csurface_gifti():
     # Check default values
     s = CSurface()
     assert_equal(s.get_name(), 'mysurface')
-    assert_equal(s.get_fileformat(), 'HDF5')
+    assert_equal(s.get_fileformat(), 'Gifti')
+    assert_equal(s.get_dtype(), 'label')
     assert_equal(s.get_metadata_as_dict(), {})
     
     # Check the specified values
@@ -319,10 +319,12 @@ def test_csurface_gifti():
     assert_true(s.get_metadata_as_dict().has_key('surf'))
     assert_equal(s.get_metadata_as_dict()['surf'], 'ace')
     
+    # Check classmethod from gifti
     s = CSurface.create_from_gifti('my surface', 'data/Surfaces/testsubject_labels.gii')
     assert_equal(s.get_name(), 'my surface')
     assert_equal(s.get_src(), 'CSurface/my_surface.gii')
 
+    # Check add to the connectome
     c.add_connectome_surface(s)
     assert_not_equal(c.get_connectome_surface(), [])
     assert_equal(len(c.get_connectome_surface()), 1)
