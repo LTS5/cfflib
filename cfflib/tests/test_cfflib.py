@@ -238,15 +238,28 @@ def test_cvolume_nifti1():
 
 # ---------------------------------------------------------------------------------- #
 # Test CTrack
-# with a trk file 
 def test_ctrack_trk():
 
     c = connectome()
     
+    # Check default values
+    t = CTrack()
+    assert_equal(t.get_name(), 'mytrack')
+    assert_equal(t.get_fileformat(), 'TrackVis')
+    assert_equal(t.get_metadata_as_dict(), {})
+    
+    # Check the specified values
+    t = CTrack('Spec tracks', metadataDict={'fib':1})
+    assert_equal(t.get_name(), 'Spec tracks')
+    assert_equal(t.get_fileformat(), 'TrackVis')
+    assert_equal(t.get_metadata_as_dict()['fib'], '1')
+    
+    # Check the classmethod from trackvis
     t = CTrack.create_from_trackvis('my track', 'data/Tracks/fibers_transformed.trk')
     assert_equal(t.get_name(), 'my track')
     assert_equal(t.get_src(), 'CTrack/my_track.trk')
 
+    # Check add to the connectome
     c.add_connectome_track(t)
     assert_not_equal(c.get_connectome_track(), [])
     assert_equal(len(c.get_connectome_track()), 1)
