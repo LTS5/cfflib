@@ -78,6 +78,7 @@ def test_cnetwork_nxgraph():
     # Check given values
     n = CNetwork('Test network', metadataDict={'number':1024})
     assert_equal(n.get_name(), 'Test network')
+    assert_true(n.get_metadata_as_dict().has_key('number'))
     assert_equal(n.get_metadata_as_dict()['number'], '1024')
     
     g = nx.Graph()
@@ -148,6 +149,9 @@ def test_desc_meta():
     n = CNetwork(metadataDict={'m0':'v0'})
     n.update_metadata({'m1':'v1', 'm2':121})
     assert_not_equal(n.get_metadata_as_dict(), None)
+    assert_true(n.get_metadata_as_dict().has_key('m0'))
+    assert_true(n.get_metadata_as_dict().has_key('m1'))
+    assert_true(n.get_metadata_as_dict().has_key('m2'))
     assert_equal(n.get_metadata_as_dict()['m0'], 'v0')
     assert_equal(n.get_metadata_as_dict()['m1'], 'v1')
     assert_equal(n.get_metadata_as_dict()['m2'], '121')
@@ -196,7 +200,6 @@ def test_save_load():
 
 # ---------------------------------------------------------------------------------- #
 # Test CVolume
-# With a Nifti1 file 
 def test_cvolume_nifti1():
 
     c = connectome()
@@ -211,6 +214,7 @@ def test_cvolume_nifti1():
     v2 = CVolume('Second volume', metadataDict={'m0':123})
     assert_equal(v2.get_name(), 'Second volume')
     assert_not_equal(v2.get_metadata_as_dict(), {})
+    assert_true(v2.get_metadata_as_dict().has_key('m0'))
     assert_equal(v2.get_metadata_as_dict()['m0'], '123')
     
     # Check classmethod
@@ -251,7 +255,7 @@ def test_ctrack_trk():
     # Check the specified values
     t = CTrack('Spec tracks', metadataDict={'fib':1})
     assert_equal(t.get_name(), 'Spec tracks')
-    assert_equal(t.get_fileformat(), 'TrackVis')
+    assert_true(t.get_metadata_as_dict().has_key('fib'))
     assert_equal(t.get_metadata_as_dict()['fib'], '1')
     
     # Check the classmethod from trackvis
@@ -268,15 +272,28 @@ def test_ctrack_trk():
 
 # ---------------------------------------------------------------------------------- #
 # Test CTimeserie
-# with a HDF5 file 
 def test_ctimeserie_hdf5():
 
     c = connectome()
     
+    # Check default values
+    t = CTimeserie()
+    assert_equal(t.get_name(), 'mytimeserie')
+    assert_equal(t.get_fileformat(), 'HDF5')
+    assert_equal(t.get_metadata_as_dict(), {})
+    
+    # Check the specified values
+    t = CTimeserie('Spec timeserie', metadataDict={'ts':'val'})
+    assert_equal(t.get_name(), 'Spec timeserie')
+    assert_true(t.get_metadata_as_dict().has_key('ts'))
+    assert_equal(t.get_metadata_as_dict()['ts'], 'val')
+    
+    # Check classmethod from hdf5
     t = CTimeserie.create_from_hdf5('my timeserie', 'data/Timeseries/generatedseries.hdf5')
     assert_equal(t.get_name(), 'my timeserie')
     assert_equal(t.get_src(), 'CTimeserie/my_timeserie.h5')
 
+    # Check add to the connectome
     c.add_connectome_timeserie(t)
     assert_not_equal(c.get_connectome_timeserie(), [])
     assert_equal(len(c.get_connectome_timeserie()), 1)
