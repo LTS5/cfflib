@@ -12,7 +12,6 @@ from util import *
 ###
 
 import sys
-from string import lower as str_lower
 
 import cff as supermod
 
@@ -80,16 +79,16 @@ ExternalEncoding = 'ascii'
 
 class connectome(supermod.connectome):
     """The connectome object is the main object of this format.
-    It contains CMetadata, it can contain some CData, CNetwork,
+    It contains CMetadata, and it can contain some CData, CNetwork,
     CSurface, CTimeserie, CTrack, CVolume, CScript or CImagestack
-    objects.
+    objects that are referred to as CObjects.
     
-    It is possible to store it to a simple connectome markup .cml file
+    It is possible to store to a simple connectome markup .cml file
     with appropriate relative references to the data files, or to a 
     compressed (zipped) connectome file with ending .cff containing all
-    source data objects."""
+    source data objects. """
     
-    def __init__(self, name=None, connectome_meta=None, connectome_network=None, connectome_surface=None, connectome_volume=None, connectome_track=None, connectome_timeserie=None, connectome_data=None, connectome_script=None, connectome_imagestack=None):
+    def __init__(self, title=None, connectome_meta=None, connectome_network=None, connectome_surface=None, connectome_volume=None, connectome_track=None, connectome_timeserie=None, connectome_data=None, connectome_script=None, connectome_imagestack=None):
         """Create a new connectome object
         
         Parameters
@@ -112,10 +111,10 @@ class connectome(supermod.connectome):
         
         # Default CMetadata
         if connectome_meta is None:
-            if name is None:
+            if title is None:
                 self.connectome_meta = CMetadata()
             else:
-                self.connectome_meta = CMetadata(name)
+                self.connectome_meta = CMetadata(title)
         
     def get_all(self):
         """ Return all connectome objects as a list
@@ -124,16 +123,43 @@ class connectome(supermod.connectome):
         --------
         >>> allcobj = myConnectome.get_all()
         >>> first_ele = allcobj[0]
-         
-        See also
-        --------
-        connectome, get_by_name
-    
+
         """        
         return self.connectome_network + self.connectome_surface + \
                 self.connectome_volume + self.connectome_track + \
                 self.connectome_timeserie + self.connectome_data + \
                 self.connectome_script + self.connectome_imagestack
+    
+    def get_grouping_by_key2(self, key, cobject_type = None, dtype = None, exclude_values = None):
+        """ Specifying the connectome object type and metadata key, a
+        dictionary is returned keyed by the values of the given metadata
+        key.
+        
+        Parameter
+        ---------
+        metadata_key : string
+            The metadata key you want to use for grouping
+        cobject_type : string
+            If you want to confine your result to a particular connectome
+            object type such as 'CNetwork', 'CVolume' etc.
+            
+        exclude_values : list of string
+            If you want to discard particular metadata values
+            in the returned dictionary.
+        
+        Notes
+        -----
+        This function is helpful to retrieve groups of connectome
+        objects for further analysis, e.g. statistical comparison.
+        The metadata works as a kind of "intersubject" grouping
+        criteria. For example you can have a metadata key "sex" with
+        values M, F and unknown. You can exclude the unknown value
+        by setting exclude_values = ['unknown'].
+        
+        If the metadata key does not exists for the connectome
+        object, just skip this object.
+        """
+        pass
     
     def get_grouping_by_key(self, metadata_key, cobj_type = None, exclude_values = None):
         """ Specifying the connectome object type and metadata key, a
@@ -183,7 +209,7 @@ class connectome(supermod.connectome):
         return rdict
     
     def get_by_name(self, name):
-        """ Return the list of connectome object(s) that have the given name.
+        """ Return the list of connectome object(s) that have the given name
         
         Parameters
         ----------
@@ -193,12 +219,7 @@ class connectome(supermod.connectome):
         Examples
         --------
         >>> myConnectome.get_by_name('my first network')
-            [<cfflib.cfflib_modified.CNetwork object at 0x2c46b10>]
-            
-        See also
-        --------
-        connectome, get_all
-    
+
         """        
         if isinstance(name, list):
             ret = []
@@ -213,7 +234,7 @@ class connectome(supermod.connectome):
             for ele in all_cobj:
                 if name == ele.name:
                     return ele
-            return None            
+            return None
 
     def check_file_in_cff(self):
         """Checks if the files described in the meta.cml are contained in the connectome zip file."""  
@@ -307,9 +328,9 @@ class connectome(supermod.connectome):
         from StringIO import StringIO
         re = StringIO()
         re.write('<?xml version="1.0" encoding="UTF-8"?>\n')
-        ns = """xmlns="http://www.connectomics.org/2010/Connectome/xmlns"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-      xsi:schemaLocation="http://www.connectomics.org/2010/Connectome/xmlns connectome.xsd" """
+        ns = """xmlns="http://www.connectomics.org/cff-2"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns:dcterms="http://purl.org/dc/terms/" """
         self.export(re, 0, name_= "connectome", namespacedef_=ns)
         re.seek(0)
         return re.read()
@@ -325,14 +346,10 @@ class connectome(supermod.connectome):
         """
 
         all_cobj = self.get_all() 
-        
         for ele in all_cobj:
-            
             if hasattr(ele, 'data') and hasattr(ele, 'tmpsrc') and op.exists(ele.tmpsrc):
-                
                 if save:
                     ele.save()
-                
                 # remove .data and .tmpsrc
                 print "Will not remove file %s from file system" % ele.tmpsrc
                 print "Remove .data attribute"
@@ -346,21 +363,18 @@ class connectome(supermod.connectome):
         
         Parameters
         ----------
-        cmeta : CMetadata,
+        cmeta : CMetadata
             the connectome metadata to add to the connectome object
-            
-        See also
-        --------
-        CMetadata, connectome   
+             
         """
                 
         # Check if the name is set     
-        if cmeta.name is None or cmeta.name == '':
-            raise Exception('A name is required.')
+        if cmeta.title is None or cmeta.title == '':
+            raise Exception('A title is required.')
         
         # Check if the name is unique
-        if not self.is_name_unique(cmeta.name):
-            raise Exception('The name is not unique.')
+        if not self.is_name_unique(cmeta.title):
+            raise Exception('The title is not unique.')
             
         self.connectome_meta = cmeta
     
@@ -525,59 +539,68 @@ supermod.connectome.subclass = connectome
 class CMetadata(supermod.CMetadata):
     """Specific metadata to the connectome. The name is the name of the connectome. The version and the generator are required and are defined by default."""
     
-    def __init__(self, name='myconnectome', version='2.0', generator='cfflib', author=None, institution=None, creation_date=None, modification_date=None, species=None, legal_notice=None, reference=None, email=None, url=None, description=None, metadata=None):
+    def __init__(self, title='myconnectome', version='2.0', generator='cfflib', author=None, institution=None, creation_date=None, modification_date=None, species=None, legal_notice=None, reference=None, email=None, url=None, description=None, metadata=None):
         """Creates a connectome metadata object, specific metadata to the connectome object.
         
         Parameters
         ----------
-        name : 'myconnectome',
-            the name of this connectome object 
-        version : '2.0',  
-            version of the cfflib
-        generator : 'cfflib',
-            generator of this connectome
-        author : string, optional ,
-            the author name
-        institution : string, optional,
-            the author institution
-        creation_date : string, optional,
+        title : string, default: 'myconnectome',
+            the name of this connectome 
+        version : string, '2.0',  
+            the connectome markup version for this connectome file
+            
+        creator : string, optional ,
+            the creator name
+        publisher : string, optional,
+            the publisher/institution
+        created : string, optional,
             the creation date of this connectome
-        modification_date : string, optional,
+        modified : string, optional,
             the date of important modification to this connectome object
-        species : string, optional,
-            the specied of the subject
-        legal_notice : string, optional,
-            legal information
+        license : string, optional,
+            license information
+        rights : string, optional,
+            rights information, such as copyright
         reference : string, optional,
             reference
-        email : string, optional,
-            an email of reference (author one)
-        url : string, optional,
-            an related url
+        relation : string, optional,
+            relation
         description : plaintext, optional,
             a text description of the connectome
+            
+        generator : string, 'cfflib',
+            software version/converter this file was generated with
+        email : string, optional,
+            an email of reference (author one)
+        species : string, optional,
+            the specied of the subject
+                        
         metadata : dictionary, optional,
             some metadata informations as a dictionary
             
-        See also
-        --------
-        Metadata, connectome  
+        Notes
+        -----
+        Most of the metadata fields are defined in the Dublin Core Terms
+        http://dublincore.org/documents/dcmi-terms/
+        
         """
-        super(CMetadata, self).__init__(version = version,
-                                        generator = generator,
-                                        name = name,
-                                        author = author,
-                                        email = email,
-                                        institution = institution,
-                                        creation_date = creation_date,
-                                        modification_date = modification_date,
-                                        species = species,
-                                        legal_notice = legal_notice,
-                                        reference = reference,
-                                        url = url,
-                                        description = description,)
+        super(CMetadata, self).__init__(version,
+                                        title, 
+                                        creator, 
+                                        publisher, 
+                                        created, 
+                                        modified, 
+                                        rights, 
+                                        license, 
+                                        references, 
+                                        relation, 
+                                        generator, 
+                                        species, 
+                                        email, )
         if not metadata is None:
             self.update_metadata(metadata)
+        else:
+            self.update_metadata({})
 
     def get_metadata_as_dict(self): 
         """Return the metadata as a dictionary"""
@@ -591,21 +614,6 @@ class CMetadata(supermod.CMetadata):
         if self.metadata is None:
             self.metadata = Metadata()
         self.metadata.set_with_dictionary(metadata)
-        
-#    # Description object hide as a property
-#    @property
-#    def get_description(self):
-#        if hasattr(self.description, 'valueOf_'):
-#            return self.description.get_valueOf_()
-#        else:
-#            raise Exception('The description has to be set first.')
-#    def get_description_format(self):
-#        if hasattr(self.description, 'format'):
-#            return self.description.format
-#        else:
-#            raise Exception('The description has to be set first.')
-#    def set_description(self, value):
-#        self.description = description('plaintext', value)
         
 supermod.CMetadata.subclass = CMetadata
 # end class CMetadata
@@ -640,10 +648,6 @@ class CBaseClass(object):
             print "Updated storage path of file: %s" % rval
         else:
             raise Exception('There is nothing to save.')
-        
-#    def __repr__(self):
-#        pass
-        # XXX: give a representation of the object. for print
 
     # Metadata
     def get_metadata_as_dict(self): 

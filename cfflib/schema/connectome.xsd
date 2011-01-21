@@ -277,7 +277,7 @@
    <xsd:element minOccurs="1" name="generator" type="xsd:string">
     <xsd:annotation xml:lang="en">
       <xsd:documentation>
-      Software version/Converter etc. this file was generated with
+      software version/converter this file was generated with
       </xsd:documentation>
     </xsd:annotation>
   </xsd:element>
@@ -285,8 +285,7 @@
    <xsd:element minOccurs="1" name="species" type="xsd:string">
     <xsd:annotation xml:lang="en">
       <xsd:documentation>
-      From which species is the data?
-      According to the internationally used binomial nomenclature.
+      species name according to the internationally used binomial nomenclature.
       </xsd:documentation>
     </xsd:annotation>
     </xsd:element>
