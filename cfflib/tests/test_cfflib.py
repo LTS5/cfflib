@@ -68,9 +68,11 @@ def test_cnetwork_nxgraph():
 
     c = connectome()
     
+    # Check the default name
     n = CNetwork()
     assert_equal(n.get_name(), 'mynetwork')
     
+    # Check to set a given name  
     n = CNetwork('Test network')
     assert_equal(n.get_name(), 'Test network')
     
@@ -82,35 +84,50 @@ def test_cnetwork_nxgraph():
     g.add_edge(2,1)
     g.add_edge(0,2)
     
+    # Check the properties when the network is set with a nxgraph
     n.set_with_nxgraph(g)
     assert_equal(n.get_name(), 'Test network')
     assert_equal(n.get_src(), 'CNetwork/test_network.gpickle')
     assert_equal(n.get_dtype(), 'AttributeNetwork')
     assert_equal(n.get_fileformat(), 'NXGPickle')
     
+    # Check the add function to connectome
     c.add_connectome_network(n)
     assert_not_equal(c.get_connectome_network(), [])
     assert_equal(len(c.get_connectome_network()), 1)
     assert_not_equal(c.get_all(), [])
     
+    # Check to change the name of the nework directly from the connectome
     c.get_connectome_network()[0].set_name('modif')
     assert_equal(n.get_name(), 'modif')
-
+    
+    # Check the 2nd way to add a nxgraph network
     c.add_connectome_network_from_nxgraph('2nd nxgraph', g)
     assert_equal(c.get_connectome_network()[1].get_name(), '2nd nxgraph')
+    
+    # Check to change the name of the 2nd nework to match the first network name
+    # TODO fix issue: make it impossible !!
+    c.get_connectome_network()[1].set_name('modif')
+    assert_equal(n.get_name(), c.get_connectome_network()[1].get_name())
 
 # With graphml
 def test_cnetwork_graphml():
 
     c = connectome()
     
+    # Check the classmethod and default attributes
     n = CNetwork.create_from_graphml('GraphML net', 'data/Networks/network_res83.graphml')
     assert_equal(n.get_name(), 'GraphML net')
     assert_equal(n.get_fileformat(), 'GraphML')
+    assert_equal(n.get_src(), 'CNetwork/graphml_net.graphml')
+    assert_equal(n.get_dtype(), 'AttributeNetwork')
+    
+    # Check to add to the connectome
     c.add_connectome_network(n)
     assert_not_equal(c.get_connectome_network(), [])
     assert_equal(c.get_connectome_network()[0].get_src(), 'CNetwork/graphml_net.graphml')
     
+    # Check to directly add to the connectome
     c.add_connectome_network_from_graphml('2nd graphml', 'data/Networks/network_res83.graphml')
     assert_equal(len(c.get_connectome_network()), 2)
     assert_equal(c.get_connectome_network()[1].get_name(), '2nd graphml')
