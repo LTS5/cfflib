@@ -141,14 +141,17 @@ def test_desc_meta():
     c = connectome('desc & meta connectome')
     n = CNetwork()
     
+    # Check the updated keys and corresponding values
     n.update_metadata({'m1':'v1', 'm2':121})
     assert_not_equal(n.get_metadata_as_dict(), None)
     assert_equal(n.get_metadata_as_dict()['m1'], 'v1')
     assert_equal(n.get_metadata_as_dict()['m2'], '121')
     
+    # Check the update of an existing key 
     n.update_metadata({'m1':'v2'})
     assert_equal(n.get_metadata_as_dict()['m1'], 'v2')
     
+    #  Check the description 
     n.set_description('An useless description...')
     assert_equal(n.get_description(),'An useless description...')
 # ---------------------------------------------------------------------------------- #
