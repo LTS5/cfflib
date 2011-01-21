@@ -23,33 +23,41 @@ TMP = tempfile.gettempdir()
 def test_connectome():
 
     c = connectome()
+    
+    # Check for the default CMetadata
     assert_not_equal(c.connectome_meta, None)
     assert_equal(c.get_connectome_meta().get_name(), 'myconnectome')
     assert_equal(c.get_connectome_meta().get_generator(), 'cfflib')
     assert_equal(c.get_connectome_meta().get_version(), '2.0')
     
+    # Check for the possibility to specify a name to the connectome
     c = connectome('Test connectome')
     assert_equal(c.get_connectome_meta().get_name(), 'Test connectome')
+    
+    # Check for the content and the CObjects
     assert_equal(c.get_all(), [])
     assert_true(c.hasContent_())
     
+    # Check to set the CMetadata attributes
     c.connectome_meta.set_name('My first connectome')
     assert_equal(c.connectome_meta.get_name(), 'My first connectome')
-    
     c.connectome_meta.set_author('Connectome Tutorial')
-    assert_equal(c.connectome_meta.get_author(), 'Connectome Tutorial')
-    
+    assert_equal(c.connectome_meta.get_author(), 'Connectome Tutorial')    
     c.connectome_meta.set_institution('EPFL')
-    assert_equal( c.connectome_meta.get_institution(), 'EPFL')
-    
+    assert_equal( c.connectome_meta.get_institution(), 'EPFL')    
     c.connectome_meta.set_creation_date('2010-10-26')
-    assert_equal(c.connectome_meta.get_creation_date(), '2010-10-26')
-    
+    assert_equal(c.connectome_meta.get_creation_date(), '2010-10-26')    
     c.connectome_meta.set_url('www.connectome.ch')
     assert_equal(c.connectome_meta.get_url(), 'www.connectome.ch')
     
+    # Check the description in CMetadata
     c.connectome_meta.set_description('First connectome object created with the tutorial.')
     assert_equal(c.connectome_meta.get_description(), 'First connectome object created with the tutorial.')
+    
+    # Check to remove the CMetadata and save the connectome
+    c.connectome_meta = None
+    save_to_cff(c, op.join(TMP, 'wrong.cff'))
+    assert_false(op.exists(op.join(TMP, 'wrong.cff')))
 # ---------------------------------------------------------------------------------- #
 
 
