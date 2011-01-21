@@ -68,13 +68,17 @@ def test_cnetwork_nxgraph():
 
     c = connectome()
     
-    # Check the default name
+    # Check the default values
     n = CNetwork()
     assert_equal(n.get_name(), 'mynetwork')
+    assert_equal(n.get_dtype(), 'AttributeNetwork')
+    assert_equal(n.get_fileformat(), 'GraphML')
+    assert_equal(n.get_metadata_as_dict(), {})
     
-    # Check to set a given name  
-    n = CNetwork('Test network')
+    # Check given values
+    n = CNetwork('Test network', metadataDict={'number':1024})
     assert_equal(n.get_name(), 'Test network')
+    assert_equal(n.get_metadata_as_dict()['number'], '1024')
     
     g = nx.Graph()
     g.add_node(0)
@@ -139,11 +143,12 @@ def test_cnetwork_graphml():
 def test_desc_meta():
 
     c = connectome('desc & meta connectome')
-    n = CNetwork()
     
     # Check the updated keys and corresponding values
+    n = CNetwork(metadataDict={'m0':'v0'})
     n.update_metadata({'m1':'v1', 'm2':121})
     assert_not_equal(n.get_metadata_as_dict(), None)
+    assert_equal(n.get_metadata_as_dict()['m0'], 'v0')
     assert_equal(n.get_metadata_as_dict()['m1'], 'v1')
     assert_equal(n.get_metadata_as_dict()['m2'], '121')
     
@@ -161,20 +166,26 @@ def test_desc_meta():
 # Test SAVE and LOAD 
 def test_save_load():
 
+    # Check CMetadata attributes
     c = connectome('Load & Save connectome')
     assert_equal(c.get_connectome_meta().get_name(), 'Load & Save connectome')
     assert_equal(c.get_connectome_meta().get_generator(), 'cfflib')
     assert_equal(c.get_connectome_meta().get_version(), '2.0')
     
+    # Check CNetwork
     c.add_connectome_network_from_graphml('GraphML net', 'data/Networks/network_res83.graphml')
     assert_equal(c.get_connectome_network()[0].get_src(), 'CNetwork/graphml_net.graphml')
     n = c.get_connectome_network()[0]
+    
+    # Check Metadata
     n.update_metadata({'nb':123})
     assert_true(c.get_connectome_network()[0].get_metadata_as_dict().has_key('nb'))
 
+    # Save and load
     save_to_cff(c, op.join(TMP, 'test.cff'))
-    
     c2 = load_from_cff(op.join(TMP, 'test.cff'))
+    
+    # Check the loaded connectome properties
     assert_equal(c2.get_connectome_meta().get_name(), 'Load & Save connectome')
     assert_equal(c2.get_connectome_meta().get_generator(), 'cfflib')
     assert_equal(c2.get_connectome_meta().get_version(), '2.0')
@@ -190,18 +201,35 @@ def test_cvolume_nifti1():
 
     c = connectome()
     
+    # Check the default values
+    v1 = CVolume()
+    assert_equal(v1.get_name(), 'myvolume')
+    assert_equal(v1.get_fileformat(), 'Nifti1')
+    assert_equal(v1.get_metadata_as_dict(), {})
+    
+    # Check the specified values
+    v2 = CVolume('Second volume', metadataDict={'m0':123})
+    assert_equal(v2.get_name(), 'Second volume')
+    assert_not_equal(v2.get_metadata_as_dict(), {})
+    assert_equal(v2.get_metadata_as_dict()['m0'], '123')
+    
+    # Check classmethod
     v = CVolume.create_from_nifti('CVolume', 'data/Volumes/T1.nii.gz')
     assert_equal(v.get_name(), 'CVolume')
     
+    # Check changing the name
     v.set_name('My volume')
     assert_equal(v.get_name(), 'My volume')
     
+    # Check the description
     v.set_description('My first CVolume')
     assert_equal(v.get_description(), 'My first CVolume')
     
+    # Check updating the metadata
     v.update_metadata({'meta1':'only T1 scan of this patient'})
     assert_equal(v.get_metadata_as_dict()['meta1'], 'only T1 scan of this patient')
     
+    # Check add to the connectome
     c.add_connectome_volume(v)
     assert_not_equal(c.get_connectome_volume(), [])
     assert_equal(len(c.get_connectome_volume()), 1)
