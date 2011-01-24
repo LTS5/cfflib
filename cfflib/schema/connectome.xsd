@@ -5,7 +5,7 @@
 	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
 	xmlns:dcterms="http://purl.org/dc/terms/">
 
-<import namespace="http://purl.org/dc/terms/" 
+<xsd:import namespace="http://purl.org/dc/terms/" 
         schemaLocation="http://dublincore.org/schemas/xmls/qdc/2008/02/11/dcterms.xsd"/>
 
 <xsd:annotation xml:lang="en">
@@ -14,6 +14,69 @@
     Created 17-01-2011 by Stephan Gerhard (connectome@unidesign.ch)
     </xsd:documentation>
 </xsd:annotation>
+
+<!-- odML schema parts (http://www.g-node.org/odml) -->
+
+<xsd:element name ="property">
+  <xsd:complexType>
+  <xsd:choice minOccurs="0" maxOccurs="unbounded">
+  <xsd:element name="name" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+  <xsd:element name="value" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+  <xsd:element name="type" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+  <xsd:element name="uncertainty" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+  <xsd:element name="unit" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+  </xsd:choice>
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:element name="section" >
+<xsd:complexType mixed="false" >
+  <xsd:choice minOccurs="0" maxOccurs="unbounded">
+    <xsd:element name="name" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+    <xsd:element name="type" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+    <xsd:element ref="property" minOccurs="0" maxOccurs="unbounded"/>
+  </xsd:choice>
+  <xsd:attribute name="title" type="xsd:string" use="required"></xsd:attribute>
+</xsd:complexType>
+</xsd:element>
+
+<!-- end odML schema parts -->
+
+<xsd:complexType name="Metadata">
+  <xsd:sequence>
+  
+    <xsd:element maxOccurs="unbounded" minOccurs="0" name="tag">  
+    <xsd:annotation xml:lang="en">
+      <xsd:documentation>
+      A tag element contains a key attribute and the value
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:simpleContent>
+        <xsd:extension base="xsd:string">
+            <xsd:attribute name="key" type="xsd:string">
+            <xsd:annotation xml:lang="en">
+              <xsd:documentation>
+              The key to be used later in the dictionary
+              </xsd:documentation>
+            </xsd:annotation>
+            </xsd:attribute>
+        </xsd:extension>
+      </xsd:simpleContent>
+    </xsd:complexType>
+    
+    </xsd:element>
+    
+   <xsd:element minOccurs="0" maxOccurs="unbounded" name="section" type="section">
+    <xsd:annotation xml:lang="en">
+      <xsd:documentation>
+      An odML section containing properties
+      </xsd:documentation>
+    </xsd:annotation>
+    </xsd:element>  
+    
+  </xsd:sequence>
+</xsd:complexType>
 
 <xsd:simpleType name="networkFileFormat">
   <xsd:restriction base="xsd:string">
@@ -833,36 +896,6 @@
     </xsd:annotation>
     </xsd:attribute>
     
-</xsd:complexType>
-
-
-<xsd:complexType name="Metadata">
-  <xsd:sequence>
-    <xsd:element maxOccurs="unbounded" minOccurs="0" name="data">
-    
-    <xsd:annotation xml:lang="en">
-      <xsd:documentation>
-      A data element contains a key attribute and the value as tag
-      </xsd:documentation>
-    </xsd:annotation>
-    
-    <xsd:complexType>
-      <xsd:simpleContent>
-        <xsd:extension base="xsd:string">
-            <xsd:attribute name="key" type="xsd:string">
-            <xsd:annotation xml:lang="en">
-              <xsd:documentation>
-              The key to be used later in the dictionary
-              </xsd:documentation>
-            </xsd:annotation>
-            </xsd:attribute>
-        </xsd:extension>
-      </xsd:simpleContent>
-    </xsd:complexType>
-    
-    </xsd:element>
-    
-  </xsd:sequence>
 </xsd:complexType>
 
 

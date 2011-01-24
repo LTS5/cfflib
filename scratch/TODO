@@ -1,7 +1,6 @@
 Generate classes with: 
-* python /home/stephan/Dev/Python/generateDS-2.1a/generateDS.py --subclass-suffix="" -f --super="cff" -o /home/stephan/dev/cfflib/cfflib/cff.py -s /home/stephan/dev/cfflib/cfflib/cfflib.py /home/stephan/dev/cfflib/cfflib/schema/connectome.xsd
-* NEW: generateDS.py --subclass-suffix="" -f --super="cff" -o ../cff.py -s ../cfflib.py connectome.xsd
-(* do a replacement of valueOf_ with value -> not do it anymore, since we are wrapping the save/retrieve logic)
+
+generateDS.py --subclass-suffix="" -f --super="cff" -o ../cff.py -s ../cfflib.py -a "xsd:" --namespacedef='xmlns="http://www.connectomics.org/cff-2" xmlns:dcterms="http://purl.org/dc/terms/"' connectome.xsd  
 
 Documentation:
 http://www.rexx.com/~dkuhlman/generateDS.html

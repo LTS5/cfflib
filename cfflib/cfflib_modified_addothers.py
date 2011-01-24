@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 #
-# Generated Mon Jan 24 14:37:35 2011 by generateDS.py version 2.3b.
+# Generated Mon Jan 24 14:26:43 2011 by generateDS.py version 2.3b.
 #
 
 import sys
@@ -178,6 +178,9 @@ supermod.description.subclass = description
 class title(supermod.title):
     def __init__(self, valueOf_=None):
         super(title, self).__init__(valueOf_, )
+    def export(self, outfile, level, namespace_='', name_='title', namespacedef_=''):
+        super(title, self).export(outfile, level, namespace_='dcterms:', name_='title', namespacedef_='')
+        
 supermod.title.subclass = title
 # end class title
 
@@ -185,8 +188,68 @@ supermod.title.subclass = title
 class creator(supermod.creator):
     def __init__(self, valueOf_=None):
         super(creator, self).__init__(valueOf_, )
+    def export(self, outfile, level, namespace_='', name_='creator', namespacedef_=''):
+        super(creator, self).export(outfile, level, namespace_='dcterms:', name_='creator', namespacedef_='')
 supermod.creator.subclass = creator
 # end class creator
+
+class publisher(supermod.publisher):
+    def __init__(self, valueOf_=None):
+        super(publisher, self).__init__(valueOf_, )
+    def export(self, outfile, level, namespace_='', name_='publisher', namespacedef_=''):
+        super(publisher, self).export(outfile, level, namespace_='dcterms:', name_='publisher', namespacedef_='')
+supermod.publisher.subclass = publisher
+# end class publisher
+
+class relation(supermod.relation):
+    def __init__(self, valueOf_=None):
+        super(relation, self).__init__(valueOf_, )
+    def export(self, outfile, level, namespace_='', name_='relation', namespacedef_=''):
+        super(relation, self).export(outfile, level, namespace_='dcterms:', name_='relation', namespacedef_='')
+supermod.relation.subclass = relation
+# end class relation
+
+class rights(supermod.rights):
+    def __init__(self, valueOf_=None):
+        super(rights, self).__init__(valueOf_, )
+    def export(self, outfile, level, namespace_='', name_='rights', namespacedef_=''):
+        super(rights, self).export(outfile, level, namespace_='dcterms:', name_='rights', namespacedef_='')
+supermod.rights.subclass = rights
+# end class rights
+
+class created(supermod.created):
+    def __init__(self, valueOf_=None):
+        super(created, self).__init__(valueOf_, )
+    def export(self, outfile, level, namespace_='', name_='created', namespacedef_=''):
+        super(created, self).export(outfile, level, namespace_='dcterms:', name_='created', namespacedef_='')
+supermod.created.subclass = created
+# end class created
+
+class modified(supermod.modified):
+    def __init__(self, valueOf_=None):
+        super(modified, self).__init__(valueOf_, )
+    def export(self, outfile, level, namespace_='', name_='modified', namespacedef_=''):
+        super(modified, self).export(outfile, level, namespace_='dcterms:', name_='modified', namespacedef_='')
+supermod.modified.subclass = modified
+# end class modified
+
+
+class license(supermod.license):
+    def __init__(self, valueOf_=None):
+        super(license, self).__init__(valueOf_, )
+    def export(self, outfile, level, namespace_='', name_='license', namespacedef_=''):
+        super(license, self).export(outfile, level, namespace_='dcterms:', name_='license', namespacedef_='')
+supermod.license.subclass = license
+# end class license
+
+class references(supermod.references):
+    def __init__(self, valueOf_=None):
+        super(references, self).__init__(valueOf_, )
+    def export(self, outfile, level, namespace_='', name_='references', namespacedef_=''):
+        super(references, self).export(outfile, level, namespace_='dcterms:', name_='references', namespacedef_='')
+supermod.references.subclass = references
+# end class references
+
 
 
 class subject(supermod.subject):
@@ -194,14 +257,6 @@ class subject(supermod.subject):
         super(subject, self).__init__(valueOf_, )
 supermod.subject.subclass = subject
 # end class subject
-
-
-class publisher(supermod.publisher):
-    def __init__(self, valueOf_=None):
-        super(publisher, self).__init__(valueOf_, )
-supermod.publisher.subclass = publisher
-# end class publisher
-
 
 class contributor(supermod.contributor):
     def __init__(self, valueOf_=None):
@@ -252,25 +307,11 @@ supermod.language.subclass = language
 # end class language
 
 
-class relation(supermod.relation):
-    def __init__(self, valueOf_=None):
-        super(relation, self).__init__(valueOf_, )
-supermod.relation.subclass = relation
-# end class relation
-
-
 class coverage(supermod.coverage):
     def __init__(self, valueOf_=None):
         super(coverage, self).__init__(valueOf_, )
 supermod.coverage.subclass = coverage
 # end class coverage
-
-
-class rights(supermod.rights):
-    def __init__(self, valueOf_=None):
-        super(rights, self).__init__(valueOf_, )
-supermod.rights.subclass = rights
-# end class rights
 
 
 class alternative(supermod.alternative):
@@ -294,11 +335,7 @@ supermod.abstract.subclass = abstract
 # end class abstract
 
 
-class created(supermod.created):
-    def __init__(self, valueOf_=None):
-        super(created, self).__init__(valueOf_, )
-supermod.created.subclass = created
-# end class created
+
 
 
 class valid(supermod.valid):
@@ -320,13 +357,6 @@ class issued(supermod.issued):
         super(issued, self).__init__(valueOf_, )
 supermod.issued.subclass = issued
 # end class issued
-
-
-class modified(supermod.modified):
-    def __init__(self, valueOf_=None):
-        super(modified, self).__init__(valueOf_, )
-supermod.modified.subclass = modified
-# end class modified
 
 
 class dateAccepted(supermod.dateAccepted):
@@ -427,11 +457,6 @@ supermod.isReferencedBy.subclass = isReferencedBy
 # end class isReferencedBy
 
 
-class references(supermod.references):
-    def __init__(self, valueOf_=None):
-        super(references, self).__init__(valueOf_, )
-supermod.references.subclass = references
-# end class references
 
 
 class isFormatOf(supermod.isFormatOf):
@@ -537,13 +562,6 @@ class accessRights(supermod.accessRights):
         super(accessRights, self).__init__(valueOf_, )
 supermod.accessRights.subclass = accessRights
 # end class accessRights
-
-
-class license(supermod.license):
-    def __init__(self, valueOf_=None):
-        super(license, self).__init__(valueOf_, )
-supermod.license.subclass = license
-# end class license
 
 
 class bibliographicCitation(supermod.bibliographicCitation):

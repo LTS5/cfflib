@@ -161,52 +161,7 @@ class connectome(supermod.connectome):
         """
         pass
     
-    def get_grouping_by_key(self, metadata_key, cobj_type = None, exclude_values = None):
-        """ Specifying the connectome object type and metadata key, a
-        dictionary is returned keyed by the values of the given metadata
-        key.
-        
-        Parameter
-        ---------
-        metadata_key : string
-            The metadata key you want to use for grouping
-        cobj_type : string
-            If you want to confine your result to a particular connectome
-            object type such as 'CNetwork', 'CVolume' etc.
-        exclude_values : list of string
-            If you want to discard particular metadata values
-            in the returned dictionary.
-        
-        Notes
-        -----
-        This function is helpful to retrieve groups of connectome
-        objects for further analysis, e.g. statistical comparison.
-        The metadata works as a kind of "intersubject" grouping
-        criteria. For example you can have a metadata key "sex" with
-        values M, F and unknown. You can exclude the unknown value
-        by setting exclude_values = ['unknown'].
-        
-        If the metadata key does not exists for the connectome
-        object, just skip this object.
-        """
-        rdict = {}
 
-        cobjs = self.get_all()
-        for cob in cobjs:
-            if cobj_type is None or cobj_type in cob.__class__:
-                mdi = cob.get_metadata_as_dict()
-                if not mdi is None and metadata_key in mdi.keys():
-                    if rdict.has_key(mdi[metadata_key]):
-                        rdict[mdi[metadata_key]].append(cob)
-                    else:
-                        rdict[mdi[metadata_key]] = [cob]
-        # eventually, remove not desired values
-        if not exclude_values is None:
-            for k in exclude_values:
-                if rdict.has_key(k):
-                    del rdict[k]
-                
-        return rdict
     
     def get_by_name(self, name):
         """ Return the list of connectome object(s) that have the given name

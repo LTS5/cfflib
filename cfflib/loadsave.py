@@ -1,6 +1,7 @@
 """ Routines to load, save a connectome files """
 
-import cfflib_modified as cfflib
+#import cfflib_modified as cfflib
+import cfflib
 
 import os.path as op
 from zipfile import ZipFile, ZIP_DEFLATED
