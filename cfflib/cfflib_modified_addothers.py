@@ -171,6 +171,8 @@ supermod.CImagestack.subclass = CImagestack
 class description(supermod.description):
     def __init__(self, valueOf_=None):
         super(description, self).__init__(valueOf_, )
+    def export(self, outfile, level, namespace_='', name_='description', namespacedef_=''):
+        super(description, self).export(outfile, level, namespace_='dcterms:', name_='description', namespacedef_='')
 supermod.description.subclass = description
 # end class description
 

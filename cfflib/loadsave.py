@@ -1,7 +1,9 @@
 """ Routines to load, save a connectome files """
 
 #import cfflib_modified as cfflib
-import cfflib
+#import cfflib
+
+import cfflib2 as cf
 
 import os.path as op
 from zipfile import ZipFile, ZIP_DEFLATED
@@ -48,7 +50,7 @@ def _load_from_meta_cml(filename):
     with open(filename, 'r') as metacml:
         metastr = metacml.read()
         
-    connectome = cfflib.parseString(metastr)
+    connectome = cf.parseString(metastr)
     connectome.iszip = False
     connectome.fname = op.abspath(filename)
     # check if names are unique!
@@ -86,7 +88,7 @@ def _load_from_cff(filename, *args, **kwargs):
         raise RuntimeError('Can not extract meta.cml from connectome file.')
     
     # create connectome instance
-    connectome = cfflib.parseString(metadata_string)
+    connectome = cf.parseString(metadata_string)
     
     # add additional attributes
     connectome.src = fname

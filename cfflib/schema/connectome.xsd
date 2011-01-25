@@ -313,7 +313,7 @@
     </xsd:annotation>
     </xsd:element>
     
-   <xsd:element minOccurs="0" ref="dcmterms:references">
+   <xsd:element minOccurs="0" ref="dcterms:references">
     <xsd:annotation xml:lang="en">
       <xsd:documentation>
       References to the paper where the data has been published.
@@ -321,7 +321,7 @@
     </xsd:annotation>
     </xsd:element>
     
-   <xsd:element minOccurs="0" ref="dcmterms:relation">
+   <xsd:element minOccurs="0" ref="dcterms:relation">
     <xsd:annotation xml:lang="en">
       <xsd:documentation>
       A related resource. References to URL with further information or download location.

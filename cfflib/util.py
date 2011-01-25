@@ -343,11 +343,11 @@ def group_by_tagkey(cobj_list, tagkey, cobj_type = None, exclude_values = None):
     for cob in cobj_list:
         if cobj_type is None or cobj_type in cob.__class__:
             mdi = cob.get_metadata_as_dict()
-            if not mdi is None and metadata_key in mdi.keys():
-                if rdict.has_key(mdi[metadata_key]):
-                    rdict[mdi[metadata_key]].append(cob)
+            if not mdi is None and tagkey in mdi.keys():
+                if rdict.has_key(mdi[tagkey]):
+                    rdict[mdi[tagkey]].append(cob)
                 else:
-                    rdict[mdi[metadata_key]] = [cob]
+                    rdict[mdi[tagkey]] = [cob]
     # eventually, remove not desired values
     if not exclude_values is None:
         for k in exclude_values:

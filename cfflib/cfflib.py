@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 #
-# Generated Mon Jan 24 14:37:35 2011 by generateDS.py version 2.3b.
+# Generated Tue Jan 25 11:45:14 2011 by generateDS.py version 2.3b.
 #
 
 import sys
@@ -729,7 +729,7 @@ def parse(inFilename):
     doc = None
     sys.stdout.write('<?xml version="1.0" ?>\n')
     rootObj.export(sys.stdout, 0, name_=rootTag,
-        namespacedef_='xmlns="http://www.connectomics.org/cff-2" xmlns:dcterms="http://purl.org/dc/terms/" ')
+        namespacedef_='xmlns="http://www.connectomics.org/cff-2" xmlns:dcterms="http://purl.org/dc/terms/"')
     doc = None
     return rootObj
 
@@ -748,7 +748,7 @@ def parseString(inString):
     doc = None
     sys.stdout.write('<?xml version="1.0" ?>\n')
     rootObj.export(sys.stdout, 0, name_=rootTag,
-        namespacedef_='xmlns="http://www.connectomics.org/cff-2" xmlns:dcterms="http://purl.org/dc/terms/" ')
+        namespacedef_='xmlns="http://www.connectomics.org/cff-2" xmlns:dcterms="http://purl.org/dc/terms/"')
     return rootObj
 
 
