@@ -51,6 +51,8 @@ def _load_from_meta_cml(filename):
         metastr = metacml.read()
         
     connectome = cf.parseString(metastr)
+    # update references
+    connectome._update_parent_reference()
     connectome.iszip = False
     connectome.fname = op.abspath(filename)
     # check if names are unique!
@@ -81,7 +83,7 @@ def _load_from_cff(filename, *args, **kwargs):
     """
     
     # XXX: take care to have allowZip64 = True (but not supported by unix zip/unzip, same for ubuntu?) ?
-    _zipfile = ZipFile(fname, 'a', ZIP_DEFLATED)
+    _zipfile = ZipFile(filename, 'a', ZIP_DEFLATED)
     try:
         metadata_string = _zipfile.read('meta.cml')
     except: # XXX: what is the correct exception for read error?
@@ -90,8 +92,11 @@ def _load_from_cff(filename, *args, **kwargs):
     # create connectome instance
     connectome = cf.parseString(metadata_string)
     
+    # update references
+    connectome._update_parent_reference()
+    
     # add additional attributes
-    connectome.src = fname
+    connectome.src = filename
     
     # it is from the zip file
     connectome.iszip = True

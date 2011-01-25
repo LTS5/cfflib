@@ -115,13 +115,8 @@ class connectome(supermod.connectome):
     compressed (zipped) connectome file with ending .cff containing all
     source data objects. """
     
-    def __init__(self, title=None, connectome_meta=None, connectome_network=None, connectome_surface=None, connectome_volume=None, connectome_track=None, connectome_timeserie=None, connectome_data=None, connectome_script=None, connectome_imagestack=None):
+    def __init__(self, connectome_meta=None, connectome_network=None, connectome_surface=None, connectome_volume=None, connectome_track=None, connectome_timeserie=None, connectome_data=None, connectome_script=None, connectome_imagestack=None):
         """Create a new connectome object
-        
-        Parameters
-        ----------
-        name: 'myconnectome',
-            the name of this connectome object
         
         See also
         --------
@@ -129,7 +124,7 @@ class connectome(supermod.connectome):
     
         """
         super(connectome, self).__init__(connectome_meta, connectome_network, connectome_surface, connectome_volume, connectome_track, connectome_timeserie, connectome_data, connectome_script, connectome_imagestack, )
-        
+
         # add parent reference to all children
         self._update_parent_reference()
         
@@ -138,10 +133,7 @@ class connectome(supermod.connectome):
         
         # Default CMetadata
         if connectome_meta is None:
-            if title is None:
-                self.connectome_meta = CMetadata()
-            else:
-                self.connectome_meta = CMetadata(title)
+            self.connectome_meta = CMetadata()
         
     def get_all(self):
         """ Return all connectome objects as a list
@@ -156,38 +148,6 @@ class connectome(supermod.connectome):
                 self.connectome_volume + self.connectome_track + \
                 self.connectome_timeserie + self.connectome_data + \
                 self.connectome_script + self.connectome_imagestack
-    
-    def get_grouping_by_key2(self, key, cobject_type = None, dtype = None, exclude_values = None):
-        """ Specifying the connectome object type and metadata key, a
-        dictionary is returned keyed by the values of the given metadata
-        key.
-        
-        Parameter
-        ---------
-        metadata_key : string
-            The metadata key you want to use for grouping
-        cobject_type : string
-            If you want to confine your result to a particular connectome
-            object type such as 'CNetwork', 'CVolume' etc.
-            
-        exclude_values : list of string
-            If you want to discard particular metadata values
-            in the returned dictionary.
-        
-        Notes
-        -----
-        This function is helpful to retrieve groups of connectome
-        objects for further analysis, e.g. statistical comparison.
-        The metadata works as a kind of "intersubject" grouping
-        criteria. For example you can have a metadata key "sex" with
-        values M, F and unknown. You can exclude the unknown value
-        by setting exclude_values = ['unknown'].
-        
-        If the metadata key does not exists for the connectome
-        object, just skip this object.
-        """
-        pass
-    
 
     
     def get_by_name(self, name):
@@ -270,8 +230,8 @@ class connectome(supermod.connectome):
             return True
     
     def get_unique_cff_name(self):
-        """Return a unique connectome file name"""
-        n = self.get_connectome_meta().name
+        """Return a unique connectome file title"""
+        n = self.get_connectome_meta().get_title().valueOf_
         n = n.lower()
         n = n.replace(' ', '_')
         return n
@@ -515,8 +475,8 @@ supermod.connectome.subclass = connectome
 
 
 class CMetadata(supermod.CMetadata):
-    """Specific metadata to the connectome. The name is the name of the connectome. The version and the generator are required and are defined by default."""
-    
+    """Specific metadata to the connectome. The name is the name of the connectome. 
+    The version and the generator are required and are defined by default."""
     def __init__(self, title='myconnectome', generator='cfflib', version="2.0", creator=None, publisher=None, created=None, modified=None, rights=None, license=None, references=None, relation=None, species=None, email=None, metadata=None ):
         """Creates a connectome metadata object, specific metadata to the connectome object.
         
@@ -543,7 +503,7 @@ class CMetadata(supermod.CMetadata):
             reference
         relation : string, optional,
             relation
-        description : plaintext, optional,
+        description : string, optional,
             a text description of the connectome
             
         generator : string, 'cfflib',
@@ -553,7 +513,7 @@ class CMetadata(supermod.CMetadata):
         species : string, optional,
             the specied of the subject
                         
-        metadata : dictionary, optional,
+        DEPRECATED: metadata : dictionary, optional,
             some metadata informations as a dictionary
             
         Notes
@@ -562,23 +522,25 @@ class CMetadata(supermod.CMetadata):
         http://dublincore.org/documents/dcmi-terms/
         
         """
-        super(CMetadata, self).__init__(version,
-                                        title, 
-                                        creator, 
-                                        publisher, 
-                                        created, 
-                                        modified, 
-                                        rights, 
-                                        license, 
-                                        references, 
-                                        relation, 
-                                        generator, 
-                                        species, 
-                                        email, )
-        if not metadata is None:
-            self.update_metadata(metadata)
-        else:
-            self.update_metadata({})
+        super(CMetadata, self).__init__(version, title, creator, publisher, created, modified, rights, license, references, relation, generator, species, email, metadata, )
+##
+##        super(CMetadata, self).__init__(version,
+##                                        title, 
+##                                        creator, 
+##                                        publisher, 
+##                                        created, 
+##                                        modified, 
+##                                        rights, 
+##                                        license, 
+##                                        references, 
+##                                        relation, 
+##                                        generator, 
+##                                        species, 
+##                                        email, )
+#        if not metadata is None:
+#            self.update_metadata(metadata)
+#        else:
+#            self.update_metadata({})
 
     def get_metadata_as_dict(self): 
         """Return the metadata as a dictionary"""
@@ -1085,40 +1047,11 @@ supermod.CImagestack.subclass = CImagestack
 
 
 
-class description(supermod.description):
-    def __init__(self, valueOf_=None):
-        super(description, self).__init__(valueOf_, )
-supermod.description.subclass = description
-# end class description
-
-
-class title(supermod.title):
-    def __init__(self, valueOf_=None):
-        super(title, self).__init__(valueOf_, )
-supermod.title.subclass = title
-# end class title
-
-
-class creator(supermod.creator):
-    def __init__(self, valueOf_=None):
-        super(creator, self).__init__(valueOf_, )
-supermod.creator.subclass = creator
-# end class creator
-
-
 class subject(supermod.subject):
     def __init__(self, valueOf_=None):
         super(subject, self).__init__(valueOf_, )
 supermod.subject.subclass = subject
 # end class subject
-
-
-class publisher(supermod.publisher):
-    def __init__(self, valueOf_=None):
-        super(publisher, self).__init__(valueOf_, )
-supermod.publisher.subclass = publisher
-# end class publisher
-
 
 class contributor(supermod.contributor):
     def __init__(self, valueOf_=None):
@@ -1169,26 +1102,11 @@ supermod.language.subclass = language
 # end class language
 
 
-class relation(supermod.relation):
-    def __init__(self, valueOf_=None):
-        super(relation, self).__init__(valueOf_, )
-supermod.relation.subclass = relation
-# end class relation
-
-
 class coverage(supermod.coverage):
     def __init__(self, valueOf_=None):
         super(coverage, self).__init__(valueOf_, )
 supermod.coverage.subclass = coverage
 # end class coverage
-
-
-class rights(supermod.rights):
-    def __init__(self, valueOf_=None):
-        super(rights, self).__init__(valueOf_, )
-supermod.rights.subclass = rights
-# end class rights
-
 
 class alternative(supermod.alternative):
     def __init__(self, valueOf_=None):
@@ -1210,14 +1128,6 @@ class abstract(supermod.abstract):
 supermod.abstract.subclass = abstract
 # end class abstract
 
-
-class created(supermod.created):
-    def __init__(self, valueOf_=None):
-        super(created, self).__init__(valueOf_, )
-supermod.created.subclass = created
-# end class created
-
-
 class valid(supermod.valid):
     def __init__(self, valueOf_=None):
         super(valid, self).__init__(valueOf_, )
@@ -1237,13 +1147,6 @@ class issued(supermod.issued):
         super(issued, self).__init__(valueOf_, )
 supermod.issued.subclass = issued
 # end class issued
-
-
-class modified(supermod.modified):
-    def __init__(self, valueOf_=None):
-        super(modified, self).__init__(valueOf_, )
-supermod.modified.subclass = modified
-# end class modified
 
 
 class dateAccepted(supermod.dateAccepted):
@@ -1342,14 +1245,6 @@ class isReferencedBy(supermod.isReferencedBy):
         super(isReferencedBy, self).__init__(valueOf_, )
 supermod.isReferencedBy.subclass = isReferencedBy
 # end class isReferencedBy
-
-
-class references(supermod.references):
-    def __init__(self, valueOf_=None):
-        super(references, self).__init__(valueOf_, )
-supermod.references.subclass = references
-# end class references
-
 
 class isFormatOf(supermod.isFormatOf):
     def __init__(self, valueOf_=None):
@@ -1454,13 +1349,6 @@ class accessRights(supermod.accessRights):
         super(accessRights, self).__init__(valueOf_, )
 supermod.accessRights.subclass = accessRights
 # end class accessRights
-
-
-class license(supermod.license):
-    def __init__(self, valueOf_=None):
-        super(license, self).__init__(valueOf_, )
-supermod.license.subclass = license
-# end class license
 
 
 class bibliographicCitation(supermod.bibliographicCitation):
@@ -1751,7 +1639,6 @@ def parseString(inString):
 #    rootObj.export(sys.stdout, 0, name_=rootTag,
 #        namespacedef_='xmlns="http://www.connectomics.org/cff-2" xmlns:dcterms="http://purl.org/dc/terms/"')
     # update parent references
-    rootObj._update_parent_reference()
     
     return rootObj
 
