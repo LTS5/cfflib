@@ -270,6 +270,17 @@ class connectome(supermod.connectome):
                 print "Remove .tmpsrc attribute"
                 del ele.tmpsrc
     
+    # Check before add 
+    def check_name(self, name):
+              
+        # Check if the name is set     
+        if name is None or name == '':
+            raise Exception('A name is required.')
+        
+        # Check if the name is unique
+        if not self.is_name_unique(name):
+            raise Exception('The name is not unique.')
+    
     # CMetadata setter
     def set_connectome_meta(self, cmeta):
         """Set the connectome metadata object for this connectome object
@@ -284,14 +295,9 @@ class connectome(supermod.connectome):
         CMetadata, connectome, is_name_unique  
         """
                 
-        # Check if the name is set     
-        if cmeta.name is None or cmeta.name == '':
-            raise Exception('A name is required.')
+        # Check name
+        self.check_name(cmeta.name)
         
-        # Check if the name is unique
-        if not self.is_name_unique(cmeta.name):
-            raise Exception('The name is not unique.')
-            
         self.connectome_meta = cmeta
     
     # CNetwork
@@ -367,14 +373,12 @@ class connectome(supermod.connectome):
         CNetwork, connectome
             
         """
-              
-        # Check if the name is set     
-        if cnet.name is None or cnet.name == '':
-            raise Exception('A name is required.')
+                
+        # Check name
+        self.check_name(cnet.name)
         
-        # Check if the name is unique
-        if not self.is_name_unique(cnet.name):
-            raise Exception('The name is not unique.')
+        # Add information to the CObject to say that it's now part of the connectome
+        cnet.connectome = self
             
         self.connectome_network.append(cnet)
         
@@ -392,14 +396,12 @@ class connectome(supermod.connectome):
         CVolume, connectome
             
         """
-              
-        # Check if the name is set     
-        if cvol.name is None or cvol.name == '':
-            raise Exception('A name is required.')
+                
+        # Check name
+        self.check_name(cvol.name)
         
-        # Check if the name is unique
-        if not self.is_name_unique(cvol.name):
-            raise Exception('The name is not unique.')
+        # Add information to the CObject to say that it's now part of the connectome
+        cvol.connectome = self
             
         self.connectome_volume.append(cvol)
         
@@ -417,15 +419,13 @@ class connectome(supermod.connectome):
         CSurface, connectome
             
         """
-              
-        # Check if the name is set     
-        if csurf.name is None or csurf.name == '':
-            raise Exception('A name is required.')
+                
+        # Check name
+        self.check_name(csurf.name)
         
-        # Check if the name is unique
-        if not self.is_name_unique(csurf.name):
-            raise Exception('The name is not unique.')
-        
+        # Add information to the CObject to say that it's now part of the connectome
+        csurf.connectome = self
+           
         self.connectome_surface.append(csurf)
     
     # CTrack
@@ -442,15 +442,13 @@ class connectome(supermod.connectome):
         CTrack, connectome
             
         """
-              
-        # Check if the name is set     
-        if ctrack.name is None or ctrack.name == '':
-            raise Exception('A name is required.')
+                
+        # Check name
+        self.check_name(ctrack.name)
         
-        # Check if the name is unique
-        if not self.is_name_unique(ctrack.name):
-            raise Exception('The name is not unique.')
-        
+        # Add information to the CObject to say that it's now part of the connectome
+        ctrack.connectome = self
+           
         self.connectome_track.append(ctrack)
     
     # CTimeserie
@@ -467,15 +465,13 @@ class connectome(supermod.connectome):
         CTimeserie, connectome
             
         """
-              
-        # Check if the name is set     
-        if cts.name is None or cts.name == '':
-            raise Exception('A name is required.')
+                
+        # Check name
+        self.check_name(cts.name)
         
-        # Check if the name is unique
-        if not self.is_name_unique(cts.name):
-            raise Exception('The name is not unique.')
-        
+        # Add information to the CObject to say that it's now part of the connectome
+        cts.connectome = self
+           
         self.connectome_timeserie.append(cts)
     
     # CScript
@@ -492,15 +488,13 @@ class connectome(supermod.connectome):
         CScript, connectome
             
         """
-              
-        # Check if the name is set     
-        if cscr.name is None or cscr.name == '':
-            raise Exception('A name is required.')
+                
+        # Check name
+        self.check_name(cscr.name)
         
-        # Check if the name is unique
-        if not self.is_name_unique(cscr.name):
-            raise Exception('The name is not unique.')
-        
+        # Add information to the CObject to say that it's now part of the connectome
+        cscr.connectome = self
+           
         self.connectome_script.append(cscr)
     
 supermod.connectome.subclass = connectome
@@ -601,8 +595,7 @@ class CBaseClass(object):
         if self.metadata is None:
             self.metadata = Metadata()
         self.metadata.set_with_dictionary(metadata)
-        
-        
+                
     def get_type(self):
         """ Returns the class name """
         pass
@@ -654,6 +647,12 @@ class CNetwork(supermod.CNetwork, CBaseClass):
             fend = ''
             
         return unify('CNetwork', self.name + fend)
+    
+    # Check - if added to the connectome - the name uniqueness before change it
+    def set_name(self, name):
+        if hasattr(self, 'connectome'):
+            self.connectome.check_name(name)
+        self.name = name
     
     @classmethod
     def create_from_graphml(cls, name, ml_filename):

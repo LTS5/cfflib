@@ -109,11 +109,6 @@ def test_cnetwork_nxgraph():
     # Check the 2nd way to add a nxgraph network
     c.add_connectome_network_from_nxgraph('2nd nxgraph', g)
     assert_equal(c.get_connectome_network()[1].get_name(), '2nd nxgraph')
-    
-    # Check to change the name of the 2nd nework to match the first network name
-    # TODO fix issue: make it impossible !!
-    c.get_connectome_network()[1].set_name('modif')
-    assert_equal(n.get_name(), c.get_connectome_network()[1].get_name())
 
 # With graphml
 def test_cnetwork_graphml():
