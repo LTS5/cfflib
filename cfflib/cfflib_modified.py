@@ -618,7 +618,7 @@ class CBaseClass(object):
         if self.metadata is None:
             self.metadata = Metadata()
         self.metadata.set_with_dictionary(metadata)
-                
+                    
     def get_type(self):
         """ Returns the class name """
         pass
@@ -786,7 +786,13 @@ class CSurface(supermod.CSurface, CBaseClass):
             fend = ''
             
         return unify('CSurface', self.name + fend)
-    
+        
+    # Check - if added to the connectome - the name uniqueness before change it
+    def set_name(self, name):
+        if hasattr(self, 'connectome'):
+            self.connectome.check_name(name)
+        self.name = name
+        
     # Create from a Gifti file
     @classmethod
     def create_from_gifti(cls, name, gii_filename, dtype='label'):
@@ -873,6 +879,12 @@ class CVolume(supermod.CVolume, CBaseClass):
             
         return unify('CVolume', self.name + fend)
        
+    # Check - if added to the connectome - the name uniqueness before change it
+    def set_name(self, name):
+        if hasattr(self, 'connectome'):
+            self.connectome.check_name(name)
+        self.name = name
+        
     # Create a CVolume from a Nifti1 file
     @classmethod
     def create_from_nifti(cls, name, nii_filename, dtype=None):
@@ -950,6 +962,12 @@ class CTrack(supermod.CTrack, CBaseClass):
             
         return unify('CTrack', self.name + fend)
     
+    # Check - if added to the connectome - the name uniqueness before change it
+    def set_name(self, name):
+        if hasattr(self, 'connectome'):
+            self.connectome.check_name(name)
+        self.name = name
+        
     # Create a CTrack from a TrackVis file
     @classmethod
     def create_from_trackvis(cls, name, trk_filename):
@@ -1023,6 +1041,12 @@ class CTimeserie(supermod.CTimeserie, CBaseClass):
             
         return unify('CTimeserie', self.name + fend)
     
+    # Check - if added to the connectome - the name uniqueness before change it
+    def set_name(self, name):
+        if hasattr(self, 'connectome'):
+            self.connectome.check_name(name)
+        self.name = name
+        
     # tables.openFile
     # Create a CTimeserie from a HDF5 file
     @classmethod
@@ -1101,6 +1125,12 @@ class CData(supermod.CData, CBaseClass):
             
         return unify('CData', self.name + fend)
     
+    # Check - if added to the connectome - the name uniqueness before change it
+    def set_name(self, name):
+        if hasattr(self, 'connectome'):
+            self.connectome.check_name(name)
+        self.name = name
+        
 supermod.CData.subclass = CData
 # end class CData
 
@@ -1151,6 +1181,12 @@ class CScript(supermod.CScript, CBaseClass):
             
         return unify('CScript', self.name + fend)
 
+    # Check - if added to the connectome - the name uniqueness before change it
+    def set_name(self, name):
+        if hasattr(self, 'connectome'):
+            self.connectome.check_name(name)
+        self.name = name
+        
     @classmethod
     def create_from_file(cls, name, filename, dtype= 'Python', fileformat = 'UTF-8'):
         """ Return a CScript object from a given script/text file
