@@ -497,6 +497,29 @@ class connectome(supermod.connectome):
            
         self.connectome_script.append(cscr)
     
+    # CData
+    def add_connectome_data(self, cdata):
+        """Add the given CData to the connectome object.
+        
+        Parameters
+        ----------
+        cdata : CData,
+            the connectome data to add to the connectome, the CData name have to be unique.
+            
+        See also
+        --------
+        CData, connectome
+            
+        """
+                
+        # Check name
+        self.check_name(cdata.name)
+        
+        # Add information to the CObject to say that it's now part of the connectome
+        cdata.connectome = self
+           
+        self.connectome_data.append(cdata)
+    
 supermod.connectome.subclass = connectome
 # end class connectome
 
@@ -1057,7 +1080,7 @@ class CData(supermod.CData, CBaseClass):
         --------
         Metadata, connectome 
         """
-        super(CData, self).__init__(src, name, fileformat, description, metadata, )
+        super(CData, self).__init__(src, name, fileformat, description, metadataDict, )
         
         if metadataDict is not None:
             self.update_metadata(metadataDict)
