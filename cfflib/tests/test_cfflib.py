@@ -110,6 +110,10 @@ def test_cnetwork_nxgraph():
     c.add_connectome_network_from_nxgraph('2nd nxgraph', g)
     assert_equal(c.get_connectome_network()[1].get_name(), '2nd nxgraph')
 
+    # Check to save the connectome
+    save_to_cff(c, op.join(TMP, 'nxgraph.cff'))
+    assert_true(op.exists(op.join(TMP, 'nxgraph.cff')))
+
 # With graphml
 def test_cnetwork_graphml():
 
@@ -131,6 +135,10 @@ def test_cnetwork_graphml():
     c.add_connectome_network_from_graphml('2nd graphml', 'data/Networks/network_res83.graphml')
     assert_equal(len(c.get_connectome_network()), 2)
     assert_equal(c.get_connectome_network()[1].get_name(), '2nd graphml')
+
+    # Check to save the connectome
+    save_to_cff(c, op.join(TMP, 'graphml.cff'))
+    assert_true(op.exists(op.join(TMP, 'graphml.cff')))
 # ---------------------------------------------------------------------------------- #
 
 
@@ -158,6 +166,10 @@ def test_desc_meta():
     #  Check the description 
     n.set_description('An useless description...')
     assert_equal(n.get_description(),'An useless description...')
+    
+    # Check to save the connectome
+    save_to_cff(c, op.join(TMP, 'descmeta.cff'))
+    assert_true(op.exists(op.join(TMP, 'descmeta.cff')))
 # ---------------------------------------------------------------------------------- #
     
     
@@ -232,6 +244,10 @@ def test_cvolume_nifti1():
     c.add_connectome_volume(v)
     assert_not_equal(c.get_connectome_volume(), [])
     assert_equal(len(c.get_connectome_volume()), 1)
+    
+    # Check to save the connectome
+    save_to_cff(c, op.join(TMP, 'cv.cff'))
+    assert_true(op.exists(op.join(TMP, 'cv.cff')))
 # ---------------------------------------------------------------------------------- #
 
 
@@ -262,6 +278,10 @@ def test_ctrack_trk():
     c.add_connectome_track(t)
     assert_not_equal(c.get_connectome_track(), [])
     assert_equal(len(c.get_connectome_track()), 1)
+    
+    # Check to save the connectome
+    save_to_cff(c, op.join(TMP, 'ct.cff'))
+    assert_true(op.exists(op.join(TMP, 'ct.cff')))
 # ---------------------------------------------------------------------------------- #
 
 
@@ -292,6 +312,10 @@ def test_ctimeserie_hdf5():
     c.add_connectome_timeserie(t)
     assert_not_equal(c.get_connectome_timeserie(), [])
     assert_equal(len(c.get_connectome_timeserie()), 1)
+    
+    # Check to save the connectome
+    save_to_cff(c, op.join(TMP, 'cts.cff'))
+    assert_true(op.exists(op.join(TMP, 'cts.cff')))
 # ---------------------------------------------------------------------------------- #
    
     
@@ -323,6 +347,10 @@ def test_csurface_gifti():
     c.add_connectome_surface(s)
     assert_not_equal(c.get_connectome_surface(), [])
     assert_equal(len(c.get_connectome_surface()), 1)
+    
+    # Check to save the connectome
+    save_to_cff(c, op.join(TMP, 'cs.cff'))
+    assert_true(op.exists(op.join(TMP, 'cs.cff')))
 # ---------------------------------------------------------------------------------- #
 
 
