@@ -298,8 +298,12 @@ class connectome(supermod.connectome):
         # Check name
         self.check_name(cmeta.name)
         
+        # Add to the connectome
         self.connectome_meta = cmeta
     
+        # Update parent reference
+        self._update_parent_reference()
+        
     # CNetwork
     def add_connectome_network_from_nxgraph(self, name, nxGraph, dtype='AttributeNetwork', fileformat='NXGPickle'):
         """Add a new CNetwork from the given NetworkX graph object to the connectome.
@@ -376,11 +380,12 @@ class connectome(supermod.connectome):
                 
         # Check name
         self.check_name(cnet.name)
-        
-        # Add information to the CObject to say that it's now part of the connectome
-        cnet.connectome = self
             
+        # Add to the connectome
         self.connectome_network.append(cnet)
+    
+        # Update parent reference
+        self._update_parent_reference()
         
     # CVolume
     def add_connectome_volume(self, cvol):
@@ -400,10 +405,11 @@ class connectome(supermod.connectome):
         # Check name
         self.check_name(cvol.name)
         
-        # Add information to the CObject to say that it's now part of the connectome
-        cvol.connectome = self
-            
+        # Add to the connectome
         self.connectome_volume.append(cvol)
+    
+        # Update parent reference
+        self._update_parent_reference()
         
     # CSurface
     def add_connectome_surface(self, csurf):
@@ -422,11 +428,12 @@ class connectome(supermod.connectome):
                 
         # Check name
         self.check_name(csurf.name)
-        
-        # Add information to the CObject to say that it's now part of the connectome
-        csurf.connectome = self
            
+        # Add to the connectome
         self.connectome_surface.append(csurf)
+    
+        # Update parent reference
+        self._update_parent_reference()
     
     # CTrack
     def add_connectome_track(self, ctrack):
@@ -446,10 +453,11 @@ class connectome(supermod.connectome):
         # Check name
         self.check_name(ctrack.name)
         
-        # Add information to the CObject to say that it's now part of the connectome
-        ctrack.connectome = self
-           
+        # Add to the connectome
         self.connectome_track.append(ctrack)
+    
+        # Update parent reference
+        self._update_parent_reference()
     
     # CTimeserie
     def add_connectome_timeserie(self, cts):
@@ -469,10 +477,11 @@ class connectome(supermod.connectome):
         # Check name
         self.check_name(cts.name)
         
-        # Add information to the CObject to say that it's now part of the connectome
-        cts.connectome = self
-           
+        # Add to the connectome
         self.connectome_timeserie.append(cts)
+    
+        # Update parent reference
+        self._update_parent_reference()
     
     # CScript
     def add_connectome_script(self, cts):
@@ -492,10 +501,11 @@ class connectome(supermod.connectome):
         # Check name
         self.check_name(cscr.name)
         
-        # Add information to the CObject to say that it's now part of the connectome
-        cscr.connectome = self
-           
+        # Add to the connectome
         self.connectome_script.append(cscr)
+    
+        # Update parent reference
+        self._update_parent_reference()
     
     # CData
     def add_connectome_data(self, cdata):
@@ -515,10 +525,11 @@ class connectome(supermod.connectome):
         # Check name
         self.check_name(cdata.name)
         
-        # Add information to the CObject to say that it's now part of the connectome
-        cdata.connectome = self
-           
+        # Add to the connectome
         self.connectome_data.append(cdata)
+    
+        # Update parent reference
+        self._update_parent_reference()
     
 supermod.connectome.subclass = connectome
 # end class connectome
@@ -673,8 +684,8 @@ class CNetwork(supermod.CNetwork, CBaseClass):
     
     # Check - if added to the connectome - the name uniqueness before change it
     def set_name(self, name):
-        if hasattr(self, 'connectome'):
-            self.connectome.check_name(name)
+        if hasattr(self, 'parent_cfile'):
+            self.parent_cfile.check_name(name)
         self.name = name
     
     @classmethod
@@ -789,8 +800,8 @@ class CSurface(supermod.CSurface, CBaseClass):
         
     # Check - if added to the connectome - the name uniqueness before change it
     def set_name(self, name):
-        if hasattr(self, 'connectome'):
-            self.connectome.check_name(name)
+        if hasattr(self, 'parent_cfile'):
+            self.parent_cfile.check_name(name)
         self.name = name
         
     # Create from a Gifti file
@@ -881,8 +892,8 @@ class CVolume(supermod.CVolume, CBaseClass):
        
     # Check - if added to the connectome - the name uniqueness before change it
     def set_name(self, name):
-        if hasattr(self, 'connectome'):
-            self.connectome.check_name(name)
+        if hasattr(self, 'parent_cfile'):
+            self.parent_cfile.check_name(name)
         self.name = name
         
     # Create a CVolume from a Nifti1 file
@@ -964,8 +975,8 @@ class CTrack(supermod.CTrack, CBaseClass):
     
     # Check - if added to the connectome - the name uniqueness before change it
     def set_name(self, name):
-        if hasattr(self, 'connectome'):
-            self.connectome.check_name(name)
+        if hasattr(self, 'parent_cfile'):
+            self.parent_cfile.check_name(name)
         self.name = name
         
     # Create a CTrack from a TrackVis file
@@ -1043,8 +1054,8 @@ class CTimeserie(supermod.CTimeserie, CBaseClass):
     
     # Check - if added to the connectome - the name uniqueness before change it
     def set_name(self, name):
-        if hasattr(self, 'connectome'):
-            self.connectome.check_name(name)
+        if hasattr(self, 'parent_cfile'):
+            self.parent_cfile.check_name(name)
         self.name = name
         
     # tables.openFile
@@ -1127,8 +1138,8 @@ class CData(supermod.CData, CBaseClass):
     
     # Check - if added to the connectome - the name uniqueness before change it
     def set_name(self, name):
-        if hasattr(self, 'connectome'):
-            self.connectome.check_name(name)
+        if hasattr(self, 'parent_cfile'):
+            self.parent_cfile.check_name(name)
         self.name = name
         
 supermod.CData.subclass = CData
@@ -1183,8 +1194,8 @@ class CScript(supermod.CScript, CBaseClass):
 
     # Check - if added to the connectome - the name uniqueness before change it
     def set_name(self, name):
-        if hasattr(self, 'connectome'):
-            self.connectome.check_name(name)
+        if hasattr(self, 'parent_cfile'):
+            self.parent_cfile.check_name(name)
         self.name = name
         
     @classmethod
