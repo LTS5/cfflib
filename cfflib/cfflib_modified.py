@@ -663,10 +663,20 @@ class CNetwork(supermod.CNetwork, CBaseClass):
     
         """
         super(CNetwork, self).__init__(src, dtype, name, fileformat, None, description, )
+        
+        # Metadata init
         if metadataDict is not None:
             self.update_metadata(metadataDict)
         else:
             self.metadata = Metadata()
+        
+        # fileformat check
+        if self.fileformat != 'GraphML' and self.fileformat != 'GEXF' and self.fileformat != 'NXGPickle' and self.fileformat != 'Other':
+            raise Exception('Incorrect fileformat; it can be: "GraphML", "GEXF", "NXGPickle" or "Other"')
+        
+        # dtype check
+        if self.dtype != 'AttributeNetwork' and self.dtype != 'DynamicNetwork' and self.dtype != 'HierarchicalNetwork' and self.dtype != 'Other':
+            raise Exception('Incorrect dtype; it can be: "AttributeNetwork", "DynamicNetwork", "HierarchicalNetwork" or "Other"')
         
     def get_unique_relpath(self):
         """ Return a unique relative path for this element """
