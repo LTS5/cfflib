@@ -675,11 +675,11 @@ class CBaseClass(object):
         else:
             return None
     
-    def update_metadata(self, metadata): 
+    def update_metadata(self, metadata_dictionary): 
         """Set the metadata with a dictionary"""
         if self.metadata is None:
-            self.metadata = Metadata()
-        self.metadata.set_with_dictionary(metadata)
+            self.metadata = metadata()
+        self.metadata.set_with_dictionary(metadata_dictionary)
         
 
 class CNetwork(supermod.CNetwork, CBaseClass):
