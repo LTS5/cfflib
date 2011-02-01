@@ -111,6 +111,15 @@ def test_cnetwork_nxgraph():
     c.add_connectome_network_from_nxgraph('2nd nxgraph', g)
     assert_equal(c.get_connectome_network()[1].get_name(), '2nd nxgraph')
 
+    # Check save/load the CNetwork
+    name = n.data.name
+    n.data.name = 'test name'
+    n.save()
+    n.load()
+    assert_not_equal(n.data.name, name)
+    n.data.name = ''
+    n.save()
+
     # Check to save the connectome
     save_to_cff(c, op.join(TMP, 'nxgraph.cff'))
     assert_true(op.exists(op.join(TMP, 'nxgraph.cff')))
@@ -136,6 +145,15 @@ def test_cnetwork_graphml():
     c.add_connectome_network_from_graphml('2nd graphml', op.join(DATA,'Networks/network_res83.graphml'))
     assert_equal(len(c.get_connectome_network()), 2)
     assert_equal(c.get_connectome_network()[1].get_name(), '2nd graphml')
+
+    # Check save/load the CNetwork
+    testname = n.data.name
+    n.data.name = 'test name'
+    n.save()
+    n.load()
+    assert_not_equal(n.data.name, testname)
+    n.data.name = ''
+    n.save()
 
     # Check to save the connectome
     save_to_cff(c, op.join(TMP, 'graphml.cff'))
