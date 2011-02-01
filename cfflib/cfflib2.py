@@ -236,7 +236,7 @@ class connectome(supermod.connectome):
     
     def get_unique_cff_name(self):
         """Return a unique connectome file title"""
-        n = self.get_connectome_meta().get_title().valueOf_
+        n = self.get_connectome_meta().get_title()
         n = n.lower()
         n = n.replace(' ', '_')
         return n
@@ -679,7 +679,7 @@ class CBaseClass(object):
         """Set the metadata with a dictionary"""
         if self.metadata is None:
             self.metadata = metadata()
-        self.metadata.set_with_dictionary(metadata_dictionary)
+        self.metadata.set_tags_with_dictionary(metadata_dictionary)
         
 
 class CNetwork(supermod.CNetwork, CBaseClass):
@@ -834,21 +834,6 @@ class CSurface(supermod.CSurface, CBaseClass):
             
         return unify('CSurface', self.name + fend)
     
-    # Description object hide as a property
-    @property
-    def get_description(self):
-        if hasattr(self.description, 'valueOf_'):
-            return self.description.get_valueOf_()
-        else:
-            raise Exception('The description has to be set first.')
-    def get_description_format(self):
-        if hasattr(self.description, 'format'):
-            return self.description.format
-        else:
-            raise Exception('The description has to be set first.')      
-    def set_description(self, value):
-        self.description = description('plaintext', value)
-
     
     # Create from a Gifti file
     @classmethod
@@ -927,20 +912,6 @@ class CVolume(supermod.CVolume, CBaseClass):
             
         return unify('CVolume', self.name + fend)
     
-    # Description object hide as a property
-    @property
-    def get_description(self):
-        if hasattr(self.description, 'valueOf_'):
-            return self.description.get_valueOf_()
-        else:
-            raise Exception('The description has to be set first.')
-    def get_description_format(self):
-        if hasattr(self.description, 'format'):
-            return self.description.format
-        else:
-            raise Exception('The description has to be set first.')    
-    def set_description(self, value):
-        self.description = description('plaintext', value)
        
     # Create a CVolume from a Nifti1 file
     @classmethod

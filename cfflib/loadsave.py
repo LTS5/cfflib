@@ -131,8 +131,8 @@ def save_to_cff(connectome, filename):
     if connectome.get_connectome_meta() == None:
         print "ERROR - there is no connectome metadata in this connectome"
         return
-    elif connectome.get_connectome_meta().name == None or connectome.get_connectome_meta().name == '':
-        print "ERROR - the connectome metadata have to contain a unique name"
+    elif connectome.get_connectome_meta().title == None or connectome.get_connectome_meta().title == '':
+        print "ERROR - the connectome metadata have to contain a unique title"
         return
     
     _newzip = ZipFile(filename, 'w', ZIP_DEFLATED)
