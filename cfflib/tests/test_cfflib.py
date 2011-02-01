@@ -14,7 +14,8 @@ import os.path as op
 
 # ---------------------------------------------------------------------------------- #
 # Load and store data locations
-TMP = tempfile.gettempdir()
+DATA = op.join(op.dirname(__file__),'data/')
+TMP  = tempfile.gettempdir()
 # ---------------------------------------------------------------------------------- #
 
 
@@ -120,7 +121,7 @@ def test_cnetwork_graphml():
     c = connectome()
     
     # Check the classmethod and default attributes
-    n = CNetwork.create_from_graphml('GraphML net', 'data/Networks/network_res83.graphml')
+    n = CNetwork.create_from_graphml('GraphML net', op.join(DATA,'Networks/network_res83.graphml'))
     assert_equal(n.get_name(), 'GraphML net')
     assert_equal(n.get_fileformat(), 'GraphML')
     assert_equal(n.get_src(), 'CNetwork/graphml_net.graphml')
@@ -132,7 +133,7 @@ def test_cnetwork_graphml():
     assert_equal(c.get_connectome_network()[0].get_src(), 'CNetwork/graphml_net.graphml')
     
     # Check to directly add to the connectome
-    c.add_connectome_network_from_graphml('2nd graphml', 'data/Networks/network_res83.graphml')
+    c.add_connectome_network_from_graphml('2nd graphml', op.join(DATA,'Networks/network_res83.graphml'))
     assert_equal(len(c.get_connectome_network()), 2)
     assert_equal(c.get_connectome_network()[1].get_name(), '2nd graphml')
 
@@ -184,7 +185,7 @@ def test_save_load():
     assert_equal(c.get_connectome_meta().get_version(), '2.0')
     
     # Check CNetwork
-    c.add_connectome_network_from_graphml('GraphML net', 'data/Networks/network_res83.graphml')
+    c.add_connectome_network_from_graphml('GraphML net', op.join(DATA,'Networks/network_res83.graphml'))
     assert_equal(c.get_connectome_network()[0].get_src(), 'CNetwork/graphml_net.graphml')
     n = c.get_connectome_network()[0]
     
@@ -225,7 +226,7 @@ def test_cvolume_nifti1():
     assert_equal(v2.get_metadata_as_dict()['m0'], '123')
     
     # Check classmethod
-    v = CVolume.create_from_nifti('CVolume', 'data/Volumes/T1.nii.gz')
+    v = CVolume.create_from_nifti('CVolume', op.join(DATA,'Volumes/T1.nii.gz'))
     assert_equal(v.get_name(), 'CVolume')
     
     # Check changing the name
@@ -270,7 +271,7 @@ def test_ctrack_trk():
     assert_equal(t.get_metadata_as_dict()['fib'], '1')
     
     # Check the classmethod from trackvis
-    t = CTrack.create_from_trackvis('my track', 'data/Tracks/fibers_transformed.trk')
+    t = CTrack.create_from_trackvis('my track', op.join(DATA,'Tracks/fibers_transformed.trk'))
     assert_equal(t.get_name(), 'my track')
     assert_equal(t.get_src(), 'CTrack/my_track.trk')
 
@@ -304,7 +305,7 @@ def test_ctimeserie_hdf5():
     assert_equal(t.get_metadata_as_dict()['ts'], 'val')
     
     # Check classmethod from hdf5
-    t = CTimeserie.create_from_hdf5('my timeserie', 'data/Timeseries/generatedseries.hdf5')
+    t = CTimeserie.create_from_hdf5('my timeserie', op.join(DATA,'Timeseries/generatedseries.hdf5'))
     assert_equal(t.get_name(), 'my timeserie')
     assert_equal(t.get_src(), 'CTimeserie/my_timeserie.h5')
 
@@ -339,7 +340,7 @@ def test_csurface_gifti():
     assert_equal(s.get_metadata_as_dict()['surf'], 'ace')
     
     # Check classmethod from gifti
-    s = CSurface.create_from_gifti('my surface', 'data/Surfaces/testsubject_labels.gii')
+    s = CSurface.create_from_gifti('my surface', op.join(DATA,'Surfaces/testsubject_labels.gii'))
     assert_equal(s.get_name(), 'my surface')
     assert_equal(s.get_src(), 'CSurface/my_surface.gii')
 
@@ -374,7 +375,7 @@ def test_cdata():
     
     # Check NumPy
     d            = CData('data numpy')
-    d.tmpsrc     = op.abspath('data/Data/mydata.npy')
+    d.tmpsrc     = op.abspath(op.join(DATA,'Data/mydata.npy'))
     d.fileformat = "NumPy"
     d.src        = d.get_unique_relpath()
     c.add_connectome_data(d)
@@ -385,7 +386,7 @@ def test_cdata():
         
     # Check HDF5
     d            = CData('data hdf5')
-    d.tmpsrc     = op.abspath('data/Data/mydata.hdf5')
+    d.tmpsrc     = op.abspath(op.join(DATA,'Data/mydata.hdf5'))
     d.fileformat = "HDF5"
     d.src        = d.get_unique_relpath()
     c.add_connectome_data(d)
@@ -396,7 +397,7 @@ def test_cdata():
     
     # Check XML 
     d            = CData('data xml')
-    d.tmpsrc     = op.abspath('data/Data/mydata.xml')
+    d.tmpsrc     = op.abspath(op.join(DATA,'Data/mydata.xml'))
     d.fileformat = "XML"
     d.src        = d.get_unique_relpath()
     c.add_connectome_data(d)
