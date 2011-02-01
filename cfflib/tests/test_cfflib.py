@@ -354,5 +354,35 @@ def test_csurface_gifti():
 # ---------------------------------------------------------------------------------- #
 
 
+# ---------------------------------------------------------------------------------- #
+# Test CData
+def test_cdata():
+
+    c = connectome()
+    
+    # Check default values
+    d = CData()    
+    assert_equal(d.get_name(), 'mydata')
+    assert_equal(d.get_fileformat(), None)
+    assert_equal(d.get_metadata_as_dict(), {})
+    
+    # Check given values
+    d = CData(name='Test data', metadataDict={'m1':'v1'}, fileformat='XML', src='data/Data/mydata.npy')
+    assert_equal(d.get_name(), 'Test data')
+    assert_equal(d.get_fileformat(), 'XML')
+    assert_equal(d.get_metadata_as_dict(), {'m1':'v1'})
+    
+    # Check NumPy
+    d            = CData()
+    d.tmpsrc     = op.abspath('data/Data/mydata.npy')
+    d.fileformat = "NumPy"
+    d.src        = d.get_unique_relpath()
+    c.add_connectome_data(d)
+    d.load()
+    assert_true(hasattr(d,'data'))
+    if hasattr(d,'data'):
+        assert_not_equal(d.data, None)
+# ---------------------------------------------------------------------------------- #
+
 # ================================================================================== #
    

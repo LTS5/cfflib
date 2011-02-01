@@ -1125,7 +1125,7 @@ class CData(supermod.CData, CBaseClass):
         --------
         Metadata, connectome 
         """
-        super(CData, self).__init__(src, name, fileformat, description, metadataDict, )
+        super(CData, self).__init__(src, name, fileformat, description, None, )
         
         if metadataDict is not None:
             self.update_metadata(metadataDict)
