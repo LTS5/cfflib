@@ -91,6 +91,8 @@ class metadata(supermod.metadata):
     def set_tags_with_dictionary(self, dictionary):
         """Set the metadata with a dictionary"""
         tags = self.get_tag()
+        if len(dictionary) == 0:
+            return
         for k in dictionary:
             test = False
             # check if the key already exists
@@ -480,7 +482,7 @@ supermod.connectome.subclass = connectome
 class CMetadata(supermod.CMetadata):
     """Specific metadata to the connectome. The name is the name of the connectome. 
     The version and the generator are required and are defined by default."""
-    def __init__(self, title='myconnectome', generator='cfflib', version="2.0", creator=None, publisher=None, created=None, modified=None, rights=None, license=None, references=None, relation=None, species=None, email=None, metadata=None ):
+    def __init__(self, title='myconnectome', generator='cfflib', version="2.0", creator=None, publisher=None, created=None, modified=None, rights=None, license=None, references=None, relation=None, description=None, species=None, email=None, metadata_dictionary=None ):
         """Creates a connectome metadata object, specific metadata to the connectome object.
         
         Parameters
@@ -516,7 +518,7 @@ class CMetadata(supermod.CMetadata):
         species : string, optional,
             the specied of the subject
                         
-        DEPRECATED: metadata : dictionary, optional,
+        metadata_dictionary : dictionary, optional,
             some metadata informations as a dictionary
             
         Notes
@@ -525,10 +527,11 @@ class CMetadata(supermod.CMetadata):
         http://dublincore.org/documents/dcmi-terms/
         
         """
-        super(CMetadata, self).__init__(version, title, creator, publisher, created, modified, rights, license, references, relation, description, generator, species, email, metadata, )
-
+        super(CMetadata, self).__init__(version, title, creator, publisher, created, modified, rights, license, references, relation, description, generator, species, email,  )
+        
         if not metadata is None:
-            self.update_metadata(metadata)
+            if not metadata_dictionary is None:
+                self.update_metadata(metadata_dictionary)
         else:
             self.metadata = metadata()
             self.update_metadata({})
@@ -540,11 +543,12 @@ class CMetadata(supermod.CMetadata):
         else:
             return None
     
-    def update_metadata(self, metadata): 
+    def update_metadata(self, metadata_dictionary): 
         """Set the metadata with a dictionary"""
         if self.metadata is None:
-            self.metadata = Metadata()
-        self.metadata.set_tags_with_dictionary(metadata)
+            self.metadata = metadata()
+        
+        self.metadata.set_tags_with_dictionary(metadata_dictionary)
         
     def exportChildren(self, outfile, level, namespace_='', name_='CMetadata'):
         
