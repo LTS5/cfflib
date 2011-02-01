@@ -8,6 +8,7 @@
 
 import warnings
 from util import *
+from cff import showIndent, quote_xml, tag
 
 import sys
 
@@ -75,34 +76,36 @@ ExternalEncoding = 'ascii'
 # Data representation classes
 #
 
-class Metadata(supermod.Metadata):
+class metadata(supermod.metadata):
     def __init__(self, tag=None, section=None):
-        super(Metadata, self).__init__(tag, section, )
+        super(metadata, self).__init__(tag, section, )
         
-    def get_as_dictionary(self):
-        """Return the metadata as a dictionary"""
+    def get_tags_as_dictionary(self):
+        """Return the metadata tags as a dictionary"""
         dat = self.get_tag()
         ret = {}
         for ele in dat:
             ret[ele.key] = ele.valueOf_
         return ret
     
-    def set_with_dictionary(self, dictionary):
+    def set_tags_with_dictionary(self, dictionary):
         """Set the metadata with a dictionary"""
-        dat = self.get_tag()
+        tags = self.get_tag()
         for k in dictionary:
             test = False
             # check if the key already exists
-            for ele in dat:
+            for ele in tags:
                 if ele.key == k:
                     # always change the value to a string
                     ele.valueOf_ = str(dictionary[k])
                     test = True
             if not test:
-                self.data.append(data(str(k),str(dictionary[k])))  
+                # append to tags
+                mytag = tag(str(k), str(dictionary[k]))
+                self.add_tag(mytag)
                 
                 
-supermod.Metadata.subclass = Metadata
+supermod.metadata.subclass = metadata
 
 class connectome(supermod.connectome):
     """The connectome object is the main object of this format.
@@ -522,30 +525,18 @@ class CMetadata(supermod.CMetadata):
         http://dublincore.org/documents/dcmi-terms/
         
         """
-        super(CMetadata, self).__init__(version, title, creator, publisher, created, modified, rights, license, references, relation, generator, species, email, metadata, )
-##
-##        super(CMetadata, self).__init__(version,
-##                                        title, 
-##                                        creator, 
-##                                        publisher, 
-##                                        created, 
-##                                        modified, 
-##                                        rights, 
-##                                        license, 
-##                                        references, 
-##                                        relation, 
-##                                        generator, 
-##                                        species, 
-##                                        email, )
-#        if not metadata is None:
-#            self.update_metadata(metadata)
-#        else:
-#            self.update_metadata({})
+        super(CMetadata, self).__init__(version, title, creator, publisher, created, modified, rights, license, references, relation, description, generator, species, email, metadata, )
+
+        if not metadata is None:
+            self.update_metadata(metadata)
+        else:
+            self.metadata = metadata()
+            self.update_metadata({})
 
     def get_metadata_as_dict(self): 
         """Return the metadata as a dictionary"""
         if not self.metadata is None:
-            return self.metadata.get_as_dictionary()
+            return self.metadata.get_tags_as_dictionary()
         else:
             return None
     
@@ -553,7 +544,90 @@ class CMetadata(supermod.CMetadata):
         """Set the metadata with a dictionary"""
         if self.metadata is None:
             self.metadata = Metadata()
-        self.metadata.set_with_dictionary(metadata)
+        self.metadata.set_tags_with_dictionary(metadata)
+        
+    def exportChildren(self, outfile, level, namespace_='', name_='CMetadata'):
+        
+        if self.title:
+            namespace_= 'dcterms:'
+            showIndent(outfile, level)
+            outfile.write('<%stitle>%s</%stitle>\n' % (namespace_, self.gds_format_string(quote_xml(self.title).encode(ExternalEncoding), input_name='title'), namespace_))
+            #self.title.export(outfile, level, namespace_, name_='title', )
+        if self.creator:
+            namespace_= 'dcterms:'
+            showIndent(outfile, level)
+            outfile.write('<%screator>%s</%screator>\n' % (namespace_, self.gds_format_string(quote_xml(self.creator).encode(ExternalEncoding), input_name='creator'), namespace_))
+            #self.creator.export(outfile, level, namespace_, name_='creator', )
+        if self.publisher:
+            namespace_= 'dcterms:'
+            showIndent(outfile, level)
+            outfile.write('<%spublisher>%s</%spublisher>\n' % (namespace_, self.gds_format_string(quote_xml(self.publisher).encode(ExternalEncoding), input_name='publisher'), namespace_))
+
+            #self.publisher.export(outfile, level, namespace_, name_='publisher', )
+        if self.created:
+            namespace_= 'dcterms:'
+            showIndent(outfile, level)
+            outfile.write('<%screated>%s</%screated>\n' % (namespace_, self.gds_format_string(quote_xml(self.created).encode(ExternalEncoding), input_name='created'), namespace_))
+
+            #self.created.export(outfile, level, namespace_, name_='created', )
+        if self.modified:
+            namespace_= 'dcterms:'
+            showIndent(outfile, level)
+            outfile.write('<%smodified>%s</%smodified>\n' % (namespace_, self.gds_format_string(quote_xml(self.modified).encode(ExternalEncoding), input_name='modified'), namespace_))
+
+            #self.modified.export(outfile, level, namespace_, name_='modified', )
+        if self.rights:
+            namespace_= 'dcterms:'
+            showIndent(outfile, level)
+            outfile.write('<%srights>%s</%srights>\n' % (namespace_, self.gds_format_string(quote_xml(self.rights).encode(ExternalEncoding), input_name='rights'), namespace_))
+
+            #self.rights.export(outfile, level, namespace_, name_='rights')
+        if self.license:
+            namespace_= 'dcterms:'
+            showIndent(outfile, level)
+            outfile.write('<%slicense>%s</%slicense>\n' % (namespace_, self.gds_format_string(quote_xml(self.license).encode(ExternalEncoding), input_name='license'), namespace_))
+
+            #self.license.export(outfile, level, namespace_, name_='license')
+        if self.references:
+            namespace_= 'dcterms:'
+            showIndent(outfile, level)
+            outfile.write('<%sreferences>%s</%sreferences>\n' % (namespace_, self.gds_format_string(quote_xml(self.references).encode(ExternalEncoding), input_name='references'), namespace_))
+
+            #self.references.export(outfile, level, namespace_, name_='references')
+        if self.relation:
+            namespace_= 'dcterms:'
+            showIndent(outfile, level)
+            outfile.write('<%srelation>%s</%srelation>\n' % (namespace_, self.gds_format_string(quote_xml(self.relation).encode(ExternalEncoding), input_name='relation'), namespace_))
+
+            #self.relation.export(outfile, level, namespace_, name_='relation')
+        if self.modified:
+            namespace_= 'dcterms:'
+            showIndent(outfile, level)
+            outfile.write('<%smodified>%s</%smodified>\n' % (namespace_, self.gds_format_string(quote_xml(self.modified).encode(ExternalEncoding), input_name='modified'), namespace_))
+
+            #self.modified.export(outfile, level, namespace_, name_='modified')
+
+        if self.description is not None:
+            namespace_= 'dcterms:'
+            showIndent(outfile, level)
+            outfile.write('<%sdescription>%s</%sdescription>\n' % (namespace_, self.gds_format_string(quote_xml(self.description).encode(ExternalEncoding), input_name='description'), namespace_))
+
+        if self.generator is not None:
+            namespace_= ''
+            showIndent(outfile, level)
+            outfile.write('<%sgenerator>%s</%sgenerator>\n' % (namespace_, self.gds_format_string(quote_xml(self.generator).encode(ExternalEncoding), input_name='generator'), namespace_))
+        if self.species is not None:
+            namespace_= ''
+            showIndent(outfile, level)
+            outfile.write('<%sspecies>%s</%sspecies>\n' % (namespace_, self.gds_format_string(quote_xml(self.species).encode(ExternalEncoding), input_name='species'), namespace_))
+        if self.email is not None:
+            namespace_= ''
+            showIndent(outfile, level)
+            outfile.write('<%semail>%s</%semail>\n' % (namespace_, self.gds_format_string(quote_xml(self.email).encode(ExternalEncoding), input_name='email'), namespace_))
+        if self.metadata:
+            namespace_= ''
+            self.metadata.export(outfile, level, namespace_, name_='metadata')
+            
         
 supermod.CMetadata.subclass = CMetadata
 # end class CMetadata
@@ -1045,556 +1119,91 @@ class CImagestack(supermod.CImagestack, CBaseClass):
 supermod.CImagestack.subclass = CImagestack
 # end class CImagestack
 
-
-
-class subject(supermod.subject):
-    def __init__(self, valueOf_=None):
-        super(subject, self).__init__(valueOf_, )
-supermod.subject.subclass = subject
-# end class subject
-
-class contributor(supermod.contributor):
-    def __init__(self, valueOf_=None):
-        super(contributor, self).__init__(valueOf_, )
-supermod.contributor.subclass = contributor
-# end class contributor
-
-
-class date(supermod.date):
-    def __init__(self, valueOf_=None):
-        super(date, self).__init__(valueOf_, )
-supermod.date.subclass = date
-# end class date
-
-
-class type_(supermod.type_):
-    def __init__(self, valueOf_=None):
-        super(type_, self).__init__(valueOf_, )
-supermod.type_.subclass = type_
-# end class type_
-
-
-class format(supermod.format):
-    def __init__(self, valueOf_=None):
-        super(format, self).__init__(valueOf_, )
-supermod.format.subclass = format
-# end class format
-
-
-class identifier(supermod.identifier):
-    def __init__(self, valueOf_=None):
-        super(identifier, self).__init__(valueOf_, )
-supermod.identifier.subclass = identifier
-# end class identifier
-
-
-class source(supermod.source):
-    def __init__(self, valueOf_=None):
-        super(source, self).__init__(valueOf_, )
-supermod.source.subclass = source
-# end class source
-
-
-class language(supermod.language):
-    def __init__(self, valueOf_=None):
-        super(language, self).__init__(valueOf_, )
-supermod.language.subclass = language
-# end class language
-
-
-class coverage(supermod.coverage):
-    def __init__(self, valueOf_=None):
-        super(coverage, self).__init__(valueOf_, )
-supermod.coverage.subclass = coverage
-# end class coverage
-
-class alternative(supermod.alternative):
-    def __init__(self, valueOf_=None):
-        super(alternative, self).__init__(valueOf_, )
-supermod.alternative.subclass = alternative
-# end class alternative
-
-
-class tableOfContents(supermod.tableOfContents):
-    def __init__(self, valueOf_=None):
-        super(tableOfContents, self).__init__(valueOf_, )
-supermod.tableOfContents.subclass = tableOfContents
-# end class tableOfContents
-
-
-class abstract(supermod.abstract):
-    def __init__(self, valueOf_=None):
-        super(abstract, self).__init__(valueOf_, )
-supermod.abstract.subclass = abstract
-# end class abstract
-
-class valid(supermod.valid):
-    def __init__(self, valueOf_=None):
-        super(valid, self).__init__(valueOf_, )
-supermod.valid.subclass = valid
-# end class valid
-
-
-class available(supermod.available):
-    def __init__(self, valueOf_=None):
-        super(available, self).__init__(valueOf_, )
-supermod.available.subclass = available
-# end class available
-
-
-class issued(supermod.issued):
-    def __init__(self, valueOf_=None):
-        super(issued, self).__init__(valueOf_, )
-supermod.issued.subclass = issued
-# end class issued
-
-
-class dateAccepted(supermod.dateAccepted):
-    def __init__(self, valueOf_=None):
-        super(dateAccepted, self).__init__(valueOf_, )
-supermod.dateAccepted.subclass = dateAccepted
-# end class dateAccepted
-
-
-class dateCopyrighted(supermod.dateCopyrighted):
-    def __init__(self, valueOf_=None):
-        super(dateCopyrighted, self).__init__(valueOf_, )
-supermod.dateCopyrighted.subclass = dateCopyrighted
-# end class dateCopyrighted
-
-
-class dateSubmitted(supermod.dateSubmitted):
-    def __init__(self, valueOf_=None):
-        super(dateSubmitted, self).__init__(valueOf_, )
-supermod.dateSubmitted.subclass = dateSubmitted
-# end class dateSubmitted
-
-
-class extent(supermod.extent):
-    def __init__(self, valueOf_=None):
-        super(extent, self).__init__(valueOf_, )
-supermod.extent.subclass = extent
-# end class extent
-
-
-class medium(supermod.medium):
-    def __init__(self, valueOf_=None):
-        super(medium, self).__init__(valueOf_, )
-supermod.medium.subclass = medium
-# end class medium
-
-
-class isVersionOf(supermod.isVersionOf):
-    def __init__(self, valueOf_=None):
-        super(isVersionOf, self).__init__(valueOf_, )
-supermod.isVersionOf.subclass = isVersionOf
-# end class isVersionOf
-
-
-class hasVersion(supermod.hasVersion):
-    def __init__(self, valueOf_=None):
-        super(hasVersion, self).__init__(valueOf_, )
-supermod.hasVersion.subclass = hasVersion
-# end class hasVersion
-
-
-class isReplacedBy(supermod.isReplacedBy):
-    def __init__(self, valueOf_=None):
-        super(isReplacedBy, self).__init__(valueOf_, )
-supermod.isReplacedBy.subclass = isReplacedBy
-# end class isReplacedBy
-
-
-class replaces(supermod.replaces):
-    def __init__(self, valueOf_=None):
-        super(replaces, self).__init__(valueOf_, )
-supermod.replaces.subclass = replaces
-# end class replaces
-
-
-class isRequiredBy(supermod.isRequiredBy):
-    def __init__(self, valueOf_=None):
-        super(isRequiredBy, self).__init__(valueOf_, )
-supermod.isRequiredBy.subclass = isRequiredBy
-# end class isRequiredBy
-
-
-class requires(supermod.requires):
-    def __init__(self, valueOf_=None):
-        super(requires, self).__init__(valueOf_, )
-supermod.requires.subclass = requires
-# end class requires
-
-
-class isPartOf(supermod.isPartOf):
-    def __init__(self, valueOf_=None):
-        super(isPartOf, self).__init__(valueOf_, )
-supermod.isPartOf.subclass = isPartOf
-# end class isPartOf
-
-
-class hasPart(supermod.hasPart):
-    def __init__(self, valueOf_=None):
-        super(hasPart, self).__init__(valueOf_, )
-supermod.hasPart.subclass = hasPart
-# end class hasPart
-
-
-class isReferencedBy(supermod.isReferencedBy):
-    def __init__(self, valueOf_=None):
-        super(isReferencedBy, self).__init__(valueOf_, )
-supermod.isReferencedBy.subclass = isReferencedBy
-# end class isReferencedBy
-
-class isFormatOf(supermod.isFormatOf):
-    def __init__(self, valueOf_=None):
-        super(isFormatOf, self).__init__(valueOf_, )
-supermod.isFormatOf.subclass = isFormatOf
-# end class isFormatOf
-
-
-class hasFormat(supermod.hasFormat):
-    def __init__(self, valueOf_=None):
-        super(hasFormat, self).__init__(valueOf_, )
-supermod.hasFormat.subclass = hasFormat
-# end class hasFormat
-
-
-class conformsTo(supermod.conformsTo):
-    def __init__(self, valueOf_=None):
-        super(conformsTo, self).__init__(valueOf_, )
-supermod.conformsTo.subclass = conformsTo
-# end class conformsTo
-
-
-class spatial(supermod.spatial):
-    def __init__(self, valueOf_=None):
-        super(spatial, self).__init__(valueOf_, )
-supermod.spatial.subclass = spatial
-# end class spatial
-
-
-class temporal(supermod.temporal):
-    def __init__(self, valueOf_=None):
-        super(temporal, self).__init__(valueOf_, )
-supermod.temporal.subclass = temporal
-# end class temporal
-
-
-class audience(supermod.audience):
-    def __init__(self, valueOf_=None):
-        super(audience, self).__init__(valueOf_, )
-supermod.audience.subclass = audience
-# end class audience
-
-
-class accrualMethod(supermod.accrualMethod):
-    def __init__(self, valueOf_=None):
-        super(accrualMethod, self).__init__(valueOf_, )
-supermod.accrualMethod.subclass = accrualMethod
-# end class accrualMethod
-
-
-class accrualPeriodicity(supermod.accrualPeriodicity):
-    def __init__(self, valueOf_=None):
-        super(accrualPeriodicity, self).__init__(valueOf_, )
-supermod.accrualPeriodicity.subclass = accrualPeriodicity
-# end class accrualPeriodicity
-
-
-class accrualPolicy(supermod.accrualPolicy):
-    def __init__(self, valueOf_=None):
-        super(accrualPolicy, self).__init__(valueOf_, )
-supermod.accrualPolicy.subclass = accrualPolicy
-# end class accrualPolicy
-
-
-class instructionalMethod(supermod.instructionalMethod):
-    def __init__(self, valueOf_=None):
-        super(instructionalMethod, self).__init__(valueOf_, )
-supermod.instructionalMethod.subclass = instructionalMethod
-# end class instructionalMethod
-
-
-class provenance(supermod.provenance):
-    def __init__(self, valueOf_=None):
-        super(provenance, self).__init__(valueOf_, )
-supermod.provenance.subclass = provenance
-# end class provenance
-
-
-class rightsHolder(supermod.rightsHolder):
-    def __init__(self, valueOf_=None):
-        super(rightsHolder, self).__init__(valueOf_, )
-supermod.rightsHolder.subclass = rightsHolder
-# end class rightsHolder
-
-
-class mediator(supermod.mediator):
-    def __init__(self, valueOf_=None):
-        super(mediator, self).__init__(valueOf_, )
-supermod.mediator.subclass = mediator
-# end class mediator
-
-
-class educationLevel(supermod.educationLevel):
-    def __init__(self, valueOf_=None):
-        super(educationLevel, self).__init__(valueOf_, )
-supermod.educationLevel.subclass = educationLevel
-# end class educationLevel
-
-
-class accessRights(supermod.accessRights):
-    def __init__(self, valueOf_=None):
-        super(accessRights, self).__init__(valueOf_, )
-supermod.accessRights.subclass = accessRights
-# end class accessRights
-
-
-class bibliographicCitation(supermod.bibliographicCitation):
-    def __init__(self, valueOf_=None):
-        super(bibliographicCitation, self).__init__(valueOf_, )
-supermod.bibliographicCitation.subclass = bibliographicCitation
-# end class bibliographicCitation
-
-
-class elementOrRefinementContainer(supermod.elementOrRefinementContainer):
-    def __init__(self, any=None):
-        super(elementOrRefinementContainer, self).__init__(any, )
-supermod.elementOrRefinementContainer.subclass = elementOrRefinementContainer
-# end class elementOrRefinementContainer
-
-
-class SimpleLiteral(supermod.SimpleLiteral):
-    def __init__(self, lang=None, valueOf_=None):
-        super(SimpleLiteral, self).__init__(lang, valueOf_, )
-supermod.SimpleLiteral.subclass = SimpleLiteral
-# end class SimpleLiteral
-
-
-class elementContainer(supermod.elementContainer):
-    def __init__(self, any=None):
-        super(elementContainer, self).__init__(any, )
-supermod.elementContainer.subclass = elementContainer
-# end class elementContainer
-
-
-class TGN(supermod.TGN):
-    def __init__(self, lang=None, valueOf_=None):
-        super(TGN, self).__init__(lang, valueOf_, )
-supermod.TGN.subclass = TGN
-# end class TGN
-
-
-class Box(supermod.Box):
-    def __init__(self, lang=None, valueOf_=None):
-        super(Box, self).__init__(lang, valueOf_, )
-supermod.Box.subclass = Box
-# end class Box
-
-
-class ISO3166(supermod.ISO3166):
-    def __init__(self, lang=None, valueOf_=None):
-        super(ISO3166, self).__init__(lang, valueOf_, )
-supermod.ISO3166.subclass = ISO3166
-# end class ISO3166
-
-
-class Point(supermod.Point):
-    def __init__(self, lang=None, valueOf_=None):
-        super(Point, self).__init__(lang, valueOf_, )
-supermod.Point.subclass = Point
-# end class Point
-
-
-class RFC4646(supermod.RFC4646):
-    def __init__(self, lang=None, valueOf_=None):
-        super(RFC4646, self).__init__(lang, valueOf_, )
-supermod.RFC4646.subclass = RFC4646
-# end class RFC4646
-
-
-class RFC3066(supermod.RFC3066):
-    def __init__(self, lang=None, valueOf_=None):
-        super(RFC3066, self).__init__(lang, valueOf_, )
-supermod.RFC3066.subclass = RFC3066
-# end class RFC3066
-
-
-class RFC1766(supermod.RFC1766):
-    def __init__(self, lang=None, valueOf_=None):
-        super(RFC1766, self).__init__(lang, valueOf_, )
-supermod.RFC1766.subclass = RFC1766
-# end class RFC1766
-
-
-class ISO639_3(supermod.ISO639_3):
-    def __init__(self, lang=None, valueOf_=None):
-        super(ISO639_3, self).__init__(lang, valueOf_, )
-supermod.ISO639_3.subclass = ISO639_3
-# end class ISO639_3
-
-
-class ISO639_2(supermod.ISO639_2):
-    def __init__(self, lang=None, valueOf_=None):
-        super(ISO639_2, self).__init__(lang, valueOf_, )
-supermod.ISO639_2.subclass = ISO639_2
-# end class ISO639_2
-
-
-class URI(supermod.URI):
-    def __init__(self, lang=None, valueOf_=None):
-        super(URI, self).__init__(lang, valueOf_, )
-supermod.URI.subclass = URI
-# end class URI
-
-
-class IMT(supermod.IMT):
-    def __init__(self, lang=None, valueOf_=None):
-        super(IMT, self).__init__(lang, valueOf_, )
-supermod.IMT.subclass = IMT
-# end class IMT
-
-
-class DCMIType(supermod.DCMIType):
-    def __init__(self, lang=None, valueOf_=None):
-        super(DCMIType, self).__init__(lang, valueOf_, )
-supermod.DCMIType.subclass = DCMIType
-# end class DCMIType
-
-
-class W3CDTF(supermod.W3CDTF):
-    def __init__(self, lang=None, valueOf_=None):
-        super(W3CDTF, self).__init__(lang, valueOf_, )
-supermod.W3CDTF.subclass = W3CDTF
-# end class W3CDTF
-
-
-class Period(supermod.Period):
-    def __init__(self, lang=None, valueOf_=None):
-        super(Period, self).__init__(lang, valueOf_, )
-supermod.Period.subclass = Period
-# end class Period
-
-
-class UDC(supermod.UDC):
-    def __init__(self, lang=None, valueOf_=None):
-        super(UDC, self).__init__(lang, valueOf_, )
-supermod.UDC.subclass = UDC
-# end class UDC
-
-
-class LCC(supermod.LCC):
-    def __init__(self, lang=None, valueOf_=None):
-        super(LCC, self).__init__(lang, valueOf_, )
-supermod.LCC.subclass = LCC
-# end class LCC
-
-
-class DDC(supermod.DDC):
-    def __init__(self, lang=None, valueOf_=None):
-        super(DDC, self).__init__(lang, valueOf_, )
-supermod.DDC.subclass = DDC
-# end class DDC
-
-
-class MESH(supermod.MESH):
-    def __init__(self, lang=None, valueOf_=None):
-        super(MESH, self).__init__(lang, valueOf_, )
-supermod.MESH.subclass = MESH
-# end class MESH
-
-
-class LCSH(supermod.LCSH):
-    def __init__(self, lang=None, valueOf_=None):
-        super(LCSH, self).__init__(lang, valueOf_, )
-supermod.LCSH.subclass = LCSH
-# end class LCSH
-
-
-class description(supermod.description):
-    def __init__(self, valueOf_=None):
-        super(description, self).__init__(valueOf_, )
-    def export(self, outfile, level, namespace_='', name_='description', namespacedef_=''):
-        super(description, self).export(outfile, level, namespace_='dcterms:', name_='description', namespacedef_='')
-supermod.description.subclass = description
-# end class description
-
-
-class title(supermod.title):
-    def __init__(self, valueOf_=None):
-        super(title, self).__init__(valueOf_, )
-    def export(self, outfile, level, namespace_='', name_='title', namespacedef_=''):
-        super(title, self).export(outfile, level, namespace_='dcterms:', name_='title', namespacedef_='')
-        
-supermod.title.subclass = title
-# end class title
-
-
-class creator(supermod.creator):
-    def __init__(self, valueOf_=None):
-        super(creator, self).__init__(valueOf_, )
-    def export(self, outfile, level, namespace_='', name_='creator', namespacedef_=''):
-        super(creator, self).export(outfile, level, namespace_='dcterms:', name_='creator', namespacedef_='')
-supermod.creator.subclass = creator
-# end class creator
-
-class publisher(supermod.publisher):
-    def __init__(self, valueOf_=None):
-        super(publisher, self).__init__(valueOf_, )
-    def export(self, outfile, level, namespace_='', name_='publisher', namespacedef_=''):
-        super(publisher, self).export(outfile, level, namespace_='dcterms:', name_='publisher', namespacedef_='')
-supermod.publisher.subclass = publisher
-# end class publisher
-
-class relation(supermod.relation):
-    def __init__(self, valueOf_=None):
-        super(relation, self).__init__(valueOf_, )
-    def export(self, outfile, level, namespace_='', name_='relation', namespacedef_=''):
-        super(relation, self).export(outfile, level, namespace_='dcterms:', name_='relation', namespacedef_='')
-supermod.relation.subclass = relation
-# end class relation
-
-class rights(supermod.rights):
-    def __init__(self, valueOf_=None):
-        super(rights, self).__init__(valueOf_, )
-    def export(self, outfile, level, namespace_='', name_='rights', namespacedef_=''):
-        super(rights, self).export(outfile, level, namespace_='dcterms:', name_='rights', namespacedef_='')
-supermod.rights.subclass = rights
-# end class rights
-
-class created(supermod.created):
-    def __init__(self, valueOf_=None):
-        super(created, self).__init__(valueOf_, )
-    def export(self, outfile, level, namespace_='', name_='created', namespacedef_=''):
-        super(created, self).export(outfile, level, namespace_='dcterms:', name_='created', namespacedef_='')
-supermod.created.subclass = created
-# end class created
-
-class modified(supermod.modified):
-    def __init__(self, valueOf_=None):
-        super(modified, self).__init__(valueOf_, )
-    def export(self, outfile, level, namespace_='', name_='modified', namespacedef_=''):
-        super(modified, self).export(outfile, level, namespace_='dcterms:', name_='modified', namespacedef_='')
-supermod.modified.subclass = modified
-# end class modified
-
-
-class license(supermod.license):
-    def __init__(self, valueOf_=None):
-        super(license, self).__init__(valueOf_, )
-    def export(self, outfile, level, namespace_='', name_='license', namespacedef_=''):
-        super(license, self).export(outfile, level, namespace_='dcterms:', name_='license', namespacedef_='')
-supermod.license.subclass = license
-# end class license
-
-class references(supermod.references):
-    def __init__(self, valueOf_=None):
-        super(references, self).__init__(valueOf_, )
-    def export(self, outfile, level, namespace_='', name_='references', namespacedef_=''):
-        super(references, self).export(outfile, level, namespace_='dcterms:', name_='references', namespacedef_='')
-supermod.references.subclass = references
-# end class references
+#
+#
+#class description(supermod.description):
+#    def __init__(self, valueOf_=None):
+#        super(description, self).__init__(valueOf_, )
+#    def export(self, outfile, level, namespace_='', name_='description', namespacedef_=''):
+#        super(description, self).export(outfile, level, namespace_='dcterms:', name_='description', namespacedef_='')
+#supermod.description.subclass = description
+## end class description
+#
+#
+#class title(supermod.title):
+#    def __init__(self, valueOf_=None):
+#        super(title, self).__init__(valueOf_, )
+#    def export(self, outfile, level, namespace_='', name_='title', namespacedef_=''):
+#        super(title, self).export(outfile, level, namespace_='dcterms:', name_='title', namespacedef_='')
+#        
+#supermod.title.subclass = title
+## end class title
+#
+#
+#class creator(supermod.creator):
+#    def __init__(self, valueOf_=None):
+#        super(creator, self).__init__(valueOf_, )
+#    def export(self, outfile, level, namespace_='', name_='creator', namespacedef_=''):
+#        super(creator, self).export(outfile, level, namespace_='dcterms:', name_='creator', namespacedef_='')
+#supermod.creator.subclass = creator
+## end class creator
+#
+#class publisher(supermod.publisher):
+#    def __init__(self, valueOf_=None):
+#        super(publisher, self).__init__(valueOf_, )
+#    def export(self, outfile, level, namespace_='', name_='publisher', namespacedef_=''):
+#        super(publisher, self).export(outfile, level, namespace_='dcterms:', name_='publisher', namespacedef_='')
+#supermod.publisher.subclass = publisher
+## end class publisher
+#
+#class relation(supermod.relation):
+#    def __init__(self, valueOf_=None):
+#        super(relation, self).__init__(valueOf_, )
+#    def export(self, outfile, level, namespace_='', name_='relation', namespacedef_=''):
+#        super(relation, self).export(outfile, level, namespace_='dcterms:', name_='relation', namespacedef_='')
+#supermod.relation.subclass = relation
+## end class relation
+#
+#class rights(supermod.rights):
+#    def __init__(self, valueOf_=None):
+#        super(rights, self).__init__(valueOf_, )
+#    def export(self, outfile, level, namespace_='', name_='rights', namespacedef_=''):
+#        super(rights, self).export(outfile, level, namespace_='dcterms:', name_='rights', namespacedef_='')
+#supermod.rights.subclass = rights
+## end class rights
+#
+#class created(supermod.created):
+#    def __init__(self, valueOf_=None):
+#        super(created, self).__init__(valueOf_, )
+#    def export(self, outfile, level, namespace_='', name_='created', namespacedef_=''):
+#        super(created, self).export(outfile, level, namespace_='dcterms:', name_='created', namespacedef_='')
+#supermod.created.subclass = created
+## end class created
+#
+#class modified(supermod.modified):
+#    def __init__(self, valueOf_=None):
+#        super(modified, self).__init__(valueOf_, )
+#    def export(self, outfile, level, namespace_='', name_='modified', namespacedef_=''):
+#        super(modified, self).export(outfile, level, namespace_='dcterms:', name_='modified', namespacedef_='')
+#supermod.modified.subclass = modified
+## end class modified
+#
+#
+#class license(supermod.license):
+#    def __init__(self, valueOf_=None):
+#        super(license, self).__init__(valueOf_, )
+#    def export(self, outfile, level, namespace_='', name_='license', namespacedef_=''):
+#        super(license, self).export(outfile, level, namespace_='dcterms:', name_='license', namespacedef_='')
+#supermod.license.subclass = license
+## end class license
+#
+#class references(supermod.references):
+#    def __init__(self, valueOf_=None):
+#        super(references, self).__init__(valueOf_, )
+#    def export(self, outfile, level, namespace_='', name_='references', namespacedef_=''):
+#        super(references, self).export(outfile, level, namespace_='dcterms:', name_='references', namespacedef_='')
+#supermod.references.subclass = references
+## end class references
 
 
 def get_root_tag(node):

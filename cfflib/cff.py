@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*- 
 
 #
-# Generated Tue Jan 25 11:45:14 2011 by generateDS.py version 2.3b.
+# Generated Tue Feb  1 11:31:07 2011 by generateDS.py version 2.3b.
 #
 
 import sys
@@ -502,7 +502,7 @@ class section(GeneratedsSuper):
 # end class section
 
 
-class Metadata(GeneratedsSuper):
+class metadata(GeneratedsSuper):
     subclass = None
     superclass = None
     def __init__(self, tag=None, section=None):
@@ -515,10 +515,10 @@ class Metadata(GeneratedsSuper):
         else:
             self.section = section
     def factory(*args_, **kwargs_):
-        if Metadata.subclass:
-            return Metadata.subclass(*args_, **kwargs_)
+        if metadata.subclass:
+            return metadata.subclass(*args_, **kwargs_)
         else:
-            return Metadata(*args_, **kwargs_)
+            return metadata(*args_, **kwargs_)
     factory = staticmethod(factory)
     def get_tag(self): return self.tag
     def set_tag(self, tag): self.tag = tag
@@ -528,10 +528,10 @@ class Metadata(GeneratedsSuper):
     def set_section(self, section): self.section = section
     def add_section(self, value): self.section.append(value)
     def insert_section(self, index, value): self.section[index] = value
-    def export(self, outfile, level, namespace_='', name_='Metadata', namespacedef_=''):
+    def export(self, outfile, level, namespace_='', name_='metadata', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
-        self.exportAttributes(outfile, level, [], namespace_, name_='Metadata')
+        self.exportAttributes(outfile, level, [], namespace_, name_='metadata')
         if self.hasContent_():
             outfile.write('>\n')
             self.exportChildren(outfile, level + 1, namespace_, name_)
@@ -539,9 +539,9 @@ class Metadata(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='Metadata'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='metadata'):
         pass
-    def exportChildren(self, outfile, level, namespace_='', name_='Metadata'):
+    def exportChildren(self, outfile, level, namespace_='', name_='metadata'):
         for tag_ in self.tag:
             tag_.export(outfile, level, namespace_, name_='tag')
         for section_ in self.section:
@@ -554,7 +554,7 @@ class Metadata(GeneratedsSuper):
             return True
         else:
             return False
-    def exportLiteral(self, outfile, level, name_='Metadata'):
+    def exportLiteral(self, outfile, level, name_='metadata'):
         level += 1
         self.exportLiteralAttributes(outfile, level, [], name_)
         if self.hasContent_():
@@ -602,7 +602,7 @@ class Metadata(GeneratedsSuper):
             obj_ = section.factory()
             obj_.build(child_)
             self.section.append(obj_)
-# end class Metadata
+# end class metadata
 
 
 class tag(GeneratedsSuper):
@@ -963,7 +963,7 @@ class CMetadata(GeneratedsSuper):
     Connectome File is compatible with. Should be 2.0"""
     subclass = None
     superclass = None
-    def __init__(self, version=None, title=None, creator=None, publisher=None, created=None, modified=None, rights=None, license=None, references=None, relation=None, generator=None, species=None, email=None, metadata=None):
+    def __init__(self, version=None, title=None, creator=None, publisher=None, created=None, modified=None, rights=None, license=None, references=None, relation=None, description=None, generator=None, species=None, email=None, metadata=None):
         self.version = _cast(None, version)
         self.title = title
         self.creator = creator
@@ -974,7 +974,7 @@ class CMetadata(GeneratedsSuper):
         self.license = license
         self.references = references
         self.relation = relation
-        self.modified = modified
+        self.description = description
         self.generator = generator
         self.species = species
         self.email = email
@@ -1003,8 +1003,8 @@ class CMetadata(GeneratedsSuper):
     def set_references(self, references): self.references = references
     def get_relation(self): return self.relation
     def set_relation(self, relation): self.relation = relation
-    def get_modified(self): return self.modified
-    def set_modified(self, modified): self.modified = modified
+    def get_description(self): return self.description
+    def set_description(self, description): self.description = description
     def get_generator(self): return self.generator
     def set_generator(self, generator): self.generator = generator
     def get_species(self): return self.species
@@ -1029,26 +1029,36 @@ class CMetadata(GeneratedsSuper):
     def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='CMetadata'):
         outfile.write(' version=%s' % (self.gds_format_string(quote_attrib(self.version).encode(ExternalEncoding), input_name='version'), ))
     def exportChildren(self, outfile, level, namespace_='', name_='CMetadata'):
-        if self.title:
-            self.title.export(outfile, level, namespace_, name_='title', )
-        if self.creator:
-            self.creator.export(outfile, level, namespace_, name_='creator', )
-        if self.publisher:
-            self.publisher.export(outfile, level, namespace_, name_='publisher', )
-        if self.created:
-            self.created.export(outfile, level, namespace_, name_='created', )
-        if self.modified:
-            self.modified.export(outfile, level, namespace_, name_='modified', )
-        if self.rights:
-            self.rights.export(outfile, level, namespace_, name_='rights')
-        if self.license:
-            self.license.export(outfile, level, namespace_, name_='license')
-        if self.references:
-            self.references.export(outfile, level, namespace_, name_='references')
-        if self.relation:
-            self.relation.export(outfile, level, namespace_, name_='relation')
-        if self.modified:
-            self.modified.export(outfile, level, namespace_, name_='modified')
+        if self.title is not None:
+            showIndent(outfile, level)
+            outfile.write('<%stitle>%s</%stitle>\n' % (namespace_, self.gds_format_string(quote_xml(self.title).encode(ExternalEncoding), input_name='title'), namespace_))
+        if self.creator is not None:
+            showIndent(outfile, level)
+            outfile.write('<%screator>%s</%screator>\n' % (namespace_, self.gds_format_string(quote_xml(self.creator).encode(ExternalEncoding), input_name='creator'), namespace_))
+        if self.publisher is not None:
+            showIndent(outfile, level)
+            outfile.write('<%spublisher>%s</%spublisher>\n' % (namespace_, self.gds_format_string(quote_xml(self.publisher).encode(ExternalEncoding), input_name='publisher'), namespace_))
+        if self.created is not None:
+            showIndent(outfile, level)
+            outfile.write('<%screated>%s</%screated>\n' % (namespace_, self.gds_format_string(quote_xml(self.created).encode(ExternalEncoding), input_name='created'), namespace_))
+        if self.modified is not None:
+            showIndent(outfile, level)
+            outfile.write('<%smodified>%s</%smodified>\n' % (namespace_, self.gds_format_string(quote_xml(self.modified).encode(ExternalEncoding), input_name='modified'), namespace_))
+        if self.rights is not None:
+            showIndent(outfile, level)
+            outfile.write('<%srights>%s</%srights>\n' % (namespace_, self.gds_format_string(quote_xml(self.rights).encode(ExternalEncoding), input_name='rights'), namespace_))
+        if self.license is not None:
+            showIndent(outfile, level)
+            outfile.write('<%slicense>%s</%slicense>\n' % (namespace_, self.gds_format_string(quote_xml(self.license).encode(ExternalEncoding), input_name='license'), namespace_))
+        if self.references is not None:
+            showIndent(outfile, level)
+            outfile.write('<%sreferences>%s</%sreferences>\n' % (namespace_, self.gds_format_string(quote_xml(self.references).encode(ExternalEncoding), input_name='references'), namespace_))
+        if self.relation is not None:
+            showIndent(outfile, level)
+            outfile.write('<%srelation>%s</%srelation>\n' % (namespace_, self.gds_format_string(quote_xml(self.relation).encode(ExternalEncoding), input_name='relation'), namespace_))
+        if self.description is not None:
+            showIndent(outfile, level)
+            outfile.write('<%sdescription>%s</%sdescription>\n' % (namespace_, self.gds_format_string(quote_xml(self.description).encode(ExternalEncoding), input_name='description'), namespace_))
         if self.generator is not None:
             showIndent(outfile, level)
             outfile.write('<%sgenerator>%s</%sgenerator>\n' % (namespace_, self.gds_format_string(quote_xml(self.generator).encode(ExternalEncoding), input_name='generator'), namespace_))
@@ -1071,7 +1081,7 @@ class CMetadata(GeneratedsSuper):
             self.license is not None or
             self.references is not None or
             self.relation is not None or
-            self.modified is not None or
+            self.description is not None or
             self.generator is not None or
             self.species is not None or
             self.email is not None or
@@ -1093,64 +1103,34 @@ class CMetadata(GeneratedsSuper):
     def exportLiteralChildren(self, outfile, level, name_):
         if self.title is not None:
             showIndent(outfile, level)
-            outfile.write('title=model_.title(\n')
-            self.title.exportLiteral(outfile, level)
-            showIndent(outfile, level)
-            outfile.write('),\n')
+            outfile.write('title=%s,\n' % quote_python(self.title).encode(ExternalEncoding))
         if self.creator is not None:
             showIndent(outfile, level)
-            outfile.write('creator=model_.creator(\n')
-            self.creator.exportLiteral(outfile, level)
-            showIndent(outfile, level)
-            outfile.write('),\n')
+            outfile.write('creator=%s,\n' % quote_python(self.creator).encode(ExternalEncoding))
         if self.publisher is not None:
             showIndent(outfile, level)
-            outfile.write('publisher=model_.publisher(\n')
-            self.publisher.exportLiteral(outfile, level)
-            showIndent(outfile, level)
-            outfile.write('),\n')
+            outfile.write('publisher=%s,\n' % quote_python(self.publisher).encode(ExternalEncoding))
         if self.created is not None:
             showIndent(outfile, level)
-            outfile.write('created=model_.created(\n')
-            self.created.exportLiteral(outfile, level)
-            showIndent(outfile, level)
-            outfile.write('),\n')
+            outfile.write('created=%s,\n' % quote_python(self.created).encode(ExternalEncoding))
         if self.modified is not None:
             showIndent(outfile, level)
-            outfile.write('modified=model_.modified(\n')
-            self.modified.exportLiteral(outfile, level)
-            showIndent(outfile, level)
-            outfile.write('),\n')
+            outfile.write('modified=%s,\n' % quote_python(self.modified).encode(ExternalEncoding))
         if self.rights is not None:
             showIndent(outfile, level)
-            outfile.write('rights=model_.rights(\n')
-            self.rights.exportLiteral(outfile, level)
-            showIndent(outfile, level)
-            outfile.write('),\n')
+            outfile.write('rights=%s,\n' % quote_python(self.rights).encode(ExternalEncoding))
         if self.license is not None:
             showIndent(outfile, level)
-            outfile.write('license=model_.license(\n')
-            self.license.exportLiteral(outfile, level)
-            showIndent(outfile, level)
-            outfile.write('),\n')
+            outfile.write('license=%s,\n' % quote_python(self.license).encode(ExternalEncoding))
         if self.references is not None:
             showIndent(outfile, level)
-            outfile.write('references=model_.references(\n')
-            self.references.exportLiteral(outfile, level)
-            showIndent(outfile, level)
-            outfile.write('),\n')
+            outfile.write('references=%s,\n' % quote_python(self.references).encode(ExternalEncoding))
         if self.relation is not None:
             showIndent(outfile, level)
-            outfile.write('relation=model_.relation(\n')
-            self.relation.exportLiteral(outfile, level)
+            outfile.write('relation=%s,\n' % quote_python(self.relation).encode(ExternalEncoding))
+        if self.description is not None:
             showIndent(outfile, level)
-            outfile.write('),\n')
-        if self.modified is not None:
-            showIndent(outfile, level)
-            outfile.write('modified=model_.modified(\n')
-            self.modified.exportLiteral(outfile, level)
-            showIndent(outfile, level)
-            outfile.write('),\n')
+            outfile.write('description=%s,\n' % quote_python(self.description).encode(ExternalEncoding))
         if self.generator is not None:
             showIndent(outfile, level)
             outfile.write('generator=%s,\n' % quote_python(self.generator).encode(ExternalEncoding))
@@ -1162,8 +1142,8 @@ class CMetadata(GeneratedsSuper):
             outfile.write('email=%s,\n' % quote_python(self.email).encode(ExternalEncoding))
         if self.metadata is not None:
             showIndent(outfile, level)
-            outfile.write('metadata=model_.Metadata(\n')
-            self.metadata.exportLiteral(outfile, level, name_='metadata')
+            outfile.write('metadata=model_.metadata(\n')
+            self.metadata.exportLiteral(outfile, level)
             showIndent(outfile, level)
             outfile.write('),\n')
     def build(self, node):
@@ -1177,34 +1157,28 @@ class CMetadata(GeneratedsSuper):
             already_processed.append('version')
             self.version = value
     def buildChildren(self, child_, nodeName_, from_subclass=False):
-        if nodeName_ == 'title': 
-            obj_ = title.factory()
-            obj_.build(child_)
-            self.set_title(obj_)
+        if nodeName_ == 'title':
+            title_ = child_.text
+            self.title = title_
         elif nodeName_ == 'alternative': 
             obj_ = alternative.factory()
             obj_.build(child_)
             self.set_title(obj_)
-        elif nodeName_ == 'creator': 
-            obj_ = creator.factory()
-            obj_.build(child_)
-            self.set_creator(obj_)
-        elif nodeName_ == 'publisher': 
-            obj_ = publisher.factory()
-            obj_.build(child_)
-            self.set_publisher(obj_)
-        elif nodeName_ == 'created': 
-            obj_ = created.factory()
-            obj_.build(child_)
-            self.set_created(obj_)
-        elif nodeName_ == 'modified': 
-            obj_ = modified.factory()
-            obj_.build(child_)
-            self.set_modified(obj_)
-        elif nodeName_ == 'rights': 
-            obj_ = rights.factory()
-            obj_.build(child_)
-            self.set_rights(obj_)
+        elif nodeName_ == 'creator':
+            creator_ = child_.text
+            self.creator = creator_
+        elif nodeName_ == 'publisher':
+            publisher_ = child_.text
+            self.publisher = publisher_
+        elif nodeName_ == 'created':
+            created_ = child_.text
+            self.created = created_
+        elif nodeName_ == 'modified':
+            modified_ = child_.text
+            self.modified = modified_
+        elif nodeName_ == 'rights':
+            rights_ = child_.text
+            self.rights = rights_
         elif nodeName_ == 'accessRights': 
             obj_ = accessRights.factory()
             obj_.build(child_)
@@ -1213,18 +1187,15 @@ class CMetadata(GeneratedsSuper):
             obj_ = license.factory()
             obj_.build(child_)
             self.set_rights(obj_)
-        elif nodeName_ == 'license': 
-            obj_ = license.factory()
-            obj_.build(child_)
-            self.set_license(obj_)
-        elif nodeName_ == 'references': 
-            obj_ = references.factory()
-            obj_.build(child_)
-            self.set_references(obj_)
-        elif nodeName_ == 'relation': 
-            obj_ = relation.factory()
-            obj_.build(child_)
-            self.set_relation(obj_)
+        elif nodeName_ == 'license':
+            license_ = child_.text
+            self.license = license_
+        elif nodeName_ == 'references':
+            references_ = child_.text
+            self.references = references_
+        elif nodeName_ == 'relation':
+            relation_ = child_.text
+            self.relation = relation_
         elif nodeName_ == 'isVersionOf': 
             obj_ = isVersionOf.factory()
             obj_.build(child_)
@@ -1277,10 +1248,17 @@ class CMetadata(GeneratedsSuper):
             obj_ = conformsTo.factory()
             obj_.build(child_)
             self.set_relation(obj_)
-        elif nodeName_ == 'modified': 
-            obj_ = modified.factory()
+        elif nodeName_ == 'description':
+            description_ = child_.text
+            self.description = description_
+        elif nodeName_ == 'tableOfContents': 
+            obj_ = tableOfContents.factory()
             obj_.build(child_)
-            self.set_modified(obj_)
+            self.set_description(obj_)
+        elif nodeName_ == 'abstract': 
+            obj_ = abstract.factory()
+            obj_.build(child_)
+            self.set_description(obj_)
         elif nodeName_ == 'generator':
             generator_ = child_.text
             self.generator = generator_
@@ -1291,7 +1269,7 @@ class CMetadata(GeneratedsSuper):
             email_ = child_.text
             self.email = email_
         elif nodeName_ == 'metadata': 
-            obj_ = Metadata.factory()
+            obj_ = metadata.factory()
             obj_.build(child_)
             self.set_metadata(obj_)
 # end class CMetadata
@@ -1406,8 +1384,8 @@ class CNetwork(GeneratedsSuper):
     def exportLiteralChildren(self, outfile, level, name_):
         if self.metadata is not None:
             showIndent(outfile, level)
-            outfile.write('metadata=model_.Metadata(\n')
-            self.metadata.exportLiteral(outfile, level, name_='metadata')
+            outfile.write('metadata=model_.metadata(\n')
+            self.metadata.exportLiteral(outfile, level)
             showIndent(outfile, level)
             outfile.write('),\n')
         if self.description is not None:
@@ -1437,7 +1415,7 @@ class CNetwork(GeneratedsSuper):
             self.fileformat = value
     def buildChildren(self, child_, nodeName_, from_subclass=False):
         if nodeName_ == 'metadata': 
-            obj_ = Metadata.factory()
+            obj_ = metadata.factory()
             obj_.build(child_)
             self.set_metadata(obj_)
         elif nodeName_ == 'description':
@@ -1576,8 +1554,8 @@ class CSurface(GeneratedsSuper):
             outfile.write('description=%s,\n' % quote_python(self.description).encode(ExternalEncoding))
         if self.metadata is not None:
             showIndent(outfile, level)
-            outfile.write('metadata=model_.Metadata(\n')
-            self.metadata.exportLiteral(outfile, level, name_='metadata')
+            outfile.write('metadata=model_.metadata(\n')
+            self.metadata.exportLiteral(outfile, level)
             showIndent(outfile, level)
             outfile.write('),\n')
     def build(self, node):
@@ -1615,7 +1593,7 @@ class CSurface(GeneratedsSuper):
             obj_.build(child_)
             self.set_description(obj_)
         elif nodeName_ == 'metadata': 
-            obj_ = Metadata.factory()
+            obj_ = metadata.factory()
             obj_.build(child_)
             self.set_metadata(obj_)
 # end class CSurface
@@ -1749,8 +1727,8 @@ class CVolume(GeneratedsSuper):
             outfile.write('description=%s,\n' % quote_python(self.description).encode(ExternalEncoding))
         if self.metadata is not None:
             showIndent(outfile, level)
-            outfile.write('metadata=model_.Metadata(\n')
-            self.metadata.exportLiteral(outfile, level, name_='metadata')
+            outfile.write('metadata=model_.metadata(\n')
+            self.metadata.exportLiteral(outfile, level)
             showIndent(outfile, level)
             outfile.write('),\n')
     def build(self, node):
@@ -1788,7 +1766,7 @@ class CVolume(GeneratedsSuper):
             obj_.build(child_)
             self.set_description(obj_)
         elif nodeName_ == 'metadata': 
-            obj_ = Metadata.factory()
+            obj_ = metadata.factory()
             obj_.build(child_)
             self.set_metadata(obj_)
 # end class CVolume
@@ -1896,8 +1874,8 @@ class CTrack(GeneratedsSuper):
             outfile.write('description=%s,\n' % quote_python(self.description).encode(ExternalEncoding))
         if self.metadata is not None:
             showIndent(outfile, level)
-            outfile.write('metadata=model_.Metadata(\n')
-            self.metadata.exportLiteral(outfile, level, name_='metadata')
+            outfile.write('metadata=model_.metadata(\n')
+            self.metadata.exportLiteral(outfile, level)
             showIndent(outfile, level)
             outfile.write('),\n')
     def build(self, node):
@@ -1935,7 +1913,7 @@ class CTrack(GeneratedsSuper):
             obj_.build(child_)
             self.set_description(obj_)
         elif nodeName_ == 'metadata': 
-            obj_ = Metadata.factory()
+            obj_ = metadata.factory()
             obj_.build(child_)
             self.set_metadata(obj_)
 # end class CTrack
@@ -2042,8 +2020,8 @@ class CTimeserie(GeneratedsSuper):
             outfile.write('description=%s,\n' % quote_python(self.description).encode(ExternalEncoding))
         if self.metadata is not None:
             showIndent(outfile, level)
-            outfile.write('metadata=model_.Metadata(\n')
-            self.metadata.exportLiteral(outfile, level, name_='metadata')
+            outfile.write('metadata=model_.metadata(\n')
+            self.metadata.exportLiteral(outfile, level)
             showIndent(outfile, level)
             outfile.write('),\n')
     def build(self, node):
@@ -2081,7 +2059,7 @@ class CTimeserie(GeneratedsSuper):
             obj_.build(child_)
             self.set_description(obj_)
         elif nodeName_ == 'metadata': 
-            obj_ = Metadata.factory()
+            obj_ = metadata.factory()
             obj_.build(child_)
             self.set_metadata(obj_)
 # end class CTimeserie
@@ -2186,8 +2164,8 @@ class CData(GeneratedsSuper):
             outfile.write('description=%s,\n' % quote_python(self.description).encode(ExternalEncoding))
         if self.metadata is not None:
             showIndent(outfile, level)
-            outfile.write('metadata=model_.Metadata(\n')
-            self.metadata.exportLiteral(outfile, level, name_='metadata')
+            outfile.write('metadata=model_.metadata(\n')
+            self.metadata.exportLiteral(outfile, level)
             showIndent(outfile, level)
             outfile.write('),\n')
     def build(self, node):
@@ -2225,7 +2203,7 @@ class CData(GeneratedsSuper):
             obj_.build(child_)
             self.set_description(obj_)
         elif nodeName_ == 'metadata': 
-            obj_ = Metadata.factory()
+            obj_ = metadata.factory()
             obj_.build(child_)
             self.set_metadata(obj_)
 # end class CData
@@ -2334,8 +2312,8 @@ class CScript(GeneratedsSuper):
             outfile.write('description=%s,\n' % quote_python(self.description).encode(ExternalEncoding))
         if self.metadata is not None:
             showIndent(outfile, level)
-            outfile.write('metadata=model_.Metadata(\n')
-            self.metadata.exportLiteral(outfile, level, name_='metadata')
+            outfile.write('metadata=model_.metadata(\n')
+            self.metadata.exportLiteral(outfile, level)
             showIndent(outfile, level)
             outfile.write('),\n')
     def build(self, node):
@@ -2373,7 +2351,7 @@ class CScript(GeneratedsSuper):
             obj_.build(child_)
             self.set_description(obj_)
         elif nodeName_ == 'metadata': 
-            obj_ = Metadata.factory()
+            obj_ = metadata.factory()
             obj_.build(child_)
             self.set_metadata(obj_)
 # end class CScript
@@ -2482,8 +2460,8 @@ class CImagestack(GeneratedsSuper):
             outfile.write('),\n')
         if self.metadata is not None:
             showIndent(outfile, level)
-            outfile.write('metadata=model_.Metadata(\n')
-            self.metadata.exportLiteral(outfile, level, name_='metadata')
+            outfile.write('metadata=model_.metadata(\n')
+            self.metadata.exportLiteral(outfile, level)
             showIndent(outfile, level)
             outfile.write('),\n')
     def build(self, node):
@@ -2522,7 +2500,7 @@ class CImagestack(GeneratedsSuper):
             obj_.build(child_)
             self.set_description(obj_)
         elif nodeName_ == 'metadata': 
-            obj_ = Metadata.factory()
+            obj_ = metadata.factory()
             obj_.build(child_)
             self.set_metadata(obj_)
 # end class CImagestack
@@ -7986,7 +7964,6 @@ __all__ = [
     "LCC",
     "LCSH",
     "MESH",
-    "Metadata",
     "Period",
     "Point",
     "RFC1766",
@@ -8038,6 +8015,7 @@ __all__ = [
     "license",
     "mediator",
     "medium",
+    "metadata",
     "modified",
     "property",
     "provenance",

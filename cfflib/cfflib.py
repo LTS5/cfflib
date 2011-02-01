@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 #
-# Generated Tue Jan 25 11:45:14 2011 by generateDS.py version 2.3b.
+# Generated Tue Feb  1 11:31:07 2011 by generateDS.py version 2.3b.
 #
 
 import sys
@@ -84,11 +84,11 @@ supermod.section.subclass = section
 # end class section
 
 
-class Metadata(supermod.Metadata):
+class metadata(supermod.metadata):
     def __init__(self, tag=None, section=None):
-        super(Metadata, self).__init__(tag, section, )
-supermod.Metadata.subclass = Metadata
-# end class Metadata
+        super(metadata, self).__init__(tag, section, )
+supermod.metadata.subclass = metadata
+# end class metadata
 
 
 class tag(supermod.tag):
@@ -106,8 +106,8 @@ supermod.connectome.subclass = connectome
 
 
 class CMetadata(supermod.CMetadata):
-    def __init__(self, version=None, title=None, creator=None, publisher=None, created=None, modified=None, rights=None, license=None, references=None, relation=None, generator=None, species=None, email=None, metadata=None):
-        super(CMetadata, self).__init__(version, title, creator, publisher, created, modified, rights, license, references, relation, generator, species, email, metadata, )
+    def __init__(self, version=None, title=None, creator=None, publisher=None, created=None, modified=None, rights=None, license=None, references=None, relation=None, description=None, generator=None, species=None, email=None, metadata=None):
+        super(CMetadata, self).__init__(version, title, creator, publisher, created, modified, rights, license, references, relation, description, generator, species, email, metadata, )
 supermod.CMetadata.subclass = CMetadata
 # end class CMetadata
 
