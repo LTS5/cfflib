@@ -373,9 +373,31 @@ def test_cdata():
     assert_equal(d.get_metadata_as_dict(), {'m1':'v1'})
     
     # Check NumPy
-    d            = CData()
+    d            = CData('data numpy')
     d.tmpsrc     = op.abspath('data/Data/mydata.npy')
     d.fileformat = "NumPy"
+    d.src        = d.get_unique_relpath()
+    c.add_connectome_data(d)
+    d.load()
+    assert_true(hasattr(d,'data'))
+    if hasattr(d,'data'):
+        assert_not_equal(d.data, None)
+        
+    # Check HDF5
+    d            = CData('data hdf5')
+    d.tmpsrc     = op.abspath('data/Data/mydata.hdf5')
+    d.fileformat = "HDF5"
+    d.src        = d.get_unique_relpath()
+    c.add_connectome_data(d)
+    d.load()
+    assert_true(hasattr(d,'data'))
+    if hasattr(d,'data'):
+        assert_not_equal(d.data, None)
+    
+    # Check XML 
+    d            = CData('data xml')
+    d.tmpsrc     = op.abspath('data/Data/mydata.xml')
+    d.fileformat = "XML"
     d.src        = d.get_unique_relpath()
     c.add_connectome_data(d)
     d.load()
