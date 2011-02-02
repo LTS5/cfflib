@@ -340,6 +340,15 @@ def test_ctimeserie_hdf5():
     c.add_connectome_timeserie(t)
     assert_not_equal(c.get_connectome_timeserie(), [])
     assert_equal(len(c.get_connectome_timeserie()), 1)
+
+    # TODO Check save/load the CTimeserie
+#    testparam = t.data.params
+#    t.data.params.update({'test':'val'})
+#    t.save()
+#    t.load()
+#    assert_not_equal(t.data.params.keys(), testparam.keys())
+#    t.data.params = testparam
+#    t.save()
     
     # Check to save the connectome
     save_to_cff(c, op.join(TMP, 'cts.cff'))
@@ -375,6 +384,15 @@ def test_csurface_gifti():
     c.add_connectome_surface(s)
     assert_not_equal(c.get_connectome_surface(), [])
     assert_equal(len(c.get_connectome_surface()), 1)
+
+    # TODO Check save/load the CSurface
+    testver = s.data.version
+    s.data.version = '1.1.1'
+    s.save()
+    s.load()
+    assert_not_equal(s.data.version, testver)
+    s.data.version = testver
+    s.save()
     
     # Check to save the connectome
     save_to_cff(c, op.join(TMP, 'cs.cff'))
