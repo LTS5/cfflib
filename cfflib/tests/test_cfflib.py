@@ -263,6 +263,15 @@ def test_cvolume_nifti1():
     c.add_connectome_volume(v)
     assert_not_equal(c.get_connectome_volume(), [])
     assert_equal(len(c.get_connectome_volume()), 1)
+
+    # Check save/load the CVolume
+    testextra = v.data.extra
+    v.data.extra.update({'test':'val'})
+    v.save()
+    v.load()
+    assert_not_equal(v.data.extra, testextra)
+    v.data.extra = testextra
+    v.save()
     
     # Check to save the connectome
     save_to_cff(c, op.join(TMP, 'cv.cff'))
