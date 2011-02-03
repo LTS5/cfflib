@@ -475,6 +475,47 @@ class connectome(supermod.connectome):
         
         self.connectome_surface.append(csurf)
     
+    def add_connectome_track(self, ctrack):
+        """Add the given CTrack to the connectome object.
+        
+        Parameters
+        ----------
+        ctrack : CTrack,
+            the connectome track to add to the connectome, the CTrack name have to be unique.
+            
+        """
+              
+        # Check if the name is set     
+        if ctrack.name is None or ctrack.name == '':
+            raise Exception('A name is required.')
+        
+        # Check if the name is unique
+        if not self.is_name_unique(ctrack.name):
+            raise Exception('The name is not unique.')
+        
+        self.connectome_track.append(ctrack)
+        
+
+    def add_connectome_data(self, cda):
+        """Add the given CData to the connectome object.
+        
+        Parameters
+        ----------
+        cda : CData,
+            the connectome data to add to the connectome, the CData name have to be unique.
+            
+        """
+              
+        # Check if the name is set     
+        if cda.name is None or cda.name == '':
+            raise Exception('A name is required.')
+        
+        # Check if the name is unique
+        if not self.is_name_unique(cda.name):
+            raise Exception('The name is not unique.')
+        
+        self.connectome_data.append(cda)
+    
 supermod.connectome.subclass = connectome
 # end class connectome
 
@@ -798,7 +839,7 @@ supermod.CNetwork.subclass = CNetwork
 class CSurface(supermod.CSurface, CBaseClass):
     """A connectome surface object"""
     
-    def __init__(self, name='mysurface', dtype='label', fileformat='gifti', src=None, description=None, metadata=None):
+    def __init__(self, name='mysurface', dtype='label', fileformat='Gifti', src=None, description=None, metadata=None):
         """
         Create a new CSurface object.
         
@@ -806,10 +847,11 @@ class CSurface(supermod.CSurface, CBaseClass):
         ----------
         name : 'mysurface'
             the unique surface name
-        dtype : 'label',
-            the type of data that the Gifti file contain. It could be (for Gifti only): 'label', 'surfaceset', 'surfaceset+label' or 'other'.
-        fileformat : 'gifti',
-            the fileformat of the surface, use default 'gifti' to use the only supported Gifti format by cfflib, use 'Other' for others format and custom support.
+        dtype : 'Labeling', 'Surfaceset', 'Surfaceset+Labeling', 'Other'
+            the type of data that the Gifti file contain
+        fileformat : 'Gifti',
+            the fileformat of the surface, use default 'Gifti' to use the 
+            only supported Gifti format by cfflib, use 'Other' for others format and custom support.
         src : string, optional,
             the source file of the surface
         description : string, optional,
@@ -971,8 +1013,8 @@ class CTrack(supermod.CTrack, CBaseClass):
             description, Metadata, connectome
     
     """
-    def __init__(self, name=None, src=None, fileformat='TrackVis', description=None, metadata=None):
-        super(CTrack, self).__init__(src, name, fileformat, description, metadata, )
+    def __init__(self, name=None, src=None, fileformat='TrackVis', dtype = None, description=None, metadata=None):
+        super(CTrack, self).__init__(src, dtype, name, fileformat, description, metadata, )        
                         
     def get_unique_relpath(self):
         """ Return a unique relative path for this element """
@@ -989,8 +1031,8 @@ supermod.CTrack.subclass = CTrack
 
 
 class CTimeserie(supermod.CTimeserie, CBaseClass):
-    def __init__(self, src=None, name=None, fileformat='HDF5', description=None, metadata=None):
-        super(CTimeserie, self).__init__(src, name, fileformat, description, metadata, )
+    def __init__(self, src=None, dtype=None, name=None, fileformat='HDF5', description=None, metadata=None):
+        super(CTimeserie, self).__init__(src, dtype, name, fileformat, description, metadata, )
                 
     def get_unique_relpath(self):
         """ Return a unique relative path for this element """
@@ -1007,8 +1049,8 @@ supermod.CTimeserie.subclass = CTimeserie
 
 
 class CData(supermod.CData, CBaseClass):
-    def __init__(self, src=None, name=None, fileformat=None, description=None, metadata=None):
-        super(CData, self).__init__(src, name, fileformat, description, metadata, )
+    def __init__(self, src=None, dtype=None, name=None, fileformat=None, description=None, metadata=None):
+        super(CData, self).__init__(src, dtype, name, fileformat, description, metadata, )
                 
     def get_unique_relpath(self):
         """ Return a unique relative path for this element """
