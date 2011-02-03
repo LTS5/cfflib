@@ -421,6 +421,11 @@ class connectome(supermod.connectome):
             
         self.connectome_network.append(cnet)
         
+        # update sources for correct storing
+        if op.exists(cnet.src):
+            cnet.tmpsrc = cnet.src
+            cnet.src = cnet.get_unique_relpath()
+        
         # need to update the reference to the parent connectome file
         self._update_parent_reference()
 
@@ -450,6 +455,14 @@ class connectome(supermod.connectome):
             
         self.connectome_volume.append(cvol)
         
+        # update sources for correct storing
+        if op.exists(cvol.src):
+            cvol.tmpsrc = cvol.src
+            cvol.src = cvol.get_unique_relpath()
+        
+        # need to update the reference to the parent connectome file
+        self._update_parent_reference()
+        
     # CSurface
     def add_connectome_surface(self, csurf):
         """Add the given CSurface to the connectome object.
@@ -474,6 +487,14 @@ class connectome(supermod.connectome):
             raise Exception('The name is not unique.')
         
         self.connectome_surface.append(csurf)
+        
+        # update sources for correct storing
+        if op.exists(csurf.src):
+            csurf.tmpsrc = csurf.src
+            csurf.src = csurf.get_unique_relpath()
+        
+        # need to update the reference to the parent connectome file
+        self._update_parent_reference()
     
     def add_connectome_track(self, ctrack):
         """Add the given CTrack to the connectome object.
@@ -495,6 +516,13 @@ class connectome(supermod.connectome):
         
         self.connectome_track.append(ctrack)
         
+        # update sources for correct storing
+        if op.exists(ctrack.src):
+            ctrack.tmpsrc = ctrack.src
+            ctrack.src = ctrack.get_unique_relpath()
+        
+        # need to update the reference to the parent connectome file
+        self._update_parent_reference()
 
     def add_connectome_data(self, cda):
         """Add the given CData to the connectome object.
@@ -515,6 +543,43 @@ class connectome(supermod.connectome):
             raise Exception('The name is not unique.')
         
         self.connectome_data.append(cda)
+        
+        # update sources for correct storing
+        if op.exists(cda.src):
+            cda.tmpsrc = cda.src
+            cda.src = cda.get_unique_relpath()      
+        
+        # need to update the reference to the parent connectome file
+        self._update_parent_reference()
+        
+    def add_connectome_script(self, cscri):
+        """Add the given CScript to the connectome object.
+        
+        Parameters
+        ----------
+        cscri : CScript,
+            the connectome script to add to the connectome, the CScript name have to be unique.
+            
+        """
+              
+        # Check if the name is set     
+        if cscri.name is None or cscri.name == '':
+            raise Exception('A name is required.')
+        
+        # Check if the name is unique
+        if not self.is_name_unique(cscri.name):
+            raise Exception('The name is not unique.')
+        
+        self.connectome_data.append(cscri)
+        
+        # update sources for correct storing
+        if op.exists(cscri.src):
+            cscri.tmpsrc = cscri.src
+            cscri.src = cscri.get_unique_relpath()      
+        
+        # need to update the reference to the parent connectome file
+        self._update_parent_reference()
+        
     
 supermod.connectome.subclass = connectome
 # end class connectome
@@ -839,7 +904,7 @@ supermod.CNetwork.subclass = CNetwork
 class CSurface(supermod.CSurface, CBaseClass):
     """A connectome surface object"""
     
-    def __init__(self, name='mysurface', dtype='label', fileformat='Gifti', src=None, description=None, metadata=None):
+    def __init__(self, name='mysurface', dtype='Surfaceset', fileformat='Gifti', src=None, description=None, metadata=None):
         """
         Create a new CSurface object.
         
