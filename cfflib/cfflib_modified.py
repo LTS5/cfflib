@@ -1181,7 +1181,7 @@ class CScript(supermod.CScript, CBaseClass):
         --------
         Metadata, connectome 
         """
-        super(CScript, self).__init__(src, dtype, name, fileformat, description, metadata, )
+        super(CScript, self).__init__(src, dtype, name, fileformat, description, None, )
         
         if metadataDict is not None:
             self.update_metadata(metadataDict)

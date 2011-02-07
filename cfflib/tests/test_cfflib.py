@@ -448,5 +448,27 @@ def test_cdata():
         assert_not_equal(d.data, None)
 # ---------------------------------------------------------------------------------- #
 
+
+# ---------------------------------------------------------------------------------- #
+# Test CScript
+def test_cscript():
+
+    c = connectome()
+    
+    # Check default values
+    s = CScript()    
+    assert_equal(s.get_name(), 'myscript')
+    assert_equal(s.get_fileformat(), 'UTF-8')
+    assert_equal(s.get_dtype(), 'Python')
+    assert_equal(s.get_metadata_as_dict(), {})
+    
+    # Check given values
+    s = CScript(name='Test script', metadataDict={'m1':'v1'}, dtype='Bash', src='data/Scripts/analysis01.py')
+    assert_equal(s.get_name(), 'Test script')
+    assert_equal(s.get_dtype(), 'Bash')
+    assert_equal(s.get_metadata_as_dict(), {'m1':'v1'})
+    
+    
+# ---------------------------------------------------------------------------------- #
 # ================================================================================== #
    
