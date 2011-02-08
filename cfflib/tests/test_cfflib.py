@@ -467,7 +467,22 @@ def test_cscript():
     assert_equal(s.get_name(), 'Test script')
     assert_equal(s.get_dtype(), 'Bash')
     assert_equal(s.get_metadata_as_dict(), {'m1':'v1'})
+        
+    # Check create from file 
+    s = CScript.create_from_file('my script', op.join(DATA, 'Scripts/analysis01.py'))
+    assert_equal(s.get_name(), 'my script')
+    assert_equal(s.get_src(), 'CScript/my_script.py')
     
+    # Check add to the connectome
+    c.add_connectome_script(s)
+    assert_not_equal(c.get_connectome_script(), [])
+    assert_equal(len(c.get_connectome_script()), 1)
+    
+    # Check load/save python script
+    assert_false(hasattr(s,'data'))
+    s.load()
+    assert_true(hasattr(s,'data'))
+    s.save()
     
 # ---------------------------------------------------------------------------------- #
 # ================================================================================== #

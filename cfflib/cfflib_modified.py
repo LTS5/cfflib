@@ -484,7 +484,7 @@ class connectome(supermod.connectome):
         self._update_parent_reference()
     
     # CScript
-    def add_connectome_script(self, cts):
+    def add_connectome_script(self, cscr):
         """Add the given CScript to the connectome object.
         
         Parameters
