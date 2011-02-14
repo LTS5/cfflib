@@ -120,7 +120,7 @@ class connectome(supermod.connectome):
     compressed (zipped) connectome file with ending .cff containing all
     source data objects. """
     
-    def __init__(self, connectome_meta=None, connectome_network=None, connectome_surface=None, connectome_volume=None, connectome_track=None, connectome_timeserie=None, connectome_data=None, connectome_script=None, connectome_imagestack=None):
+    def __init__(self, title, connectome_meta=None, connectome_network=None, connectome_surface=None, connectome_volume=None, connectome_track=None, connectome_timeserie=None, connectome_data=None, connectome_script=None, connectome_imagestack=None):
         """Create a new connectome object
         
         See also
@@ -139,6 +139,7 @@ class connectome(supermod.connectome):
         # Default CMetadata
         if connectome_meta is None:
             self.connectome_meta = CMetadata()
+            self.connectome_meta.set_title(title)
         
     def get_all(self):
         """ Return all connectome objects as a list
