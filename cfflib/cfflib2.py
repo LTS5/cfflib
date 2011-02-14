@@ -777,9 +777,9 @@ class CBaseClass(object):
     def get_metadata_as_dict(self): 
         """Return the metadata as a dictionary"""
         if not self.metadata is None:
-            return self.metadata.get_as_dictionary()
+            return self.metadata.get_tags_as_dictionary()
         else:
-            return None
+            return {}
     
     def update_metadata(self, metadata_dictionary): 
         """Set the metadata with a dictionary"""

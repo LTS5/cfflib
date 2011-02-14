@@ -27,13 +27,13 @@ def test_connectome():
     
     # Check for the default CMetadata
     assert_not_equal(c.connectome_meta, None)
-    assert_equal(c.get_connectome_meta().get_name(), 'myconnectome')
+    assert_equal(c.get_connectome_meta().get_title(), 'myconnectome')
     assert_equal(c.get_connectome_meta().get_generator(), 'cfflib')
     assert_equal(c.get_connectome_meta().get_version(), '2.0')
     
     # Check for the possibility to specify a name to the connectome
     c = connectome('Test connectome')
-    assert_equal(c.get_connectome_meta().get_name(), 'Test connectome')
+    assert_equal(c.get_connectome_meta().get_title(), 'Test connectome')
     
     # Check for the content and the CObjects
     assert_equal(c.get_all(), [])
@@ -41,15 +41,15 @@ def test_connectome():
     
     # Check to set the CMetadata attributes
     c.connectome_meta.set_name('My first connectome')
-    assert_equal(c.connectome_meta.get_name(), 'My first connectome')
+    assert_equal(c.connectome_meta.get_title(), 'My first connectome')
     c.connectome_meta.set_author('Connectome Tutorial')
-    assert_equal(c.connectome_meta.get_author(), 'Connectome Tutorial')    
+    assert_equal(c.connectome_meta.get_creator(), 'Connectome Tutorial')    
     c.connectome_meta.set_institution('EPFL')
-    assert_equal( c.connectome_meta.get_institution(), 'EPFL')    
+    assert_equal( c.connectome_meta.get_publisher(), 'EPFL')    
     c.connectome_meta.set_creation_date('2010-10-26')
-    assert_equal(c.connectome_meta.get_creation_date(), '2010-10-26')    
+    assert_equal(c.connectome_meta.get_created(), '2010-10-26')    
     c.connectome_meta.set_url('www.connectome.ch')
-    assert_equal(c.connectome_meta.get_url(), 'www.connectome.ch')
+    assert_equal(c.connectome_meta.get_relation(), 'www.connectome.ch')
     
     # Check the description in CMetadata
     c.connectome_meta.set_description('First connectome object created with the tutorial.')
@@ -198,7 +198,7 @@ def test_save_load():
 
     # Check CMetadata attributes
     c = connectome('Load & Save connectome')
-    assert_equal(c.get_connectome_meta().get_name(), 'Load & Save connectome')
+    assert_equal(c.get_connectome_meta().get_title(), 'Load & Save connectome')
     assert_equal(c.get_connectome_meta().get_generator(), 'cfflib')
     assert_equal(c.get_connectome_meta().get_version(), '2.0')
     
