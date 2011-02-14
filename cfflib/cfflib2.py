@@ -120,7 +120,7 @@ class connectome(supermod.connectome):
     compressed (zipped) connectome file with ending .cff containing all
     source data objects. """
     
-    def __init__(self, connectome_meta=None, connectome_network=None, connectome_surface=None, connectome_volume=None, connectome_track=None, connectome_timeserie=None, connectome_data=None, connectome_script=None, connectome_imagestack=None):
+    def __init__(self, title = None, connectome_meta=None, connectome_network=None, connectome_surface=None, connectome_volume=None, connectome_track=None, connectome_timeserie=None, connectome_data=None, connectome_script=None, connectome_imagestack=None):
         """Create a new connectome object
         
         See also
@@ -136,9 +136,14 @@ class connectome(supermod.connectome):
         # add some useful attributes to the save functions
         self.iszip = False
         
+        # set default title
+        if title is None:
+            title = 'myconnectome'
+        
         # Default CMetadata
         if connectome_meta is None:
             self.connectome_meta = CMetadata()
+            self.connectome_meta.set_title(title)
         
     def get_all(self):
         """ Return all connectome objects as a list
@@ -380,7 +385,7 @@ class connectome(supermod.connectome):
         if not self.is_name_unique(name):
             raise Exception('The name is not unique.')
         
-        n = CNetwork.create_from_graphml(nName, graphML)
+        n = CNetwork.create_from_graphml(name, graphML)
         self.add_connectome_network(n)      
         # need to update the reference to the parent connectome file
         self._update_parent_reference()
@@ -570,7 +575,7 @@ class connectome(supermod.connectome):
         if not self.is_name_unique(cscri.name):
             raise Exception('The name is not unique.')
         
-        self.connectome_data.append(cscri)
+        self.connectome_script.append(cscri)
         
         # update sources for correct storing
         if op.exists(cscri.src):
@@ -1096,7 +1101,7 @@ supermod.CTrack.subclass = CTrack
 
 
 class CTimeserie(supermod.CTimeserie, CBaseClass):
-    def __init__(self, src=None, dtype=None, name=None, fileformat='HDF5', description=None, metadata=None):
+    def __init__(self, name=None, src=None, dtype=None, fileformat='HDF5', description=None, metadata=None):
         super(CTimeserie, self).__init__(src, dtype, name, fileformat, description, metadata, )
                 
     def get_unique_relpath(self):
@@ -1114,7 +1119,7 @@ supermod.CTimeserie.subclass = CTimeserie
 
 
 class CData(supermod.CData, CBaseClass):
-    def __init__(self, src=None, dtype=None, name=None, fileformat=None, description=None, metadata=None):
+    def __init__(self, name=None, src=None, dtype=None, fileformat=None, description=None, metadata=None):
         super(CData, self).__init__(src, dtype, name, fileformat, description, metadata, )
                 
     def get_unique_relpath(self):
@@ -1136,7 +1141,7 @@ supermod.CData.subclass = CData
 
 
 class CScript(supermod.CScript, CBaseClass):
-    def __init__(self, src=None, dtype='Python', name=None, fileformat='UTF-8', description=None, metadata=None):
+    def __init__(self, name=None, src=None, dtype='Python', fileformat='UTF-8', description=None, metadata=None):
         super(CScript, self).__init__(src, dtype, name, fileformat, description, metadata, )
         
     def get_unique_relpath(self):
@@ -1187,7 +1192,7 @@ supermod.CScript.subclass = CScript
 
 
 class CImagestack(supermod.CImagestack, CBaseClass):
-    def __init__(self, src=None, fileformat=None, name=None, pattern=None, description=None, metadata=None):
+    def __init__(self, name=None, src=None, fileformat=None, pattern=None, description=None, metadata=None):
         super(CImagestack, self).__init__(src, fileformat, name, pattern, description, metadata, )
         
     def save(self):

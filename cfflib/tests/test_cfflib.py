@@ -40,15 +40,15 @@ def test_connectome():
     assert_true(c.hasContent_())
     
     # Check to set the CMetadata attributes
-    c.connectome_meta.set_name('My first connectome')
+    c.connectome_meta.set_title('My first connectome')
     assert_equal(c.connectome_meta.get_title(), 'My first connectome')
-    c.connectome_meta.set_author('Connectome Tutorial')
+    c.connectome_meta.set_creator('Connectome Tutorial')
     assert_equal(c.connectome_meta.get_creator(), 'Connectome Tutorial')    
-    c.connectome_meta.set_institution('EPFL')
+    c.connectome_meta.set_publisher('EPFL')
     assert_equal( c.connectome_meta.get_publisher(), 'EPFL')    
-    c.connectome_meta.set_creation_date('2010-10-26')
+    c.connectome_meta.set_created('2010-10-26')
     assert_equal(c.connectome_meta.get_created(), '2010-10-26')    
-    c.connectome_meta.set_url('www.connectome.ch')
+    c.connectome_meta.set_relation('www.connectome.ch')
     assert_equal(c.connectome_meta.get_relation(), 'www.connectome.ch')
     
     # Check the description in CMetadata
@@ -77,7 +77,8 @@ def test_cnetwork_nxgraph():
     assert_equal(n.get_metadata_as_dict(), {})
     
     # Check given values
-    n = CNetwork('Test network', metadataDict={'number':1024})
+    n = CNetwork('Test network')
+    n.update_metadata({'number':1024})
     assert_equal(n.get_name(), 'Test network')
     assert_true(n.get_metadata_as_dict().has_key('number'))
     assert_equal(n.get_metadata_as_dict()['number'], '1024')
@@ -168,8 +169,8 @@ def test_desc_meta():
     c = connectome('desc & meta connectome')
     
     # Check the updated keys and corresponding values
-    n = CNetwork(metadataDict={'m0':'v0'})
-    n.update_metadata({'m1':'v1', 'm2':121})
+    n = CNetwork()
+    n.update_metadata({'m0':'v0', 'm1':'v1', 'm2':121})
     assert_not_equal(n.get_metadata_as_dict(), None)
     assert_true(n.get_metadata_as_dict().has_key('m0'))
     assert_true(n.get_metadata_as_dict().has_key('m1'))
@@ -213,10 +214,10 @@ def test_save_load():
 
     # Save and load
     save_to_cff(c, op.join(TMP, 'test.cff'))
-    c2 = load_from_cff(op.join(TMP, 'test.cff'))
+    c2 = load(op.join(TMP, 'test.cff'))
     
     # Check the loaded connectome properties
-    assert_equal(c2.get_connectome_meta().get_name(), 'Load & Save connectome')
+    assert_equal(c2.get_connectome_meta().get_title(), 'Load & Save connectome')
     assert_equal(c2.get_connectome_meta().get_generator(), 'cfflib')
     assert_equal(c2.get_connectome_meta().get_version(), '2.0')
     assert_equal(c2.get_connectome_network()[0].get_src(), 'CNetwork/graphml_net.graphml')
@@ -237,7 +238,8 @@ def test_cvolume_nifti1():
     assert_equal(v1.get_metadata_as_dict(), {})
     
     # Check the specified values
-    v2 = CVolume('Second volume', metadataDict={'m0':123})
+    v2 = CVolume('Second volume')
+    v2.update_metadata({'m0':123})
     assert_equal(v2.get_name(), 'Second volume')
     assert_not_equal(v2.get_metadata_as_dict(), {})
     assert_true(v2.get_metadata_as_dict().has_key('m0'))
@@ -287,20 +289,22 @@ def test_ctrack_trk():
     
     # Check default values
     t = CTrack()
-    assert_equal(t.get_name(), 'mytrack')
     assert_equal(t.get_fileformat(), 'TrackVis')
     assert_equal(t.get_metadata_as_dict(), {})
     
     # Check the specified values
-    t = CTrack('Spec tracks', metadataDict={'fib':1})
+    t = CTrack('Spec tracks')
+    t.update_metadata({'fib':1})
     assert_equal(t.get_name(), 'Spec tracks')
     assert_true(t.get_metadata_as_dict().has_key('fib'))
     assert_equal(t.get_metadata_as_dict()['fib'], '1')
     
-    # Check the classmethod from trackvis
-    t = CTrack.create_from_trackvis('my track', op.join(DATA,'Tracks/fibers_transformed.trk'))
+    # 
+    t = CTrack(name='my track',
+                     src=op.join(DATA,'Tracks/fibers_transformed.trk'),
+                      fileformat='TrackVis', dtype='Fibers')
     assert_equal(t.get_name(), 'my track')
-    assert_equal(t.get_src(), 'CTrack/my_track.trk')
+    assert_equal(t.get_unique_relpath(), 'CTrack/my_track.trk')
 
     # Check add to the connectome
     c.add_connectome_track(t)
@@ -321,34 +325,26 @@ def test_ctimeserie_hdf5():
     
     # Check default values
     t = CTimeserie()
-    assert_equal(t.get_name(), 'mytimeserie')
     assert_equal(t.get_fileformat(), 'HDF5')
     assert_equal(t.get_metadata_as_dict(), {})
     
     # Check the specified values
-    t = CTimeserie('Spec timeserie', metadataDict={'ts':'val'})
+    t = CTimeserie('Spec timeserie')
+    t.update_metadata({'ts':'val'})
     assert_equal(t.get_name(), 'Spec timeserie')
     assert_true(t.get_metadata_as_dict().has_key('ts'))
     assert_equal(t.get_metadata_as_dict()['ts'], 'val')
     
     # Check classmethod from hdf5
-    t = CTimeserie.create_from_hdf5('my timeserie', op.join(DATA,'Timeseries/generatedseries.hdf5'))
+    t = CTimeserie(name='my timeserie', src= op.join(DATA,'Timeseries/generatedseries.hdf5'))
     assert_equal(t.get_name(), 'my timeserie')
-    assert_equal(t.get_src(), 'CTimeserie/my_timeserie.h5')
+    assert_equal(t.get_unique_relpath(), 'CTimeserie/my_timeserie.h5')
 
     # Check add to the connectome
     c.add_connectome_timeserie(t)
     assert_not_equal(c.get_connectome_timeserie(), [])
     assert_equal(len(c.get_connectome_timeserie()), 1)
 
-    # Check save/load the CTimeserie
-    testparam = t.data.params
-    t.data.params.update({'test':'val'})
-    t.save()
-    t.load()
-    assert_not_equal(t.data.params.keys(), testparam.keys())
-    t.data.params = testparam
-    t.save()
 # ---------------------------------------------------------------------------------- #
    
     
@@ -360,13 +356,13 @@ def test_csurface_gifti():
     
     # Check default values
     s = CSurface()
-    assert_equal(s.get_name(), 'mysurface')
     assert_equal(s.get_fileformat(), 'Gifti')
-    assert_equal(s.get_dtype(), 'label')
+    assert_equal(s.get_dtype(), 'Surfaceset')
     assert_equal(s.get_metadata_as_dict(), {})
     
     # Check the specified values
-    s = CSurface('Spec surface', metadataDict={'surf':'ace'})
+    s = CSurface('Spec surface')
+    s.update_metadata({'surf':'ace'})
     assert_equal(s.get_name(), 'Spec surface')
     assert_true(s.get_metadata_as_dict().has_key('surf'))
     assert_equal(s.get_metadata_as_dict()['surf'], 'ace')
@@ -404,12 +400,12 @@ def test_cdata():
     
     # Check default values
     d = CData()    
-    assert_equal(d.get_name(), 'mydata')
     assert_equal(d.get_fileformat(), None)
     assert_equal(d.get_metadata_as_dict(), {})
     
     # Check given values
-    d = CData(name='Test data', metadataDict={'m1':'v1'}, fileformat='XML', src='data/Data/mydata.npy')
+    d = CData(name='Test data', fileformat='XML', src='data/Data/mydata.npy')
+    d.update_metadata({'m1':'v1'})
     assert_equal(d.get_name(), 'Test data')
     assert_equal(d.get_fileformat(), 'XML')
     assert_equal(d.get_metadata_as_dict(), {'m1':'v1'})
@@ -427,7 +423,7 @@ def test_cdata():
         
     # Check HDF5
     d            = CData('data hdf5')
-    d.tmpsrc     = op.abspath(op.join(DATA,'Data/mydata.hdf5'))
+    d.tmpsrc     = op.abspath(op.join(DATA,'Timeseries/generatedseries.hdf5'))
     d.fileformat = "HDF5"
     d.src        = d.get_unique_relpath()
     c.add_connectome_data(d)
@@ -456,33 +452,28 @@ def test_cscript():
     c = connectome()
     
     # Check default values
-    s = CScript()    
-    assert_equal(s.get_name(), 'myscript')
+    s = CScript()
     assert_equal(s.get_fileformat(), 'UTF-8')
     assert_equal(s.get_dtype(), 'Python')
     assert_equal(s.get_metadata_as_dict(), {})
     
     # Check given values
-    s = CScript(name='Test script', metadataDict={'m1':'v1'}, dtype='Bash', src='data/Scripts/analysis01.py')
+    s = CScript(name='Test script', dtype='Bash', src=op.join(DATA,'Scripts/analysis01.py'))
+    s.update_metadata({'m1':'v1'})
     assert_equal(s.get_name(), 'Test script')
     assert_equal(s.get_dtype(), 'Bash')
     assert_equal(s.get_metadata_as_dict(), {'m1':'v1'})
         
     # Check create from file 
-    s = CScript.create_from_file('my script', op.join(DATA, 'Scripts/analysis01.py'))
+    s = CScript(name='my script', src = op.join(DATA, 'Scripts/analysis01.py'))
     assert_equal(s.get_name(), 'my script')
-    assert_equal(s.get_src(), 'CScript/my_script.py')
+    assert_equal(s.get_unique_relpath(), 'CScript/my_script.py')
     
     # Check add to the connectome
     c.add_connectome_script(s)
-    assert_not_equal(c.get_connectome_script(), [])
     assert_equal(len(c.get_connectome_script()), 1)
     
-    # Check load/save python script
-    assert_false(hasattr(s,'data'))
-    s.load()
-    assert_true(hasattr(s,'data'))
-    s.save()
+
     
 # ---------------------------------------------------------------------------------- #
 # ================================================================================== #
