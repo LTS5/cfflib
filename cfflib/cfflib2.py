@@ -585,6 +585,106 @@ class connectome(supermod.connectome):
         # need to update the reference to the parent connectome file
         self._update_parent_reference()
         
+    # Print out a summary of the connectome
+    def print_summary(self):
+        """Print a summary of the connectome"""
+        
+        # Intro
+        s = '#'*60
+        s+= '\n# connectome object'
+        
+        # CMetadata
+        s+= '\n#\n# CMetadata\n# '+'='*56+' #'
+        cm = self.get_connectome_meta()
+        s+= '\n# title : '+cm.get_title()  
+        if cm.get_species() is not None and cm.get_species() is not '':      
+            s+= '\n# species : '+cm.get_species() 
+        if cm.get_description() is not None and cm.get_description() is not '':      
+            s+= '\n# description : '+cm.get_description() 
+        if cm.get_creator() is not None and cm.get_creator() is not '':      
+            s+= '\n# creator : '+cm.get_creator() 
+        if cm.get_email() is not None and cm.get_email() is not '':      
+            s+= '\n# email : '+cm.get_email() 
+        if cm.get_created() is not None and cm.get_created() is not '':      
+            s+= '\n# creation date : '+cm.get_created() 
+        if cm.get_modified() is not None and cm.get_modified() is not '':      
+            s+= '\n# modification date : '+cm.get_modified() 
+        if cm.get_generator() is not None and cm.get_generator() is not '':      
+            s+= '\n# generator : '+cm.get_generator() 
+        if cm.get_version() is not None and cm.get_version() is not '':      
+            s+= '\n# cfflib version : '+cm.get_version() 
+        if cm.get_license() is not None and cm.get_license() is not '':      
+            s+= '\n# license : '+cm.get_license() 
+        if cm.get_rights() is not None and cm.get_rights().valueOf_ is not '':      
+            s+= '\n# rights : '+cm.get_rights().valueOf_
+        if cm.get_publisher() is not None and cm.get_publisher() is not '':      
+            s+= '\n# publisher : '+cm.get_publisher() 
+        if cm.get_references() is not None and cm.get_references() is not '':      
+            s+= '\n# references : '+cm.get_references() 
+        if cm.get_relation() is not None and cm.get_relation() is not '':      
+            s+= '\n# relation : '+cm.get_relation() 
+        
+        # CNetwork
+        if len(self.get_connectome_network()) > 0:
+            s+= '\n#\n# CNetwork\n# '+'='*56+' #'
+            for i in self.get_connectome_network():
+                s+= '\n# name : '+i.get_name()
+                s+= '\n# '+'-'*56+' #'
+                
+            
+        # CVolume
+        if len(self.get_connectome_volume()) > 0:
+            s+= '\n#\n# CVolume\n# '+'='*56+' #'
+            for i in self.get_connectome_volume():
+                s+= '\n# name : '+i.get_name()
+                s+= '\n# '+'-'*56+' #'
+            
+        # CTrack
+        if len(self.get_connectome_track()) > 0:
+            s+= '\n#\n# CTrack\n# '+'='*56+' #'
+            for i in self.get_connectome_track():
+                s+= '\n# name : '+i.get_name()
+                s+= '\n# '+'-'*56+' #'
+            
+        # CSurface
+        if len(self.get_connectome_surface()) > 0:
+            s+= '\n#\n# CSurface\n# '+'='*56+' #'
+            for i in self.get_connectome_surface():
+                s+= '\n# name : '+i.get_name()
+                s+= '\n# '+'-'*56+' #'
+            
+        # CTimeserie
+        if len(self.get_connectome_timeserie()) > 0:
+            s+= '\n#\n# CTimeserie\n# '+'='*56+' #'
+            for i in self.get_connectome_timeserie():
+                s+= '\n# name : '+i.get_name()
+                s+= '\n# '+'-'*56+' #'
+            
+        # CScript
+        if len(self.get_connectome_script()) > 0:
+            s+= '\n#\n# CScript\n# '+'='*56+' #'
+            for i in self.get_connectome_script():
+                s+= '\n# name : '+i.get_name()
+                s+= '\n# '+'-'*56+' #'
+            
+        # CData
+        if len(self.get_connectome_data()) > 0:
+            s+= '\n#\n# CData\n# '+'='*56+' #'
+            for i in self.get_connectome_data():
+                s+= '\n# name : '+i.get_name()
+                s+= '\n# '+'-'*56+' #'
+            
+        # CImagestack
+        if len(self.get_connectome_imagestack()) > 0:
+            s+= '\n#\n# CImagestack\n# '+'='*56+' #'
+            for i in self.get_connectome_imagestack():
+                s+= '\n# name : '+i.get_name()
+                s+= '\n# '+'-'*56+' #'
+            
+        s+= '\n'+'#'*60
+        print s
+        
+            
     
 supermod.connectome.subclass = connectome
 # end class connectome
