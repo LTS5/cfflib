@@ -629,6 +629,11 @@ class connectome(supermod.connectome):
             s+= '\n#\n# CNetwork\n# '+'='*56+' #'
             for i in self.get_connectome_network():
                 s+= '\n# name : '+i.get_name()
+                if i.get_description() is not None:
+                    s+= '\n# description : '+i.get_description()
+                s+= '\n# dtype : '+i.get_dtype()
+                s+= '\n# fileformat : '+i.get_fileformat()
+                s+= '\n# src : '+i.get_src()
                 s+= '\n# '+'-'*56+' #'
                 
             
@@ -637,6 +642,11 @@ class connectome(supermod.connectome):
             s+= '\n#\n# CVolume\n# '+'='*56+' #'
             for i in self.get_connectome_volume():
                 s+= '\n# name : '+i.get_name()
+                if i.get_description() is not None:
+                    s+= '\n# description : '+i.get_description()
+                s+= '\n# dtype : '+i.get_dtype()
+                s+= '\n# fileformat : '+i.get_fileformat()
+                s+= '\n# src : '+i.get_src()
                 s+= '\n# '+'-'*56+' #'
             
         # CTrack
@@ -644,6 +654,12 @@ class connectome(supermod.connectome):
             s+= '\n#\n# CTrack\n# '+'='*56+' #'
             for i in self.get_connectome_track():
                 s+= '\n# name : '+i.get_name()
+                if i.get_description() is not None:
+                    s+= '\n# description : '+i.get_description()
+                if i.get_dtype() is not None:
+                    s+= '\n# dtype : '+i.get_dtype()
+                s+= '\n# fileformat : '+i.get_fileformat()
+                s+= '\n# src : '+i.get_src()
                 s+= '\n# '+'-'*56+' #'
             
         # CSurface
@@ -651,6 +667,11 @@ class connectome(supermod.connectome):
             s+= '\n#\n# CSurface\n# '+'='*56+' #'
             for i in self.get_connectome_surface():
                 s+= '\n# name : '+i.get_name()
+                if i.get_description() is not None:
+                    s+= '\n# description : '+i.get_description()
+                s+= '\n# dtype : '+i.get_dtype()
+                s+= '\n# fileformat : '+i.get_fileformat()
+                s+= '\n# src : '+i.get_src()
                 s+= '\n# '+'-'*56+' #'
             
         # CTimeserie
@@ -658,6 +679,12 @@ class connectome(supermod.connectome):
             s+= '\n#\n# CTimeserie\n# '+'='*56+' #'
             for i in self.get_connectome_timeserie():
                 s+= '\n# name : '+i.get_name()
+                if i.get_description() is not None:
+                    s+= '\n# description : '+i.get_description()
+                if i.get_dtype() is not None:
+                    s+= '\n# dtype : '+i.get_dtype()
+                s+= '\n# fileformat : '+i.get_fileformat()
+                s+= '\n# src : '+i.get_src()
                 s+= '\n# '+'-'*56+' #'
             
         # CScript
@@ -665,6 +692,12 @@ class connectome(supermod.connectome):
             s+= '\n#\n# CScript\n# '+'='*56+' #'
             for i in self.get_connectome_script():
                 s+= '\n# name : '+i.get_name()
+                if i.get_description() is not None:
+                    s+= '\n# description : '+i.get_description()
+                if i.get_dtype() is not None:
+                    s+= '\n# dtype : '+i.get_dtype()
+                s+= '\n# fileformat : '+i.get_fileformat()
+                s+= '\n# src : '+i.get_src()
                 s+= '\n# '+'-'*56+' #'
             
         # CData
@@ -672,6 +705,12 @@ class connectome(supermod.connectome):
             s+= '\n#\n# CData\n# '+'='*56+' #'
             for i in self.get_connectome_data():
                 s+= '\n# name : '+i.get_name()
+                if i.get_description() is not None:
+                    s+= '\n# description : '+i.get_description()
+                if i.get_dtype() is not None:
+                    s+= '\n# dtype : '+i.get_dtype()
+                s+= '\n# fileformat : '+i.get_fileformat()
+                s+= '\n# src : '+i.get_src()
                 s+= '\n# '+'-'*56+' #'
             
         # CImagestack
@@ -679,6 +718,13 @@ class connectome(supermod.connectome):
             s+= '\n#\n# CImagestack\n# '+'='*56+' #'
             for i in self.get_connectome_imagestack():
                 s+= '\n# name : '+i.get_name()
+                
+                # TODO remove description object
+                if i.get_description() is not None:
+                    s+= '\n# description : '+i.get_description().valueOf_
+                    
+                s+= '\n# fileformat : '+i.get_fileformat()
+                s+= '\n# src : '+i.get_src()
                 s+= '\n# '+'-'*56+' #'
             
         s+= '\n'+'#'*60
