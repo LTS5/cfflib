@@ -593,6 +593,17 @@ class connectome(supermod.connectome):
         s = '#'*60
         s+= '\n# connectome object'
         
+        # Statistics
+        s+= '\n#\n# Statistics\n# '+'='*56+' #'
+        s+= '\n# '+str(len(self.get_connectome_network()))+' CNetwork'
+        s+= '\n# '+str(len(self.get_connectome_volume()))+' CVolume'
+        s+= '\n# '+str(len(self.get_connectome_track()))+' CTrack'
+        s+= '\n# '+str(len(self.get_connectome_surface()))+' CSurface'
+        s+= '\n# '+str(len(self.get_connectome_timeserie()))+' CTimeserie'
+        s+= '\n# '+str(len(self.get_connectome_script()))+' CScript'
+        s+= '\n# '+str(len(self.get_connectome_data()))+' CData'
+        s+= '\n# '+str(len(self.get_connectome_imagestack()))+' CImagestack'
+        
         # CMetadata
         s+= '\n#\n# CMetadata\n# '+'='*56+' #'
         cm = self.get_connectome_meta()
@@ -615,8 +626,8 @@ class connectome(supermod.connectome):
             s+= '\n# cfflib version : '+cm.get_version() 
         if cm.get_license() is not None and cm.get_license() is not '':      
             s+= '\n# license : '+cm.get_license() 
-        if cm.get_rights() is not None and cm.get_rights().valueOf_ is not '':      
-            s+= '\n# rights : '+cm.get_rights().valueOf_
+        if cm.get_rights() is not None and cm.get_rights() is not '':      
+            s+= '\n# rights : '+cm.get_rights()
         if cm.get_publisher() is not None and cm.get_publisher() is not '':      
             s+= '\n# publisher : '+cm.get_publisher() 
         if cm.get_references() is not None and cm.get_references() is not '':      
