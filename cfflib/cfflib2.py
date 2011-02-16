@@ -634,109 +634,53 @@ class connectome(supermod.connectome):
             s+= '\n# references : '+cm.get_references() 
         if cm.get_relation() is not None and cm.get_relation() is not '':      
             s+= '\n# relation : '+cm.get_relation() 
-        
         # CNetwork
         if len(self.get_connectome_network()) > 0:
             s+= '\n#\n# CNetwork\n# '+'='*56+' #'
             for i in self.get_connectome_network():
-                s+= '\n# name : '+i.get_name()
-                if i.get_description() is not None:
-                    s+= '\n# description : '+i.get_description()
-                s+= '\n# dtype : '+i.get_dtype()
-                s+= '\n# fileformat : '+i.get_fileformat()
-                s+= '\n# src : '+i.get_src()
-                s+= '\n# '+'-'*56+' #'
+                s+= i.print_summary(False)
                 
-            
         # CVolume
         if len(self.get_connectome_volume()) > 0:
             s+= '\n#\n# CVolume\n# '+'='*56+' #'
             for i in self.get_connectome_volume():
-                s+= '\n# name : '+i.get_name()
-                if i.get_description() is not None:
-                    s+= '\n# description : '+i.get_description()
-                s+= '\n# dtype : '+i.get_dtype()
-                s+= '\n# fileformat : '+i.get_fileformat()
-                s+= '\n# src : '+i.get_src()
-                s+= '\n# '+'-'*56+' #'
+                s+= i.print_summary(False)
             
         # CTrack
         if len(self.get_connectome_track()) > 0:
             s+= '\n#\n# CTrack\n# '+'='*56+' #'
             for i in self.get_connectome_track():
-                s+= '\n# name : '+i.get_name()
-                if i.get_description() is not None:
-                    s+= '\n# description : '+i.get_description()
-                if i.get_dtype() is not None:
-                    s+= '\n# dtype : '+i.get_dtype()
-                s+= '\n# fileformat : '+i.get_fileformat()
-                s+= '\n# src : '+i.get_src()
-                s+= '\n# '+'-'*56+' #'
+                s+= i.print_summary(False)
             
         # CSurface
         if len(self.get_connectome_surface()) > 0:
             s+= '\n#\n# CSurface\n# '+'='*56+' #'
             for i in self.get_connectome_surface():
-                s+= '\n# name : '+i.get_name()
-                if i.get_description() is not None:
-                    s+= '\n# description : '+i.get_description()
-                s+= '\n# dtype : '+i.get_dtype()
-                s+= '\n# fileformat : '+i.get_fileformat()
-                s+= '\n# src : '+i.get_src()
-                s+= '\n# '+'-'*56+' #'
+                s+= i.print_summary(False)
             
         # CTimeserie
         if len(self.get_connectome_timeserie()) > 0:
             s+= '\n#\n# CTimeserie\n# '+'='*56+' #'
             for i in self.get_connectome_timeserie():
-                s+= '\n# name : '+i.get_name()
-                if i.get_description() is not None:
-                    s+= '\n# description : '+i.get_description()
-                if i.get_dtype() is not None:
-                    s+= '\n# dtype : '+i.get_dtype()
-                s+= '\n# fileformat : '+i.get_fileformat()
-                s+= '\n# src : '+i.get_src()
-                s+= '\n# '+'-'*56+' #'
+                s+= i.print_summary(False)
             
         # CScript
         if len(self.get_connectome_script()) > 0:
             s+= '\n#\n# CScript\n# '+'='*56+' #'
             for i in self.get_connectome_script():
-                s+= '\n# name : '+i.get_name()
-                if i.get_description() is not None:
-                    s+= '\n# description : '+i.get_description()
-                if i.get_dtype() is not None:
-                    s+= '\n# dtype : '+i.get_dtype()
-                s+= '\n# fileformat : '+i.get_fileformat()
-                s+= '\n# src : '+i.get_src()
-                s+= '\n# '+'-'*56+' #'
+                s+= i.print_summary(False)
             
         # CData
         if len(self.get_connectome_data()) > 0:
             s+= '\n#\n# CData\n# '+'='*56+' #'
             for i in self.get_connectome_data():
-                s+= '\n# name : '+i.get_name()
-                if i.get_description() is not None:
-                    s+= '\n# description : '+i.get_description()
-                if i.get_dtype() is not None:
-                    s+= '\n# dtype : '+i.get_dtype()
-                s+= '\n# fileformat : '+i.get_fileformat()
-                s+= '\n# src : '+i.get_src()
-                s+= '\n# '+'-'*56+' #'
+                s+= i.print_summary(False)
             
         # CImagestack
         if len(self.get_connectome_imagestack()) > 0:
             s+= '\n#\n# CImagestack\n# '+'='*56+' #'
             for i in self.get_connectome_imagestack():
-                s+= '\n# name : '+i.get_name()
-                
-                # TODO remove description object
-                if i.get_description() is not None:
-                    s+= '\n# description : '+i.get_description().valueOf_
-                    
-                s+= '\n# fileformat : '+i.get_fileformat()
-                s+= '\n# src : '+i.get_src()
-                s+= '\n# '+'-'*56+' #'
+                s+= i.print_summary(False)
             
         s+= '\n'+'#'*60
         print s
@@ -948,7 +892,38 @@ class CBaseClass(object):
         if self.metadata is None:
             self.metadata = metadata()
         self.metadata.set_tags_with_dictionary(metadata_dictionary)
+      
+    # Print out a summary of the CObject
+    def print_summary(self, printer=True):
+        """Print a summary of the CObject"""
         
+        # CObject class name
+        s = ''
+        if printer:
+            s+= '# '+'='*56+' #'+'\n# '+self.__class__.__name__+'\n# '+'='*56+' #'
+              
+        # Attributes  
+        s+= '\n# name : '+self.get_name()
+        if self.get_description() is not None:
+            s+= '\n# description : '+self.get_description()
+        if hasattr(self, 'dtype') and self.get_dtype() is not None:
+            s+= '\n# dtype : '+self.get_dtype()
+        if self.get_fileformat() is not None:
+            s+= '\n# fileformat : '+self.get_fileformat()
+        if self.get_src() is not None:
+            s+= '\n# src : '+self.get_src()
+        if self.get_metadata_as_dict is not None and self.get_metadata_as_dict() is not []:
+            s+= '\n# metadata: '
+            m = self.get_metadata_as_dict()
+            for i in m.keys():
+                s+= '\n#\t '+i+' : '+m[i]
+        s+= '\n# '+'-'*56+' #'
+        
+        # Print or return
+        if printer:
+            print s
+        else:
+            return s
 
 class CNetwork(supermod.CNetwork, CBaseClass):
     """A connectome network object"""
