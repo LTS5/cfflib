@@ -120,7 +120,7 @@ class connectome(supermod.connectome):
     compressed (zipped) connectome file with ending .cff containing all
     source data objects. """
     
-    def __init__(self, title, connectome_meta=None, connectome_network=None, connectome_surface=None, connectome_volume=None, connectome_track=None, connectome_timeserie=None, connectome_data=None, connectome_script=None, connectome_imagestack=None):
+    def __init__(self, title = None, connectome_meta=None, connectome_network=None, connectome_surface=None, connectome_volume=None, connectome_track=None, connectome_timeserie=None, connectome_data=None, connectome_script=None, connectome_imagestack=None):
         """Create a new connectome object
         
         See also
@@ -135,6 +135,10 @@ class connectome(supermod.connectome):
         
         # add some useful attributes to the save functions
         self.iszip = False
+        
+        # set default title
+        if title is None:
+            title = 'myconnectome'
         
         # Default CMetadata
         if connectome_meta is None:
@@ -381,7 +385,7 @@ class connectome(supermod.connectome):
         if not self.is_name_unique(name):
             raise Exception('The name is not unique.')
         
-        n = CNetwork.create_from_graphml(nName, graphML)
+        n = CNetwork.create_from_graphml(name, graphML)
         self.add_connectome_network(n)      
         # need to update the reference to the parent connectome file
         self._update_parent_reference()
@@ -571,7 +575,7 @@ class connectome(supermod.connectome):
         if not self.is_name_unique(cscri.name):
             raise Exception('The name is not unique.')
         
-        self.connectome_data.append(cscri)
+        self.connectome_script.append(cscri)
         
         # update sources for correct storing
         if op.exists(cscri.src):
@@ -581,6 +585,107 @@ class connectome(supermod.connectome):
         # need to update the reference to the parent connectome file
         self._update_parent_reference()
         
+    # Print out a summary of the connectome
+    def print_summary(self):
+        """Print a summary of the connectome"""
+        
+        # Intro
+        s = '#'*60
+        s+= '\n# connectome object'
+        
+        # Statistics
+        s+= '\n#\n# Statistics\n# '+'='*56+' #'
+        s+= '\n# '+str(len(self.get_connectome_network()))+' CNetwork'
+        s+= '\n# '+str(len(self.get_connectome_volume()))+' CVolume'
+        s+= '\n# '+str(len(self.get_connectome_track()))+' CTrack'
+        s+= '\n# '+str(len(self.get_connectome_surface()))+' CSurface'
+        s+= '\n# '+str(len(self.get_connectome_timeserie()))+' CTimeserie'
+        s+= '\n# '+str(len(self.get_connectome_script()))+' CScript'
+        s+= '\n# '+str(len(self.get_connectome_data()))+' CData'
+        s+= '\n# '+str(len(self.get_connectome_imagestack()))+' CImagestack'
+        
+        # CMetadata
+        s+= '\n#\n# CMetadata\n# '+'='*56+' #'
+        cm = self.get_connectome_meta()
+        s+= '\n# title : '+cm.get_title()  
+        if cm.get_species() is not None and cm.get_species() is not '':      
+            s+= '\n# species : '+cm.get_species() 
+        if cm.get_description() is not None and cm.get_description() is not '':      
+            s+= '\n# description : '+cm.get_description() 
+        if cm.get_creator() is not None and cm.get_creator() is not '':      
+            s+= '\n# creator : '+cm.get_creator() 
+        if cm.get_email() is not None and cm.get_email() is not '':      
+            s+= '\n# email : '+cm.get_email() 
+        if cm.get_created() is not None and cm.get_created() is not '':      
+            s+= '\n# creation date : '+cm.get_created() 
+        if cm.get_modified() is not None and cm.get_modified() is not '':      
+            s+= '\n# modification date : '+cm.get_modified() 
+        if cm.get_generator() is not None and cm.get_generator() is not '':      
+            s+= '\n# generator : '+cm.get_generator() 
+        if cm.get_version() is not None and cm.get_version() is not '':      
+            s+= '\n# cfflib version : '+cm.get_version() 
+        if cm.get_license() is not None and cm.get_license() is not '':      
+            s+= '\n# license : '+cm.get_license() 
+        if cm.get_rights() is not None and cm.get_rights() is not '':      
+            s+= '\n# rights : '+cm.get_rights()
+        if cm.get_publisher() is not None and cm.get_publisher() is not '':      
+            s+= '\n# publisher : '+cm.get_publisher() 
+        if cm.get_references() is not None and cm.get_references() is not '':      
+            s+= '\n# references : '+cm.get_references() 
+        if cm.get_relation() is not None and cm.get_relation() is not '':      
+            s+= '\n# relation : '+cm.get_relation() 
+        # CNetwork
+        if len(self.get_connectome_network()) > 0:
+            s+= '\n#\n# CNetwork\n# '+'='*56+' #'
+            for i in self.get_connectome_network():
+                s+= i.print_summary(False)
+                
+        # CVolume
+        if len(self.get_connectome_volume()) > 0:
+            s+= '\n#\n# CVolume\n# '+'='*56+' #'
+            for i in self.get_connectome_volume():
+                s+= i.print_summary(False)
+            
+        # CTrack
+        if len(self.get_connectome_track()) > 0:
+            s+= '\n#\n# CTrack\n# '+'='*56+' #'
+            for i in self.get_connectome_track():
+                s+= i.print_summary(False)
+            
+        # CSurface
+        if len(self.get_connectome_surface()) > 0:
+            s+= '\n#\n# CSurface\n# '+'='*56+' #'
+            for i in self.get_connectome_surface():
+                s+= i.print_summary(False)
+            
+        # CTimeserie
+        if len(self.get_connectome_timeserie()) > 0:
+            s+= '\n#\n# CTimeserie\n# '+'='*56+' #'
+            for i in self.get_connectome_timeserie():
+                s+= i.print_summary(False)
+            
+        # CScript
+        if len(self.get_connectome_script()) > 0:
+            s+= '\n#\n# CScript\n# '+'='*56+' #'
+            for i in self.get_connectome_script():
+                s+= i.print_summary(False)
+            
+        # CData
+        if len(self.get_connectome_data()) > 0:
+            s+= '\n#\n# CData\n# '+'='*56+' #'
+            for i in self.get_connectome_data():
+                s+= i.print_summary(False)
+            
+        # CImagestack
+        if len(self.get_connectome_imagestack()) > 0:
+            s+= '\n#\n# CImagestack\n# '+'='*56+' #'
+            for i in self.get_connectome_imagestack():
+                s+= i.print_summary(False)
+            
+        s+= '\n'+'#'*60
+        print s
+        
+            
     
 supermod.connectome.subclass = connectome
 # end class connectome
@@ -778,16 +883,47 @@ class CBaseClass(object):
     def get_metadata_as_dict(self): 
         """Return the metadata as a dictionary"""
         if not self.metadata is None:
-            return self.metadata.get_as_dictionary()
+            return self.metadata.get_tags_as_dictionary()
         else:
-            return None
+            return {}
     
     def update_metadata(self, metadata_dictionary): 
         """Set the metadata with a dictionary"""
         if self.metadata is None:
             self.metadata = metadata()
         self.metadata.set_tags_with_dictionary(metadata_dictionary)
+      
+    # Print out a summary of the CObject
+    def print_summary(self, printer=True):
+        """Print a summary of the CObject"""
         
+        # CObject class name
+        s = ''
+        if printer:
+            s+= '# '+'='*56+' #'+'\n# '+self.__class__.__name__+'\n# '+'='*56+' #'
+              
+        # Attributes  
+        s+= '\n# name : '+self.get_name()
+        if self.get_description() is not None:
+            s+= '\n# description : '+self.get_description()
+        if hasattr(self, 'dtype') and self.get_dtype() is not None:
+            s+= '\n# dtype : '+self.get_dtype()
+        if self.get_fileformat() is not None:
+            s+= '\n# fileformat : '+self.get_fileformat()
+        if self.get_src() is not None:
+            s+= '\n# src : '+self.get_src()
+        if self.get_metadata_as_dict is not None and self.get_metadata_as_dict() is not []:
+            s+= '\n# metadata: '
+            m = self.get_metadata_as_dict()
+            for i in m.keys():
+                s+= '\n#\t '+i+' : '+m[i]
+        s+= '\n# '+'-'*56+' #'
+        
+        # Print or return
+        if printer:
+            print s
+        else:
+            return s
 
 class CNetwork(supermod.CNetwork, CBaseClass):
     """A connectome network object"""
@@ -1097,7 +1233,7 @@ supermod.CTrack.subclass = CTrack
 
 
 class CTimeserie(supermod.CTimeserie, CBaseClass):
-    def __init__(self, src=None, dtype=None, name=None, fileformat='HDF5', description=None, metadata=None):
+    def __init__(self, name=None, src=None, dtype=None, fileformat='HDF5', description=None, metadata=None):
         super(CTimeserie, self).__init__(src, dtype, name, fileformat, description, metadata, )
                 
     def get_unique_relpath(self):
@@ -1115,7 +1251,7 @@ supermod.CTimeserie.subclass = CTimeserie
 
 
 class CData(supermod.CData, CBaseClass):
-    def __init__(self, src=None, dtype=None, name=None, fileformat=None, description=None, metadata=None):
+    def __init__(self, name=None, src=None, dtype=None, fileformat=None, description=None, metadata=None):
         super(CData, self).__init__(src, dtype, name, fileformat, description, metadata, )
                 
     def get_unique_relpath(self):
@@ -1137,7 +1273,7 @@ supermod.CData.subclass = CData
 
 
 class CScript(supermod.CScript, CBaseClass):
-    def __init__(self, src=None, dtype='Python', name=None, fileformat='UTF-8', description=None, metadata=None):
+    def __init__(self, name=None, src=None, dtype='Python', fileformat='UTF-8', description=None, metadata=None):
         super(CScript, self).__init__(src, dtype, name, fileformat, description, metadata, )
         
     def get_unique_relpath(self):
@@ -1188,7 +1324,7 @@ supermod.CScript.subclass = CScript
 
 
 class CImagestack(supermod.CImagestack, CBaseClass):
-    def __init__(self, src=None, fileformat=None, name=None, pattern=None, description=None, metadata=None):
+    def __init__(self, name=None, src=None, fileformat=None, pattern=None, description=None, metadata=None):
         super(CImagestack, self).__init__(src, fileformat, name, pattern, description, metadata, )
         
     def save(self):
