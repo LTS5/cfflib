@@ -28,6 +28,12 @@ To get some informations about this new object you can try::
 
 The first line is just to show that you have a connectome object, the function ``get_all()`` return all connectome's objects mixed, for now its output is empty, and the function ``hasContent_()`` tell you if your object contains something, its output should be ``False``.
 
+You can also get a summary of the content of you connectome object with::
+
+    myConnectome.print_summary()
+    
+which will return some metadata and statistics about this connectome object and a short description of each CObject in it.
+
 The connectome metadata
 =======================
 
@@ -37,7 +43,7 @@ The connectome's metadata are required by the connectome object. The initialisat
     
 you are able to add a lot of informations to this object but three are required:
 
-    - *name* : the unique name of your connectome object, by default **myconnectome**
+    - *title* : the unique name of your connectome object, by default **myconnectome**
     
     - *version* : the version of the cfflib, by default **2.0**
     
@@ -45,11 +51,12 @@ you are able to add a lot of informations to this object but three are required:
 
 For example the followings::
 
-    myMetadata.set_name('My first connectome')
-    myMetadata.set_author('Connectome Tutorial')
-    myMetadata.set_institution('EPFL')
-    myMetadata.set_creation_date('2010-10-26')
-    myMetadata.set_url('www.connectome.ch')
+    myMetadata.set_title('My first connectome')
+    myMetadata.set_species('Homo Sapiens')
+    myMetadata.set_creator('Connectome Tutorial')
+    myMetadata.set_email('yourname@epfl.ch')
+    myMetadata.set_created('2010-10-26')
+    myMetadata.set_modified('2011-02-24')
     myMetadata.set_description('First connectome object created with the tutorial.')
 
 Save to file
@@ -86,8 +93,8 @@ Load from file
 
 To retrieve your connectome object you can load from the previous saved file. Here again, there are two methods to do it, one for the CFF file and one for the CML::
     
-    myConnectomeFromMeta = load_from_meta_cml('/your/wanted/path/meta.cml')
-    myConnectomeFromCFF = load_from_cff('/your/wanted/path/myconnectome.cff')
+    myConnectomeFromMeta = load('/your/wanted/path/meta.cml')
+    myConnectomeFromCFF = load('/your/wanted/path/myconnectome.cff')
 
 Add a network
 =============

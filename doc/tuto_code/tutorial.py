@@ -17,20 +17,19 @@ myConnectome = connectome('1st connectome')
 myConnectome
 myConnectome.get_all()
 myConnectome.hasContent_()
+myConnectome.print_summary()
 #----------------------------------------------------------------------#
 
 #----------------------------------------------------------------------#
 # Create the connectome metadata
 myMetadata = myConnectome.get_connectome_meta()
-myMetadata.set_name('My first connectome')
-myMetadata.set_author('Connectome Tutorial')
-myMetadata.set_institution('EPFL')
-myMetadata.set_creation_date('2010-10-26')
-myMetadata.set_url('www.connectome.ch')
+myMetadata.set_title('My first connectome')
+myMetadata.set_species('Homo Sapiens')
+myMetadata.set_creator('Connectome Tutorial')
+myMetadata.set_email('yourname@epfl.ch')
+myMetadata.set_created('2010-10-26')
+myMetadata.set_modified('2011-02-24')
 myMetadata.set_description('First connectome object created with the tutorial.')
-
-# Add the metadata
-#myConnectome.set_connectome_meta(myMetadata)
 #----------------------------------------------------------------------#
 
 # Save the connectome to file
@@ -41,8 +40,8 @@ save_to_cff(myConnectome, 'myconnectome.cff')#'/your/wanted/path/myconnectome.cf
 
 #----------------------------------------------------------------------#
 # Load from file
-myConnectomeFromMeta = load_from_meta_cml('meta.cml')
-myConnectomeFromCFF = load_from_cff('myconnectome.cff')
+myConnectomeFromMeta = load('meta.cml')
+myConnectomeFromCFF = load('myconnectome.cff')
 #----------------------------------------------------------------------#
 
 #----------------------------------------------------------------------#
