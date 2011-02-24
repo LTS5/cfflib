@@ -29,8 +29,8 @@
   </xsd:complexType>
 </xsd:element>
 
-<xsd:element name="section" >
-<xsd:complexType mixed="false" >
+
+<xsd:complexType name="section" mixed="false" >
   <xsd:choice minOccurs="0" maxOccurs="unbounded">
     <xsd:element name="name" type="xsd:string" minOccurs="1" maxOccurs="1"/>
     <xsd:element name="type" type="xsd:string" minOccurs="1" maxOccurs="1"/>
@@ -38,7 +38,7 @@
   </xsd:choice>
   <xsd:attribute name="title" type="xsd:string" use="required"></xsd:attribute>
 </xsd:complexType>
-</xsd:element>
+
 
 <!-- end odML schema parts -->
 
@@ -259,7 +259,7 @@
 
   <xsd:sequence>
 
-   <xsd:element minOccurs="1" name="dcterms:title" use="required" type="xsd:string">
+   <xsd:element minOccurs="1" name="dcterms:title" type="xsd:string">
     <xsd:annotation xml:lang="en">
       <xsd:documentation>
       Title of the connectome resource

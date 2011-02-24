@@ -683,7 +683,7 @@ class connectome(supermod.connectome):
                 s+= i.print_summary(False)
             
         s+= '\n'+'#'*60
-        print s
+        print(s)
         
             
     
@@ -852,24 +852,7 @@ supermod.CMetadata.subclass = CMetadata
 
 class CBaseClass(object):
 
-    def load(self, custom_loader = None):
-        """ Load the element. The loaded object is stored in the data attribute.
-        
-        Parameters
-        ----------
-        custom_loader : function, default: None
-            Custom loader function that takes connectome element as
-            its first argument.
-            
-        See Also
-        --------
-        See cfflib.util.load_data for example. """
-        
-        if not custom_loader is None:
-            self.data = custom_loader(self)
-        else:
-            self.data = load_data(self)
-    
+
     def save(self):
         """ Save a loaded connectome object to a temporary file, return the path """
         rval = save_data(self)
@@ -880,7 +863,24 @@ class CBaseClass(object):
             raise Exception('There is nothing to save.')
 
     # Metadata
-    def get_metadata_as_dict(self): 
+    def load(self, custom_loader = None):
+        """ Load the element. The loaded object is stored in the data attribute.
+
+        Parameters
+        ----------
+        custom_loader : function, default: None
+            Custom loader function that takes connectome element as
+            its first argument.
+
+        See Also
+        --------
+        See cfflib.util.load_data for example. """
+
+        if not custom_loader is None:
+            self.data = custom_loader(self)
+        else:
+            self.data = load_data(self)
+    def get_metadata_as_dict(self):
         """Return the metadata as a dictionary"""
         if not self.metadata is None:
             return self.metadata.get_tags_as_dictionary()
@@ -903,7 +903,7 @@ class CBaseClass(object):
             s+= '# '+'='*56+' #'+'\n# '+self.__class__.__name__+'\n# '+'='*56+' #'
               
         # Attributes  
-        s+= '\n# name : '+self.get_name()
+        s+= '\n# name : ' +self.get_name()
         if self.get_description() is not None:
             s+= '\n# description : '+self.get_description()
         if hasattr(self, 'dtype') and self.get_dtype() is not None:
@@ -924,6 +924,9 @@ class CBaseClass(object):
             print s
         else:
             return s
+
+    def get_description(self):
+        pass
 
 class CNetwork(supermod.CNetwork, CBaseClass):
     """A connectome network object"""
@@ -1227,6 +1230,17 @@ class CTrack(supermod.CTrack, CBaseClass):
             fend = ''
             
         return unify('CTrack', self.name + fend)
+    
+    def get_fibers_as_numpy(self):
+        """ Returns fiber array """
+
+        if not self.data is None and self.get_fileformat() == "TrackVis":
+            from numpy import object, array
+            fiblist, hdr = self.data
+            noscalarfiblist = [f[0] for f in fiblist]
+            return array(noscalarfiblist, dtype = object)
+        else:
+            return None
     
 supermod.CTrack.subclass = CTrack
 # end class CTrack
