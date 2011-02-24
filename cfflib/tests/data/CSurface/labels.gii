@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE GIFTI SYSTEM "http://www.nitrc.org/frs/download.php/115/gifti.dtd">
+<GIFTI Version="1.03"  NumberOfDataArrays="1">
+<MetaData>
+<MD>
+	<Name><![CDATA[Author]]></Name>
+	<Value><![CDATA[Stephan Gerhard / Converter2CFF]]></Value>
+</MD>
+<MD>
+	<Name><![CDATA[Description]]></Name>
+	<Value><![CDATA[Contains the labels for the multiple resolutions. The labelid links to the networkid in meta.xml]]></Value>
+</MD>
+<MD>
+	<Name><![CDATA[Subject]]></Name>
+	<Value><![CDATA[testsubject]]></Value>
+</MD>
+<MD>
+	<Name><![CDATA[gifticlib-version]]></Name>
+	<Value><![CDATA[gifti library version 1.03, 17 April, 2009]]></Value>
+</MD>
+</MetaData>
+<LabelTable/>
+<DataArray Intent="NIFTI_INTENT_LABEL"
+	DataType="NIFTI_TYPE_FLOAT64"
+	ArrayIndexingOrder="RowMajorOrder"
+	Dimensionality="2"
+	Dim0="3"
+	Dim1="1"
+	Encoding="GIFTI_ENCODING_B64GZ"
+	Endian="GIFTI_ENDIAN_LITTLE"
+	ExternalFileName=""
+	ExternalFileOffset="">
+<MetaData>
+<MD>
+	<Name><![CDATA[Date]]></Name>
+	<Value><![CDATA[Wed Sep 16 18:06:43 2009]]></Value>
+</MD>
+<MD>
+	<Name><![CDATA[UserName]]></Name>
+	<Value><![CDATA[Stephan Gerhard <info at connectome ch>]]></Value>
+</MD>
+<MD>
+	<Name><![CDATA[Description]]></Name>
+	<Value><![CDATA[Contains the label arrays for all surface representations (all resolutions)]]></Value>
+</MD>
+<MD>
+	<Name><![CDATA[labelid]]></Name>
+	<Value><![CDATA[Resolution 83]]></Value>
+</MD>
+</MetaData>
+<CoordinateSystemTransformMatrix>
+	<DataSpace><![CDATA[NIFTI_XFORM_UNKNOWN]]></DataSpace>
+	<TransformedSpace><![CDATA[NIFTI_XFORM_UNKNOWN]]></TransformedSpace>
+<MatrixData>
+  1.000000   0.000000   0.000000   0.000000
+  0.000000   1.000000   0.000000   0.000000
+  0.000000   0.000000   1.000000   0.000000
+  0.000000   0.000000   0.000000   1.000000
+</MatrixData>
+</CoordinateSystemTransformMatrix>
+<Data>
+eJxjYAABFQcwxRAJpT0dAA1sAYc=
+</Data>
+</DataArray>
+</GIFTI>

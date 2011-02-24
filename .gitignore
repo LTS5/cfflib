@@ -9,3 +9,4 @@ doc/build/
 doc/manual/
 dist/
 .settings/
+.idea/
