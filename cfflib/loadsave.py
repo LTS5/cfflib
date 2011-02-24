@@ -117,12 +117,12 @@ def save_to_meta_cml(connectome, filename = 'meta.cml'):
     if connectome.get_connectome_meta() == None:
         print "ERROR - there is no connectome metadata in this connectome"
         return
-    elif connectome.get_connectome_meta().name == None or connectome.get_connectome_meta().name == '':
-        print "ERROR - the connectome metadata have to contain a unique name"
+    elif connectome.get_connectome_meta().title == None or connectome.get_connectome_meta().title == '':
+        print "ERROR - the connectome metadata have to contain a unique title"
         return
     f = open(filename, 'w')
     f.write('<?xml version="1.0" encoding="UTF-8"?>\n')
-    connectome.export(f, 0, namespacedef_='xmlns="http://www.connectomics.org/2010/Connectome/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.connectomics.org/2010/Connectome/xmlns connectome.xsd"')
+    connectome.export(f, 0, namespacedef_='xmlns="http://www.connectomics.org/2010/Connectome/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dcterms="http://purl.org/dc/terms/" xsi:schemaLocation="http://www.connectomics.org/2010/Connectome/xmlns connectome.xsd"')
     f.close()
 
 
