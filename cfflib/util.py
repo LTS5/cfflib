@@ -5,19 +5,24 @@ import os
 import json
 import pickle
 
+# NumPy
+try:
+    import numpy as np
+except ImportError:
+    raise ImportError("Failed to import numpy from any known place")
+
+# Nibabel
+try:
+    import nibabel as ni
+except ImportError:
+    raise ImportError("Failed to import nibabel from any known place")
+
 # NetworkX
 try:
     import networkx as nx
 except ImportError:
     pass
     #raise ImportError("Failed to import networkx from any known place")
-
-# Nibabel
-try:
-    import nibabel as ni
-except ImportError:
-    pass
-    #raise ImportError("Failed to import nibabel from any known place")
 
 # PyTables
 try:
@@ -26,11 +31,6 @@ except ImportError:
     pass
     #raise ImportError("Failed to import pytables from any known place")
 
-# NumPy
-try:
-    import numpy as np
-except ImportError:
-    raise ImportError("Failed to import numpy from any known place")
 
 def validate_fileformat_type(src, location, fileformat):
     """ Try to evaluate whether the given file has the correct fileformat is given """
@@ -138,7 +138,7 @@ def save_data(obj):
                 f = open(tmpfname, 'w')
                 pickle.dump(obj.data, f)
                 f.close()
-            elif obj.fileformat == "CSV":
+            elif obj.fileformat == "CSV" or obj.fileformat == "TXT":
                 # write as text
                 f = open(tmpfname, 'w')
                 f.write(obj.data)
@@ -210,7 +210,7 @@ def load_data(obj):
             load = json.load
         elif obj.fileformat == "Pickle":
             load = pickle.load
-        elif obj.fileformat == "CSV":
+        elif obj.fileformat == "CSV" or obj.fileformat == "TXT":
             # can use import csv on the returned object
             load = open
         else:
@@ -279,10 +279,8 @@ def load_data(obj):
 
 def unify(t, n):
     """ Unify type and name """
-
     n = n.lower()
     n = n.replace(' ', '_')
-        
     return '%s/%s' % (t, n)
         
 

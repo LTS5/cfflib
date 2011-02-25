@@ -1234,7 +1234,7 @@ class CTrack(supermod.CTrack, CBaseClass):
     def get_fibers_as_numpy(self):
         """ Returns fiber array """
 
-        if not self.data is None and self.get_fileformat() == "TrackVis":
+        if hasattr(self, 'data') and not self.data is None and self.get_fileformat() == "TrackVis":
             from numpy import object, array
             fiblist, hdr = self.data
             noscalarfiblist = [f[0] for f in fiblist]
