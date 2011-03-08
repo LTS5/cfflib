@@ -24,9 +24,8 @@ To get some informations about this new object you can try::
 
     myConnectome
     myConnectome.get_all()
-    myConnectome.hasContent_()
 
-The first line is just to show that you have a connectome object, the function ``get_all()`` return all connectome's objects mixed, for now its output is empty, and the function ``hasContent_()`` tell you if your object contains something, its output should be ``False``.
+The first line is just to show that you have a connectome object, the function ``get_all()`` return all connectome's objects mixed, for now its output is empty.
 
 You can also get a summary of the content of you connectome object with::
 
@@ -45,7 +44,7 @@ you are able to add a lot of informations to this object but three are required:
 
     - *title* : the unique name of your connectome object, by default **myconnectome**
     
-    - *version* : the version of the cfflib, by default **2.0**
+    - *version* : the version of the Connectome Markup Language used, by default **2.0**
     
     - *generator* : the generator of the connectome object, by default **cfflib**
 

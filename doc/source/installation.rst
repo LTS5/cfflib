@@ -2,9 +2,9 @@
 Installation of Connectome File Format Library
 ==============================================
 
-You can clone the library from github using git::
+You can clone the library from GitHub using git::
 
-	git clone git@github.com:unidesigner/cfflib.git
+	git clone git@github.com:LTS5/cfflib.git
 	
 And then do a install in the cloned folder::
 
