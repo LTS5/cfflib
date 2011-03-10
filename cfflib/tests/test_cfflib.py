@@ -319,26 +319,26 @@ def test_ctimeserie_hdf5():
     c = connectome()
     
     # Check default values
-    t = CTimeserie()
+    t = CTimeseries()
     assert_equal(t.get_fileformat(), 'HDF5')
     assert_equal(t.get_metadata_as_dict(), {})
     
     # Check the specified values
-    t = CTimeserie('Spec timeserie')
+    t = CTimeseries('Spec timeserie')
     t.update_metadata({'ts':'val'})
     assert_equal(t.get_name(), 'Spec timeserie')
     assert_true(t.get_metadata_as_dict().has_key('ts'))
     assert_equal(t.get_metadata_as_dict()['ts'], 'val')
     
     # Check classmethod from hdf5
-    t = CTimeserie(name='my timeserie', src= op.join(DATA,'CTimeserie/generatedseries.hdf5'))
+    t = CTimeseries(name='my timeserie', src= op.join(DATA,'CTimeserie/generatedseries.hdf5'))
     assert_equal(t.get_name(), 'my timeserie')
     assert_equal(t.get_unique_relpath(), 'CTimeserie/my_timeserie.h5')
 
     # Check add to the connectome
-    c.add_connectome_timeserie(t)
-    assert_not_equal(c.get_connectome_timeserie(), [])
-    assert_equal(len(c.get_connectome_timeserie()), 1)
+    c.add_connectome_timeseries(t)
+    assert_not_equal(c.get_connectome_timeseries(), [])
+    assert_equal(len(c.get_connectome_timeseries()), 1)
 
 # ---------------------------------------------------------------------------------- #
    

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*- 
 
 #
-# Generated Tue Feb  1 11:31:07 2011 by generateDS.py version 2.3b.
+# Generated Thu Mar 10 14:06:17 2011 by generateDS.py version 2.4b.
 #
 
 import sys
@@ -75,18 +75,79 @@ except ImportError, exp:
     class GeneratedsSuper(object):
         def gds_format_string(self, input_data, input_name=''):
             return input_data
+        def gds_validate_string(self, input_data, node, input_name=''):
+            return input_data
         def gds_format_integer(self, input_data, input_name=''):
             return '%d' % input_data
+        def gds_validate_integer(self, input_data, node, input_name=''):
+            return input_data
+        def gds_format_integer_list(self, input_data, input_name=''):
+            return '%s' % input_data
+        def gds_validate_integer_list(self, input_data, node, input_name=''):
+            values = input_data.split()
+            for value in values:
+                try:
+                    fvalue = float(value)
+                except (TypeError, ValueError), exp:
+                    raise_parse_error(node, 'Requires sequence of integers')
+            return input_data
         def gds_format_float(self, input_data, input_name=''):
             return '%f' % input_data
+        def gds_validate_float(self, input_data, node, input_name=''):
+            return input_data
+        def gds_format_float_list(self, input_data, input_name=''):
+            return '%s' % input_data
+        def gds_validate_float_list(self, input_data, node, input_name=''):
+            values = input_data.split()
+            for value in values:
+                try:
+                    fvalue = float(value)
+                except (TypeError, ValueError), exp:
+                    raise_parse_error(node, 'Requires sequence of floats')
+            return input_data
         def gds_format_double(self, input_data, input_name=''):
             return '%e' % input_data
+        def gds_validate_double(self, input_data, node, input_name=''):
+            return input_data
+        def gds_format_double_list(self, input_data, input_name=''):
+            return '%s' % input_data
+        def gds_validate_double_list(self, input_data, node, input_name=''):
+            values = input_data.split()
+            for value in values:
+                try:
+                    fvalue = float(value)
+                except (TypeError, ValueError), exp:
+                    raise_parse_error(node, 'Requires sequence of doubles')
+            return input_data
         def gds_format_boolean(self, input_data, input_name=''):
             return '%s' % input_data
+        def gds_validate_boolean(self, input_data, node, input_name=''):
+            return input_data
+        def gds_format_boolean_list(self, input_data, input_name=''):
+            return '%s' % input_data
+        def gds_validate_boolean_list(self, input_data, node, input_name=''):
+            values = input_data.split()
+            for value in values:
+                if value not in ('true', '1', 'false', '0', ):
+                    raise_parse_error(node, 'Requires sequence of booleans ("true", "1", "false", "0")')
+            return input_data
         def gds_str_lower(self, instring):
             return instring.lower()
-                    
-                    
+        def get_path_(self, node):
+            path_list = []
+            self.get_path_list_(node, path_list)
+            path_list.reverse()
+            path = '/'.join(path_list)
+            return path
+        Tag_strip_pattern_ = re_.compile(r'\{.*\}')
+        def get_path_list_(self, node, path_list):
+            if node is None:
+                return
+            tag = GeneratedsSuper.Tag_strip_pattern_.sub('', node.tag)
+            if tag:
+                path_list.append(tag)
+            self.get_path_list_(node.getparent(), path_list)
+
 
 #
 # If you have installed IPython you can uncomment and use the following.
@@ -302,7 +363,7 @@ class property(GeneratedsSuper):
     def set_uncertainty(self, uncertainty): self.uncertainty = uncertainty
     def get_unit(self): return self.unit
     def set_unit(self, unit): self.unit = unit
-    def export(self, outfile, level, namespace_='', name_='property', namespacedef_=''):
+    def export(self, outfile, level, namespace_='cml:', name_='property', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, [], namespace_, name_='property')
@@ -313,9 +374,9 @@ class property(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='property'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='cml:', name_='property'):
         pass
-    def exportChildren(self, outfile, level, namespace_='', name_='property'):
+    def exportChildren(self, outfile, level, namespace_='cml:', name_='property'):
         if self.name is not None:
             showIndent(outfile, level)
             outfile.write('<%sname>%s</%sname>\n' % (namespace_, self.gds_format_string(quote_xml(self.name).encode(ExternalEncoding), input_name='name'), namespace_))
@@ -369,24 +430,29 @@ class property(GeneratedsSuper):
         self.buildAttributes(node, node.attrib, [])
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, nodeName_)
+            self.buildChildren(child, node, nodeName_)
     def buildAttributes(self, node, attrs, already_processed):
         pass
-    def buildChildren(self, child_, nodeName_, from_subclass=False):
+    def buildChildren(self, child_, node, nodeName_, from_subclass=False):
         if nodeName_ == 'name':
             name_ = child_.text
+            name_ = self.gds_validate_string(name_, node, 'name')
             self.name = name_
         elif nodeName_ == 'value':
             value_ = child_.text
+            value_ = self.gds_validate_string(value_, node, 'value')
             self.value = value_
         elif nodeName_ == 'type':
             type_ = child_.text
+            type_ = self.gds_validate_string(type_, node, 'type')
             self.type_ = type_
         elif nodeName_ == 'uncertainty':
             uncertainty_ = child_.text
+            uncertainty_ = self.gds_validate_string(uncertainty_, node, 'uncertainty')
             self.uncertainty = uncertainty_
         elif nodeName_ == 'unit':
             unit_ = child_.text
+            unit_ = self.gds_validate_string(unit_, node, 'unit')
             self.unit = unit_
 # end class property
 
@@ -418,7 +484,7 @@ class section(GeneratedsSuper):
     def insert_property(self, index, value): self.property[index] = value
     def get_title(self): return self.title
     def set_title(self, title): self.title = title
-    def export(self, outfile, level, namespace_='', name_='section', namespacedef_=''):
+    def export(self, outfile, level, namespace_='cml:', name_='section', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, [], namespace_, name_='section')
@@ -429,9 +495,11 @@ class section(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='section'):
-        outfile.write(' title=%s' % (self.gds_format_string(quote_attrib(self.title).encode(ExternalEncoding), input_name='title'), ))
-    def exportChildren(self, outfile, level, namespace_='', name_='section'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='cml:', name_='section'):
+        if self.title is not None and 'title' not in already_processed:
+            already_processed.append('title')
+            outfile.write(' title=%s' % (self.gds_format_string(quote_attrib(self.title).encode(ExternalEncoding), input_name='title'), ))
+    def exportChildren(self, outfile, level, namespace_='cml:', name_='section'):
         if self.name is not None:
             showIndent(outfile, level)
             outfile.write('<%sname>%s</%sname>\n' % (namespace_, self.gds_format_string(quote_xml(self.name).encode(ExternalEncoding), input_name='name'), namespace_))
@@ -482,18 +550,20 @@ class section(GeneratedsSuper):
         self.buildAttributes(node, node.attrib, [])
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, nodeName_)
+            self.buildChildren(child, node, nodeName_)
     def buildAttributes(self, node, attrs, already_processed):
         value = attrs.get('title')
         if value is not None and 'title' not in already_processed:
             already_processed.append('title')
             self.title = value
-    def buildChildren(self, child_, nodeName_, from_subclass=False):
+    def buildChildren(self, child_, node, nodeName_, from_subclass=False):
         if nodeName_ == 'name':
             name_ = child_.text
+            name_ = self.gds_validate_string(name_, node, 'name')
             self.name = name_
         elif nodeName_ == 'type':
             type_ = child_.text
+            type_ = self.gds_validate_string(type_, node, 'type')
             self.type_ = type_
         elif nodeName_ == 'property': 
             obj_ = property.factory()
@@ -528,7 +598,7 @@ class metadata(GeneratedsSuper):
     def set_section(self, section): self.section = section
     def add_section(self, value): self.section.append(value)
     def insert_section(self, index, value): self.section[index] = value
-    def export(self, outfile, level, namespace_='', name_='metadata', namespacedef_=''):
+    def export(self, outfile, level, namespace_='cml:', name_='metadata', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, [], namespace_, name_='metadata')
@@ -539,9 +609,9 @@ class metadata(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='metadata'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='cml:', name_='metadata'):
         pass
-    def exportChildren(self, outfile, level, namespace_='', name_='metadata'):
+    def exportChildren(self, outfile, level, namespace_='cml:', name_='metadata'):
         for tag_ in self.tag:
             tag_.export(outfile, level, namespace_, name_='tag')
         for section_ in self.section:
@@ -590,10 +660,10 @@ class metadata(GeneratedsSuper):
         self.buildAttributes(node, node.attrib, [])
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, nodeName_)
+            self.buildChildren(child, node, nodeName_)
     def buildAttributes(self, node, attrs, already_processed):
         pass
-    def buildChildren(self, child_, nodeName_, from_subclass=False):
+    def buildChildren(self, child_, node, nodeName_, from_subclass=False):
         if nodeName_ == 'tag': 
             obj_ = tag.factory()
             obj_.build(child_)
@@ -623,7 +693,7 @@ class tag(GeneratedsSuper):
     def set_key(self, key): self.key = key
     def get_valueOf_(self): return self.valueOf_
     def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
-    def export(self, outfile, level, namespace_='', name_='tag', namespacedef_=''):
+    def export(self, outfile, level, namespace_='cml:', name_='tag', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, [], namespace_, name_='tag')
@@ -634,11 +704,11 @@ class tag(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='tag'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='cml:', name_='tag'):
         if self.key is not None and 'key' not in already_processed:
             already_processed.append('key')
             outfile.write(' key=%s' % (self.gds_format_string(quote_attrib(self.key).encode(ExternalEncoding), input_name='key'), ))
-    def exportChildren(self, outfile, level, namespace_='', name_='tag'):
+    def exportChildren(self, outfile, level, namespace_='cml:', name_='tag'):
         pass
     def hasContent_(self):
         if (
@@ -666,13 +736,13 @@ class tag(GeneratedsSuper):
         self.valueOf_ = get_all_text_(node)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, nodeName_)
+            self.buildChildren(child, node, nodeName_)
     def buildAttributes(self, node, attrs, already_processed):
         value = attrs.get('key')
         if value is not None and 'key' not in already_processed:
             already_processed.append('key')
             self.key = value
-    def buildChildren(self, child_, nodeName_, from_subclass=False):
+    def buildChildren(self, child_, node, nodeName_, from_subclass=False):
         pass
 # end class tag
 
@@ -680,7 +750,7 @@ class tag(GeneratedsSuper):
 class connectome(GeneratedsSuper):
     subclass = None
     superclass = None
-    def __init__(self, connectome_meta=None, connectome_network=None, connectome_surface=None, connectome_volume=None, connectome_track=None, connectome_timeserie=None, connectome_data=None, connectome_script=None, connectome_imagestack=None):
+    def __init__(self, connectome_meta=None, connectome_network=None, connectome_surface=None, connectome_volume=None, connectome_track=None, connectome_timeseries=None, connectome_data=None, connectome_script=None, connectome_imagestack=None):
         self.connectome_meta = connectome_meta
         if connectome_network is None:
             self.connectome_network = []
@@ -698,10 +768,10 @@ class connectome(GeneratedsSuper):
             self.connectome_track = []
         else:
             self.connectome_track = connectome_track
-        if connectome_timeserie is None:
-            self.connectome_timeserie = []
+        if connectome_timeseries is None:
+            self.connectome_timeseries = []
         else:
-            self.connectome_timeserie = connectome_timeserie
+            self.connectome_timeseries = connectome_timeseries
         if connectome_data is None:
             self.connectome_data = []
         else:
@@ -738,10 +808,10 @@ class connectome(GeneratedsSuper):
     def set_connectome_track(self, connectome_track): self.connectome_track = connectome_track
     def add_connectome_track(self, value): self.connectome_track.append(value)
     def insert_connectome_track(self, index, value): self.connectome_track[index] = value
-    def get_connectome_timeserie(self): return self.connectome_timeserie
-    def set_connectome_timeserie(self, connectome_timeserie): self.connectome_timeserie = connectome_timeserie
-    def add_connectome_timeserie(self, value): self.connectome_timeserie.append(value)
-    def insert_connectome_timeserie(self, index, value): self.connectome_timeserie[index] = value
+    def get_connectome_timeseries(self): return self.connectome_timeseries
+    def set_connectome_timeseries(self, connectome_timeseries): self.connectome_timeseries = connectome_timeseries
+    def add_connectome_timeseries(self, value): self.connectome_timeseries.append(value)
+    def insert_connectome_timeseries(self, index, value): self.connectome_timeseries[index] = value
     def get_connectome_data(self): return self.connectome_data
     def set_connectome_data(self, connectome_data): self.connectome_data = connectome_data
     def add_connectome_data(self, value): self.connectome_data.append(value)
@@ -754,7 +824,7 @@ class connectome(GeneratedsSuper):
     def set_connectome_imagestack(self, connectome_imagestack): self.connectome_imagestack = connectome_imagestack
     def add_connectome_imagestack(self, value): self.connectome_imagestack.append(value)
     def insert_connectome_imagestack(self, index, value): self.connectome_imagestack[index] = value
-    def export(self, outfile, level, namespace_='', name_='connectome', namespacedef_=''):
+    def export(self, outfile, level, namespace_='cml:', name_='connectome', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, [], namespace_, name_='connectome')
@@ -765,9 +835,9 @@ class connectome(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='connectome'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='cml:', name_='connectome'):
         pass
-    def exportChildren(self, outfile, level, namespace_='', name_='connectome'):
+    def exportChildren(self, outfile, level, namespace_='cml:', name_='connectome'):
         if self.connectome_meta:
             self.connectome_meta.export(outfile, level, namespace_, name_='connectome-meta', )
         for connectome_network_ in self.connectome_network:
@@ -778,8 +848,8 @@ class connectome(GeneratedsSuper):
             connectome_volume_.export(outfile, level, namespace_, name_='connectome-volume')
         for connectome_track_ in self.connectome_track:
             connectome_track_.export(outfile, level, namespace_, name_='connectome-track')
-        for connectome_timeserie_ in self.connectome_timeserie:
-            connectome_timeserie_.export(outfile, level, namespace_, name_='connectome-timeserie')
+        for connectome_timeseries_ in self.connectome_timeseries:
+            connectome_timeseries_.export(outfile, level, namespace_, name_='connectome-timeseries')
         for connectome_data_ in self.connectome_data:
             connectome_data_.export(outfile, level, namespace_, name_='connectome-data')
         for connectome_script_ in self.connectome_script:
@@ -793,7 +863,7 @@ class connectome(GeneratedsSuper):
             self.connectome_surface or
             self.connectome_volume or
             self.connectome_track or
-            self.connectome_timeserie or
+            self.connectome_timeseries or
             self.connectome_data or
             self.connectome_script or
             self.connectome_imagestack
@@ -864,12 +934,12 @@ class connectome(GeneratedsSuper):
         showIndent(outfile, level)
         outfile.write('],\n')
         showIndent(outfile, level)
-        outfile.write('connectome_timeserie=[\n')
+        outfile.write('connectome_timeseries=[\n')
         level += 1
-        for connectome_timeserie_ in self.connectome_timeserie:
+        for connectome_timeseries_ in self.connectome_timeseries:
             showIndent(outfile, level)
-            outfile.write('model_.CTimeserie(\n')
-            connectome_timeserie_.exportLiteral(outfile, level, name_='CTimeserie')
+            outfile.write('model_.CTimeseries(\n')
+            connectome_timeseries_.exportLiteral(outfile, level, name_='CTimeseries')
             showIndent(outfile, level)
             outfile.write('),\n')
         level -= 1
@@ -915,10 +985,10 @@ class connectome(GeneratedsSuper):
         self.buildAttributes(node, node.attrib, [])
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, nodeName_)
+            self.buildChildren(child, node, nodeName_)
     def buildAttributes(self, node, attrs, already_processed):
         pass
-    def buildChildren(self, child_, nodeName_, from_subclass=False):
+    def buildChildren(self, child_, node, nodeName_, from_subclass=False):
         if nodeName_ == 'connectome-meta': 
             obj_ = CMetadata.factory()
             obj_.build(child_)
@@ -939,10 +1009,10 @@ class connectome(GeneratedsSuper):
             obj_ = CTrack.factory()
             obj_.build(child_)
             self.connectome_track.append(obj_)
-        elif nodeName_ == 'connectome-timeserie': 
-            obj_ = CTimeserie.factory()
+        elif nodeName_ == 'connectome-timeseries': 
+            obj_ = CTimeseries.factory()
             obj_.build(child_)
-            self.connectome_timeserie.append(obj_)
+            self.connectome_timeseries.append(obj_)
         elif nodeName_ == 'connectome-data': 
             obj_ = CData.factory()
             obj_.build(child_)
@@ -1015,7 +1085,7 @@ class CMetadata(GeneratedsSuper):
     def set_metadata(self, metadata): self.metadata = metadata
     def get_version(self): return self.version
     def set_version(self, version): self.version = version
-    def export(self, outfile, level, namespace_='', name_='CMetadata', namespacedef_=''):
+    def export(self, outfile, level, namespace_='cml:', name_='CMetadata', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, [], namespace_, name_='CMetadata')
@@ -1026,9 +1096,11 @@ class CMetadata(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='CMetadata'):
-        outfile.write(' version=%s' % (self.gds_format_string(quote_attrib(self.version).encode(ExternalEncoding), input_name='version'), ))
-    def exportChildren(self, outfile, level, namespace_='', name_='CMetadata'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='cml:', name_='CMetadata'):
+        if self.version is not None and 'version' not in already_processed:
+            already_processed.append('version')
+            outfile.write(' version=%s' % (self.gds_format_string(quote_attrib(self.version).encode(ExternalEncoding), input_name='version'), ))
+    def exportChildren(self, outfile, level, namespace_='cml:', name_='CMetadata'):
         if self.title is not None:
             showIndent(outfile, level)
             outfile.write('<%stitle>%s</%stitle>\n' % (namespace_, self.gds_format_string(quote_xml(self.title).encode(ExternalEncoding), input_name='title'), namespace_))
@@ -1150,15 +1222,16 @@ class CMetadata(GeneratedsSuper):
         self.buildAttributes(node, node.attrib, [])
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, nodeName_)
+            self.buildChildren(child, node, nodeName_)
     def buildAttributes(self, node, attrs, already_processed):
         value = attrs.get('version')
         if value is not None and 'version' not in already_processed:
             already_processed.append('version')
             self.version = value
-    def buildChildren(self, child_, nodeName_, from_subclass=False):
+    def buildChildren(self, child_, node, nodeName_, from_subclass=False):
         if nodeName_ == 'title':
             title_ = child_.text
+            title_ = self.gds_validate_string(title_, node, 'title')
             self.title = title_
         elif nodeName_ == 'alternative': 
             obj_ = alternative.factory()
@@ -1166,18 +1239,23 @@ class CMetadata(GeneratedsSuper):
             self.set_title(obj_)
         elif nodeName_ == 'creator':
             creator_ = child_.text
+            creator_ = self.gds_validate_string(creator_, node, 'creator')
             self.creator = creator_
         elif nodeName_ == 'publisher':
             publisher_ = child_.text
+            publisher_ = self.gds_validate_string(publisher_, node, 'publisher')
             self.publisher = publisher_
         elif nodeName_ == 'created':
             created_ = child_.text
+            created_ = self.gds_validate_string(created_, node, 'created')
             self.created = created_
         elif nodeName_ == 'modified':
             modified_ = child_.text
+            modified_ = self.gds_validate_string(modified_, node, 'modified')
             self.modified = modified_
         elif nodeName_ == 'rights':
             rights_ = child_.text
+            rights_ = self.gds_validate_string(rights_, node, 'rights')
             self.rights = rights_
         elif nodeName_ == 'accessRights': 
             obj_ = accessRights.factory()
@@ -1189,12 +1267,15 @@ class CMetadata(GeneratedsSuper):
             self.set_rights(obj_)
         elif nodeName_ == 'license':
             license_ = child_.text
+            license_ = self.gds_validate_string(license_, node, 'license')
             self.license = license_
         elif nodeName_ == 'references':
             references_ = child_.text
+            references_ = self.gds_validate_string(references_, node, 'references')
             self.references = references_
         elif nodeName_ == 'relation':
             relation_ = child_.text
+            relation_ = self.gds_validate_string(relation_, node, 'relation')
             self.relation = relation_
         elif nodeName_ == 'isVersionOf': 
             obj_ = isVersionOf.factory()
@@ -1250,6 +1331,7 @@ class CMetadata(GeneratedsSuper):
             self.set_relation(obj_)
         elif nodeName_ == 'description':
             description_ = child_.text
+            description_ = self.gds_validate_string(description_, node, 'description')
             self.description = description_
         elif nodeName_ == 'tableOfContents': 
             obj_ = tableOfContents.factory()
@@ -1261,12 +1343,15 @@ class CMetadata(GeneratedsSuper):
             self.set_description(obj_)
         elif nodeName_ == 'generator':
             generator_ = child_.text
+            generator_ = self.gds_validate_string(generator_, node, 'generator')
             self.generator = generator_
         elif nodeName_ == 'species':
             species_ = child_.text
+            species_ = self.gds_validate_string(species_, node, 'species')
             self.species = species_
         elif nodeName_ == 'email':
             email_ = child_.text
+            email_ = self.gds_validate_string(email_, node, 'email')
             self.email = email_
         elif nodeName_ == 'metadata': 
             obj_ = metadata.factory()
@@ -1289,7 +1374,7 @@ class CNetwork(GeneratedsSuper):
     dtype="FunctionalNetwork" Networks derived from functional
     measures such as EEG/MEG/fMRI/PET etc. -
     dtype="EffectiveNetwork" Networks representing effective
-    connectivities - dtype="Other" Other kind of network."""
+    connectivity - dtype="Other" Other kind of network."""
     subclass = None
     superclass = None
     def __init__(self, src=None, dtype='AttributeNetwork', name=None, fileformat='GraphML', metadata=None, description=None):
@@ -1323,7 +1408,7 @@ class CNetwork(GeneratedsSuper):
     def validate_networkFileFormat(self, value):
         # Validate type networkFileFormat, a restriction on xsd:string.
         pass
-    def export(self, outfile, level, namespace_='', name_='CNetwork', namespacedef_=''):
+    def export(self, outfile, level, namespace_='cml:', name_='CNetwork', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, [], namespace_, name_='CNetwork')
@@ -1334,18 +1419,20 @@ class CNetwork(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='CNetwork'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='cml:', name_='CNetwork'):
         if self.src is not None and 'src' not in already_processed:
             already_processed.append('src')
             outfile.write(' src=%s' % (self.gds_format_string(quote_attrib(self.src).encode(ExternalEncoding), input_name='src'), ))
         if self.dtype is not None and 'dtype' not in already_processed:
             already_processed.append('dtype')
             outfile.write(' dtype=%s' % (quote_attrib(self.dtype), ))
-        outfile.write(' name=%s' % (self.gds_format_string(quote_attrib(self.name).encode(ExternalEncoding), input_name='name'), ))
+        if self.name is not None and 'name' not in already_processed:
+            already_processed.append('name')
+            outfile.write(' name=%s' % (self.gds_format_string(quote_attrib(self.name).encode(ExternalEncoding), input_name='name'), ))
         if self.fileformat is not None and 'fileformat' not in already_processed:
             already_processed.append('fileformat')
             outfile.write(' fileformat=%s' % (quote_attrib(self.fileformat), ))
-    def exportChildren(self, outfile, level, namespace_='', name_='CNetwork'):
+    def exportChildren(self, outfile, level, namespace_='cml:', name_='CNetwork'):
         if self.metadata:
             self.metadata.export(outfile, level, namespace_, name_='metadata')
         if self.description is not None:
@@ -1395,7 +1482,7 @@ class CNetwork(GeneratedsSuper):
         self.buildAttributes(node, node.attrib, [])
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, nodeName_)
+            self.buildChildren(child, node, nodeName_)
     def buildAttributes(self, node, attrs, already_processed):
         value = attrs.get('src')
         if value is not None and 'src' not in already_processed:
@@ -1405,6 +1492,7 @@ class CNetwork(GeneratedsSuper):
         if value is not None and 'dtype' not in already_processed:
             already_processed.append('dtype')
             self.dtype = value
+            self.validate_networkEnumDType(self.dtype)    # validate type networkEnumDType
         value = attrs.get('name')
         if value is not None and 'name' not in already_processed:
             already_processed.append('name')
@@ -1413,13 +1501,15 @@ class CNetwork(GeneratedsSuper):
         if value is not None and 'fileformat' not in already_processed:
             already_processed.append('fileformat')
             self.fileformat = value
-    def buildChildren(self, child_, nodeName_, from_subclass=False):
+            self.validate_networkFileFormat(self.fileformat)    # validate type networkFileFormat
+    def buildChildren(self, child_, node, nodeName_, from_subclass=False):
         if nodeName_ == 'metadata': 
             obj_ = metadata.factory()
             obj_.build(child_)
             self.set_metadata(obj_)
         elif nodeName_ == 'description':
             description_ = child_.text
+            description_ = self.gds_validate_string(description_, node, 'description')
             self.description = description_
         elif nodeName_ == 'tableOfContents': 
             obj_ = tableOfContents.factory()
@@ -1488,7 +1578,7 @@ class CSurface(GeneratedsSuper):
     def validate_surfaceFileFormat(self, value):
         # Validate type surfaceFileFormat, a restriction on xsd:string.
         pass
-    def export(self, outfile, level, namespace_='', name_='CSurface', namespacedef_=''):
+    def export(self, outfile, level, namespace_='cml:', name_='CSurface', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, [], namespace_, name_='CSurface')
@@ -1499,7 +1589,7 @@ class CSurface(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='CSurface'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='cml:', name_='CSurface'):
         if self.src is not None and 'src' not in already_processed:
             already_processed.append('src')
             outfile.write(' src=%s' % (self.gds_format_string(quote_attrib(self.src).encode(ExternalEncoding), input_name='src'), ))
@@ -1512,7 +1602,7 @@ class CSurface(GeneratedsSuper):
         if self.fileformat is not None and 'fileformat' not in already_processed:
             already_processed.append('fileformat')
             outfile.write(' fileformat=%s' % (quote_attrib(self.fileformat), ))
-    def exportChildren(self, outfile, level, namespace_='', name_='CSurface'):
+    def exportChildren(self, outfile, level, namespace_='cml:', name_='CSurface'):
         if self.description is not None:
             showIndent(outfile, level)
             outfile.write('<%sdescription>%s</%sdescription>\n' % (namespace_, self.gds_format_string(quote_xml(self.description).encode(ExternalEncoding), input_name='description'), namespace_))
@@ -1562,7 +1652,7 @@ class CSurface(GeneratedsSuper):
         self.buildAttributes(node, node.attrib, [])
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, nodeName_)
+            self.buildChildren(child, node, nodeName_)
     def buildAttributes(self, node, attrs, already_processed):
         value = attrs.get('src')
         if value is not None and 'src' not in already_processed:
@@ -1572,6 +1662,7 @@ class CSurface(GeneratedsSuper):
         if value is not None and 'dtype' not in already_processed:
             already_processed.append('dtype')
             self.dtype = value
+            self.validate_surfaceEnumDType(self.dtype)    # validate type surfaceEnumDType
         value = attrs.get('name')
         if value is not None and 'name' not in already_processed:
             already_processed.append('name')
@@ -1580,9 +1671,11 @@ class CSurface(GeneratedsSuper):
         if value is not None and 'fileformat' not in already_processed:
             already_processed.append('fileformat')
             self.fileformat = value
-    def buildChildren(self, child_, nodeName_, from_subclass=False):
+            self.validate_surfaceFileFormat(self.fileformat)    # validate type surfaceFileFormat
+    def buildChildren(self, child_, node, nodeName_, from_subclass=False):
         if nodeName_ == 'description':
             description_ = child_.text
+            description_ = self.gds_validate_string(description_, node, 'description')
             self.description = description_
         elif nodeName_ == 'tableOfContents': 
             obj_ = tableOfContents.factory()
@@ -1661,7 +1754,7 @@ class CVolume(GeneratedsSuper):
     def validate_volumeFileFormat(self, value):
         # Validate type volumeFileFormat, a restriction on xsd:string.
         pass
-    def export(self, outfile, level, namespace_='', name_='CVolume', namespacedef_=''):
+    def export(self, outfile, level, namespace_='cml:', name_='CVolume', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, [], namespace_, name_='CVolume')
@@ -1672,7 +1765,7 @@ class CVolume(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='CVolume'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='cml:', name_='CVolume'):
         if self.src is not None and 'src' not in already_processed:
             already_processed.append('src')
             outfile.write(' src=%s' % (self.gds_format_string(quote_attrib(self.src).encode(ExternalEncoding), input_name='src'), ))
@@ -1685,7 +1778,7 @@ class CVolume(GeneratedsSuper):
         if self.fileformat is not None and 'fileformat' not in already_processed:
             already_processed.append('fileformat')
             outfile.write(' fileformat=%s' % (quote_attrib(self.fileformat), ))
-    def exportChildren(self, outfile, level, namespace_='', name_='CVolume'):
+    def exportChildren(self, outfile, level, namespace_='cml:', name_='CVolume'):
         if self.description is not None:
             showIndent(outfile, level)
             outfile.write('<%sdescription>%s</%sdescription>\n' % (namespace_, self.gds_format_string(quote_xml(self.description).encode(ExternalEncoding), input_name='description'), namespace_))
@@ -1735,7 +1828,7 @@ class CVolume(GeneratedsSuper):
         self.buildAttributes(node, node.attrib, [])
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, nodeName_)
+            self.buildChildren(child, node, nodeName_)
     def buildAttributes(self, node, attrs, already_processed):
         value = attrs.get('src')
         if value is not None and 'src' not in already_processed:
@@ -1745,6 +1838,7 @@ class CVolume(GeneratedsSuper):
         if value is not None and 'dtype' not in already_processed:
             already_processed.append('dtype')
             self.dtype = value
+            self.validate_volumeEnumDType(self.dtype)    # validate type volumeEnumDType
         value = attrs.get('name')
         if value is not None and 'name' not in already_processed:
             already_processed.append('name')
@@ -1753,9 +1847,11 @@ class CVolume(GeneratedsSuper):
         if value is not None and 'fileformat' not in already_processed:
             already_processed.append('fileformat')
             self.fileformat = value
-    def buildChildren(self, child_, nodeName_, from_subclass=False):
+            self.validate_volumeFileFormat(self.fileformat)    # validate type volumeFileFormat
+    def buildChildren(self, child_, node, nodeName_, from_subclass=False):
         if nodeName_ == 'description':
             description_ = child_.text
+            description_ = self.gds_validate_string(description_, node, 'description')
             self.description = description_
         elif nodeName_ == 'tableOfContents': 
             obj_ = tableOfContents.factory()
@@ -1808,7 +1904,7 @@ class CTrack(GeneratedsSuper):
     def validate_trackFileFormat(self, value):
         # Validate type trackFileFormat, a restriction on xsd:string.
         pass
-    def export(self, outfile, level, namespace_='', name_='CTrack', namespacedef_=''):
+    def export(self, outfile, level, namespace_='cml:', name_='CTrack', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, [], namespace_, name_='CTrack')
@@ -1819,7 +1915,7 @@ class CTrack(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='CTrack'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='cml:', name_='CTrack'):
         if self.src is not None and 'src' not in already_processed:
             already_processed.append('src')
             outfile.write(' src=%s' % (self.gds_format_string(quote_attrib(self.src).encode(ExternalEncoding), input_name='src'), ))
@@ -1832,7 +1928,7 @@ class CTrack(GeneratedsSuper):
         if self.fileformat is not None and 'fileformat' not in already_processed:
             already_processed.append('fileformat')
             outfile.write(' fileformat=%s' % (quote_attrib(self.fileformat), ))
-    def exportChildren(self, outfile, level, namespace_='', name_='CTrack'):
+    def exportChildren(self, outfile, level, namespace_='cml:', name_='CTrack'):
         if self.description is not None:
             showIndent(outfile, level)
             outfile.write('<%sdescription>%s</%sdescription>\n' % (namespace_, self.gds_format_string(quote_xml(self.description).encode(ExternalEncoding), input_name='description'), namespace_))
@@ -1882,7 +1978,7 @@ class CTrack(GeneratedsSuper):
         self.buildAttributes(node, node.attrib, [])
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, nodeName_)
+            self.buildChildren(child, node, nodeName_)
     def buildAttributes(self, node, attrs, already_processed):
         value = attrs.get('src')
         if value is not None and 'src' not in already_processed:
@@ -1900,9 +1996,11 @@ class CTrack(GeneratedsSuper):
         if value is not None and 'fileformat' not in already_processed:
             already_processed.append('fileformat')
             self.fileformat = value
-    def buildChildren(self, child_, nodeName_, from_subclass=False):
+            self.validate_trackFileFormat(self.fileformat)    # validate type trackFileFormat
+    def buildChildren(self, child_, node, nodeName_, from_subclass=False):
         if nodeName_ == 'description':
             description_ = child_.text
+            description_ = self.gds_validate_string(description_, node, 'description')
             self.description = description_
         elif nodeName_ == 'tableOfContents': 
             obj_ = tableOfContents.factory()
@@ -1919,7 +2017,7 @@ class CTrack(GeneratedsSuper):
 # end class CTrack
 
 
-class CTimeserie(GeneratedsSuper):
+class CTimeseries(GeneratedsSuper):
     """Name of the timeseries. The path to the file according to location
     attribute Set to "HDF5" (default) to use the only supported
     Hierarchical Data File format. The HDF5 allows to store any
@@ -1934,10 +2032,10 @@ class CTimeserie(GeneratedsSuper):
         self.description = description
         self.metadata = metadata
     def factory(*args_, **kwargs_):
-        if CTimeserie.subclass:
-            return CTimeserie.subclass(*args_, **kwargs_)
+        if CTimeseries.subclass:
+            return CTimeseries.subclass(*args_, **kwargs_)
         else:
-            return CTimeserie(*args_, **kwargs_)
+            return CTimeseries(*args_, **kwargs_)
     factory = staticmethod(factory)
     def get_description(self): return self.description
     def set_description(self, description): self.description = description
@@ -1954,10 +2052,10 @@ class CTimeserie(GeneratedsSuper):
     def validate_timeserieFileFormat(self, value):
         # Validate type timeserieFileFormat, a restriction on xsd:string.
         pass
-    def export(self, outfile, level, namespace_='', name_='CTimeserie', namespacedef_=''):
+    def export(self, outfile, level, namespace_='cml:', name_='CTimeseries', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
-        self.exportAttributes(outfile, level, [], namespace_, name_='CTimeserie')
+        self.exportAttributes(outfile, level, [], namespace_, name_='CTimeseries')
         if self.hasContent_():
             outfile.write('>\n')
             self.exportChildren(outfile, level + 1, namespace_, name_)
@@ -1965,7 +2063,7 @@ class CTimeserie(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='CTimeserie'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='cml:', name_='CTimeseries'):
         if self.src is not None and 'src' not in already_processed:
             already_processed.append('src')
             outfile.write(' src=%s' % (self.gds_format_string(quote_attrib(self.src).encode(ExternalEncoding), input_name='src'), ))
@@ -1978,7 +2076,7 @@ class CTimeserie(GeneratedsSuper):
         if self.fileformat is not None and 'fileformat' not in already_processed:
             already_processed.append('fileformat')
             outfile.write(' fileformat=%s' % (quote_attrib(self.fileformat), ))
-    def exportChildren(self, outfile, level, namespace_='', name_='CTimeserie'):
+    def exportChildren(self, outfile, level, namespace_='cml:', name_='CTimeseries'):
         if self.description is not None:
             showIndent(outfile, level)
             outfile.write('<%sdescription>%s</%sdescription>\n' % (namespace_, self.gds_format_string(quote_xml(self.description).encode(ExternalEncoding), input_name='description'), namespace_))
@@ -1992,7 +2090,7 @@ class CTimeserie(GeneratedsSuper):
             return True
         else:
             return False
-    def exportLiteral(self, outfile, level, name_='CTimeserie'):
+    def exportLiteral(self, outfile, level, name_='CTimeseries'):
         level += 1
         self.exportLiteralAttributes(outfile, level, [], name_)
         if self.hasContent_():
@@ -2028,7 +2126,7 @@ class CTimeserie(GeneratedsSuper):
         self.buildAttributes(node, node.attrib, [])
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, nodeName_)
+            self.buildChildren(child, node, nodeName_)
     def buildAttributes(self, node, attrs, already_processed):
         value = attrs.get('src')
         if value is not None and 'src' not in already_processed:
@@ -2046,9 +2144,11 @@ class CTimeserie(GeneratedsSuper):
         if value is not None and 'fileformat' not in already_processed:
             already_processed.append('fileformat')
             self.fileformat = value
-    def buildChildren(self, child_, nodeName_, from_subclass=False):
+            self.validate_timeserieFileFormat(self.fileformat)    # validate type timeserieFileFormat
+    def buildChildren(self, child_, node, nodeName_, from_subclass=False):
         if nodeName_ == 'description':
             description_ = child_.text
+            description_ = self.gds_validate_string(description_, node, 'description')
             self.description = description_
         elif nodeName_ == 'tableOfContents': 
             obj_ = tableOfContents.factory()
@@ -2062,7 +2162,7 @@ class CTimeserie(GeneratedsSuper):
             obj_ = metadata.factory()
             obj_.build(child_)
             self.set_metadata(obj_)
-# end class CTimeserie
+# end class CTimeseries
 
 
 class CData(GeneratedsSuper):
@@ -2098,7 +2198,7 @@ class CData(GeneratedsSuper):
     def validate_dataFileFormat(self, value):
         # Validate type dataFileFormat, a restriction on xsd:string.
         pass
-    def export(self, outfile, level, namespace_='', name_='CData', namespacedef_=''):
+    def export(self, outfile, level, namespace_='cml:', name_='CData', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, [], namespace_, name_='CData')
@@ -2109,7 +2209,7 @@ class CData(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='CData'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='cml:', name_='CData'):
         if self.src is not None and 'src' not in already_processed:
             already_processed.append('src')
             outfile.write(' src=%s' % (self.gds_format_string(quote_attrib(self.src).encode(ExternalEncoding), input_name='src'), ))
@@ -2122,7 +2222,7 @@ class CData(GeneratedsSuper):
         if self.fileformat is not None and 'fileformat' not in already_processed:
             already_processed.append('fileformat')
             outfile.write(' fileformat=%s' % (quote_attrib(self.fileformat), ))
-    def exportChildren(self, outfile, level, namespace_='', name_='CData'):
+    def exportChildren(self, outfile, level, namespace_='cml:', name_='CData'):
         if self.description is not None:
             showIndent(outfile, level)
             outfile.write('<%sdescription>%s</%sdescription>\n' % (namespace_, self.gds_format_string(quote_xml(self.description).encode(ExternalEncoding), input_name='description'), namespace_))
@@ -2172,7 +2272,7 @@ class CData(GeneratedsSuper):
         self.buildAttributes(node, node.attrib, [])
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, nodeName_)
+            self.buildChildren(child, node, nodeName_)
     def buildAttributes(self, node, attrs, already_processed):
         value = attrs.get('src')
         if value is not None and 'src' not in already_processed:
@@ -2190,9 +2290,11 @@ class CData(GeneratedsSuper):
         if value is not None and 'fileformat' not in already_processed:
             already_processed.append('fileformat')
             self.fileformat = value
-    def buildChildren(self, child_, nodeName_, from_subclass=False):
+            self.validate_dataFileFormat(self.fileformat)    # validate type dataFileFormat
+    def buildChildren(self, child_, node, nodeName_, from_subclass=False):
         if nodeName_ == 'description':
             description_ = child_.text
+            description_ = self.gds_validate_string(description_, node, 'description')
             self.description = description_
         elif nodeName_ == 'tableOfContents': 
             obj_ = tableOfContents.factory()
@@ -2246,7 +2348,7 @@ class CScript(GeneratedsSuper):
     def validate_scriptFileFormat(self, value):
         # Validate type scriptFileFormat, a restriction on xsd:string.
         pass
-    def export(self, outfile, level, namespace_='', name_='CScript', namespacedef_=''):
+    def export(self, outfile, level, namespace_='cml:', name_='CScript', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, [], namespace_, name_='CScript')
@@ -2257,7 +2359,7 @@ class CScript(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='CScript'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='cml:', name_='CScript'):
         if self.src is not None and 'src' not in already_processed:
             already_processed.append('src')
             outfile.write(' src=%s' % (self.gds_format_string(quote_attrib(self.src).encode(ExternalEncoding), input_name='src'), ))
@@ -2270,7 +2372,7 @@ class CScript(GeneratedsSuper):
         if self.fileformat is not None and 'fileformat' not in already_processed:
             already_processed.append('fileformat')
             outfile.write(' fileformat=%s' % (quote_attrib(self.fileformat), ))
-    def exportChildren(self, outfile, level, namespace_='', name_='CScript'):
+    def exportChildren(self, outfile, level, namespace_='cml:', name_='CScript'):
         if self.description is not None:
             showIndent(outfile, level)
             outfile.write('<%sdescription>%s</%sdescription>\n' % (namespace_, self.gds_format_string(quote_xml(self.description).encode(ExternalEncoding), input_name='description'), namespace_))
@@ -2320,7 +2422,7 @@ class CScript(GeneratedsSuper):
         self.buildAttributes(node, node.attrib, [])
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, nodeName_)
+            self.buildChildren(child, node, nodeName_)
     def buildAttributes(self, node, attrs, already_processed):
         value = attrs.get('src')
         if value is not None and 'src' not in already_processed:
@@ -2330,6 +2432,7 @@ class CScript(GeneratedsSuper):
         if value is not None and 'dtype' not in already_processed:
             already_processed.append('dtype')
             self.dtype = value
+            self.validate_scriptEnumType(self.dtype)    # validate type scriptEnumType
         value = attrs.get('name')
         if value is not None and 'name' not in already_processed:
             already_processed.append('name')
@@ -2338,9 +2441,11 @@ class CScript(GeneratedsSuper):
         if value is not None and 'fileformat' not in already_processed:
             already_processed.append('fileformat')
             self.fileformat = value
-    def buildChildren(self, child_, nodeName_, from_subclass=False):
+            self.validate_scriptFileFormat(self.fileformat)    # validate type scriptFileFormat
+    def buildChildren(self, child_, node, nodeName_, from_subclass=False):
         if nodeName_ == 'description':
             description_ = child_.text
+            description_ = self.gds_validate_string(description_, node, 'description')
             self.description = description_
         elif nodeName_ == 'tableOfContents': 
             obj_ = tableOfContents.factory()
@@ -2392,7 +2497,7 @@ class CImagestack(GeneratedsSuper):
     def set_name(self, name): self.name = name
     def get_pattern(self): return self.pattern
     def set_pattern(self, pattern): self.pattern = pattern
-    def export(self, outfile, level, namespace_='', name_='CImagestack', namespacedef_=''):
+    def export(self, outfile, level, namespace_='cml:', name_='CImagestack', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, [], namespace_, name_='CImagestack')
@@ -2403,7 +2508,7 @@ class CImagestack(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='CImagestack'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='cml:', name_='CImagestack'):
         if self.src is not None and 'src' not in already_processed:
             already_processed.append('src')
             outfile.write(' src=%s' % (self.gds_format_string(quote_attrib(self.src).encode(ExternalEncoding), input_name='src'), ))
@@ -2416,9 +2521,10 @@ class CImagestack(GeneratedsSuper):
         if self.pattern is not None and 'pattern' not in already_processed:
             already_processed.append('pattern')
             outfile.write(' pattern=%s' % (self.gds_format_string(quote_attrib(self.pattern).encode(ExternalEncoding), input_name='pattern'), ))
-    def exportChildren(self, outfile, level, namespace_='', name_='CImagestack'):
-        if self.description:
-            self.description.export(outfile, level, namespace_, name_='description')
+    def exportChildren(self, outfile, level, namespace_='cml:', name_='CImagestack'):
+        if self.description is not None:
+            showIndent(outfile, level)
+            outfile.write('<%sdescription>%s</%sdescription>\n' % (namespace_, self.gds_format_string(quote_xml(self.description).encode(ExternalEncoding), input_name='description'), namespace_))
         if self.metadata:
             self.metadata.export(outfile, level, namespace_, name_='metadata', )
     def hasContent_(self):
@@ -2454,10 +2560,7 @@ class CImagestack(GeneratedsSuper):
     def exportLiteralChildren(self, outfile, level, name_):
         if self.description is not None:
             showIndent(outfile, level)
-            outfile.write('description=model_.description(\n')
-            self.description.exportLiteral(outfile, level)
-            showIndent(outfile, level)
-            outfile.write('),\n')
+            outfile.write('description=%s,\n' % quote_python(self.description).encode(ExternalEncoding))
         if self.metadata is not None:
             showIndent(outfile, level)
             outfile.write('metadata=model_.metadata(\n')
@@ -2468,7 +2571,7 @@ class CImagestack(GeneratedsSuper):
         self.buildAttributes(node, node.attrib, [])
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, nodeName_)
+            self.buildChildren(child, node, nodeName_)
     def buildAttributes(self, node, attrs, already_processed):
         value = attrs.get('src')
         if value is not None and 'src' not in already_processed:
@@ -2478,6 +2581,7 @@ class CImagestack(GeneratedsSuper):
         if value is not None and 'fileformat' not in already_processed:
             already_processed.append('fileformat')
             self.fileformat = value
+            self.validate_imagestackFileFormat(self.fileformat)    # validate type imagestackFileFormat
         value = attrs.get('name')
         if value is not None and 'name' not in already_processed:
             already_processed.append('name')
@@ -2486,11 +2590,11 @@ class CImagestack(GeneratedsSuper):
         if value is not None and 'pattern' not in already_processed:
             already_processed.append('pattern')
             self.pattern = value
-    def buildChildren(self, child_, nodeName_, from_subclass=False):
-        if nodeName_ == 'description': 
-            obj_ = description.factory()
-            obj_.build(child_)
-            self.set_description(obj_)
+    def buildChildren(self, child_, node, nodeName_, from_subclass=False):
+        if nodeName_ == 'description':
+            description_ = child_.text
+            description_ = self.gds_validate_string(description_, node, 'description')
+            self.description = description_
         elif nodeName_ == 'tableOfContents': 
             obj_ = tableOfContents.factory()
             obj_.build(child_)
@@ -2506,66 +2610,6 @@ class CImagestack(GeneratedsSuper):
 # end class CImagestack
 
 
-class description(GeneratedsSuper):
-    """A description according to the format attribute syntax."""
-    subclass = None
-    superclass = None
-    def __init__(self, valueOf_=None):
-        self.valueOf_ = valueOf_
-    def factory(*args_, **kwargs_):
-        if description.subclass:
-            return description.subclass(*args_, **kwargs_)
-        else:
-            return description(*args_, **kwargs_)
-    factory = staticmethod(factory)
-    def get_valueOf_(self): return self.valueOf_
-    def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
-    def export(self, outfile, level, namespace_='', name_='description', namespacedef_=''):
-        showIndent(outfile, level)
-        outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
-        self.exportAttributes(outfile, level, [], namespace_, name_='description')
-        if self.hasContent_():
-            outfile.write('>')
-            outfile.write(self.valueOf_)
-            self.exportChildren(outfile, level + 1, namespace_, name_)
-            outfile.write('</%s%s>\n' % (namespace_, name_))
-        else:
-            outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='description'):
-        pass
-    def exportChildren(self, outfile, level, namespace_='', name_='description'):
-        pass
-    def hasContent_(self):
-        if (
-            self.valueOf_
-            ):
-            return True
-        else:
-            return False
-    def exportLiteral(self, outfile, level, name_='description'):
-        level += 1
-        self.exportLiteralAttributes(outfile, level, [], name_)
-        if self.hasContent_():
-            self.exportLiteralChildren(outfile, level, name_)
-        showIndent(outfile, level)
-        outfile.write('valueOf_ = """%s""",\n' % (self.valueOf_,))
-    def exportLiteralAttributes(self, outfile, level, already_processed, name_):
-        pass
-    def exportLiteralChildren(self, outfile, level, name_):
-        pass
-    def build(self, node):
-        self.buildAttributes(node, node.attrib, [])
-        self.valueOf_ = get_all_text_(node)
-        for child in node:
-            nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, nodeName_)
-    def buildAttributes(self, node, attrs, already_processed):
-        pass
-    def buildChildren(self, child_, nodeName_, from_subclass=False):
-        pass
-# end class description
-
-
 class title(GeneratedsSuper):
     subclass = None
     superclass = None
@@ -2579,7 +2623,7 @@ class title(GeneratedsSuper):
     factory = staticmethod(factory)
     def get_valueOf_(self): return self.valueOf_
     def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
-    def export(self, outfile, level, namespace_='', name_='title', namespacedef_=''):
+    def export(self, outfile, level, namespace_='cml:', name_='title', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, [], namespace_, name_='title')
@@ -2590,9 +2634,9 @@ class title(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='title'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='cml:', name_='title'):
         pass
-    def exportChildren(self, outfile, level, namespace_='', name_='title'):
+    def exportChildren(self, outfile, level, namespace_='cml:', name_='title'):
         pass
     def hasContent_(self):
         if (
@@ -2617,10 +2661,10 @@ class title(GeneratedsSuper):
         self.valueOf_ = get_all_text_(node)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, nodeName_)
+            self.buildChildren(child, node, nodeName_)
     def buildAttributes(self, node, attrs, already_processed):
         pass
-    def buildChildren(self, child_, nodeName_, from_subclass=False):
+    def buildChildren(self, child_, node, nodeName_, from_subclass=False):
         pass
 # end class title
 
@@ -2638,7 +2682,7 @@ class creator(GeneratedsSuper):
     factory = staticmethod(factory)
     def get_valueOf_(self): return self.valueOf_
     def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
-    def export(self, outfile, level, namespace_='', name_='creator', namespacedef_=''):
+    def export(self, outfile, level, namespace_='cml:', name_='creator', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, [], namespace_, name_='creator')
@@ -2649,9 +2693,9 @@ class creator(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='creator'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='cml:', name_='creator'):
         pass
-    def exportChildren(self, outfile, level, namespace_='', name_='creator'):
+    def exportChildren(self, outfile, level, namespace_='cml:', name_='creator'):
         pass
     def hasContent_(self):
         if (
@@ -2676,10 +2720,10 @@ class creator(GeneratedsSuper):
         self.valueOf_ = get_all_text_(node)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, nodeName_)
+            self.buildChildren(child, node, nodeName_)
     def buildAttributes(self, node, attrs, already_processed):
         pass
-    def buildChildren(self, child_, nodeName_, from_subclass=False):
+    def buildChildren(self, child_, node, nodeName_, from_subclass=False):
         pass
 # end class creator
 
@@ -2697,7 +2741,7 @@ class subject(GeneratedsSuper):
     factory = staticmethod(factory)
     def get_valueOf_(self): return self.valueOf_
     def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
-    def export(self, outfile, level, namespace_='', name_='subject', namespacedef_=''):
+    def export(self, outfile, level, namespace_='cml:', name_='subject', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, [], namespace_, name_='subject')
@@ -2708,9 +2752,9 @@ class subject(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='subject'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='cml:', name_='subject'):
         pass
-    def exportChildren(self, outfile, level, namespace_='', name_='subject'):
+    def exportChildren(self, outfile, level, namespace_='cml:', name_='subject'):
         pass
     def hasContent_(self):
         if (
@@ -2735,12 +2779,71 @@ class subject(GeneratedsSuper):
         self.valueOf_ = get_all_text_(node)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, nodeName_)
+            self.buildChildren(child, node, nodeName_)
     def buildAttributes(self, node, attrs, already_processed):
         pass
-    def buildChildren(self, child_, nodeName_, from_subclass=False):
+    def buildChildren(self, child_, node, nodeName_, from_subclass=False):
         pass
 # end class subject
+
+
+class description(GeneratedsSuper):
+    subclass = None
+    superclass = None
+    def __init__(self, valueOf_=None):
+        self.valueOf_ = valueOf_
+    def factory(*args_, **kwargs_):
+        if description.subclass:
+            return description.subclass(*args_, **kwargs_)
+        else:
+            return description(*args_, **kwargs_)
+    factory = staticmethod(factory)
+    def get_valueOf_(self): return self.valueOf_
+    def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
+    def export(self, outfile, level, namespace_='cml:', name_='description', namespacedef_=''):
+        showIndent(outfile, level)
+        outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
+        self.exportAttributes(outfile, level, [], namespace_, name_='description')
+        if self.hasContent_():
+            outfile.write('>')
+            outfile.write(self.valueOf_)
+            self.exportChildren(outfile, level + 1, namespace_, name_)
+            outfile.write('</%s%s>\n' % (namespace_, name_))
+        else:
+            outfile.write('/>\n')
+    def exportAttributes(self, outfile, level, already_processed, namespace_='cml:', name_='description'):
+        pass
+    def exportChildren(self, outfile, level, namespace_='cml:', name_='description'):
+        pass
+    def hasContent_(self):
+        if (
+            self.valueOf_
+            ):
+            return True
+        else:
+            return False
+    def exportLiteral(self, outfile, level, name_='description'):
+        level += 1
+        self.exportLiteralAttributes(outfile, level, [], name_)
+        if self.hasContent_():
+            self.exportLiteralChildren(outfile, level, name_)
+        showIndent(outfile, level)
+        outfile.write('valueOf_ = """%s""",\n' % (self.valueOf_,))
+    def exportLiteralAttributes(self, outfile, level, already_processed, name_):
+        pass
+    def exportLiteralChildren(self, outfile, level, name_):
+        pass
+    def build(self, node):
+        self.buildAttributes(node, node.attrib, [])
+        self.valueOf_ = get_all_text_(node)
+        for child in node:
+            nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
+            self.buildChildren(child, node, nodeName_)
+    def buildAttributes(self, node, attrs, already_processed):
+        pass
+    def buildChildren(self, child_, node, nodeName_, from_subclass=False):
+        pass
+# end class description
 
 
 class publisher(GeneratedsSuper):
@@ -2756,7 +2859,7 @@ class publisher(GeneratedsSuper):
     factory = staticmethod(factory)
     def get_valueOf_(self): return self.valueOf_
     def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
-    def export(self, outfile, level, namespace_='', name_='publisher', namespacedef_=''):
+    def export(self, outfile, level, namespace_='cml:', name_='publisher', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, [], namespace_, name_='publisher')
@@ -2767,9 +2870,9 @@ class publisher(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='publisher'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='cml:', name_='publisher'):
         pass
-    def exportChildren(self, outfile, level, namespace_='', name_='publisher'):
+    def exportChildren(self, outfile, level, namespace_='cml:', name_='publisher'):
         pass
     def hasContent_(self):
         if (
@@ -2794,10 +2897,10 @@ class publisher(GeneratedsSuper):
         self.valueOf_ = get_all_text_(node)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, nodeName_)
+            self.buildChildren(child, node, nodeName_)
     def buildAttributes(self, node, attrs, already_processed):
         pass
-    def buildChildren(self, child_, nodeName_, from_subclass=False):
+    def buildChildren(self, child_, node, nodeName_, from_subclass=False):
         pass
 # end class publisher
 
@@ -2815,7 +2918,7 @@ class contributor(GeneratedsSuper):
     factory = staticmethod(factory)
     def get_valueOf_(self): return self.valueOf_
     def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
-    def export(self, outfile, level, namespace_='', name_='contributor', namespacedef_=''):
+    def export(self, outfile, level, namespace_='cml:', name_='contributor', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, [], namespace_, name_='contributor')
@@ -2826,9 +2929,9 @@ class contributor(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='contributor'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='cml:', name_='contributor'):
         pass
-    def exportChildren(self, outfile, level, namespace_='', name_='contributor'):
+    def exportChildren(self, outfile, level, namespace_='cml:', name_='contributor'):
         pass
     def hasContent_(self):
         if (
@@ -2853,10 +2956,10 @@ class contributor(GeneratedsSuper):
         self.valueOf_ = get_all_text_(node)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, nodeName_)
+            self.buildChildren(child, node, nodeName_)
     def buildAttributes(self, node, attrs, already_processed):
         pass
-    def buildChildren(self, child_, nodeName_, from_subclass=False):
+    def buildChildren(self, child_, node, nodeName_, from_subclass=False):
         pass
 # end class contributor
 
@@ -2874,7 +2977,7 @@ class date(GeneratedsSuper):
     factory = staticmethod(factory)
     def get_valueOf_(self): return self.valueOf_
     def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
-    def export(self, outfile, level, namespace_='', name_='date', namespacedef_=''):
+    def export(self, outfile, level, namespace_='cml:', name_='date', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, [], namespace_, name_='date')
@@ -2885,9 +2988,9 @@ class date(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='date'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='cml:', name_='date'):
         pass
-    def exportChildren(self, outfile, level, namespace_='', name_='date'):
+    def exportChildren(self, outfile, level, namespace_='cml:', name_='date'):
         pass
     def hasContent_(self):
         if (
@@ -2912,10 +3015,10 @@ class date(GeneratedsSuper):
         self.valueOf_ = get_all_text_(node)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, nodeName_)
+            self.buildChildren(child, node, nodeName_)
     def buildAttributes(self, node, attrs, already_processed):
         pass
-    def buildChildren(self, child_, nodeName_, from_subclass=False):
+    def buildChildren(self, child_, node, nodeName_, from_subclass=False):
         pass
 # end class date
 
@@ -2933,7 +3036,7 @@ class type_(GeneratedsSuper):
     factory = staticmethod(factory)
     def get_valueOf_(self): return self.valueOf_
     def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
-    def export(self, outfile, level, namespace_='', name_='type', namespacedef_=''):
+    def export(self, outfile, level, namespace_='cml:', name_='type', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, [], namespace_, name_='type')
@@ -2944,9 +3047,9 @@ class type_(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='type'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='cml:', name_='type'):
         pass
-    def exportChildren(self, outfile, level, namespace_='', name_='type'):
+    def exportChildren(self, outfile, level, namespace_='cml:', name_='type'):
         pass
     def hasContent_(self):
         if (
@@ -2971,10 +3074,10 @@ class type_(GeneratedsSuper):
         self.valueOf_ = get_all_text_(node)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, nodeName_)
+            self.buildChildren(child, node, nodeName_)
     def buildAttributes(self, node, attrs, already_processed):
         pass
-    def buildChildren(self, child_, nodeName_, from_subclass=False):
+    def buildChildren(self, child_, node, nodeName_, from_subclass=False):
         pass
 # end class type_
 
@@ -2992,7 +3095,7 @@ class format(GeneratedsSuper):
     factory = staticmethod(factory)
     def get_valueOf_(self): return self.valueOf_
     def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
-    def export(self, outfile, level, namespace_='', name_='format', namespacedef_=''):
+    def export(self, outfile, level, namespace_='cml:', name_='format', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, [], namespace_, name_='format')
@@ -3003,9 +3106,9 @@ class format(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='format'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='cml:', name_='format'):
         pass
-    def exportChildren(self, outfile, level, namespace_='', name_='format'):
+    def exportChildren(self, outfile, level, namespace_='cml:', name_='format'):
         pass
     def hasContent_(self):
         if (
@@ -3030,10 +3133,10 @@ class format(GeneratedsSuper):
         self.valueOf_ = get_all_text_(node)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, nodeName_)
+            self.buildChildren(child, node, nodeName_)
     def buildAttributes(self, node, attrs, already_processed):
         pass
-    def buildChildren(self, child_, nodeName_, from_subclass=False):
+    def buildChildren(self, child_, node, nodeName_, from_subclass=False):
         pass
 # end class format
 
@@ -3051,7 +3154,7 @@ class identifier(GeneratedsSuper):
     factory = staticmethod(factory)
     def get_valueOf_(self): return self.valueOf_
     def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
-    def export(self, outfile, level, namespace_='', name_='identifier', namespacedef_=''):
+    def export(self, outfile, level, namespace_='cml:', name_='identifier', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, [], namespace_, name_='identifier')
@@ -3062,9 +3165,9 @@ class identifier(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='identifier'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='cml:', name_='identifier'):
         pass
-    def exportChildren(self, outfile, level, namespace_='', name_='identifier'):
+    def exportChildren(self, outfile, level, namespace_='cml:', name_='identifier'):
         pass
     def hasContent_(self):
         if (
@@ -3089,10 +3192,10 @@ class identifier(GeneratedsSuper):
         self.valueOf_ = get_all_text_(node)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, nodeName_)
+            self.buildChildren(child, node, nodeName_)
     def buildAttributes(self, node, attrs, already_processed):
         pass
-    def buildChildren(self, child_, nodeName_, from_subclass=False):
+    def buildChildren(self, child_, node, nodeName_, from_subclass=False):
         pass
 # end class identifier
 
@@ -3110,7 +3213,7 @@ class source(GeneratedsSuper):
     factory = staticmethod(factory)
     def get_valueOf_(self): return self.valueOf_
     def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
-    def export(self, outfile, level, namespace_='', name_='source', namespacedef_=''):
+    def export(self, outfile, level, namespace_='cml:', name_='source', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, [], namespace_, name_='source')
@@ -3121,9 +3224,9 @@ class source(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='source'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='cml:', name_='source'):
         pass
-    def exportChildren(self, outfile, level, namespace_='', name_='source'):
+    def exportChildren(self, outfile, level, namespace_='cml:', name_='source'):
         pass
     def hasContent_(self):
         if (
@@ -3148,10 +3251,10 @@ class source(GeneratedsSuper):
         self.valueOf_ = get_all_text_(node)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, nodeName_)
+            self.buildChildren(child, node, nodeName_)
     def buildAttributes(self, node, attrs, already_processed):
         pass
-    def buildChildren(self, child_, nodeName_, from_subclass=False):
+    def buildChildren(self, child_, node, nodeName_, from_subclass=False):
         pass
 # end class source
 
@@ -3169,7 +3272,7 @@ class language(GeneratedsSuper):
     factory = staticmethod(factory)
     def get_valueOf_(self): return self.valueOf_
     def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
-    def export(self, outfile, level, namespace_='', name_='language', namespacedef_=''):
+    def export(self, outfile, level, namespace_='cml:', name_='language', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, [], namespace_, name_='language')
@@ -3180,9 +3283,9 @@ class language(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='language'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='cml:', name_='language'):
         pass
-    def exportChildren(self, outfile, level, namespace_='', name_='language'):
+    def exportChildren(self, outfile, level, namespace_='cml:', name_='language'):
         pass
     def hasContent_(self):
         if (
@@ -3207,10 +3310,10 @@ class language(GeneratedsSuper):
         self.valueOf_ = get_all_text_(node)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, nodeName_)
+            self.buildChildren(child, node, nodeName_)
     def buildAttributes(self, node, attrs, already_processed):
         pass
-    def buildChildren(self, child_, nodeName_, from_subclass=False):
+    def buildChildren(self, child_, node, nodeName_, from_subclass=False):
         pass
 # end class language
 
@@ -3228,7 +3331,7 @@ class relation(GeneratedsSuper):
     factory = staticmethod(factory)
     def get_valueOf_(self): return self.valueOf_
     def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
-    def export(self, outfile, level, namespace_='', name_='relation', namespacedef_=''):
+    def export(self, outfile, level, namespace_='cml:', name_='relation', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, [], namespace_, name_='relation')
@@ -3239,9 +3342,9 @@ class relation(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='relation'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='cml:', name_='relation'):
         pass
-    def exportChildren(self, outfile, level, namespace_='', name_='relation'):
+    def exportChildren(self, outfile, level, namespace_='cml:', name_='relation'):
         pass
     def hasContent_(self):
         if (
@@ -3266,10 +3369,10 @@ class relation(GeneratedsSuper):
         self.valueOf_ = get_all_text_(node)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, nodeName_)
+            self.buildChildren(child, node, nodeName_)
     def buildAttributes(self, node, attrs, already_processed):
         pass
-    def buildChildren(self, child_, nodeName_, from_subclass=False):
+    def buildChildren(self, child_, node, nodeName_, from_subclass=False):
         pass
 # end class relation
 
@@ -3287,7 +3390,7 @@ class coverage(GeneratedsSuper):
     factory = staticmethod(factory)
     def get_valueOf_(self): return self.valueOf_
     def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
-    def export(self, outfile, level, namespace_='', name_='coverage', namespacedef_=''):
+    def export(self, outfile, level, namespace_='cml:', name_='coverage', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, [], namespace_, name_='coverage')
@@ -3298,9 +3401,9 @@ class coverage(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='coverage'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='cml:', name_='coverage'):
         pass
-    def exportChildren(self, outfile, level, namespace_='', name_='coverage'):
+    def exportChildren(self, outfile, level, namespace_='cml:', name_='coverage'):
         pass
     def hasContent_(self):
         if (
@@ -3325,10 +3428,10 @@ class coverage(GeneratedsSuper):
         self.valueOf_ = get_all_text_(node)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, nodeName_)
+            self.buildChildren(child, node, nodeName_)
     def buildAttributes(self, node, attrs, already_processed):
         pass
-    def buildChildren(self, child_, nodeName_, from_subclass=False):
+    def buildChildren(self, child_, node, nodeName_, from_subclass=False):
         pass
 # end class coverage
 
@@ -3346,7 +3449,7 @@ class rights(GeneratedsSuper):
     factory = staticmethod(factory)
     def get_valueOf_(self): return self.valueOf_
     def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
-    def export(self, outfile, level, namespace_='', name_='rights', namespacedef_=''):
+    def export(self, outfile, level, namespace_='cml:', name_='rights', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, [], namespace_, name_='rights')
@@ -3357,9 +3460,9 @@ class rights(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='rights'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='cml:', name_='rights'):
         pass
-    def exportChildren(self, outfile, level, namespace_='', name_='rights'):
+    def exportChildren(self, outfile, level, namespace_='cml:', name_='rights'):
         pass
     def hasContent_(self):
         if (
@@ -3384,10 +3487,10 @@ class rights(GeneratedsSuper):
         self.valueOf_ = get_all_text_(node)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, nodeName_)
+            self.buildChildren(child, node, nodeName_)
     def buildAttributes(self, node, attrs, already_processed):
         pass
-    def buildChildren(self, child_, nodeName_, from_subclass=False):
+    def buildChildren(self, child_, node, nodeName_, from_subclass=False):
         pass
 # end class rights
 
@@ -3405,7 +3508,7 @@ class alternative(GeneratedsSuper):
     factory = staticmethod(factory)
     def get_valueOf_(self): return self.valueOf_
     def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
-    def export(self, outfile, level, namespace_='', name_='alternative', namespacedef_=''):
+    def export(self, outfile, level, namespace_='cml:', name_='alternative', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, [], namespace_, name_='alternative')
@@ -3416,9 +3519,9 @@ class alternative(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='alternative'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='cml:', name_='alternative'):
         pass
-    def exportChildren(self, outfile, level, namespace_='', name_='alternative'):
+    def exportChildren(self, outfile, level, namespace_='cml:', name_='alternative'):
         pass
     def hasContent_(self):
         if (
@@ -3443,10 +3546,10 @@ class alternative(GeneratedsSuper):
         self.valueOf_ = get_all_text_(node)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, nodeName_)
+            self.buildChildren(child, node, nodeName_)
     def buildAttributes(self, node, attrs, already_processed):
         pass
-    def buildChildren(self, child_, nodeName_, from_subclass=False):
+    def buildChildren(self, child_, node, nodeName_, from_subclass=False):
         pass
 # end class alternative
 
@@ -3464,7 +3567,7 @@ class tableOfContents(GeneratedsSuper):
     factory = staticmethod(factory)
     def get_valueOf_(self): return self.valueOf_
     def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
-    def export(self, outfile, level, namespace_='', name_='tableOfContents', namespacedef_=''):
+    def export(self, outfile, level, namespace_='cml:', name_='tableOfContents', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, [], namespace_, name_='tableOfContents')
@@ -3475,9 +3578,9 @@ class tableOfContents(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='tableOfContents'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='cml:', name_='tableOfContents'):
         pass
-    def exportChildren(self, outfile, level, namespace_='', name_='tableOfContents'):
+    def exportChildren(self, outfile, level, namespace_='cml:', name_='tableOfContents'):
         pass
     def hasContent_(self):
         if (
@@ -3502,10 +3605,10 @@ class tableOfContents(GeneratedsSuper):
         self.valueOf_ = get_all_text_(node)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, nodeName_)
+            self.buildChildren(child, node, nodeName_)
     def buildAttributes(self, node, attrs, already_processed):
         pass
-    def buildChildren(self, child_, nodeName_, from_subclass=False):
+    def buildChildren(self, child_, node, nodeName_, from_subclass=False):
         pass
 # end class tableOfContents
 
@@ -3523,7 +3626,7 @@ class abstract(GeneratedsSuper):
     factory = staticmethod(factory)
     def get_valueOf_(self): return self.valueOf_
     def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
-    def export(self, outfile, level, namespace_='', name_='abstract', namespacedef_=''):
+    def export(self, outfile, level, namespace_='cml:', name_='abstract', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, [], namespace_, name_='abstract')
@@ -3534,9 +3637,9 @@ class abstract(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='abstract'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='cml:', name_='abstract'):
         pass
-    def exportChildren(self, outfile, level, namespace_='', name_='abstract'):
+    def exportChildren(self, outfile, level, namespace_='cml:', name_='abstract'):
         pass
     def hasContent_(self):
         if (
@@ -3561,10 +3664,10 @@ class abstract(GeneratedsSuper):
         self.valueOf_ = get_all_text_(node)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, nodeName_)
+            self.buildChildren(child, node, nodeName_)
     def buildAttributes(self, node, attrs, already_processed):
         pass
-    def buildChildren(self, child_, nodeName_, from_subclass=False):
+    def buildChildren(self, child_, node, nodeName_, from_subclass=False):
         pass
 # end class abstract
 
@@ -3582,7 +3685,7 @@ class created(GeneratedsSuper):
     factory = staticmethod(factory)
     def get_valueOf_(self): return self.valueOf_
     def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
-    def export(self, outfile, level, namespace_='', name_='created', namespacedef_=''):
+    def export(self, outfile, level, namespace_='cml:', name_='created', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, [], namespace_, name_='created')
@@ -3593,9 +3696,9 @@ class created(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='created'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='cml:', name_='created'):
         pass
-    def exportChildren(self, outfile, level, namespace_='', name_='created'):
+    def exportChildren(self, outfile, level, namespace_='cml:', name_='created'):
         pass
     def hasContent_(self):
         if (
@@ -3620,10 +3723,10 @@ class created(GeneratedsSuper):
         self.valueOf_ = get_all_text_(node)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, nodeName_)
+            self.buildChildren(child, node, nodeName_)
     def buildAttributes(self, node, attrs, already_processed):
         pass
-    def buildChildren(self, child_, nodeName_, from_subclass=False):
+    def buildChildren(self, child_, node, nodeName_, from_subclass=False):
         pass
 # end class created
 
@@ -3641,7 +3744,7 @@ class valid(GeneratedsSuper):
     factory = staticmethod(factory)
     def get_valueOf_(self): return self.valueOf_
     def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
-    def export(self, outfile, level, namespace_='', name_='valid', namespacedef_=''):
+    def export(self, outfile, level, namespace_='cml:', name_='valid', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, [], namespace_, name_='valid')
@@ -3652,9 +3755,9 @@ class valid(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='valid'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='cml:', name_='valid'):
         pass
-    def exportChildren(self, outfile, level, namespace_='', name_='valid'):
+    def exportChildren(self, outfile, level, namespace_='cml:', name_='valid'):
         pass
     def hasContent_(self):
         if (
@@ -3679,10 +3782,10 @@ class valid(GeneratedsSuper):
         self.valueOf_ = get_all_text_(node)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, nodeName_)
+            self.buildChildren(child, node, nodeName_)
     def buildAttributes(self, node, attrs, already_processed):
         pass
-    def buildChildren(self, child_, nodeName_, from_subclass=False):
+    def buildChildren(self, child_, node, nodeName_, from_subclass=False):
         pass
 # end class valid
 
@@ -3700,7 +3803,7 @@ class available(GeneratedsSuper):
     factory = staticmethod(factory)
     def get_valueOf_(self): return self.valueOf_
     def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
-    def export(self, outfile, level, namespace_='', name_='available', namespacedef_=''):
+    def export(self, outfile, level, namespace_='cml:', name_='available', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, [], namespace_, name_='available')
@@ -3711,9 +3814,9 @@ class available(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='available'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='cml:', name_='available'):
         pass
-    def exportChildren(self, outfile, level, namespace_='', name_='available'):
+    def exportChildren(self, outfile, level, namespace_='cml:', name_='available'):
         pass
     def hasContent_(self):
         if (
@@ -3738,10 +3841,10 @@ class available(GeneratedsSuper):
         self.valueOf_ = get_all_text_(node)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, nodeName_)
+            self.buildChildren(child, node, nodeName_)
     def buildAttributes(self, node, attrs, already_processed):
         pass
-    def buildChildren(self, child_, nodeName_, from_subclass=False):
+    def buildChildren(self, child_, node, nodeName_, from_subclass=False):
         pass
 # end class available
 
@@ -3759,7 +3862,7 @@ class issued(GeneratedsSuper):
     factory = staticmethod(factory)
     def get_valueOf_(self): return self.valueOf_
     def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
-    def export(self, outfile, level, namespace_='', name_='issued', namespacedef_=''):
+    def export(self, outfile, level, namespace_='cml:', name_='issued', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, [], namespace_, name_='issued')
@@ -3770,9 +3873,9 @@ class issued(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='issued'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='cml:', name_='issued'):
         pass
-    def exportChildren(self, outfile, level, namespace_='', name_='issued'):
+    def exportChildren(self, outfile, level, namespace_='cml:', name_='issued'):
         pass
     def hasContent_(self):
         if (
@@ -3797,10 +3900,10 @@ class issued(GeneratedsSuper):
         self.valueOf_ = get_all_text_(node)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, nodeName_)
+            self.buildChildren(child, node, nodeName_)
     def buildAttributes(self, node, attrs, already_processed):
         pass
-    def buildChildren(self, child_, nodeName_, from_subclass=False):
+    def buildChildren(self, child_, node, nodeName_, from_subclass=False):
         pass
 # end class issued
 
@@ -3818,7 +3921,7 @@ class modified(GeneratedsSuper):
     factory = staticmethod(factory)
     def get_valueOf_(self): return self.valueOf_
     def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
-    def export(self, outfile, level, namespace_='', name_='modified', namespacedef_=''):
+    def export(self, outfile, level, namespace_='cml:', name_='modified', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, [], namespace_, name_='modified')
@@ -3829,9 +3932,9 @@ class modified(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='modified'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='cml:', name_='modified'):
         pass
-    def exportChildren(self, outfile, level, namespace_='', name_='modified'):
+    def exportChildren(self, outfile, level, namespace_='cml:', name_='modified'):
         pass
     def hasContent_(self):
         if (
@@ -3856,10 +3959,10 @@ class modified(GeneratedsSuper):
         self.valueOf_ = get_all_text_(node)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, nodeName_)
+            self.buildChildren(child, node, nodeName_)
     def buildAttributes(self, node, attrs, already_processed):
         pass
-    def buildChildren(self, child_, nodeName_, from_subclass=False):
+    def buildChildren(self, child_, node, nodeName_, from_subclass=False):
         pass
 # end class modified
 
@@ -3877,7 +3980,7 @@ class dateAccepted(GeneratedsSuper):
     factory = staticmethod(factory)
     def get_valueOf_(self): return self.valueOf_
     def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
-    def export(self, outfile, level, namespace_='', name_='dateAccepted', namespacedef_=''):
+    def export(self, outfile, level, namespace_='cml:', name_='dateAccepted', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, [], namespace_, name_='dateAccepted')
@@ -3888,9 +3991,9 @@ class dateAccepted(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='dateAccepted'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='cml:', name_='dateAccepted'):
         pass
-    def exportChildren(self, outfile, level, namespace_='', name_='dateAccepted'):
+    def exportChildren(self, outfile, level, namespace_='cml:', name_='dateAccepted'):
         pass
     def hasContent_(self):
         if (
@@ -3915,10 +4018,10 @@ class dateAccepted(GeneratedsSuper):
         self.valueOf_ = get_all_text_(node)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, nodeName_)
+            self.buildChildren(child, node, nodeName_)
     def buildAttributes(self, node, attrs, already_processed):
         pass
-    def buildChildren(self, child_, nodeName_, from_subclass=False):
+    def buildChildren(self, child_, node, nodeName_, from_subclass=False):
         pass
 # end class dateAccepted
 
@@ -3936,7 +4039,7 @@ class dateCopyrighted(GeneratedsSuper):
     factory = staticmethod(factory)
     def get_valueOf_(self): return self.valueOf_
     def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
-    def export(self, outfile, level, namespace_='', name_='dateCopyrighted', namespacedef_=''):
+    def export(self, outfile, level, namespace_='cml:', name_='dateCopyrighted', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, [], namespace_, name_='dateCopyrighted')
@@ -3947,9 +4050,9 @@ class dateCopyrighted(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='dateCopyrighted'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='cml:', name_='dateCopyrighted'):
         pass
-    def exportChildren(self, outfile, level, namespace_='', name_='dateCopyrighted'):
+    def exportChildren(self, outfile, level, namespace_='cml:', name_='dateCopyrighted'):
         pass
     def hasContent_(self):
         if (
@@ -3974,10 +4077,10 @@ class dateCopyrighted(GeneratedsSuper):
         self.valueOf_ = get_all_text_(node)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, nodeName_)
+            self.buildChildren(child, node, nodeName_)
     def buildAttributes(self, node, attrs, already_processed):
         pass
-    def buildChildren(self, child_, nodeName_, from_subclass=False):
+    def buildChildren(self, child_, node, nodeName_, from_subclass=False):
         pass
 # end class dateCopyrighted
 
@@ -3995,7 +4098,7 @@ class dateSubmitted(GeneratedsSuper):
     factory = staticmethod(factory)
     def get_valueOf_(self): return self.valueOf_
     def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
-    def export(self, outfile, level, namespace_='', name_='dateSubmitted', namespacedef_=''):
+    def export(self, outfile, level, namespace_='cml:', name_='dateSubmitted', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, [], namespace_, name_='dateSubmitted')
@@ -4006,9 +4109,9 @@ class dateSubmitted(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='dateSubmitted'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='cml:', name_='dateSubmitted'):
         pass
-    def exportChildren(self, outfile, level, namespace_='', name_='dateSubmitted'):
+    def exportChildren(self, outfile, level, namespace_='cml:', name_='dateSubmitted'):
         pass
     def hasContent_(self):
         if (
@@ -4033,10 +4136,10 @@ class dateSubmitted(GeneratedsSuper):
         self.valueOf_ = get_all_text_(node)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, nodeName_)
+            self.buildChildren(child, node, nodeName_)
     def buildAttributes(self, node, attrs, already_processed):
         pass
-    def buildChildren(self, child_, nodeName_, from_subclass=False):
+    def buildChildren(self, child_, node, nodeName_, from_subclass=False):
         pass
 # end class dateSubmitted
 
@@ -4054,7 +4157,7 @@ class extent(GeneratedsSuper):
     factory = staticmethod(factory)
     def get_valueOf_(self): return self.valueOf_
     def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
-    def export(self, outfile, level, namespace_='', name_='extent', namespacedef_=''):
+    def export(self, outfile, level, namespace_='cml:', name_='extent', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, [], namespace_, name_='extent')
@@ -4065,9 +4168,9 @@ class extent(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='extent'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='cml:', name_='extent'):
         pass
-    def exportChildren(self, outfile, level, namespace_='', name_='extent'):
+    def exportChildren(self, outfile, level, namespace_='cml:', name_='extent'):
         pass
     def hasContent_(self):
         if (
@@ -4092,10 +4195,10 @@ class extent(GeneratedsSuper):
         self.valueOf_ = get_all_text_(node)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, nodeName_)
+            self.buildChildren(child, node, nodeName_)
     def buildAttributes(self, node, attrs, already_processed):
         pass
-    def buildChildren(self, child_, nodeName_, from_subclass=False):
+    def buildChildren(self, child_, node, nodeName_, from_subclass=False):
         pass
 # end class extent
 
@@ -4113,7 +4216,7 @@ class medium(GeneratedsSuper):
     factory = staticmethod(factory)
     def get_valueOf_(self): return self.valueOf_
     def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
-    def export(self, outfile, level, namespace_='', name_='medium', namespacedef_=''):
+    def export(self, outfile, level, namespace_='cml:', name_='medium', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, [], namespace_, name_='medium')
@@ -4124,9 +4227,9 @@ class medium(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='medium'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='cml:', name_='medium'):
         pass
-    def exportChildren(self, outfile, level, namespace_='', name_='medium'):
+    def exportChildren(self, outfile, level, namespace_='cml:', name_='medium'):
         pass
     def hasContent_(self):
         if (
@@ -4151,10 +4254,10 @@ class medium(GeneratedsSuper):
         self.valueOf_ = get_all_text_(node)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, nodeName_)
+            self.buildChildren(child, node, nodeName_)
     def buildAttributes(self, node, attrs, already_processed):
         pass
-    def buildChildren(self, child_, nodeName_, from_subclass=False):
+    def buildChildren(self, child_, node, nodeName_, from_subclass=False):
         pass
 # end class medium
 
@@ -4172,7 +4275,7 @@ class isVersionOf(GeneratedsSuper):
     factory = staticmethod(factory)
     def get_valueOf_(self): return self.valueOf_
     def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
-    def export(self, outfile, level, namespace_='', name_='isVersionOf', namespacedef_=''):
+    def export(self, outfile, level, namespace_='cml:', name_='isVersionOf', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, [], namespace_, name_='isVersionOf')
@@ -4183,9 +4286,9 @@ class isVersionOf(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='isVersionOf'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='cml:', name_='isVersionOf'):
         pass
-    def exportChildren(self, outfile, level, namespace_='', name_='isVersionOf'):
+    def exportChildren(self, outfile, level, namespace_='cml:', name_='isVersionOf'):
         pass
     def hasContent_(self):
         if (
@@ -4210,10 +4313,10 @@ class isVersionOf(GeneratedsSuper):
         self.valueOf_ = get_all_text_(node)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, nodeName_)
+            self.buildChildren(child, node, nodeName_)
     def buildAttributes(self, node, attrs, already_processed):
         pass
-    def buildChildren(self, child_, nodeName_, from_subclass=False):
+    def buildChildren(self, child_, node, nodeName_, from_subclass=False):
         pass
 # end class isVersionOf
 
@@ -4231,7 +4334,7 @@ class hasVersion(GeneratedsSuper):
     factory = staticmethod(factory)
     def get_valueOf_(self): return self.valueOf_
     def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
-    def export(self, outfile, level, namespace_='', name_='hasVersion', namespacedef_=''):
+    def export(self, outfile, level, namespace_='cml:', name_='hasVersion', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, [], namespace_, name_='hasVersion')
@@ -4242,9 +4345,9 @@ class hasVersion(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='hasVersion'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='cml:', name_='hasVersion'):
         pass
-    def exportChildren(self, outfile, level, namespace_='', name_='hasVersion'):
+    def exportChildren(self, outfile, level, namespace_='cml:', name_='hasVersion'):
         pass
     def hasContent_(self):
         if (
@@ -4269,10 +4372,10 @@ class hasVersion(GeneratedsSuper):
         self.valueOf_ = get_all_text_(node)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, nodeName_)
+            self.buildChildren(child, node, nodeName_)
     def buildAttributes(self, node, attrs, already_processed):
         pass
-    def buildChildren(self, child_, nodeName_, from_subclass=False):
+    def buildChildren(self, child_, node, nodeName_, from_subclass=False):
         pass
 # end class hasVersion
 
@@ -4290,7 +4393,7 @@ class isReplacedBy(GeneratedsSuper):
     factory = staticmethod(factory)
     def get_valueOf_(self): return self.valueOf_
     def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
-    def export(self, outfile, level, namespace_='', name_='isReplacedBy', namespacedef_=''):
+    def export(self, outfile, level, namespace_='cml:', name_='isReplacedBy', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, [], namespace_, name_='isReplacedBy')
@@ -4301,9 +4404,9 @@ class isReplacedBy(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='isReplacedBy'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='cml:', name_='isReplacedBy'):
         pass
-    def exportChildren(self, outfile, level, namespace_='', name_='isReplacedBy'):
+    def exportChildren(self, outfile, level, namespace_='cml:', name_='isReplacedBy'):
         pass
     def hasContent_(self):
         if (
@@ -4328,10 +4431,10 @@ class isReplacedBy(GeneratedsSuper):
         self.valueOf_ = get_all_text_(node)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, nodeName_)
+            self.buildChildren(child, node, nodeName_)
     def buildAttributes(self, node, attrs, already_processed):
         pass
-    def buildChildren(self, child_, nodeName_, from_subclass=False):
+    def buildChildren(self, child_, node, nodeName_, from_subclass=False):
         pass
 # end class isReplacedBy
 
@@ -4349,7 +4452,7 @@ class replaces(GeneratedsSuper):
     factory = staticmethod(factory)
     def get_valueOf_(self): return self.valueOf_
     def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
-    def export(self, outfile, level, namespace_='', name_='replaces', namespacedef_=''):
+    def export(self, outfile, level, namespace_='cml:', name_='replaces', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, [], namespace_, name_='replaces')
@@ -4360,9 +4463,9 @@ class replaces(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='replaces'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='cml:', name_='replaces'):
         pass
-    def exportChildren(self, outfile, level, namespace_='', name_='replaces'):
+    def exportChildren(self, outfile, level, namespace_='cml:', name_='replaces'):
         pass
     def hasContent_(self):
         if (
@@ -4387,10 +4490,10 @@ class replaces(GeneratedsSuper):
         self.valueOf_ = get_all_text_(node)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, nodeName_)
+            self.buildChildren(child, node, nodeName_)
     def buildAttributes(self, node, attrs, already_processed):
         pass
-    def buildChildren(self, child_, nodeName_, from_subclass=False):
+    def buildChildren(self, child_, node, nodeName_, from_subclass=False):
         pass
 # end class replaces
 
@@ -4408,7 +4511,7 @@ class isRequiredBy(GeneratedsSuper):
     factory = staticmethod(factory)
     def get_valueOf_(self): return self.valueOf_
     def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
-    def export(self, outfile, level, namespace_='', name_='isRequiredBy', namespacedef_=''):
+    def export(self, outfile, level, namespace_='cml:', name_='isRequiredBy', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, [], namespace_, name_='isRequiredBy')
@@ -4419,9 +4522,9 @@ class isRequiredBy(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='isRequiredBy'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='cml:', name_='isRequiredBy'):
         pass
-    def exportChildren(self, outfile, level, namespace_='', name_='isRequiredBy'):
+    def exportChildren(self, outfile, level, namespace_='cml:', name_='isRequiredBy'):
         pass
     def hasContent_(self):
         if (
@@ -4446,10 +4549,10 @@ class isRequiredBy(GeneratedsSuper):
         self.valueOf_ = get_all_text_(node)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, nodeName_)
+            self.buildChildren(child, node, nodeName_)
     def buildAttributes(self, node, attrs, already_processed):
         pass
-    def buildChildren(self, child_, nodeName_, from_subclass=False):
+    def buildChildren(self, child_, node, nodeName_, from_subclass=False):
         pass
 # end class isRequiredBy
 
@@ -4467,7 +4570,7 @@ class requires(GeneratedsSuper):
     factory = staticmethod(factory)
     def get_valueOf_(self): return self.valueOf_
     def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
-    def export(self, outfile, level, namespace_='', name_='requires', namespacedef_=''):
+    def export(self, outfile, level, namespace_='cml:', name_='requires', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, [], namespace_, name_='requires')
@@ -4478,9 +4581,9 @@ class requires(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='requires'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='cml:', name_='requires'):
         pass
-    def exportChildren(self, outfile, level, namespace_='', name_='requires'):
+    def exportChildren(self, outfile, level, namespace_='cml:', name_='requires'):
         pass
     def hasContent_(self):
         if (
@@ -4505,10 +4608,10 @@ class requires(GeneratedsSuper):
         self.valueOf_ = get_all_text_(node)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, nodeName_)
+            self.buildChildren(child, node, nodeName_)
     def buildAttributes(self, node, attrs, already_processed):
         pass
-    def buildChildren(self, child_, nodeName_, from_subclass=False):
+    def buildChildren(self, child_, node, nodeName_, from_subclass=False):
         pass
 # end class requires
 
@@ -4526,7 +4629,7 @@ class isPartOf(GeneratedsSuper):
     factory = staticmethod(factory)
     def get_valueOf_(self): return self.valueOf_
     def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
-    def export(self, outfile, level, namespace_='', name_='isPartOf', namespacedef_=''):
+    def export(self, outfile, level, namespace_='cml:', name_='isPartOf', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, [], namespace_, name_='isPartOf')
@@ -4537,9 +4640,9 @@ class isPartOf(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='isPartOf'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='cml:', name_='isPartOf'):
         pass
-    def exportChildren(self, outfile, level, namespace_='', name_='isPartOf'):
+    def exportChildren(self, outfile, level, namespace_='cml:', name_='isPartOf'):
         pass
     def hasContent_(self):
         if (
@@ -4564,10 +4667,10 @@ class isPartOf(GeneratedsSuper):
         self.valueOf_ = get_all_text_(node)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, nodeName_)
+            self.buildChildren(child, node, nodeName_)
     def buildAttributes(self, node, attrs, already_processed):
         pass
-    def buildChildren(self, child_, nodeName_, from_subclass=False):
+    def buildChildren(self, child_, node, nodeName_, from_subclass=False):
         pass
 # end class isPartOf
 
@@ -4585,7 +4688,7 @@ class hasPart(GeneratedsSuper):
     factory = staticmethod(factory)
     def get_valueOf_(self): return self.valueOf_
     def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
-    def export(self, outfile, level, namespace_='', name_='hasPart', namespacedef_=''):
+    def export(self, outfile, level, namespace_='cml:', name_='hasPart', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, [], namespace_, name_='hasPart')
@@ -4596,9 +4699,9 @@ class hasPart(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='hasPart'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='cml:', name_='hasPart'):
         pass
-    def exportChildren(self, outfile, level, namespace_='', name_='hasPart'):
+    def exportChildren(self, outfile, level, namespace_='cml:', name_='hasPart'):
         pass
     def hasContent_(self):
         if (
@@ -4623,10 +4726,10 @@ class hasPart(GeneratedsSuper):
         self.valueOf_ = get_all_text_(node)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, nodeName_)
+            self.buildChildren(child, node, nodeName_)
     def buildAttributes(self, node, attrs, already_processed):
         pass
-    def buildChildren(self, child_, nodeName_, from_subclass=False):
+    def buildChildren(self, child_, node, nodeName_, from_subclass=False):
         pass
 # end class hasPart
 
@@ -4644,7 +4747,7 @@ class isReferencedBy(GeneratedsSuper):
     factory = staticmethod(factory)
     def get_valueOf_(self): return self.valueOf_
     def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
-    def export(self, outfile, level, namespace_='', name_='isReferencedBy', namespacedef_=''):
+    def export(self, outfile, level, namespace_='cml:', name_='isReferencedBy', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, [], namespace_, name_='isReferencedBy')
@@ -4655,9 +4758,9 @@ class isReferencedBy(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='isReferencedBy'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='cml:', name_='isReferencedBy'):
         pass
-    def exportChildren(self, outfile, level, namespace_='', name_='isReferencedBy'):
+    def exportChildren(self, outfile, level, namespace_='cml:', name_='isReferencedBy'):
         pass
     def hasContent_(self):
         if (
@@ -4682,10 +4785,10 @@ class isReferencedBy(GeneratedsSuper):
         self.valueOf_ = get_all_text_(node)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, nodeName_)
+            self.buildChildren(child, node, nodeName_)
     def buildAttributes(self, node, attrs, already_processed):
         pass
-    def buildChildren(self, child_, nodeName_, from_subclass=False):
+    def buildChildren(self, child_, node, nodeName_, from_subclass=False):
         pass
 # end class isReferencedBy
 
@@ -4703,7 +4806,7 @@ class references(GeneratedsSuper):
     factory = staticmethod(factory)
     def get_valueOf_(self): return self.valueOf_
     def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
-    def export(self, outfile, level, namespace_='', name_='references', namespacedef_=''):
+    def export(self, outfile, level, namespace_='cml:', name_='references', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, [], namespace_, name_='references')
@@ -4714,9 +4817,9 @@ class references(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='references'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='cml:', name_='references'):
         pass
-    def exportChildren(self, outfile, level, namespace_='', name_='references'):
+    def exportChildren(self, outfile, level, namespace_='cml:', name_='references'):
         pass
     def hasContent_(self):
         if (
@@ -4741,10 +4844,10 @@ class references(GeneratedsSuper):
         self.valueOf_ = get_all_text_(node)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, nodeName_)
+            self.buildChildren(child, node, nodeName_)
     def buildAttributes(self, node, attrs, already_processed):
         pass
-    def buildChildren(self, child_, nodeName_, from_subclass=False):
+    def buildChildren(self, child_, node, nodeName_, from_subclass=False):
         pass
 # end class references
 
@@ -4762,7 +4865,7 @@ class isFormatOf(GeneratedsSuper):
     factory = staticmethod(factory)
     def get_valueOf_(self): return self.valueOf_
     def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
-    def export(self, outfile, level, namespace_='', name_='isFormatOf', namespacedef_=''):
+    def export(self, outfile, level, namespace_='cml:', name_='isFormatOf', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, [], namespace_, name_='isFormatOf')
@@ -4773,9 +4876,9 @@ class isFormatOf(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='isFormatOf'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='cml:', name_='isFormatOf'):
         pass
-    def exportChildren(self, outfile, level, namespace_='', name_='isFormatOf'):
+    def exportChildren(self, outfile, level, namespace_='cml:', name_='isFormatOf'):
         pass
     def hasContent_(self):
         if (
@@ -4800,10 +4903,10 @@ class isFormatOf(GeneratedsSuper):
         self.valueOf_ = get_all_text_(node)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, nodeName_)
+            self.buildChildren(child, node, nodeName_)
     def buildAttributes(self, node, attrs, already_processed):
         pass
-    def buildChildren(self, child_, nodeName_, from_subclass=False):
+    def buildChildren(self, child_, node, nodeName_, from_subclass=False):
         pass
 # end class isFormatOf
 
@@ -4821,7 +4924,7 @@ class hasFormat(GeneratedsSuper):
     factory = staticmethod(factory)
     def get_valueOf_(self): return self.valueOf_
     def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
-    def export(self, outfile, level, namespace_='', name_='hasFormat', namespacedef_=''):
+    def export(self, outfile, level, namespace_='cml:', name_='hasFormat', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, [], namespace_, name_='hasFormat')
@@ -4832,9 +4935,9 @@ class hasFormat(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='hasFormat'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='cml:', name_='hasFormat'):
         pass
-    def exportChildren(self, outfile, level, namespace_='', name_='hasFormat'):
+    def exportChildren(self, outfile, level, namespace_='cml:', name_='hasFormat'):
         pass
     def hasContent_(self):
         if (
@@ -4859,10 +4962,10 @@ class hasFormat(GeneratedsSuper):
         self.valueOf_ = get_all_text_(node)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, nodeName_)
+            self.buildChildren(child, node, nodeName_)
     def buildAttributes(self, node, attrs, already_processed):
         pass
-    def buildChildren(self, child_, nodeName_, from_subclass=False):
+    def buildChildren(self, child_, node, nodeName_, from_subclass=False):
         pass
 # end class hasFormat
 
@@ -4880,7 +4983,7 @@ class conformsTo(GeneratedsSuper):
     factory = staticmethod(factory)
     def get_valueOf_(self): return self.valueOf_
     def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
-    def export(self, outfile, level, namespace_='', name_='conformsTo', namespacedef_=''):
+    def export(self, outfile, level, namespace_='cml:', name_='conformsTo', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, [], namespace_, name_='conformsTo')
@@ -4891,9 +4994,9 @@ class conformsTo(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='conformsTo'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='cml:', name_='conformsTo'):
         pass
-    def exportChildren(self, outfile, level, namespace_='', name_='conformsTo'):
+    def exportChildren(self, outfile, level, namespace_='cml:', name_='conformsTo'):
         pass
     def hasContent_(self):
         if (
@@ -4918,10 +5021,10 @@ class conformsTo(GeneratedsSuper):
         self.valueOf_ = get_all_text_(node)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, nodeName_)
+            self.buildChildren(child, node, nodeName_)
     def buildAttributes(self, node, attrs, already_processed):
         pass
-    def buildChildren(self, child_, nodeName_, from_subclass=False):
+    def buildChildren(self, child_, node, nodeName_, from_subclass=False):
         pass
 # end class conformsTo
 
@@ -4939,7 +5042,7 @@ class spatial(GeneratedsSuper):
     factory = staticmethod(factory)
     def get_valueOf_(self): return self.valueOf_
     def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
-    def export(self, outfile, level, namespace_='', name_='spatial', namespacedef_=''):
+    def export(self, outfile, level, namespace_='cml:', name_='spatial', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, [], namespace_, name_='spatial')
@@ -4950,9 +5053,9 @@ class spatial(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='spatial'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='cml:', name_='spatial'):
         pass
-    def exportChildren(self, outfile, level, namespace_='', name_='spatial'):
+    def exportChildren(self, outfile, level, namespace_='cml:', name_='spatial'):
         pass
     def hasContent_(self):
         if (
@@ -4977,10 +5080,10 @@ class spatial(GeneratedsSuper):
         self.valueOf_ = get_all_text_(node)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, nodeName_)
+            self.buildChildren(child, node, nodeName_)
     def buildAttributes(self, node, attrs, already_processed):
         pass
-    def buildChildren(self, child_, nodeName_, from_subclass=False):
+    def buildChildren(self, child_, node, nodeName_, from_subclass=False):
         pass
 # end class spatial
 
@@ -4998,7 +5101,7 @@ class temporal(GeneratedsSuper):
     factory = staticmethod(factory)
     def get_valueOf_(self): return self.valueOf_
     def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
-    def export(self, outfile, level, namespace_='', name_='temporal', namespacedef_=''):
+    def export(self, outfile, level, namespace_='cml:', name_='temporal', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, [], namespace_, name_='temporal')
@@ -5009,9 +5112,9 @@ class temporal(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='temporal'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='cml:', name_='temporal'):
         pass
-    def exportChildren(self, outfile, level, namespace_='', name_='temporal'):
+    def exportChildren(self, outfile, level, namespace_='cml:', name_='temporal'):
         pass
     def hasContent_(self):
         if (
@@ -5036,10 +5139,10 @@ class temporal(GeneratedsSuper):
         self.valueOf_ = get_all_text_(node)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, nodeName_)
+            self.buildChildren(child, node, nodeName_)
     def buildAttributes(self, node, attrs, already_processed):
         pass
-    def buildChildren(self, child_, nodeName_, from_subclass=False):
+    def buildChildren(self, child_, node, nodeName_, from_subclass=False):
         pass
 # end class temporal
 
@@ -5057,7 +5160,7 @@ class audience(GeneratedsSuper):
     factory = staticmethod(factory)
     def get_valueOf_(self): return self.valueOf_
     def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
-    def export(self, outfile, level, namespace_='', name_='audience', namespacedef_=''):
+    def export(self, outfile, level, namespace_='cml:', name_='audience', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, [], namespace_, name_='audience')
@@ -5068,9 +5171,9 @@ class audience(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='audience'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='cml:', name_='audience'):
         pass
-    def exportChildren(self, outfile, level, namespace_='', name_='audience'):
+    def exportChildren(self, outfile, level, namespace_='cml:', name_='audience'):
         pass
     def hasContent_(self):
         if (
@@ -5095,10 +5198,10 @@ class audience(GeneratedsSuper):
         self.valueOf_ = get_all_text_(node)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, nodeName_)
+            self.buildChildren(child, node, nodeName_)
     def buildAttributes(self, node, attrs, already_processed):
         pass
-    def buildChildren(self, child_, nodeName_, from_subclass=False):
+    def buildChildren(self, child_, node, nodeName_, from_subclass=False):
         pass
 # end class audience
 
@@ -5116,7 +5219,7 @@ class accrualMethod(GeneratedsSuper):
     factory = staticmethod(factory)
     def get_valueOf_(self): return self.valueOf_
     def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
-    def export(self, outfile, level, namespace_='', name_='accrualMethod', namespacedef_=''):
+    def export(self, outfile, level, namespace_='cml:', name_='accrualMethod', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, [], namespace_, name_='accrualMethod')
@@ -5127,9 +5230,9 @@ class accrualMethod(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='accrualMethod'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='cml:', name_='accrualMethod'):
         pass
-    def exportChildren(self, outfile, level, namespace_='', name_='accrualMethod'):
+    def exportChildren(self, outfile, level, namespace_='cml:', name_='accrualMethod'):
         pass
     def hasContent_(self):
         if (
@@ -5154,10 +5257,10 @@ class accrualMethod(GeneratedsSuper):
         self.valueOf_ = get_all_text_(node)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, nodeName_)
+            self.buildChildren(child, node, nodeName_)
     def buildAttributes(self, node, attrs, already_processed):
         pass
-    def buildChildren(self, child_, nodeName_, from_subclass=False):
+    def buildChildren(self, child_, node, nodeName_, from_subclass=False):
         pass
 # end class accrualMethod
 
@@ -5175,7 +5278,7 @@ class accrualPeriodicity(GeneratedsSuper):
     factory = staticmethod(factory)
     def get_valueOf_(self): return self.valueOf_
     def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
-    def export(self, outfile, level, namespace_='', name_='accrualPeriodicity', namespacedef_=''):
+    def export(self, outfile, level, namespace_='cml:', name_='accrualPeriodicity', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, [], namespace_, name_='accrualPeriodicity')
@@ -5186,9 +5289,9 @@ class accrualPeriodicity(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='accrualPeriodicity'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='cml:', name_='accrualPeriodicity'):
         pass
-    def exportChildren(self, outfile, level, namespace_='', name_='accrualPeriodicity'):
+    def exportChildren(self, outfile, level, namespace_='cml:', name_='accrualPeriodicity'):
         pass
     def hasContent_(self):
         if (
@@ -5213,10 +5316,10 @@ class accrualPeriodicity(GeneratedsSuper):
         self.valueOf_ = get_all_text_(node)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, nodeName_)
+            self.buildChildren(child, node, nodeName_)
     def buildAttributes(self, node, attrs, already_processed):
         pass
-    def buildChildren(self, child_, nodeName_, from_subclass=False):
+    def buildChildren(self, child_, node, nodeName_, from_subclass=False):
         pass
 # end class accrualPeriodicity
 
@@ -5234,7 +5337,7 @@ class accrualPolicy(GeneratedsSuper):
     factory = staticmethod(factory)
     def get_valueOf_(self): return self.valueOf_
     def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
-    def export(self, outfile, level, namespace_='', name_='accrualPolicy', namespacedef_=''):
+    def export(self, outfile, level, namespace_='cml:', name_='accrualPolicy', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, [], namespace_, name_='accrualPolicy')
@@ -5245,9 +5348,9 @@ class accrualPolicy(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='accrualPolicy'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='cml:', name_='accrualPolicy'):
         pass
-    def exportChildren(self, outfile, level, namespace_='', name_='accrualPolicy'):
+    def exportChildren(self, outfile, level, namespace_='cml:', name_='accrualPolicy'):
         pass
     def hasContent_(self):
         if (
@@ -5272,10 +5375,10 @@ class accrualPolicy(GeneratedsSuper):
         self.valueOf_ = get_all_text_(node)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, nodeName_)
+            self.buildChildren(child, node, nodeName_)
     def buildAttributes(self, node, attrs, already_processed):
         pass
-    def buildChildren(self, child_, nodeName_, from_subclass=False):
+    def buildChildren(self, child_, node, nodeName_, from_subclass=False):
         pass
 # end class accrualPolicy
 
@@ -5293,7 +5396,7 @@ class instructionalMethod(GeneratedsSuper):
     factory = staticmethod(factory)
     def get_valueOf_(self): return self.valueOf_
     def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
-    def export(self, outfile, level, namespace_='', name_='instructionalMethod', namespacedef_=''):
+    def export(self, outfile, level, namespace_='cml:', name_='instructionalMethod', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, [], namespace_, name_='instructionalMethod')
@@ -5304,9 +5407,9 @@ class instructionalMethod(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='instructionalMethod'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='cml:', name_='instructionalMethod'):
         pass
-    def exportChildren(self, outfile, level, namespace_='', name_='instructionalMethod'):
+    def exportChildren(self, outfile, level, namespace_='cml:', name_='instructionalMethod'):
         pass
     def hasContent_(self):
         if (
@@ -5331,10 +5434,10 @@ class instructionalMethod(GeneratedsSuper):
         self.valueOf_ = get_all_text_(node)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, nodeName_)
+            self.buildChildren(child, node, nodeName_)
     def buildAttributes(self, node, attrs, already_processed):
         pass
-    def buildChildren(self, child_, nodeName_, from_subclass=False):
+    def buildChildren(self, child_, node, nodeName_, from_subclass=False):
         pass
 # end class instructionalMethod
 
@@ -5352,7 +5455,7 @@ class provenance(GeneratedsSuper):
     factory = staticmethod(factory)
     def get_valueOf_(self): return self.valueOf_
     def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
-    def export(self, outfile, level, namespace_='', name_='provenance', namespacedef_=''):
+    def export(self, outfile, level, namespace_='cml:', name_='provenance', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, [], namespace_, name_='provenance')
@@ -5363,9 +5466,9 @@ class provenance(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='provenance'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='cml:', name_='provenance'):
         pass
-    def exportChildren(self, outfile, level, namespace_='', name_='provenance'):
+    def exportChildren(self, outfile, level, namespace_='cml:', name_='provenance'):
         pass
     def hasContent_(self):
         if (
@@ -5390,10 +5493,10 @@ class provenance(GeneratedsSuper):
         self.valueOf_ = get_all_text_(node)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, nodeName_)
+            self.buildChildren(child, node, nodeName_)
     def buildAttributes(self, node, attrs, already_processed):
         pass
-    def buildChildren(self, child_, nodeName_, from_subclass=False):
+    def buildChildren(self, child_, node, nodeName_, from_subclass=False):
         pass
 # end class provenance
 
@@ -5411,7 +5514,7 @@ class rightsHolder(GeneratedsSuper):
     factory = staticmethod(factory)
     def get_valueOf_(self): return self.valueOf_
     def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
-    def export(self, outfile, level, namespace_='', name_='rightsHolder', namespacedef_=''):
+    def export(self, outfile, level, namespace_='cml:', name_='rightsHolder', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, [], namespace_, name_='rightsHolder')
@@ -5422,9 +5525,9 @@ class rightsHolder(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='rightsHolder'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='cml:', name_='rightsHolder'):
         pass
-    def exportChildren(self, outfile, level, namespace_='', name_='rightsHolder'):
+    def exportChildren(self, outfile, level, namespace_='cml:', name_='rightsHolder'):
         pass
     def hasContent_(self):
         if (
@@ -5449,10 +5552,10 @@ class rightsHolder(GeneratedsSuper):
         self.valueOf_ = get_all_text_(node)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, nodeName_)
+            self.buildChildren(child, node, nodeName_)
     def buildAttributes(self, node, attrs, already_processed):
         pass
-    def buildChildren(self, child_, nodeName_, from_subclass=False):
+    def buildChildren(self, child_, node, nodeName_, from_subclass=False):
         pass
 # end class rightsHolder
 
@@ -5470,7 +5573,7 @@ class mediator(GeneratedsSuper):
     factory = staticmethod(factory)
     def get_valueOf_(self): return self.valueOf_
     def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
-    def export(self, outfile, level, namespace_='', name_='mediator', namespacedef_=''):
+    def export(self, outfile, level, namespace_='cml:', name_='mediator', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, [], namespace_, name_='mediator')
@@ -5481,9 +5584,9 @@ class mediator(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='mediator'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='cml:', name_='mediator'):
         pass
-    def exportChildren(self, outfile, level, namespace_='', name_='mediator'):
+    def exportChildren(self, outfile, level, namespace_='cml:', name_='mediator'):
         pass
     def hasContent_(self):
         if (
@@ -5508,10 +5611,10 @@ class mediator(GeneratedsSuper):
         self.valueOf_ = get_all_text_(node)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, nodeName_)
+            self.buildChildren(child, node, nodeName_)
     def buildAttributes(self, node, attrs, already_processed):
         pass
-    def buildChildren(self, child_, nodeName_, from_subclass=False):
+    def buildChildren(self, child_, node, nodeName_, from_subclass=False):
         pass
 # end class mediator
 
@@ -5529,7 +5632,7 @@ class educationLevel(GeneratedsSuper):
     factory = staticmethod(factory)
     def get_valueOf_(self): return self.valueOf_
     def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
-    def export(self, outfile, level, namespace_='', name_='educationLevel', namespacedef_=''):
+    def export(self, outfile, level, namespace_='cml:', name_='educationLevel', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, [], namespace_, name_='educationLevel')
@@ -5540,9 +5643,9 @@ class educationLevel(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='educationLevel'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='cml:', name_='educationLevel'):
         pass
-    def exportChildren(self, outfile, level, namespace_='', name_='educationLevel'):
+    def exportChildren(self, outfile, level, namespace_='cml:', name_='educationLevel'):
         pass
     def hasContent_(self):
         if (
@@ -5567,10 +5670,10 @@ class educationLevel(GeneratedsSuper):
         self.valueOf_ = get_all_text_(node)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, nodeName_)
+            self.buildChildren(child, node, nodeName_)
     def buildAttributes(self, node, attrs, already_processed):
         pass
-    def buildChildren(self, child_, nodeName_, from_subclass=False):
+    def buildChildren(self, child_, node, nodeName_, from_subclass=False):
         pass
 # end class educationLevel
 
@@ -5588,7 +5691,7 @@ class accessRights(GeneratedsSuper):
     factory = staticmethod(factory)
     def get_valueOf_(self): return self.valueOf_
     def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
-    def export(self, outfile, level, namespace_='', name_='accessRights', namespacedef_=''):
+    def export(self, outfile, level, namespace_='cml:', name_='accessRights', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, [], namespace_, name_='accessRights')
@@ -5599,9 +5702,9 @@ class accessRights(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='accessRights'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='cml:', name_='accessRights'):
         pass
-    def exportChildren(self, outfile, level, namespace_='', name_='accessRights'):
+    def exportChildren(self, outfile, level, namespace_='cml:', name_='accessRights'):
         pass
     def hasContent_(self):
         if (
@@ -5626,10 +5729,10 @@ class accessRights(GeneratedsSuper):
         self.valueOf_ = get_all_text_(node)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, nodeName_)
+            self.buildChildren(child, node, nodeName_)
     def buildAttributes(self, node, attrs, already_processed):
         pass
-    def buildChildren(self, child_, nodeName_, from_subclass=False):
+    def buildChildren(self, child_, node, nodeName_, from_subclass=False):
         pass
 # end class accessRights
 
@@ -5647,7 +5750,7 @@ class license(GeneratedsSuper):
     factory = staticmethod(factory)
     def get_valueOf_(self): return self.valueOf_
     def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
-    def export(self, outfile, level, namespace_='', name_='license', namespacedef_=''):
+    def export(self, outfile, level, namespace_='cml:', name_='license', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, [], namespace_, name_='license')
@@ -5658,9 +5761,9 @@ class license(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='license'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='cml:', name_='license'):
         pass
-    def exportChildren(self, outfile, level, namespace_='', name_='license'):
+    def exportChildren(self, outfile, level, namespace_='cml:', name_='license'):
         pass
     def hasContent_(self):
         if (
@@ -5685,10 +5788,10 @@ class license(GeneratedsSuper):
         self.valueOf_ = get_all_text_(node)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, nodeName_)
+            self.buildChildren(child, node, nodeName_)
     def buildAttributes(self, node, attrs, already_processed):
         pass
-    def buildChildren(self, child_, nodeName_, from_subclass=False):
+    def buildChildren(self, child_, node, nodeName_, from_subclass=False):
         pass
 # end class license
 
@@ -5706,7 +5809,7 @@ class bibliographicCitation(GeneratedsSuper):
     factory = staticmethod(factory)
     def get_valueOf_(self): return self.valueOf_
     def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
-    def export(self, outfile, level, namespace_='', name_='bibliographicCitation', namespacedef_=''):
+    def export(self, outfile, level, namespace_='cml:', name_='bibliographicCitation', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, [], namespace_, name_='bibliographicCitation')
@@ -5717,9 +5820,9 @@ class bibliographicCitation(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='bibliographicCitation'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='cml:', name_='bibliographicCitation'):
         pass
-    def exportChildren(self, outfile, level, namespace_='', name_='bibliographicCitation'):
+    def exportChildren(self, outfile, level, namespace_='cml:', name_='bibliographicCitation'):
         pass
     def hasContent_(self):
         if (
@@ -5744,10 +5847,10 @@ class bibliographicCitation(GeneratedsSuper):
         self.valueOf_ = get_all_text_(node)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, nodeName_)
+            self.buildChildren(child, node, nodeName_)
     def buildAttributes(self, node, attrs, already_processed):
         pass
-    def buildChildren(self, child_, nodeName_, from_subclass=False):
+    def buildChildren(self, child_, node, nodeName_, from_subclass=False):
         pass
 # end class bibliographicCitation
 
@@ -5773,7 +5876,7 @@ class elementOrRefinementContainer(GeneratedsSuper):
     def set_any(self, any): self.any = any
     def add_any(self, value): self.any.append(value)
     def insert_any(self, index, value): self.any[index] = value
-    def export(self, outfile, level, namespace_='', name_='elementOrRefinementContainer', namespacedef_=''):
+    def export(self, outfile, level, namespace_='cml:', name_='elementOrRefinementContainer', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, [], namespace_, name_='elementOrRefinementContainer')
@@ -5784,9 +5887,9 @@ class elementOrRefinementContainer(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='elementOrRefinementContainer'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='cml:', name_='elementOrRefinementContainer'):
         pass
-    def exportChildren(self, outfile, level, namespace_='', name_='elementOrRefinementContainer'):
+    def exportChildren(self, outfile, level, namespace_='cml:', name_='elementOrRefinementContainer'):
         for any_ in self.get_any():
             any_.export(outfile, level, namespace_, name_='any')
     def hasContent_(self):
@@ -5820,10 +5923,10 @@ class elementOrRefinementContainer(GeneratedsSuper):
         self.buildAttributes(node, node.attrib, [])
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, nodeName_)
+            self.buildChildren(child, node, nodeName_)
     def buildAttributes(self, node, attrs, already_processed):
         pass
-    def buildChildren(self, child_, nodeName_, from_subclass=False):
+    def buildChildren(self, child_, node, nodeName_, from_subclass=False):
         if nodeName_ == 'any': 
             type_name_ = child_.attrib.get('{http://www.w3.org/2001/XMLSchema-instance}type')
             if type_name_ is None:
@@ -6050,7 +6153,7 @@ class SimpleLiteral(GeneratedsSuper):
     def set_lang(self, lang): self.lang = lang
     def get_valueOf_(self): return self.valueOf_
     def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
-    def export(self, outfile, level, namespace_='', name_='SimpleLiteral', namespacedef_=''):
+    def export(self, outfile, level, namespace_='cml:', name_='SimpleLiteral', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, [], namespace_, name_='SimpleLiteral')
@@ -6061,11 +6164,11 @@ class SimpleLiteral(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='SimpleLiteral'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='cml:', name_='SimpleLiteral'):
         if self.lang is not None and 'lang' not in already_processed:
             already_processed.append('lang')
             outfile.write(' lang=%s' % (self.gds_format_string(quote_attrib(self.lang).encode(ExternalEncoding), input_name='lang'), ))
-    def exportChildren(self, outfile, level, namespace_='', name_='SimpleLiteral'):
+    def exportChildren(self, outfile, level, namespace_='cml:', name_='SimpleLiteral'):
         pass
     def hasContent_(self):
         if (
@@ -6093,13 +6196,13 @@ class SimpleLiteral(GeneratedsSuper):
         self.valueOf_ = get_all_text_(node)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, nodeName_)
+            self.buildChildren(child, node, nodeName_)
     def buildAttributes(self, node, attrs, already_processed):
         value = attrs.get('lang')
         if value is not None and 'lang' not in already_processed:
             already_processed.append('lang')
             self.lang = value
-    def buildChildren(self, child_, nodeName_, from_subclass=False):
+    def buildChildren(self, child_, node, nodeName_, from_subclass=False):
         pass
 # end class SimpleLiteral
 
@@ -6125,7 +6228,7 @@ class elementContainer(GeneratedsSuper):
     def set_any(self, any): self.any = any
     def add_any(self, value): self.any.append(value)
     def insert_any(self, index, value): self.any[index] = value
-    def export(self, outfile, level, namespace_='', name_='elementContainer', namespacedef_=''):
+    def export(self, outfile, level, namespace_='cml:', name_='elementContainer', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, [], namespace_, name_='elementContainer')
@@ -6136,9 +6239,9 @@ class elementContainer(GeneratedsSuper):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='elementContainer'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='cml:', name_='elementContainer'):
         pass
-    def exportChildren(self, outfile, level, namespace_='', name_='elementContainer'):
+    def exportChildren(self, outfile, level, namespace_='cml:', name_='elementContainer'):
         for any_ in self.get_any():
             any_.export(outfile, level, namespace_, name_='any')
     def hasContent_(self):
@@ -6172,10 +6275,10 @@ class elementContainer(GeneratedsSuper):
         self.buildAttributes(node, node.attrib, [])
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, nodeName_)
+            self.buildChildren(child, node, nodeName_)
     def buildAttributes(self, node, attrs, already_processed):
         pass
-    def buildChildren(self, child_, nodeName_, from_subclass=False):
+    def buildChildren(self, child_, node, nodeName_, from_subclass=False):
         if nodeName_ == 'any': 
             type_name_ = child_.attrib.get('{http://www.w3.org/2001/XMLSchema-instance}type')
             if type_name_ is None:
@@ -6397,7 +6500,7 @@ class TGN(SimpleLiteral):
     def set_lang(self, lang): self.lang = lang
     def get_valueOf_(self): return self.valueOf_
     def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
-    def export(self, outfile, level, namespace_='', name_='TGN', namespacedef_=''):
+    def export(self, outfile, level, namespace_='cml:', name_='TGN', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, [], namespace_, name_='TGN')
@@ -6410,10 +6513,12 @@ class TGN(SimpleLiteral):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='TGN'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='cml:', name_='TGN'):
         super(TGN, self).exportAttributes(outfile, level, already_processed, namespace_, name_='TGN')
-        outfile.write(' lang=%s' % (self.gds_format_string(quote_attrib(self.lang).encode(ExternalEncoding), input_name='lang'), ))
-    def exportChildren(self, outfile, level, namespace_='', name_='TGN'):
+        if self.lang is not None and 'lang' not in already_processed:
+            already_processed.append('lang')
+            outfile.write(' lang=%s' % (self.gds_format_string(quote_attrib(self.lang).encode(ExternalEncoding), input_name='lang'), ))
+    def exportChildren(self, outfile, level, namespace_='cml:', name_='TGN'):
         super(TGN, self).exportChildren(outfile, level, namespace_, name_)
         pass
     def hasContent_(self):
@@ -6445,15 +6550,15 @@ class TGN(SimpleLiteral):
         self.valueOf_ = get_all_text_(node)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, nodeName_)
+            self.buildChildren(child, node, nodeName_)
     def buildAttributes(self, node, attrs, already_processed):
         value = attrs.get('lang')
         if value is not None and 'lang' not in already_processed:
             already_processed.append('lang')
             self.lang = value
         super(TGN, self).buildAttributes(node, attrs, already_processed)
-    def buildChildren(self, child_, nodeName_, from_subclass=False):
-        super(TGN, self).buildChildren(child_, nodeName_, True)
+    def buildChildren(self, child_, node, nodeName_, from_subclass=False):
+        super(TGN, self).buildChildren(child_, node, nodeName_, True)
         pass
 # end class TGN
 
@@ -6475,7 +6580,7 @@ class Box(SimpleLiteral):
     def set_lang(self, lang): self.lang = lang
     def get_valueOf_(self): return self.valueOf_
     def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
-    def export(self, outfile, level, namespace_='', name_='Box', namespacedef_=''):
+    def export(self, outfile, level, namespace_='cml:', name_='Box', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, [], namespace_, name_='Box')
@@ -6488,10 +6593,12 @@ class Box(SimpleLiteral):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='Box'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='cml:', name_='Box'):
         super(Box, self).exportAttributes(outfile, level, already_processed, namespace_, name_='Box')
-        outfile.write(' lang=%s' % (self.gds_format_string(quote_attrib(self.lang).encode(ExternalEncoding), input_name='lang'), ))
-    def exportChildren(self, outfile, level, namespace_='', name_='Box'):
+        if self.lang is not None and 'lang' not in already_processed:
+            already_processed.append('lang')
+            outfile.write(' lang=%s' % (self.gds_format_string(quote_attrib(self.lang).encode(ExternalEncoding), input_name='lang'), ))
+    def exportChildren(self, outfile, level, namespace_='cml:', name_='Box'):
         super(Box, self).exportChildren(outfile, level, namespace_, name_)
         pass
     def hasContent_(self):
@@ -6523,15 +6630,15 @@ class Box(SimpleLiteral):
         self.valueOf_ = get_all_text_(node)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, nodeName_)
+            self.buildChildren(child, node, nodeName_)
     def buildAttributes(self, node, attrs, already_processed):
         value = attrs.get('lang')
         if value is not None and 'lang' not in already_processed:
             already_processed.append('lang')
             self.lang = value
         super(Box, self).buildAttributes(node, attrs, already_processed)
-    def buildChildren(self, child_, nodeName_, from_subclass=False):
-        super(Box, self).buildChildren(child_, nodeName_, True)
+    def buildChildren(self, child_, node, nodeName_, from_subclass=False):
+        super(Box, self).buildChildren(child_, node, nodeName_, True)
         pass
 # end class Box
 
@@ -6553,7 +6660,7 @@ class ISO3166(SimpleLiteral):
     def set_lang(self, lang): self.lang = lang
     def get_valueOf_(self): return self.valueOf_
     def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
-    def export(self, outfile, level, namespace_='', name_='ISO3166', namespacedef_=''):
+    def export(self, outfile, level, namespace_='cml:', name_='ISO3166', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, [], namespace_, name_='ISO3166')
@@ -6566,10 +6673,12 @@ class ISO3166(SimpleLiteral):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='ISO3166'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='cml:', name_='ISO3166'):
         super(ISO3166, self).exportAttributes(outfile, level, already_processed, namespace_, name_='ISO3166')
-        outfile.write(' lang=%s' % (self.gds_format_string(quote_attrib(self.lang).encode(ExternalEncoding), input_name='lang'), ))
-    def exportChildren(self, outfile, level, namespace_='', name_='ISO3166'):
+        if self.lang is not None and 'lang' not in already_processed:
+            already_processed.append('lang')
+            outfile.write(' lang=%s' % (self.gds_format_string(quote_attrib(self.lang).encode(ExternalEncoding), input_name='lang'), ))
+    def exportChildren(self, outfile, level, namespace_='cml:', name_='ISO3166'):
         super(ISO3166, self).exportChildren(outfile, level, namespace_, name_)
         pass
     def hasContent_(self):
@@ -6601,15 +6710,15 @@ class ISO3166(SimpleLiteral):
         self.valueOf_ = get_all_text_(node)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, nodeName_)
+            self.buildChildren(child, node, nodeName_)
     def buildAttributes(self, node, attrs, already_processed):
         value = attrs.get('lang')
         if value is not None and 'lang' not in already_processed:
             already_processed.append('lang')
             self.lang = value
         super(ISO3166, self).buildAttributes(node, attrs, already_processed)
-    def buildChildren(self, child_, nodeName_, from_subclass=False):
-        super(ISO3166, self).buildChildren(child_, nodeName_, True)
+    def buildChildren(self, child_, node, nodeName_, from_subclass=False):
+        super(ISO3166, self).buildChildren(child_, node, nodeName_, True)
         pass
 # end class ISO3166
 
@@ -6631,7 +6740,7 @@ class Point(SimpleLiteral):
     def set_lang(self, lang): self.lang = lang
     def get_valueOf_(self): return self.valueOf_
     def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
-    def export(self, outfile, level, namespace_='', name_='Point', namespacedef_=''):
+    def export(self, outfile, level, namespace_='cml:', name_='Point', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, [], namespace_, name_='Point')
@@ -6644,10 +6753,12 @@ class Point(SimpleLiteral):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='Point'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='cml:', name_='Point'):
         super(Point, self).exportAttributes(outfile, level, already_processed, namespace_, name_='Point')
-        outfile.write(' lang=%s' % (self.gds_format_string(quote_attrib(self.lang).encode(ExternalEncoding), input_name='lang'), ))
-    def exportChildren(self, outfile, level, namespace_='', name_='Point'):
+        if self.lang is not None and 'lang' not in already_processed:
+            already_processed.append('lang')
+            outfile.write(' lang=%s' % (self.gds_format_string(quote_attrib(self.lang).encode(ExternalEncoding), input_name='lang'), ))
+    def exportChildren(self, outfile, level, namespace_='cml:', name_='Point'):
         super(Point, self).exportChildren(outfile, level, namespace_, name_)
         pass
     def hasContent_(self):
@@ -6679,15 +6790,15 @@ class Point(SimpleLiteral):
         self.valueOf_ = get_all_text_(node)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, nodeName_)
+            self.buildChildren(child, node, nodeName_)
     def buildAttributes(self, node, attrs, already_processed):
         value = attrs.get('lang')
         if value is not None and 'lang' not in already_processed:
             already_processed.append('lang')
             self.lang = value
         super(Point, self).buildAttributes(node, attrs, already_processed)
-    def buildChildren(self, child_, nodeName_, from_subclass=False):
-        super(Point, self).buildChildren(child_, nodeName_, True)
+    def buildChildren(self, child_, node, nodeName_, from_subclass=False):
+        super(Point, self).buildChildren(child_, node, nodeName_, True)
         pass
 # end class Point
 
@@ -6709,7 +6820,7 @@ class RFC4646(SimpleLiteral):
     def set_lang(self, lang): self.lang = lang
     def get_valueOf_(self): return self.valueOf_
     def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
-    def export(self, outfile, level, namespace_='', name_='RFC4646', namespacedef_=''):
+    def export(self, outfile, level, namespace_='cml:', name_='RFC4646', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, [], namespace_, name_='RFC4646')
@@ -6722,10 +6833,12 @@ class RFC4646(SimpleLiteral):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='RFC4646'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='cml:', name_='RFC4646'):
         super(RFC4646, self).exportAttributes(outfile, level, already_processed, namespace_, name_='RFC4646')
-        outfile.write(' lang=%s' % (self.gds_format_string(quote_attrib(self.lang).encode(ExternalEncoding), input_name='lang'), ))
-    def exportChildren(self, outfile, level, namespace_='', name_='RFC4646'):
+        if self.lang is not None and 'lang' not in already_processed:
+            already_processed.append('lang')
+            outfile.write(' lang=%s' % (self.gds_format_string(quote_attrib(self.lang).encode(ExternalEncoding), input_name='lang'), ))
+    def exportChildren(self, outfile, level, namespace_='cml:', name_='RFC4646'):
         super(RFC4646, self).exportChildren(outfile, level, namespace_, name_)
         pass
     def hasContent_(self):
@@ -6757,15 +6870,15 @@ class RFC4646(SimpleLiteral):
         self.valueOf_ = get_all_text_(node)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, nodeName_)
+            self.buildChildren(child, node, nodeName_)
     def buildAttributes(self, node, attrs, already_processed):
         value = attrs.get('lang')
         if value is not None and 'lang' not in already_processed:
             already_processed.append('lang')
             self.lang = value
         super(RFC4646, self).buildAttributes(node, attrs, already_processed)
-    def buildChildren(self, child_, nodeName_, from_subclass=False):
-        super(RFC4646, self).buildChildren(child_, nodeName_, True)
+    def buildChildren(self, child_, node, nodeName_, from_subclass=False):
+        super(RFC4646, self).buildChildren(child_, node, nodeName_, True)
         pass
 # end class RFC4646
 
@@ -6787,7 +6900,7 @@ class RFC3066(SimpleLiteral):
     def set_lang(self, lang): self.lang = lang
     def get_valueOf_(self): return self.valueOf_
     def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
-    def export(self, outfile, level, namespace_='', name_='RFC3066', namespacedef_=''):
+    def export(self, outfile, level, namespace_='cml:', name_='RFC3066', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, [], namespace_, name_='RFC3066')
@@ -6800,10 +6913,12 @@ class RFC3066(SimpleLiteral):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='RFC3066'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='cml:', name_='RFC3066'):
         super(RFC3066, self).exportAttributes(outfile, level, already_processed, namespace_, name_='RFC3066')
-        outfile.write(' lang=%s' % (self.gds_format_string(quote_attrib(self.lang).encode(ExternalEncoding), input_name='lang'), ))
-    def exportChildren(self, outfile, level, namespace_='', name_='RFC3066'):
+        if self.lang is not None and 'lang' not in already_processed:
+            already_processed.append('lang')
+            outfile.write(' lang=%s' % (self.gds_format_string(quote_attrib(self.lang).encode(ExternalEncoding), input_name='lang'), ))
+    def exportChildren(self, outfile, level, namespace_='cml:', name_='RFC3066'):
         super(RFC3066, self).exportChildren(outfile, level, namespace_, name_)
         pass
     def hasContent_(self):
@@ -6835,15 +6950,15 @@ class RFC3066(SimpleLiteral):
         self.valueOf_ = get_all_text_(node)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, nodeName_)
+            self.buildChildren(child, node, nodeName_)
     def buildAttributes(self, node, attrs, already_processed):
         value = attrs.get('lang')
         if value is not None and 'lang' not in already_processed:
             already_processed.append('lang')
             self.lang = value
         super(RFC3066, self).buildAttributes(node, attrs, already_processed)
-    def buildChildren(self, child_, nodeName_, from_subclass=False):
-        super(RFC3066, self).buildChildren(child_, nodeName_, True)
+    def buildChildren(self, child_, node, nodeName_, from_subclass=False):
+        super(RFC3066, self).buildChildren(child_, node, nodeName_, True)
         pass
 # end class RFC3066
 
@@ -6865,7 +6980,7 @@ class RFC1766(SimpleLiteral):
     def set_lang(self, lang): self.lang = lang
     def get_valueOf_(self): return self.valueOf_
     def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
-    def export(self, outfile, level, namespace_='', name_='RFC1766', namespacedef_=''):
+    def export(self, outfile, level, namespace_='cml:', name_='RFC1766', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, [], namespace_, name_='RFC1766')
@@ -6878,10 +6993,12 @@ class RFC1766(SimpleLiteral):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='RFC1766'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='cml:', name_='RFC1766'):
         super(RFC1766, self).exportAttributes(outfile, level, already_processed, namespace_, name_='RFC1766')
-        outfile.write(' lang=%s' % (self.gds_format_string(quote_attrib(self.lang).encode(ExternalEncoding), input_name='lang'), ))
-    def exportChildren(self, outfile, level, namespace_='', name_='RFC1766'):
+        if self.lang is not None and 'lang' not in already_processed:
+            already_processed.append('lang')
+            outfile.write(' lang=%s' % (self.gds_format_string(quote_attrib(self.lang).encode(ExternalEncoding), input_name='lang'), ))
+    def exportChildren(self, outfile, level, namespace_='cml:', name_='RFC1766'):
         super(RFC1766, self).exportChildren(outfile, level, namespace_, name_)
         pass
     def hasContent_(self):
@@ -6913,15 +7030,15 @@ class RFC1766(SimpleLiteral):
         self.valueOf_ = get_all_text_(node)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, nodeName_)
+            self.buildChildren(child, node, nodeName_)
     def buildAttributes(self, node, attrs, already_processed):
         value = attrs.get('lang')
         if value is not None and 'lang' not in already_processed:
             already_processed.append('lang')
             self.lang = value
         super(RFC1766, self).buildAttributes(node, attrs, already_processed)
-    def buildChildren(self, child_, nodeName_, from_subclass=False):
-        super(RFC1766, self).buildChildren(child_, nodeName_, True)
+    def buildChildren(self, child_, node, nodeName_, from_subclass=False):
+        super(RFC1766, self).buildChildren(child_, node, nodeName_, True)
         pass
 # end class RFC1766
 
@@ -6943,7 +7060,7 @@ class ISO639_3(SimpleLiteral):
     def set_lang(self, lang): self.lang = lang
     def get_valueOf_(self): return self.valueOf_
     def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
-    def export(self, outfile, level, namespace_='', name_='ISO639-3', namespacedef_=''):
+    def export(self, outfile, level, namespace_='cml:', name_='ISO639-3', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, [], namespace_, name_='ISO639-3')
@@ -6956,10 +7073,12 @@ class ISO639_3(SimpleLiteral):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='ISO639-3'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='cml:', name_='ISO639-3'):
         super(ISO639_3, self).exportAttributes(outfile, level, already_processed, namespace_, name_='ISO639-3')
-        outfile.write(' lang=%s' % (self.gds_format_string(quote_attrib(self.lang).encode(ExternalEncoding), input_name='lang'), ))
-    def exportChildren(self, outfile, level, namespace_='', name_='ISO639-3'):
+        if self.lang is not None and 'lang' not in already_processed:
+            already_processed.append('lang')
+            outfile.write(' lang=%s' % (self.gds_format_string(quote_attrib(self.lang).encode(ExternalEncoding), input_name='lang'), ))
+    def exportChildren(self, outfile, level, namespace_='cml:', name_='ISO639-3'):
         super(ISO639_3, self).exportChildren(outfile, level, namespace_, name_)
         pass
     def hasContent_(self):
@@ -6991,15 +7110,15 @@ class ISO639_3(SimpleLiteral):
         self.valueOf_ = get_all_text_(node)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, nodeName_)
+            self.buildChildren(child, node, nodeName_)
     def buildAttributes(self, node, attrs, already_processed):
         value = attrs.get('lang')
         if value is not None and 'lang' not in already_processed:
             already_processed.append('lang')
             self.lang = value
         super(ISO639_3, self).buildAttributes(node, attrs, already_processed)
-    def buildChildren(self, child_, nodeName_, from_subclass=False):
-        super(ISO639_3, self).buildChildren(child_, nodeName_, True)
+    def buildChildren(self, child_, node, nodeName_, from_subclass=False):
+        super(ISO639_3, self).buildChildren(child_, node, nodeName_, True)
         pass
 # end class ISO639_3
 
@@ -7021,7 +7140,7 @@ class ISO639_2(SimpleLiteral):
     def set_lang(self, lang): self.lang = lang
     def get_valueOf_(self): return self.valueOf_
     def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
-    def export(self, outfile, level, namespace_='', name_='ISO639-2', namespacedef_=''):
+    def export(self, outfile, level, namespace_='cml:', name_='ISO639-2', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, [], namespace_, name_='ISO639-2')
@@ -7034,10 +7153,12 @@ class ISO639_2(SimpleLiteral):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='ISO639-2'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='cml:', name_='ISO639-2'):
         super(ISO639_2, self).exportAttributes(outfile, level, already_processed, namespace_, name_='ISO639-2')
-        outfile.write(' lang=%s' % (self.gds_format_string(quote_attrib(self.lang).encode(ExternalEncoding), input_name='lang'), ))
-    def exportChildren(self, outfile, level, namespace_='', name_='ISO639-2'):
+        if self.lang is not None and 'lang' not in already_processed:
+            already_processed.append('lang')
+            outfile.write(' lang=%s' % (self.gds_format_string(quote_attrib(self.lang).encode(ExternalEncoding), input_name='lang'), ))
+    def exportChildren(self, outfile, level, namespace_='cml:', name_='ISO639-2'):
         super(ISO639_2, self).exportChildren(outfile, level, namespace_, name_)
         pass
     def hasContent_(self):
@@ -7069,15 +7190,15 @@ class ISO639_2(SimpleLiteral):
         self.valueOf_ = get_all_text_(node)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, nodeName_)
+            self.buildChildren(child, node, nodeName_)
     def buildAttributes(self, node, attrs, already_processed):
         value = attrs.get('lang')
         if value is not None and 'lang' not in already_processed:
             already_processed.append('lang')
             self.lang = value
         super(ISO639_2, self).buildAttributes(node, attrs, already_processed)
-    def buildChildren(self, child_, nodeName_, from_subclass=False):
-        super(ISO639_2, self).buildChildren(child_, nodeName_, True)
+    def buildChildren(self, child_, node, nodeName_, from_subclass=False):
+        super(ISO639_2, self).buildChildren(child_, node, nodeName_, True)
         pass
 # end class ISO639_2
 
@@ -7099,7 +7220,7 @@ class URI(SimpleLiteral):
     def set_lang(self, lang): self.lang = lang
     def get_valueOf_(self): return self.valueOf_
     def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
-    def export(self, outfile, level, namespace_='', name_='URI', namespacedef_=''):
+    def export(self, outfile, level, namespace_='cml:', name_='URI', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, [], namespace_, name_='URI')
@@ -7112,10 +7233,12 @@ class URI(SimpleLiteral):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='URI'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='cml:', name_='URI'):
         super(URI, self).exportAttributes(outfile, level, already_processed, namespace_, name_='URI')
-        outfile.write(' lang=%s' % (self.gds_format_string(quote_attrib(self.lang).encode(ExternalEncoding), input_name='lang'), ))
-    def exportChildren(self, outfile, level, namespace_='', name_='URI'):
+        if self.lang is not None and 'lang' not in already_processed:
+            already_processed.append('lang')
+            outfile.write(' lang=%s' % (self.gds_format_string(quote_attrib(self.lang).encode(ExternalEncoding), input_name='lang'), ))
+    def exportChildren(self, outfile, level, namespace_='cml:', name_='URI'):
         super(URI, self).exportChildren(outfile, level, namespace_, name_)
         pass
     def hasContent_(self):
@@ -7147,15 +7270,15 @@ class URI(SimpleLiteral):
         self.valueOf_ = get_all_text_(node)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, nodeName_)
+            self.buildChildren(child, node, nodeName_)
     def buildAttributes(self, node, attrs, already_processed):
         value = attrs.get('lang')
         if value is not None and 'lang' not in already_processed:
             already_processed.append('lang')
             self.lang = value
         super(URI, self).buildAttributes(node, attrs, already_processed)
-    def buildChildren(self, child_, nodeName_, from_subclass=False):
-        super(URI, self).buildChildren(child_, nodeName_, True)
+    def buildChildren(self, child_, node, nodeName_, from_subclass=False):
+        super(URI, self).buildChildren(child_, node, nodeName_, True)
         pass
 # end class URI
 
@@ -7177,7 +7300,7 @@ class IMT(SimpleLiteral):
     def set_lang(self, lang): self.lang = lang
     def get_valueOf_(self): return self.valueOf_
     def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
-    def export(self, outfile, level, namespace_='', name_='IMT', namespacedef_=''):
+    def export(self, outfile, level, namespace_='cml:', name_='IMT', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, [], namespace_, name_='IMT')
@@ -7190,10 +7313,12 @@ class IMT(SimpleLiteral):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='IMT'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='cml:', name_='IMT'):
         super(IMT, self).exportAttributes(outfile, level, already_processed, namespace_, name_='IMT')
-        outfile.write(' lang=%s' % (self.gds_format_string(quote_attrib(self.lang).encode(ExternalEncoding), input_name='lang'), ))
-    def exportChildren(self, outfile, level, namespace_='', name_='IMT'):
+        if self.lang is not None and 'lang' not in already_processed:
+            already_processed.append('lang')
+            outfile.write(' lang=%s' % (self.gds_format_string(quote_attrib(self.lang).encode(ExternalEncoding), input_name='lang'), ))
+    def exportChildren(self, outfile, level, namespace_='cml:', name_='IMT'):
         super(IMT, self).exportChildren(outfile, level, namespace_, name_)
         pass
     def hasContent_(self):
@@ -7225,15 +7350,15 @@ class IMT(SimpleLiteral):
         self.valueOf_ = get_all_text_(node)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, nodeName_)
+            self.buildChildren(child, node, nodeName_)
     def buildAttributes(self, node, attrs, already_processed):
         value = attrs.get('lang')
         if value is not None and 'lang' not in already_processed:
             already_processed.append('lang')
             self.lang = value
         super(IMT, self).buildAttributes(node, attrs, already_processed)
-    def buildChildren(self, child_, nodeName_, from_subclass=False):
-        super(IMT, self).buildChildren(child_, nodeName_, True)
+    def buildChildren(self, child_, node, nodeName_, from_subclass=False):
+        super(IMT, self).buildChildren(child_, node, nodeName_, True)
         pass
 # end class IMT
 
@@ -7255,7 +7380,7 @@ class DCMIType(SimpleLiteral):
     def set_lang(self, lang): self.lang = lang
     def get_valueOf_(self): return self.valueOf_
     def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
-    def export(self, outfile, level, namespace_='', name_='DCMIType', namespacedef_=''):
+    def export(self, outfile, level, namespace_='cml:', name_='DCMIType', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, [], namespace_, name_='DCMIType')
@@ -7268,10 +7393,12 @@ class DCMIType(SimpleLiteral):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='DCMIType'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='cml:', name_='DCMIType'):
         super(DCMIType, self).exportAttributes(outfile, level, already_processed, namespace_, name_='DCMIType')
-        outfile.write(' lang=%s' % (self.gds_format_string(quote_attrib(self.lang).encode(ExternalEncoding), input_name='lang'), ))
-    def exportChildren(self, outfile, level, namespace_='', name_='DCMIType'):
+        if self.lang is not None and 'lang' not in already_processed:
+            already_processed.append('lang')
+            outfile.write(' lang=%s' % (self.gds_format_string(quote_attrib(self.lang).encode(ExternalEncoding), input_name='lang'), ))
+    def exportChildren(self, outfile, level, namespace_='cml:', name_='DCMIType'):
         super(DCMIType, self).exportChildren(outfile, level, namespace_, name_)
         pass
     def hasContent_(self):
@@ -7303,15 +7430,15 @@ class DCMIType(SimpleLiteral):
         self.valueOf_ = get_all_text_(node)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, nodeName_)
+            self.buildChildren(child, node, nodeName_)
     def buildAttributes(self, node, attrs, already_processed):
         value = attrs.get('lang')
         if value is not None and 'lang' not in already_processed:
             already_processed.append('lang')
             self.lang = value
         super(DCMIType, self).buildAttributes(node, attrs, already_processed)
-    def buildChildren(self, child_, nodeName_, from_subclass=False):
-        super(DCMIType, self).buildChildren(child_, nodeName_, True)
+    def buildChildren(self, child_, node, nodeName_, from_subclass=False):
+        super(DCMIType, self).buildChildren(child_, node, nodeName_, True)
         pass
 # end class DCMIType
 
@@ -7333,7 +7460,7 @@ class W3CDTF(SimpleLiteral):
     def set_lang(self, lang): self.lang = lang
     def get_valueOf_(self): return self.valueOf_
     def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
-    def export(self, outfile, level, namespace_='', name_='W3CDTF', namespacedef_=''):
+    def export(self, outfile, level, namespace_='cml:', name_='W3CDTF', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, [], namespace_, name_='W3CDTF')
@@ -7346,10 +7473,12 @@ class W3CDTF(SimpleLiteral):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='W3CDTF'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='cml:', name_='W3CDTF'):
         super(W3CDTF, self).exportAttributes(outfile, level, already_processed, namespace_, name_='W3CDTF')
-        outfile.write(' lang=%s' % (self.gds_format_string(quote_attrib(self.lang).encode(ExternalEncoding), input_name='lang'), ))
-    def exportChildren(self, outfile, level, namespace_='', name_='W3CDTF'):
+        if self.lang is not None and 'lang' not in already_processed:
+            already_processed.append('lang')
+            outfile.write(' lang=%s' % (self.gds_format_string(quote_attrib(self.lang).encode(ExternalEncoding), input_name='lang'), ))
+    def exportChildren(self, outfile, level, namespace_='cml:', name_='W3CDTF'):
         super(W3CDTF, self).exportChildren(outfile, level, namespace_, name_)
         pass
     def hasContent_(self):
@@ -7381,15 +7510,15 @@ class W3CDTF(SimpleLiteral):
         self.valueOf_ = get_all_text_(node)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, nodeName_)
+            self.buildChildren(child, node, nodeName_)
     def buildAttributes(self, node, attrs, already_processed):
         value = attrs.get('lang')
         if value is not None and 'lang' not in already_processed:
             already_processed.append('lang')
             self.lang = value
         super(W3CDTF, self).buildAttributes(node, attrs, already_processed)
-    def buildChildren(self, child_, nodeName_, from_subclass=False):
-        super(W3CDTF, self).buildChildren(child_, nodeName_, True)
+    def buildChildren(self, child_, node, nodeName_, from_subclass=False):
+        super(W3CDTF, self).buildChildren(child_, node, nodeName_, True)
         pass
 # end class W3CDTF
 
@@ -7411,7 +7540,7 @@ class Period(SimpleLiteral):
     def set_lang(self, lang): self.lang = lang
     def get_valueOf_(self): return self.valueOf_
     def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
-    def export(self, outfile, level, namespace_='', name_='Period', namespacedef_=''):
+    def export(self, outfile, level, namespace_='cml:', name_='Period', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, [], namespace_, name_='Period')
@@ -7424,10 +7553,12 @@ class Period(SimpleLiteral):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='Period'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='cml:', name_='Period'):
         super(Period, self).exportAttributes(outfile, level, already_processed, namespace_, name_='Period')
-        outfile.write(' lang=%s' % (self.gds_format_string(quote_attrib(self.lang).encode(ExternalEncoding), input_name='lang'), ))
-    def exportChildren(self, outfile, level, namespace_='', name_='Period'):
+        if self.lang is not None and 'lang' not in already_processed:
+            already_processed.append('lang')
+            outfile.write(' lang=%s' % (self.gds_format_string(quote_attrib(self.lang).encode(ExternalEncoding), input_name='lang'), ))
+    def exportChildren(self, outfile, level, namespace_='cml:', name_='Period'):
         super(Period, self).exportChildren(outfile, level, namespace_, name_)
         pass
     def hasContent_(self):
@@ -7459,15 +7590,15 @@ class Period(SimpleLiteral):
         self.valueOf_ = get_all_text_(node)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, nodeName_)
+            self.buildChildren(child, node, nodeName_)
     def buildAttributes(self, node, attrs, already_processed):
         value = attrs.get('lang')
         if value is not None and 'lang' not in already_processed:
             already_processed.append('lang')
             self.lang = value
         super(Period, self).buildAttributes(node, attrs, already_processed)
-    def buildChildren(self, child_, nodeName_, from_subclass=False):
-        super(Period, self).buildChildren(child_, nodeName_, True)
+    def buildChildren(self, child_, node, nodeName_, from_subclass=False):
+        super(Period, self).buildChildren(child_, node, nodeName_, True)
         pass
 # end class Period
 
@@ -7489,7 +7620,7 @@ class UDC(SimpleLiteral):
     def set_lang(self, lang): self.lang = lang
     def get_valueOf_(self): return self.valueOf_
     def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
-    def export(self, outfile, level, namespace_='', name_='UDC', namespacedef_=''):
+    def export(self, outfile, level, namespace_='cml:', name_='UDC', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, [], namespace_, name_='UDC')
@@ -7502,10 +7633,12 @@ class UDC(SimpleLiteral):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='UDC'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='cml:', name_='UDC'):
         super(UDC, self).exportAttributes(outfile, level, already_processed, namespace_, name_='UDC')
-        outfile.write(' lang=%s' % (self.gds_format_string(quote_attrib(self.lang).encode(ExternalEncoding), input_name='lang'), ))
-    def exportChildren(self, outfile, level, namespace_='', name_='UDC'):
+        if self.lang is not None and 'lang' not in already_processed:
+            already_processed.append('lang')
+            outfile.write(' lang=%s' % (self.gds_format_string(quote_attrib(self.lang).encode(ExternalEncoding), input_name='lang'), ))
+    def exportChildren(self, outfile, level, namespace_='cml:', name_='UDC'):
         super(UDC, self).exportChildren(outfile, level, namespace_, name_)
         pass
     def hasContent_(self):
@@ -7537,15 +7670,15 @@ class UDC(SimpleLiteral):
         self.valueOf_ = get_all_text_(node)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, nodeName_)
+            self.buildChildren(child, node, nodeName_)
     def buildAttributes(self, node, attrs, already_processed):
         value = attrs.get('lang')
         if value is not None and 'lang' not in already_processed:
             already_processed.append('lang')
             self.lang = value
         super(UDC, self).buildAttributes(node, attrs, already_processed)
-    def buildChildren(self, child_, nodeName_, from_subclass=False):
-        super(UDC, self).buildChildren(child_, nodeName_, True)
+    def buildChildren(self, child_, node, nodeName_, from_subclass=False):
+        super(UDC, self).buildChildren(child_, node, nodeName_, True)
         pass
 # end class UDC
 
@@ -7567,7 +7700,7 @@ class LCC(SimpleLiteral):
     def set_lang(self, lang): self.lang = lang
     def get_valueOf_(self): return self.valueOf_
     def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
-    def export(self, outfile, level, namespace_='', name_='LCC', namespacedef_=''):
+    def export(self, outfile, level, namespace_='cml:', name_='LCC', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, [], namespace_, name_='LCC')
@@ -7580,10 +7713,12 @@ class LCC(SimpleLiteral):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='LCC'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='cml:', name_='LCC'):
         super(LCC, self).exportAttributes(outfile, level, already_processed, namespace_, name_='LCC')
-        outfile.write(' lang=%s' % (self.gds_format_string(quote_attrib(self.lang).encode(ExternalEncoding), input_name='lang'), ))
-    def exportChildren(self, outfile, level, namespace_='', name_='LCC'):
+        if self.lang is not None and 'lang' not in already_processed:
+            already_processed.append('lang')
+            outfile.write(' lang=%s' % (self.gds_format_string(quote_attrib(self.lang).encode(ExternalEncoding), input_name='lang'), ))
+    def exportChildren(self, outfile, level, namespace_='cml:', name_='LCC'):
         super(LCC, self).exportChildren(outfile, level, namespace_, name_)
         pass
     def hasContent_(self):
@@ -7615,15 +7750,15 @@ class LCC(SimpleLiteral):
         self.valueOf_ = get_all_text_(node)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, nodeName_)
+            self.buildChildren(child, node, nodeName_)
     def buildAttributes(self, node, attrs, already_processed):
         value = attrs.get('lang')
         if value is not None and 'lang' not in already_processed:
             already_processed.append('lang')
             self.lang = value
         super(LCC, self).buildAttributes(node, attrs, already_processed)
-    def buildChildren(self, child_, nodeName_, from_subclass=False):
-        super(LCC, self).buildChildren(child_, nodeName_, True)
+    def buildChildren(self, child_, node, nodeName_, from_subclass=False):
+        super(LCC, self).buildChildren(child_, node, nodeName_, True)
         pass
 # end class LCC
 
@@ -7645,7 +7780,7 @@ class DDC(SimpleLiteral):
     def set_lang(self, lang): self.lang = lang
     def get_valueOf_(self): return self.valueOf_
     def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
-    def export(self, outfile, level, namespace_='', name_='DDC', namespacedef_=''):
+    def export(self, outfile, level, namespace_='cml:', name_='DDC', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, [], namespace_, name_='DDC')
@@ -7658,10 +7793,12 @@ class DDC(SimpleLiteral):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='DDC'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='cml:', name_='DDC'):
         super(DDC, self).exportAttributes(outfile, level, already_processed, namespace_, name_='DDC')
-        outfile.write(' lang=%s' % (self.gds_format_string(quote_attrib(self.lang).encode(ExternalEncoding), input_name='lang'), ))
-    def exportChildren(self, outfile, level, namespace_='', name_='DDC'):
+        if self.lang is not None and 'lang' not in already_processed:
+            already_processed.append('lang')
+            outfile.write(' lang=%s' % (self.gds_format_string(quote_attrib(self.lang).encode(ExternalEncoding), input_name='lang'), ))
+    def exportChildren(self, outfile, level, namespace_='cml:', name_='DDC'):
         super(DDC, self).exportChildren(outfile, level, namespace_, name_)
         pass
     def hasContent_(self):
@@ -7693,15 +7830,15 @@ class DDC(SimpleLiteral):
         self.valueOf_ = get_all_text_(node)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, nodeName_)
+            self.buildChildren(child, node, nodeName_)
     def buildAttributes(self, node, attrs, already_processed):
         value = attrs.get('lang')
         if value is not None and 'lang' not in already_processed:
             already_processed.append('lang')
             self.lang = value
         super(DDC, self).buildAttributes(node, attrs, already_processed)
-    def buildChildren(self, child_, nodeName_, from_subclass=False):
-        super(DDC, self).buildChildren(child_, nodeName_, True)
+    def buildChildren(self, child_, node, nodeName_, from_subclass=False):
+        super(DDC, self).buildChildren(child_, node, nodeName_, True)
         pass
 # end class DDC
 
@@ -7723,7 +7860,7 @@ class MESH(SimpleLiteral):
     def set_lang(self, lang): self.lang = lang
     def get_valueOf_(self): return self.valueOf_
     def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
-    def export(self, outfile, level, namespace_='', name_='MESH', namespacedef_=''):
+    def export(self, outfile, level, namespace_='cml:', name_='MESH', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, [], namespace_, name_='MESH')
@@ -7736,10 +7873,12 @@ class MESH(SimpleLiteral):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='MESH'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='cml:', name_='MESH'):
         super(MESH, self).exportAttributes(outfile, level, already_processed, namespace_, name_='MESH')
-        outfile.write(' lang=%s' % (self.gds_format_string(quote_attrib(self.lang).encode(ExternalEncoding), input_name='lang'), ))
-    def exportChildren(self, outfile, level, namespace_='', name_='MESH'):
+        if self.lang is not None and 'lang' not in already_processed:
+            already_processed.append('lang')
+            outfile.write(' lang=%s' % (self.gds_format_string(quote_attrib(self.lang).encode(ExternalEncoding), input_name='lang'), ))
+    def exportChildren(self, outfile, level, namespace_='cml:', name_='MESH'):
         super(MESH, self).exportChildren(outfile, level, namespace_, name_)
         pass
     def hasContent_(self):
@@ -7771,15 +7910,15 @@ class MESH(SimpleLiteral):
         self.valueOf_ = get_all_text_(node)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, nodeName_)
+            self.buildChildren(child, node, nodeName_)
     def buildAttributes(self, node, attrs, already_processed):
         value = attrs.get('lang')
         if value is not None and 'lang' not in already_processed:
             already_processed.append('lang')
             self.lang = value
         super(MESH, self).buildAttributes(node, attrs, already_processed)
-    def buildChildren(self, child_, nodeName_, from_subclass=False):
-        super(MESH, self).buildChildren(child_, nodeName_, True)
+    def buildChildren(self, child_, node, nodeName_, from_subclass=False):
+        super(MESH, self).buildChildren(child_, node, nodeName_, True)
         pass
 # end class MESH
 
@@ -7801,7 +7940,7 @@ class LCSH(SimpleLiteral):
     def set_lang(self, lang): self.lang = lang
     def get_valueOf_(self): return self.valueOf_
     def set_valueOf_(self, valueOf_): self.valueOf_ = valueOf_
-    def export(self, outfile, level, namespace_='', name_='LCSH', namespacedef_=''):
+    def export(self, outfile, level, namespace_='cml:', name_='LCSH', namespacedef_=''):
         showIndent(outfile, level)
         outfile.write('<%s%s%s' % (namespace_, name_, namespacedef_ and ' ' + namespacedef_ or '', ))
         self.exportAttributes(outfile, level, [], namespace_, name_='LCSH')
@@ -7814,10 +7953,12 @@ class LCSH(SimpleLiteral):
             outfile.write('</%s%s>\n' % (namespace_, name_))
         else:
             outfile.write('/>\n')
-    def exportAttributes(self, outfile, level, already_processed, namespace_='', name_='LCSH'):
+    def exportAttributes(self, outfile, level, already_processed, namespace_='cml:', name_='LCSH'):
         super(LCSH, self).exportAttributes(outfile, level, already_processed, namespace_, name_='LCSH')
-        outfile.write(' lang=%s' % (self.gds_format_string(quote_attrib(self.lang).encode(ExternalEncoding), input_name='lang'), ))
-    def exportChildren(self, outfile, level, namespace_='', name_='LCSH'):
+        if self.lang is not None and 'lang' not in already_processed:
+            already_processed.append('lang')
+            outfile.write(' lang=%s' % (self.gds_format_string(quote_attrib(self.lang).encode(ExternalEncoding), input_name='lang'), ))
+    def exportChildren(self, outfile, level, namespace_='cml:', name_='LCSH'):
         super(LCSH, self).exportChildren(outfile, level, namespace_, name_)
         pass
     def hasContent_(self):
@@ -7849,15 +7990,15 @@ class LCSH(SimpleLiteral):
         self.valueOf_ = get_all_text_(node)
         for child in node:
             nodeName_ = Tag_pattern_.match(child.tag).groups()[-1]
-            self.buildChildren(child, nodeName_)
+            self.buildChildren(child, node, nodeName_)
     def buildAttributes(self, node, attrs, already_processed):
         value = attrs.get('lang')
         if value is not None and 'lang' not in already_processed:
             already_processed.append('lang')
             self.lang = value
         super(LCSH, self).buildAttributes(node, attrs, already_processed)
-    def buildChildren(self, child_, nodeName_, from_subclass=False):
-        super(LCSH, self).buildChildren(child_, nodeName_, True)
+    def buildChildren(self, child_, node, nodeName_, from_subclass=False):
+        super(LCSH, self).buildChildren(child_, node, nodeName_, True)
         pass
 # end class LCSH
 
@@ -7890,7 +8031,7 @@ def parse(inFileName):
     doc = None
     sys.stdout.write('<?xml version="1.0" ?>\n')
     rootObj.export(sys.stdout, 0, name_=rootTag, 
-        namespacedef_='xmlns="http://www.connectomics.org/cff-2" xmlns:dcterms="http://purl.org/dc/terms/"')
+        namespacedef_='xmlns:cml="http://www.connectomics.org/cff-2" xmlns:dcterms="http://purl.org/dc/terms/"')
     return rootObj
 
 
@@ -7908,7 +8049,7 @@ def parseString(inString):
     doc = None
     sys.stdout.write('<?xml version="1.0" ?>\n')
     rootObj.export(sys.stdout, 0, name_="property",
-        namespacedef_='xmlns="http://www.connectomics.org/cff-2" xmlns:dcterms="http://purl.org/dc/terms/"')
+        namespacedef_='xmlns:cml="http://www.connectomics.org/cff-2" xmlns:dcterms="http://purl.org/dc/terms/"')
     return rootObj
 
 
@@ -7952,15 +8093,15 @@ __all__ = [
     "CNetwork",
     "CScript",
     "CSurface",
-    "CTimeserie",
+    "CTimeseries",
     "CTrack",
     "CVolume",
     "DCMIType",
     "DDC",
     "IMT",
     "ISO3166",
-    "ISO639-2",
-    "ISO639-3",
+    "ISO639_2",
+    "ISO639_3",
     "LCC",
     "LCSH",
     "MESH",
@@ -8034,6 +8175,6 @@ __all__ = [
     "tag",
     "temporal",
     "title",
-    "type",
+    "type_",
     "valid"
     ]

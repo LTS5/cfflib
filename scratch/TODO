@@ -1,49 +1,22 @@
 Generate classes with: 
 
-generateDS.py --subclass-suffix="" -f --super="cff" -o ../cff.py -s ../cfflib.py -a "xsd:" --namespacedef='xmlns="http://www.connectomics.org/cff-2" xmlns:dcterms="http://purl.org/dc/terms/"' connectome.xsd  
+generateDS.py --subclass-suffix="" -f --super="cff" -o ../cff.py -s ../cfflib.py -a "xsd:" --namespacedef='xmlns:cml="http://www.connectomics.org/cff-2" xmlns:dcterms="http://purl.org/dc/terms/"' connectome.xsd
+
 
 Documentation:
 http://www.rexx.com/~dkuhlman/generateDS.html
 
-Think
------
-     
-you do not want to require to load all the files in memory to save the cff, thus
-add a special insert_..(modify it?) or add_object(?..) or insert_from_filesystem_without_loading
-
-?? csurf_obj = cfflib.CSurface(....., from_file='/.../my.gii')
-    # from_file generate a _src attribute that stores the fs path, to be used for saving
-   cfile.connectome_surface.append(csurf_obj)
-                   
-Convention:
-.src -> refering to relative path in fs or zip file (iszip = True)
+Convention
+----------
+.src -> refering to relative path in filesystem (fs) or zip file (iszip = True)
 .tmpsrc -> refering to absolute path in fs or tempfile. a tempfile is created when .content != None.
 schema to convert absolute file names to relative: CXXX / unique_name.fileformatending
 
-Use Case
---------
-
-* new_connectome() with metadata
-* add nifti file from abspath with metadata and description
-* add surface file from abspath with metadata and description
-* Nifti1Image object. Add it with metadata and description.
-
-
 In cfflib
 ---------
-* Complete file Saving
 * Implement save for iszip == False
-* Check script file format field
 * how to save imagestack? save hdf5? save trackvis?
 * test for all but network the saving mechanism for loaded
 
 * [METHOD] validate file existence
 * [METHOD] validate file type
-* [METHOD] adder (=setter?) methods for objects (or just add to a list?)
-* [METHOD] remover methods for objects (or just remove from a list?)
-* [METHOD] info method about available optional dependencies
-
-* [METHOD] add / remove methods for connectome objects, set parent_cfile, check file name consistency
-		   cdat = cdata_from_numpy(...); add_cdata(cdat) -> add_cdata_from_numpy(np.array)
-
-

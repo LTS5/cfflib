@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 #
-# Generated Tue Feb  1 11:31:07 2011 by generateDS.py version 2.3b.
+# Generated Thu Mar 10 14:06:17 2011 by generateDS.py version 2.4b.
 #
 
 import sys
@@ -99,8 +99,8 @@ supermod.tag.subclass = tag
 
 
 class connectome(supermod.connectome):
-    def __init__(self, connectome_meta=None, connectome_network=None, connectome_surface=None, connectome_volume=None, connectome_track=None, connectome_timeserie=None, connectome_data=None, connectome_script=None, connectome_imagestack=None):
-        super(connectome, self).__init__(connectome_meta, connectome_network, connectome_surface, connectome_volume, connectome_track, connectome_timeserie, connectome_data, connectome_script, connectome_imagestack, )
+    def __init__(self, connectome_meta=None, connectome_network=None, connectome_surface=None, connectome_volume=None, connectome_track=None, connectome_timeseries=None, connectome_data=None, connectome_script=None, connectome_imagestack=None):
+        super(connectome, self).__init__(connectome_meta, connectome_network, connectome_surface, connectome_volume, connectome_track, connectome_timeseries, connectome_data, connectome_script, connectome_imagestack, )
 supermod.connectome.subclass = connectome
 # end class connectome
 
@@ -140,11 +140,11 @@ supermod.CTrack.subclass = CTrack
 # end class CTrack
 
 
-class CTimeserie(supermod.CTimeserie):
+class CTimeseries(supermod.CTimeseries):
     def __init__(self, src=None, dtype=None, name=None, fileformat='HDF5', description=None, metadata=None):
-        super(CTimeserie, self).__init__(src, dtype, name, fileformat, description, metadata, )
-supermod.CTimeserie.subclass = CTimeserie
-# end class CTimeserie
+        super(CTimeseries, self).__init__(src, dtype, name, fileformat, description, metadata, )
+supermod.CTimeseries.subclass = CTimeseries
+# end class CTimeseries
 
 
 class CData(supermod.CData):
@@ -168,13 +168,6 @@ supermod.CImagestack.subclass = CImagestack
 # end class CImagestack
 
 
-class description(supermod.description):
-    def __init__(self, valueOf_=None):
-        super(description, self).__init__(valueOf_, )
-supermod.description.subclass = description
-# end class description
-
-
 class title(supermod.title):
     def __init__(self, valueOf_=None):
         super(title, self).__init__(valueOf_, )
@@ -194,6 +187,13 @@ class subject(supermod.subject):
         super(subject, self).__init__(valueOf_, )
 supermod.subject.subclass = subject
 # end class subject
+
+
+class description(supermod.description):
+    def __init__(self, valueOf_=None):
+        super(description, self).__init__(valueOf_, )
+supermod.description.subclass = description
+# end class description
 
 
 class publisher(supermod.publisher):
@@ -729,7 +729,7 @@ def parse(inFilename):
     doc = None
     sys.stdout.write('<?xml version="1.0" ?>\n')
     rootObj.export(sys.stdout, 0, name_=rootTag,
-        namespacedef_='xmlns="http://www.connectomics.org/cff-2" xmlns:dcterms="http://purl.org/dc/terms/"')
+        namespacedef_='xmlns:cml="http://www.connectomics.org/cff-2" xmlns:dcterms="http://purl.org/dc/terms/"')
     doc = None
     return rootObj
 
@@ -748,7 +748,7 @@ def parseString(inString):
     doc = None
     sys.stdout.write('<?xml version="1.0" ?>\n')
     rootObj.export(sys.stdout, 0, name_=rootTag,
-        namespacedef_='xmlns="http://www.connectomics.org/cff-2" xmlns:dcterms="http://purl.org/dc/terms/"')
+        namespacedef_='xmlns:cml="http://www.connectomics.org/cff-2" xmlns:dcterms="http://purl.org/dc/terms/"')
     return rootObj
 
 

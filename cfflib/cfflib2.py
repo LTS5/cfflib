@@ -120,7 +120,7 @@ class connectome(supermod.connectome):
     compressed (zipped) connectome file with ending .cff containing all
     source data objects. """
     
-    def __init__(self, title = None, connectome_meta=None, connectome_network=None, connectome_surface=None, connectome_volume=None, connectome_track=None, connectome_timeserie=None, connectome_data=None, connectome_script=None, connectome_imagestack=None):
+    def __init__(self, title = None, connectome_meta=None, connectome_network=None, connectome_surface=None, connectome_volume=None, connectome_track=None, connectome_timeseries=None, connectome_data=None, connectome_script=None, connectome_imagestack=None):
         """Create a new connectome object
         
         See also
@@ -128,7 +128,7 @@ class connectome(supermod.connectome):
         CMetadata, CNetwork, CSurface, CVolume, CTrack, CTimeserie, CData, CScript and CImagestack
     
         """
-        super(connectome, self).__init__(connectome_meta, connectome_network, connectome_surface, connectome_volume, connectome_track, connectome_timeserie, connectome_data, connectome_script, connectome_imagestack, )
+        super(connectome, self).__init__(connectome_meta, connectome_network, connectome_surface, connectome_volume, connectome_track, connectome_timeseries, connectome_data, connectome_script, connectome_imagestack, )
 
         # add parent reference to all children
         self._update_parent_reference()
@@ -156,7 +156,7 @@ class connectome(supermod.connectome):
         """        
         return self.connectome_network + self.connectome_surface + \
                 self.connectome_volume + self.connectome_track + \
-                self.connectome_timeserie + self.connectome_data + \
+                self.connectome_timeseries + self.connectome_data + \
                 self.connectome_script + self.connectome_imagestack
 
     
@@ -188,6 +188,29 @@ class connectome(supermod.connectome):
                     return ele
             return None
 
+    def get_by_src(self, src):
+        """ Return the list of connectome object(s) that have the given source path
+
+        Parameters
+        ----------
+        src : string or list of strings
+            source paths(s) of the requested object(s)
+
+        """
+        if isinstance(src, list):
+            ret = []
+            all_cobj = self.get_all()
+            for ele in all_cobj:
+                if ele.src in src:
+                    ret.append(ele)
+            return ret
+        else:
+            all_cobj = self.get_all()
+            for ele in all_cobj:
+                if src == ele.src:
+                    return ele
+            return None
+        
     def check_file_in_cff(self):
         """Checks if the files described in the meta.cml are contained in the connectome zip file."""  
         
@@ -281,8 +304,10 @@ class connectome(supermod.connectome):
         re = StringIO()
         re.write('<?xml version="1.0" encoding="UTF-8"?>\n')
         ns = """xmlns="http://www.connectomics.org/cff-2"
+      xmlns:cml="http://www.connectomics.org/cff-2"
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xmlns:dcterms="http://purl.org/dc/terms/" """
+
         self.export(re, 0, name_= "connectome", namespacedef_=ns)
         re.seek(0)
         return re.read()
@@ -599,7 +624,7 @@ class connectome(supermod.connectome):
         s+= '\n# '+str(len(self.get_connectome_volume()))+' CVolume'
         s+= '\n# '+str(len(self.get_connectome_track()))+' CTrack'
         s+= '\n# '+str(len(self.get_connectome_surface()))+' CSurface'
-        s+= '\n# '+str(len(self.get_connectome_timeserie()))+' CTimeserie'
+        s+= '\n# '+str(len(self.get_connectome_timeseries()))+' CTimeserie'
         s+= '\n# '+str(len(self.get_connectome_script()))+' CScript'
         s+= '\n# '+str(len(self.get_connectome_data()))+' CData'
         s+= '\n# '+str(len(self.get_connectome_imagestack()))+' CImagestack'
@@ -608,31 +633,31 @@ class connectome(supermod.connectome):
         s+= '\n#\n# CMetadata\n# '+'='*56+' #'
         cm = self.get_connectome_meta()
         s+= '\n# title : '+cm.get_title()  
-        if cm.get_species() is not None and cm.get_species() is not '':      
+        if not cm.get_species() is None and isinstance(cm.get_species(), str):
             s+= '\n# species : '+cm.get_species() 
-        if cm.get_description() is not None and cm.get_description() is not '':      
+        if not cm.get_description() is None and isinstance(cm.get_description(), str):
             s+= '\n# description : '+cm.get_description() 
-        if cm.get_creator() is not None and cm.get_creator() is not '':      
+        if not cm.get_creator() is None and isinstance(cm.get_creator(), str):
             s+= '\n# creator : '+cm.get_creator() 
-        if cm.get_email() is not None and cm.get_email() is not '':      
+        if not cm.get_email() is None and isinstance(cm.get_email(), str):
             s+= '\n# email : '+cm.get_email() 
-        if cm.get_created() is not None and cm.get_created() is not '':      
+        if not cm.get_created() is None and isinstance(cm.get_created(), str):
             s+= '\n# creation date : '+cm.get_created() 
-        if cm.get_modified() is not None and cm.get_modified() is not '':      
+        if not cm.get_modified() is None and isinstance(cm.get_modified(), str):
             s+= '\n# modification date : '+cm.get_modified() 
-        if cm.get_generator() is not None and cm.get_generator() is not '':      
+        if not cm.get_generator() is None and isinstance(cm.get_generator(), str):
             s+= '\n# generator : '+cm.get_generator() 
-        if cm.get_version() is not None and cm.get_version() is not '':      
-            s+= '\n# cfflib version : '+cm.get_version() 
-        if cm.get_license() is not None and cm.get_license() is not '':      
+        if not cm.get_version() is None and isinstance(cm.get_version(), str):
+            s+= '\n# cff version : '+cm.get_version()
+        if not cm.get_license() is None and isinstance(cm.get_license(), str):
             s+= '\n# license : '+cm.get_license() 
-        if cm.get_rights() is not None and cm.get_rights() is not '':      
+        if not cm.get_rights() is None and isinstance(cm.get_rights(), str):
             s+= '\n# rights : '+cm.get_rights()
-        if cm.get_publisher() is not None and cm.get_publisher() is not '':      
+        if not cm.get_publisher() is None and isinstance(cm.get_publisher(), str):
             s+= '\n# publisher : '+cm.get_publisher() 
-        if cm.get_references() is not None and cm.get_references() is not '':      
+        if not cm.get_references() is None and isinstance(cm.get_references(), str):
             s+= '\n# references : '+cm.get_references() 
-        if cm.get_relation() is not None and cm.get_relation() is not '':      
+        if not cm.get_relation() is None and isinstance(cm.get_relation(), str):
             s+= '\n# relation : '+cm.get_relation() 
         # CNetwork
         if len(self.get_connectome_network()) > 0:
@@ -659,9 +684,9 @@ class connectome(supermod.connectome):
                 s+= i.print_summary(False)
             
         # CTimeserie
-        if len(self.get_connectome_timeserie()) > 0:
-            s+= '\n#\n# CTimeserie\n# '+'='*56+' #'
-            for i in self.get_connectome_timeserie():
+        if len(self.get_connectome_timeseries()) > 0:
+            s+= '\n#\n# CTimeseries\n# '+'='*56+' #'
+            for i in self.get_connectome_timeseries():
                 s+= i.print_summary(False)
             
         # CScript
@@ -829,21 +854,21 @@ class CMetadata(supermod.CMetadata):
             outfile.write('<%sdescription>%s</%sdescription>\n' % (namespace_, self.gds_format_string(quote_xml(self.description).encode(ExternalEncoding), input_name='description'), namespace_))
 
         if self.generator is not None:
-            namespace_= ''
+            namespace_ = "cml:"
             showIndent(outfile, level)
             outfile.write('<%sgenerator>%s</%sgenerator>\n' % (namespace_, self.gds_format_string(quote_xml(self.generator).encode(ExternalEncoding), input_name='generator'), namespace_))
         if self.species is not None:
-            namespace_= ''
+            namespace_ = "cml:"
             showIndent(outfile, level)
             outfile.write('<%sspecies>%s</%sspecies>\n' % (namespace_, self.gds_format_string(quote_xml(self.species).encode(ExternalEncoding), input_name='species'), namespace_))
         if self.email is not None:
-            namespace_= ''
+            namespace_ = "cml:"
             showIndent(outfile, level)
             outfile.write('<%semail>%s</%semail>\n' % (namespace_, self.gds_format_string(quote_xml(self.email).encode(ExternalEncoding), input_name='email'), namespace_))
         if self.metadata:
-            namespace_= ''
+            namespace_ = "cml:"
             self.metadata.export(outfile, level, namespace_, name_='metadata')
-            
+
         
 supermod.CMetadata.subclass = CMetadata
 # end class CMetadata
@@ -904,15 +929,15 @@ class CBaseClass(object):
               
         # Attributes  
         s+= '\n# name : ' +self.get_name()
-        if self.get_description() is not None:
+        if not self.get_description() is None:
             s+= '\n# description : '+self.get_description()
-        if hasattr(self, 'dtype') and self.get_dtype() is not None:
+        if hasattr(self, 'dtype') and not self.get_dtype() is None:
             s+= '\n# dtype : '+self.get_dtype()
-        if self.get_fileformat() is not None:
+        if not self.get_fileformat() is None:
             s+= '\n# fileformat : '+self.get_fileformat()
-        if self.get_src() is not None:
+        if not self.get_src() is None:
             s+= '\n# src : '+self.get_src()
-        if self.get_metadata_as_dict is not None and self.get_metadata_as_dict() is not []:
+        if not self.get_metadata_as_dict is None and not len(self.get_metadata_as_dict()) == 0:
             s+= '\n# metadata: '
             m = self.get_metadata_as_dict()
             for i in m.keys():
@@ -925,8 +950,6 @@ class CBaseClass(object):
         else:
             return s
 
-    def get_description(self):
-        pass
 
 class CNetwork(supermod.CNetwork, CBaseClass):
     """A connectome network object"""
@@ -1128,7 +1151,7 @@ class CVolume(supermod.CVolume, CBaseClass):
         dtype : string, optional,
             the data type of the volume. It could be: 'T1-weighted', 'T2-weighted', 'PD-weighted', 'fMRI', 'MD', 'FA', 'LD', 'TD', 'FLAIR', 'MRA' or 'MRS depending on your dataset.
         fileformat : 'Nifti1',
-            the fileformat of the volume. It could be: 'Nifti1', 'ANALYZE', 'DICOM' ... But only 'Nifti1' is supported, its compressed version '.nii.gz' too.
+            the fileformat of the volume. It could be: 'Nifti1', 'Nifti1GZ', 'Nifti2' (not supported yet)
         src : string, optional,
             the source file of the volume
         description : string, optional,
@@ -1147,6 +1170,8 @@ class CVolume(supermod.CVolume, CBaseClass):
         """ Return a unique relative path for this element """
     
         if self.fileformat == 'Nifti1':
+            fend = '.nii'
+        if self.fileformat == 'Nifti1GZ':
             fend = '.nii.gz'
         elif self.fileformat == 'ANALYZE':
             print "Save ANALYZE file in Nifti format .nii.gz"
@@ -1181,7 +1206,10 @@ class CVolume(supermod.CVolume, CBaseClass):
         """
         cvol            = CVolume(name) 
         cvol.tmpsrc     = op.abspath(nii_filename)
-        cvol.fileformat = "Nifti1"
+        if nii_filename.endswith('.gz'):
+            cvol.fileformat = "Nifti1GZ"
+        else:
+            cvol.fileformat = "Nifti1"
         cvol.dtype      = dtype
         cvol.data       = ni.load(nii_filename)
         cvol.src        = cvol.get_unique_relpath()
@@ -1246,9 +1274,9 @@ supermod.CTrack.subclass = CTrack
 # end class CTrack
 
 
-class CTimeserie(supermod.CTimeserie, CBaseClass):
+class CTimeseries(supermod.CTimeseries, CBaseClass):
     def __init__(self, name=None, src=None, dtype=None, fileformat='HDF5', description=None, metadata=None):
-        super(CTimeserie, self).__init__(src, dtype, name, fileformat, description, metadata, )
+        super(CTimeseries, self).__init__(src, dtype, name, fileformat, description, metadata, )
                 
     def get_unique_relpath(self):
         """ Return a unique relative path for this element """
@@ -1260,7 +1288,7 @@ class CTimeserie(supermod.CTimeserie, CBaseClass):
             
         return unify('CTimeserie', self.name + fend)
     
-supermod.CTimeserie.subclass = CTimeserie
+supermod.CTimeseries.subclass = CTimeseries
 # end class CTimeserie
 
 
@@ -1460,7 +1488,7 @@ def parse(inFilename):
     doc = None
     sys.stdout.write('<?xml version="1.0" ?>\n')
     rootObj.export(sys.stdout, 0, name_=rootTag,
-        namespacedef_='xmlns="http://www.connectomics.org/cff-2" xmlns:dcterms="http://purl.org/dc/terms/"')
+        namespacedef_='xmlns:cml="http://www.connectomics.org/cff-2" xmlns:dcterms="http://purl.org/dc/terms/"')
     doc = None
     return rootObj
 

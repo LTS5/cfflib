@@ -122,7 +122,7 @@ def save_to_meta_cml(connectome, filename = 'meta.cml'):
         return
     f = open(filename, 'w')
     f.write('<?xml version="1.0" encoding="UTF-8"?>\n')
-    connectome.export(f, 0, namespacedef_='xmlns="http://www.connectomics.org/2010/Connectome/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dcterms="http://purl.org/dc/terms/" xsi:schemaLocation="http://www.connectomics.org/2010/Connectome/xmlns connectome.xsd"')
+    connectome.export(f, 0, namespacedef_='xmlns="http://www.connectomics.org/cff-2" xmlns:cml="http://www.connectomics.org/cff-2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dcterms="http://purl.org/dc/terms/" xsi:schemaLocation="http://www.connectomics.org/cff-2 connectome.xsd"')
     f.close()
 
 

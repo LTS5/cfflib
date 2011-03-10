@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <xsd:schema elementFormDefault="qualified"
 	targetNamespace="http://www.connectomics.org/cff-2"
-	xmlns="http://www.connectomics.org/cff-2"
+    xmlns:cml="http://www.connectomics.org/cff-2"
 	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
 	xmlns:dcterms="http://purl.org/dc/terms/">
 
@@ -12,6 +12,7 @@
     <xsd:documentation>
     Connectome File Markup, Version 2.0
     Created 17-01-2011 by Stephan Gerhard (connectome@unidesign.ch)
+    Updated 9-03-2011 by Stephan Gerhard (connectome@unidesign.ch)
     </xsd:documentation>
 </xsd:annotation>
 
@@ -218,7 +219,7 @@
       </xsd:annotation>
       </xsd:element>
       
-      <xsd:element maxOccurs="unbounded" minOccurs="0" name="connectome-timeserie" type="CTimeseries">
+      <xsd:element maxOccurs="unbounded" minOccurs="0" name="connectome-timeseries" type="CTimeseries">
       <xsd:annotation xml:lang="en">
         <xsd:documentation>
         A list of timeserie files. The timeseries files are defined using the HDF5 format.
@@ -259,14 +260,17 @@
 
   <xsd:sequence>
 
+    <!-- this sequance should refrence ref="dcterms:title", but we do not
+    want the generateDS to create objects here -->
    <xsd:element minOccurs="1" name="dcterms:title" type="xsd:string">
     <xsd:annotation xml:lang="en">
       <xsd:documentation>
       Title of the connectome resource
       </xsd:documentation>
     </xsd:annotation>
-    </xsd:element>  
-  
+    </xsd:element>
+
+
    <xsd:element minOccurs="1" name="dcterms:creator" type="xsd:string">
     <xsd:annotation xml:lang="en">
       <xsd:documentation>
@@ -274,14 +278,6 @@
       </xsd:documentation>
     </xsd:annotation>
     </xsd:element>
-
-   <dcterms:creator minOccurs="1" name="dcterms:creator" type="xsd:string">
-    <xsd:annotation xml:lang="en">
-      <xsd:documentation>
-      Author(s) of the data
-      </xsd:documentation>
-    </xsd:annotation>
-    </dcterms:creator>
     
    <xsd:element minOccurs="1" name="dcterms:publisher" type="xsd:string">
     <xsd:annotation xml:lang="en">
@@ -290,7 +286,7 @@
       </xsd:documentation>
     </xsd:annotation>
     </xsd:element>
-    
+
    <xsd:element minOccurs="1" name="dcterms:created" type="xsd:string">
     <xsd:annotation xml:lang="en">
       <xsd:documentation>
@@ -406,7 +402,7 @@
           </xsd:annotation>
           </xsd:element>
 
-	    <xsd:element maxOccurs="1" minOccurs="0" name="description" type="xsd:string">
+	    <xsd:element maxOccurs="1" minOccurs="0" name="dcterms:description" type="xsd:string">
 	     <xsd:annotation xml:lang="en">
 	       <xsd:documentation>
 	       A description according to the format attribute syntax.
@@ -457,7 +453,7 @@
   - dtype="FunctionalNetwork"
   Networks derived from functional measures such as EEG/MEG/fMRI/PET etc.
   - dtype="EffectiveNetwork"
-  Networks representing effective connectivities
+  Networks representing effective connectivity
 	- dtype="Other"
 	Other kind of network.
       </xsd:documentation>
@@ -469,7 +465,7 @@
 
 <xsd:complexType name="CSurface">
     <xsd:all>
-	    <xsd:element minOccurs="0" name="description" type="xsd:string">
+	    <xsd:element minOccurs="0" name="dcterms:description" type="xsd:string">
 	     <xsd:annotation xml:lang="en">
 	       <xsd:documentation>
 	       A description according to the format attribute syntax.
@@ -542,7 +538,7 @@
 
 <xsd:complexType name="CVolume">
      <xsd:all>
-	    <xsd:element minOccurs="0" name="description" type="xsd:string">
+	    <xsd:element minOccurs="0" name="dcterms:description" type="xsd:string">
 	     <xsd:annotation xml:lang="en">
 	       <xsd:documentation>
 	       A description according to the format attribute syntax.
@@ -631,7 +627,7 @@
 <xsd:complexType name="CTrack">
 
   <xsd:all>
-	    <xsd:element minOccurs="0" name="description" type="xsd:string">
+	    <xsd:element minOccurs="0" name="dcterms:description" type="xsd:string">
 	     <xsd:annotation xml:lang="en">
 	       <xsd:documentation>
 	       A description according to the format attribute syntax.
@@ -683,7 +679,7 @@
 <xsd:complexType name="CTimeseries">
 
   <xsd:all>
-	    <xsd:element minOccurs="0" name="description" type="xsd:string">
+	    <xsd:element minOccurs="0" name="dcterms:description" type="xsd:string">
 	     <xsd:annotation xml:lang="en">
 	       <xsd:documentation>
 	       A description according to the format attribute syntax.
@@ -734,7 +730,7 @@
 <xsd:complexType name="CData">
 
   <xsd:all>
-	    <xsd:element minOccurs="0" name="description" type="xsd:string">
+	    <xsd:element minOccurs="0" name="dcterms:description" type="xsd:string">
 	     <xsd:annotation xml:lang="en">
 	       <xsd:documentation>
 	       A description according to the format attribute syntax.
@@ -784,7 +780,7 @@
 <xsd:complexType name="CScript">
 
   <xsd:all>
-	    <xsd:element minOccurs="0" name="description" type="xsd:string">
+	    <xsd:element minOccurs="0" name="dcterms:description" type="xsd:string">
 	     <xsd:annotation xml:lang="en">
 	       <xsd:documentation>
 	       A description according to the format attribute syntax.
@@ -836,7 +832,7 @@
 <xsd:complexType name="CImagestack">
 
   <xsd:all>
-	    <xsd:element minOccurs="0" name="description">
+	    <xsd:element minOccurs="0" name="dcterms:description" type="xsd:string">
 	     <xsd:annotation xml:lang="en">
 	       <xsd:documentation>
 	       A description according to the format attribute syntax.
