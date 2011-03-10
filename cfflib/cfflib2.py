@@ -978,7 +978,10 @@ class CNetwork(supermod.CNetwork, CBaseClass):
     
         """
         super(CNetwork, self).__init__(src, dtype, name, fileformat, metadata, description, )
-
+        if not src is None and os.path.exists(src):
+            print "File given by src exists. Create a new relative path."
+            self.tmpsrc = src
+            self.src = self.get_unique_relpath()
         
     def get_unique_relpath(self):
         """ Return a unique relative path for this element """
@@ -1093,6 +1096,10 @@ class CSurface(supermod.CSurface, CBaseClass):
     
         """
         super(CSurface, self).__init__(src, dtype, name, fileformat, description, metadata, )
+        if not src is None and os.path.exists(src):
+            print "File given by src exists. Create a new relative path."
+            self.tmpsrc = src
+            self.src = self.get_unique_relpath()
         
     def get_unique_relpath(self):
         """ Return a unique relative path for this element """
@@ -1164,21 +1171,18 @@ class CVolume(supermod.CVolume, CBaseClass):
         Metadata, connectome
         """
         super(CVolume, self).__init__(src, dtype, name, fileformat, description, metadata, )
-#        self.src = self.get_unique_relpath()
+        if not src is None and os.path.exists(src):
+            print "File given by src exists. Create a new relative path."
+            self.tmpsrc = src
+            self.src = self.get_unique_relpath()
                   
     def get_unique_relpath(self):
         """ Return a unique relative path for this element """
     
         if self.fileformat == 'Nifti1':
             fend = '.nii'
-        if self.fileformat == 'Nifti1GZ':
+        elif self.fileformat == 'Nifti1GZ':
             fend = '.nii.gz'
-        elif self.fileformat == 'ANALYZE':
-            print "Save ANALYZE file in Nifti format .nii.gz"
-            fend = '.nii.gz'
-        elif self.fileformat == 'DICOM':
-            print "Saving in DICOM format not supported."
-            fend = ''
         else:
             fend = ''
             
@@ -1248,7 +1252,11 @@ class CTrack(supermod.CTrack, CBaseClass):
     """
     def __init__(self, name=None, src=None, fileformat='TrackVis', dtype = None, description=None, metadata=None):
         super(CTrack, self).__init__(src, dtype, name, fileformat, description, metadata, )        
-                        
+        if not src is None and os.path.exists(src):
+            print "File given by src exists. Create a new relative path."
+            self.tmpsrc = src
+            self.src = self.get_unique_relpath()
+            
     def get_unique_relpath(self):
         """ Return a unique relative path for this element """
     
@@ -1277,7 +1285,11 @@ supermod.CTrack.subclass = CTrack
 class CTimeseries(supermod.CTimeseries, CBaseClass):
     def __init__(self, name=None, src=None, dtype=None, fileformat='HDF5', description=None, metadata=None):
         super(CTimeseries, self).__init__(src, dtype, name, fileformat, description, metadata, )
-                
+        if not src is None and os.path.exists(src):
+            print "File given by src exists. Create a new relative path."
+            self.tmpsrc = src
+            self.src = self.get_unique_relpath()
+            
     def get_unique_relpath(self):
         """ Return a unique relative path for this element """
         
@@ -1295,7 +1307,11 @@ supermod.CTimeseries.subclass = CTimeseries
 class CData(supermod.CData, CBaseClass):
     def __init__(self, name=None, src=None, dtype=None, fileformat=None, description=None, metadata=None):
         super(CData, self).__init__(src, dtype, name, fileformat, description, metadata, )
-                
+        if not src is None and os.path.exists(src):
+            print "File given by src exists. Create a new relative path."
+            self.tmpsrc = src
+            self.src = self.get_unique_relpath()
+            
     def get_unique_relpath(self):
         """ Return a unique relative path for this element """
         
@@ -1317,7 +1333,11 @@ supermod.CData.subclass = CData
 class CScript(supermod.CScript, CBaseClass):
     def __init__(self, name=None, src=None, dtype='Python', fileformat='UTF-8', description=None, metadata=None):
         super(CScript, self).__init__(src, dtype, name, fileformat, description, metadata, )
-        
+        if not src is None and os.path.exists(src):
+            print "File given by src exists. Create a new relative path."
+            self.tmpsrc = src
+            self.src = self.get_unique_relpath()
+            
     def get_unique_relpath(self):
         """ Return a unique relative path for this element """
         
@@ -1368,7 +1388,7 @@ supermod.CScript.subclass = CScript
 class CImagestack(supermod.CImagestack, CBaseClass):
     def __init__(self, name=None, src=None, fileformat=None, pattern=None, description=None, metadata=None):
         super(CImagestack, self).__init__(src, fileformat, name, pattern, description, metadata, )
-        
+
     def save(self):
         """ Save a loaded connectome object to a temporary file, return the path """
         raise NotImplementedError('Saving CImagestack not implemented yet.')
