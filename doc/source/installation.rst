@@ -2,7 +2,9 @@
 Installation of Connectome File Format Library
 ==============================================
 
-You can clone the library from GitHub using git::
+.. note:: Very soon, a release version will be provided through `NeuroDebian <http://neuro.debian.net>`_
+
+For development, you can clone or fork the library from GitHub::
 
 	git clone git@github.com:LTS5/cfflib.git
 	
@@ -13,15 +15,7 @@ And then do a install in the cloned folder::
 Be aware that for the successfull loading of different connectome objects, you need
 to have the corresponding Python libraries installed. Here are the dependencies:
 
-+------------+---------------------------+----------------------------------------+
-| Library    | Used for                  | Supports file formats                  |
-+============+===========================+========================================+
-| NetworkX   | CNetwork                  | GraphML, GEXF                          |
-+------------+---------------------------+----------------------------------------+
-| Nibabel    | CVolume, CSurface, CTrack | Nifti1, Gifti, TrackVis                |
-+------------+---------------------------+----------------------------------------+
-| NumPy      | CData                     | NumPy                                  |
-+------------+---------------------------+----------------------------------------+
-| PyTables   | CTimeserie, CData         | HDF5                                   |
-+------------+---------------------------+----------------------------------------+
-	
+* NetworkX >= 1.4 (GraphML, NXGPickle, GEXF)
+* Nibabel >= 1.1.0 (Nifti1, Gifti, TrackVis)
+* NumPy (NumPy arrays)
+* PyTables (optional, HDF5)

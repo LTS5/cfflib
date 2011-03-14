@@ -2,7 +2,7 @@
 How to use the Connectome File Format Library
 =============================================
 
-An example Connectome File Format Version 2.0 is provided on the `homepage <http://connectomeviewer.org/viewer/datasets>`_.
+.. note:: Example connectome files are provided in the GitHub repository `cffdata <http://github.com/LTS5/cffdata>`_.
 
 Import the library. Subsequently, we assume that this has been done::
 
@@ -10,7 +10,7 @@ Import the library. Subsequently, we assume that this has been done::
 	
 Load the dataset from the file system::
 
-	a=load_from_meta_cml('datasets/ds1/meta.cml')
+	a=load_from_meta_cml('example_dataset_01/meta.cml')
 	
 You can print all the loaded connectome objects::
 
@@ -19,16 +19,15 @@ You can print all the loaded connectome objects::
 If you have a zipped file with ending .cff, you can load it as well with::
 
 	a=load_from_cff('datasets/ds1/connectomefile.cff')
-	
 
 You can get the first network and load it like this::
 
 	mynetwork = a.get_by_name('Network Lausanne83')[0]
 	mynetwork.load()
 	
-The loaded network object stored on the content attribute::
+The loaded network object accessible through the data attribute (a NetworkX object)::
 
-	print mynetwork.content
+	print mynetwork.data
 
 You see that it is a NetworkX graph. You can modify it as you like.
 
@@ -42,11 +41,11 @@ Show other attributes::
 	
 	print mynetwork.name
 	print mynetwork.dtype
-	print mynetwork.description.value
+	print mynetwork.description
 
 To show the metadata attributes as dictionary::
 
-  print mynetwork.metadata.contents
+  print mynetwork.get_metadata_as_dict()
 
 You can save the currently loaded connectome file::
 
@@ -55,38 +54,38 @@ You can save the currently loaded connectome file::
 The same you can do for other connectome objects, if the corresponding Python libraries are installed correctly::
 
 	# CVolume
-	obj = a.get_by_name('Example Volume')[0]
+	obj = a.get_by_name('Example Volume')
 	obj.load()
-	print obj.content
+	print obj.data
 
 	# CSurface
-	obj = a.get_by_name('Example Surface')[0]
+	obj = a.get_by_name('Example Surface')
 	obj.load()
-	print obj.content
+	print obj.data
 
 	# CTrack
-	obj = a.get_by_name('Tractography')[0]
+	obj = a.get_by_name('Tractography')
 	obj.load()
-	# You do not want to display all fibers, just show header
-	print obj.content[1]
+	# You do not want to display all fibers, just show the header
+	print obj.data[1]
 
-	# CTimeserie
-	obj = a.get_by_name('Generated timeseries data')[0]
+	# CTimeseries
+	obj = a.get_by_name('Generated timeseries data')
 	obj.load()
-	print obj.content
+	print obj.data
 		
 	# CData
-	obj = a.get_by_name('Arbitrary data file')[0]
+	obj = a.get_by_name('Arbitrary data file')
 	obj.load()
-	print obj.content
+	print obj.data
 	
 	# CScript
-	obj = a.get_by_name('Analysis Script MMXXXIV')[0]
+	obj = a.get_by_name('Analysis Script MMXXXIV')
 	obj.load()
-	print obj.content
+	print obj.data
 	
 	# CImagestack
-	obj = a.get_by_name('FIB Rat Striatum')[0]
+	obj = a.get_by_name('FIB Rat Striatum')
 	obj.load()
-	print obj.content
+	print obj.data
 	

@@ -2,8 +2,7 @@ Generate classes with:
 
 generateDS.py --subclass-suffix="" -f --super="cff" -o ../cff.py -s ../cfflib.py -a "xsd:" --namespacedef='xmlns:cml="http://www.connectomics.org/cff-2" xmlns:dcterms="http://purl.org/dc/terms/"' connectome.xsd
 
-
-Documentation:
+You need generateDS to create the object model from XML Schema:
 http://www.rexx.com/~dkuhlman/generateDS.html
 
 Convention

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-"""Connectome Mapping Toolkit
+"""Connectome File Format Library is part of the Connectome Mapping Toolkit
 """
 from glob import glob
 import os
@@ -32,16 +32,16 @@ def main(**extra_args):
     from distutils.core import setup
     
     setup(name='cfflib',
-          version='0.9',
+          version='2.0',
           description='Connectome File Format Library',
-          long_description = """The Connectome File Format library supports easy handling of many neuroimaging formats and metadata for research in connectomics""",
+          long_description = """The Connectome File Format library supports easy handling of multi-modal neuroimaging formats and metadata for research in connectomics""",
           author='EPFL LTS5 Diffusion Group',
           author_email='info@connectomics.org',
           url='http://www.connectomics.org/',
-          license='BSD License',
+          license='Modified BSD License',
           packages = packages,
         classifiers = [c.strip() for c in """\
-            Development Status :: 3 - Alpha
+            Development Status :: 5 - Production/Stable
             Intended Audience :: Developers
             Intended Audience :: Science/Research
             Operating System :: OS Independent

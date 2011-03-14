@@ -68,24 +68,26 @@ After these first creations, we want to get a look at the output file this objec
 
 The first one will save the connectome object to a compressed CFF file and the second one will just save in a CML file.
 
-Open the created CML file. You can see a first tag nammed *connectome* which is your connectome object. Inside, you should find your connectome metadata surrounded by the *connectome-meta* tag.
+Open the created CML file. You can see a first tag named *connectome* which is your connectome object. Inside, you should find your connectome metadata surrounded by the *connectome-meta* tag.
 
-More precisely, your CML file should look like this one::
+More precisely, your meta.cml file should look like this one::
 
     <?xml version="1.0" encoding="UTF-8"?>
-    <connectome xmlns="http://www.connectomics.org/2010/Connectome/xmlns"
-      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-          xsi:schemaLocation="http://www.connectomics.org/2010/Connectome/xmlns connectome.xsd" >
-        <connectome-meta version="2.0">
-            <generator>cfflib</generator>
-            <name>My first connectome</name>
-            <author>Connectome Tutorial</author>
-            <institution>EPFL</institution>
-            <creation-date>2010-10-26</creation-date>
-            <url>www.connectome.ch</url>
-            <description>First connectome object created with the tutorial.</description>
-        </connectome-meta>
-    </connectome>
+    <cml:connectome xmlns="http://www.connectomics.org/cff-2"
+        xmlns:cml="http://www.connectomics.org/cff-2"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:dcterms="http://purl.org/dc/terms/"
+        xsi:schemaLocation="http://www.connectomics.org/cff-2 connectome.xsd">
+        <cml:connectome-meta version="2.0">
+            <dcterms:title>My first connectome</dcterms:title>
+            <dcterms:creator>Connectome Tutorial</dcterms:creator>
+            <dcterms:created>2010-10-26</dcterms:created>
+            <dcterms:modified>2011-02-24</dcterms:modified>
+            <dcterms:description>First connectome object created with the tutorial.</dcterms:description>
+            <cml:generator>cfflib</cml:generator>
+            <cml:email>yourname@epfl.ch</cml:email>
+        </cml:connectome-meta>
+    </cml:connectome>
 
 Load from file
 ==============
@@ -215,29 +217,31 @@ At this point, we can try to save again our connectome to check the CML::
 
     save_to_meta_cml(myConnectome, '/your/wanted/path/meta.cml')  
     
-The output file should look like (with your paths)::
+The output file should look like::
 
     <?xml version="1.0" encoding="UTF-8"?>
-    <connectome xmlns="http://www.connectomics.org/2010/Connectome/xmlns"
-      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-          xsi:schemaLocation="http://www.connectomics.org/2010/Connectome/xmlns connectome.xsd" >
-        <connectome-meta version="2.0">
-            <generator>cfflib</generator>
-            <name>My first connectome</name>
-            <author>Connectome Tutorial</author>
-            <institution>EPFL</institution>
-            <creation-date>2010-10-26</creation-date>
-            <url>www.connectome.ch</url>
-            <description>First connectome object created with the tutorial.</description>
-        </connectome-meta>
-        <connectome-network src="CNetwork/my_first_cnetwork.gpickle" dtype="AttributeNetwork" name="My First CNetwork" fileformat="NXGPickle">
-            <metadata>
-                <data key="sd">1234</data>
-            </metadata>
-            <description>A first CNetwork created with the tutorial</description>
-        </connectome-network>
-        <connectome-network src="CNetwork/my_graphml_network.graphml" dtype="AttributeNetwork" name="My GraphML Network" fileformat="GraphML"/>
-    </connectome>
+    <cml:connectome xmlns="http://www.connectomics.org/cff-2"
+        xmlns:cml="http://www.connectomics.org/cff-2"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:dcterms="http://purl.org/dc/terms/"
+        xsi:schemaLocation="http://www.connectomics.org/cff-2 connectome.xsd">
+        <cml:connectome-meta version="2.0">
+            <dcterms:title>My first connectome</dcterms:title>
+            <dcterms:creator>Connectome Tutorial</dcterms:creator>
+            <dcterms:created>2010-10-26</dcterms:created>
+            <dcterms:modified>2011-02-24</dcterms:modified>
+            <dcterms:description>First connectome object created with the tutorial.</dcterms:description>
+            <cml:generator>cfflib</cml:generator>
+            <cml:email>yourname@epfl.ch</cml:email>
+        </cml:connectome-meta>
+        <cml:connectome-network src="CNetwork/my_first_cnetwork.gpickle" dtype="AttributeNetwork" name="My First CNetwork" fileformat="NXGPickle">
+            <cml:metadata>
+                <cml:tag key="sd">1234</cml:tag>
+            </cml:metadata>
+            <cml:description>A first CNetwork created with the tutorial</cml:description>
+        </cml:connectome-network>
+        <cml:connectome-network src="CNetwork/my_graphml_network.graphml" dtype="AttributeNetwork" name="My GraphML Network" fileformat="GraphML"/>
+    </cml:connectome>
     
 Now you can see there are two new blocks with the tag *connectome-network* which are the added CNetwork with the given attributes. The first one is the CNetwork added from the NetworkX object and contains the metadata and the description. The second one is the one created from the GraphML file.
     
@@ -270,4 +274,11 @@ Again, you can add some more informations with the description and the metadata:
     cv.update_metadata({'meta1': 123})        
         
         
-        
+Other objects
+=============
+
+You can display the docstring of the other connectome objects to see how to create, manipulate and store them.
+The procedures are very similar. If you need more working code to get you started, you can look into the
+`tests <http://github.com/LTS5/cfflib/tree/master/cfflib/tests>`_.
+
+.. note :: Example connectome files are provided in the GitHub repository `cffdata <http://github.com/LTS5/cffdata>`_.
