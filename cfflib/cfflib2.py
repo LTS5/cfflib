@@ -9,6 +9,14 @@
 import warnings
 from util import *
 from cff import showIndent, quote_xml, tag
+import tempfile
+import os.path as op
+has_pyxnat = True
+try:
+    import pyxnat    
+except:
+    has_pyxnat = False
+    
 
 import sys
 
@@ -140,10 +148,181 @@ class connectome(supermod.connectome):
         if title is None:
             title = 'myconnectome'
         
+        self._xnat_interface = None
+        
         # Default CMetadata
         if connectome_meta is None:
             self.connectome_meta = CMetadata()
             self.connectome_meta.set_title(title)
+        
+    def set_xnat_connection(self, interface = None):
+        """ Setup this connectome container to push and pull from XNAT
+        
+        Parameters
+        ----------
+        connection_interface : { pxnat.Interface, dict }
+            Set the PyXNAT interface or a dictionary
+            with keys server, user, password, cachedir (optional)
+            
+        """
+        
+        if not has_pyxnat:
+            raise Exception('You need to install PyXNAT to use this functionality')
+        
+        if isinstance(interface, dict):
+            self._xnat_interface = pxnat.Interface(**interface)
+        elif isinstance(interface, pyxnat.Interface):
+            self._xnat_interface = interface
+        else:
+            self._xnat_interface = None
+            
+    def add_connectome_object(self, cobj):
+        """ Adds an arbitrary connectome object to the container depending
+        its type. This needs to be a valid connectome object
+        """
+        
+        cname = cobj.__class__.__name__
+        
+        if cname == 'CNetwork':
+            self.add_connectome_network(cobj)            
+        elif cname == 'CSurface':
+            self.add_connectome_surface(cobj)
+        elif cname == 'CVolume':
+            self.add_connectome_volume(cobj)
+        elif cname == 'CTrack':
+            self.add_connectome_track(cobj)
+        elif cname == 'CData':
+            self.add_connectome_data(cobj)
+        elif cname == 'CScript':
+            self.add_connectome_script(cobj)
+        elif cname == 'CTimeseries':
+            self.add_connectome_timeseries(cobj)
+
+            
+        # XXX> to be competed
+        
+            
+    def push(self, projectid, subjectid, experimentid, overwrite = False):
+        """ Push all the connectome objects to the remote XNAT server.
+        
+        Parameters
+        ----------
+        projectid : string
+            The id of the project, has to be unique across an XNAT server
+        subjectid : string
+            The id of the subject
+        experimentid : string
+            The id of the experiment
+        overwrite : boolean
+            Overwrite remote version of the connectome object with
+            the connectome object contained in the local connectome container
+            
+        """
+        def _push_metacml(experiment_uri):
+            _, fname = tempfile.mkstemp()
+            f=open(fname, 'wb')
+            f.write(self.to_xml())
+            f.close()
+
+            # finally update remote meta.cml
+            meta_uri = '%s/resources/meta/files/meta.cml' % experiment_uri
+            self._xnat_interface.select(meta_uri).insert(fname, experiments = 'xnat:imageSessionData', \
+                        use_label=True)
+
+
+        if self._xnat_interface is None:
+            raise Exception('You need to set the XNAT connection with set_xnat_connection')
+
+        # we define the unique experimental id based on the user input
+        subj_id = '%s_%s' % (projectid, subjectid)
+        exp_id = '%s_%s' % (subj_id, experimentid)
+        
+        experiment_uri = '/projects/%s/subjects/%s/experiments/%s' % (projectid, subj_id, exp_id)
+        metacml_uri = '%s/resources/meta/files/meta.cml' % experiment_uri
+                
+        # does the experiment exists                    
+        if self._xnat_interface.select(metacml_uri).exists():
+            # it exists, just download it
+            self._remote_metacml = self._xnat_interface.select(metacml_uri).get()
+            
+            # compare it to the local object
+            remote_metacml = open(self._remote_metacml, 'rb')
+            
+            remote_connectome = parseString(remote_metacml.read())
+            
+            # loop over local connectome objects and check if the exists remotely
+            all_local_cobj = self.get_all()
+            
+            # connectome objects we need to add to the remote metacml
+            push_objects = []
+            
+            for ele in all_local_cobj:
+                print "Working on element %s" % ele.name
+                if (ele in remote_connectome.get_all() and overwrite) or \
+                    not ele in remote_connectome.get_all():
+                    print "We push element %s" % ele.name
+                    print "Element in remote?" + str(ele in remote_connectome.get_all())
+                    
+                    # push connectome object to remote
+                    cobj_uri = '%s/assessors/%s/out/resources/data/files/%s' % (
+                        experiment_uri, 
+                        '%s_%s' % (exp_id, ele.__class__.__name__),
+                        quote_for_xnat(ele.name)
+                        )
+                    # insert data file to xnat
+                    self._xnat_interface.select(cobj_uri).insert(ele.get_abs_path(), experiments = 'xnat:imageSessionData', \
+                        assessors = 'xnat:imageAssessorData', use_label=True)
+                    # add element for updating metacml later on the remote
+                    push_objects.append(ele)
+                    
+                    
+                else:
+                    # we do not push
+                    print "We do nothing with element %s (already on remote and no overwrite)" % ele.name
+                    
+                    
+            # synchronize meta_cml
+            # we need to retrieve the remote connectome objects and add it to the
+            # local if they no not yet exists
+            for el in remote_connectome.get_all():
+                if not el in self.get_all():
+                    self.add_connectome_object(el)
+                    
+            #for el in push_objects:
+                # add all push_objects to remote meta_cml
+             #   remote_connectome.add_connectome_object(el)
+            
+            # update cmetadata (overwriting remote with local)
+            remote_connectome.connectome_meta = self.connectome_meta
+            
+            _push_metacml(experiment_uri)
+                               
+            print "Current local connectome container", self.to_xml()
+            print "Current remote connectome container", remote_connectome.to_xml()
+            print "Current push objects", push_objects     
+            
+        else:
+            # create meta.cml
+
+            # loop over local connectome objects and check if the exists remotely
+            all_local_cobj = self.get_all()
+            
+            for ele in all_local_cobj:
+                print "We push element %s" % ele.name
+                
+                # push connectome object to remote
+                cobj_uri = '%s/assessors/%s/out/resources/data/files/%s' % (
+                    experiment_uri, 
+                    '%s_%s' % (exp_id, ele.__class__.__name__),
+                    quote_for_xnat(ele.name)
+                    )
+                # insert data file to xnat
+                self._xnat_interface.select(cobj_uri).insert(ele.get_abs_path(), experiments = 'xnat:imageSessionData', \
+                        assessors = 'xnat:imageAssessorData', use_label=True)
+
+            # push the current connectome object to remote
+            _push_metacml(experiment_uri)
+            
         
     def get_all(self):
         """ Return all connectome objects as a list
@@ -213,18 +392,20 @@ class connectome(supermod.connectome):
         
     def check_file_in_cff(self):
         """Checks if the files described in the meta.cml are contained in the connectome zip file."""  
-        
+
         if not self.iszip:
-            return
-        
-        all_cobj = self.get_all()
-        nlist = self._zipfile.namelist()
-        
-        for ele in all_cobj:
-            
-            if not ele.src in nlist:
-                msg = "Element with name %s and source path %s is not contained in the connectome file." % (ele.name, ele.src)
-                raise Exception(msg)
+            all_cobj = self.get_all()
+            for ele in all_cobj:
+                if not op.exists(ele.src):
+                    msg = "Element with name %s and source path has no valid reference to an existing file." % (ele.name, ele.src)
+                    raise Exception(msg)
+        else:
+            all_cobj = self.get_all()
+            nlist = self._zipfile.namelist()
+            for ele in all_cobj:
+                if not ele.src in nlist:
+                    msg = "Element with name %s and source path %s is not contained in the connectome file." % (ele.name, ele.src)
+                    raise Exception(msg)
             
     def check_names_unique(self):
         """Checks whether the names are unique."""  
@@ -710,8 +891,7 @@ class connectome(supermod.connectome):
         s+= '\n'+'#'*60
         print(s)
         
-            
-    
+        
 supermod.connectome.subclass = connectome
 # end class connectome
 
@@ -878,6 +1058,9 @@ supermod.CMetadata.subclass = CMetadata
 class CBaseClass(object):
 
 
+    def get_abs_path(self):
+        return op.join(op.dirname(self.parent_cfile.fname), self.src)
+
     def save(self):
         """ Save a loaded connectome object to a temporary file, return the path """
         rval = save_data(self)
@@ -949,7 +1132,18 @@ class CBaseClass(object):
             print s
         else:
             return s
-
+    
+    def __eq__(self, y):
+        return ( self.__class__.__name__ == y.__class__.__name__ and
+        self.get_name() == y.get_name() and
+        self.get_dtype() == y.get_dtype() and
+        self.get_description() == y.get_description() and
+        self.get_fileformat() == y.get_fileformat() and
+        self.get_src() == y.get_src() and
+        self.get_metadata_as_dict() == y.get_metadata_as_dict() )
+        
+        
+        
 
 class CNetwork(supermod.CNetwork, CBaseClass):
     """A connectome network object"""

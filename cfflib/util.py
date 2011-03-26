@@ -31,6 +31,16 @@ except ImportError:
     pass
     #raise ImportError("Failed to import pytables from any known place")
 
+def quote_for_xnat(name):
+    """ Quote mapping from connectome object name to a valid XNAT filename
+    that can be used for PyXNAT queries """
+    n = name.lower()
+    # XXX: might need update
+    remove_characters = [' ', '/', '\\', '[', ']', '*', '"', '?', '\'', '%'] 
+    for c in remove_characters:
+        n = n.replace(c, '_')    
+    return n
+    
 
 def validate_fileformat_type(src, location, fileformat):
     """ Try to evaluate whether the given file has the correct fileformat is given """
