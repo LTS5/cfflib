@@ -36,7 +36,7 @@ def quote_for_xnat(name):
     that can be used for PyXNAT queries """
     n = name.lower()
     # XXX: might need update
-    remove_characters = [' ', '/', '\\', '[', ']', '*', '"', '?', '\'', '%'] 
+    remove_characters = [' ', '/', '\\', '[', ']', '*', '"', '?', '\'', '%', '(', ')'] 
     for c in remove_characters:
         n = n.replace(c, '_')    
     return n

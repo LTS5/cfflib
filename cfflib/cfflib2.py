@@ -11,6 +11,7 @@ from util import *
 from cff import showIndent, quote_xml, tag
 import tempfile
 import os.path as op
+import os
 has_pyxnat = True
 try:
     import pyxnat    
@@ -200,6 +201,49 @@ class connectome(supermod.connectome):
 
             
         # XXX> to be competed
+        
+    def pull(self, projectid, subjectid, experimentid, storagepath):
+        """ Pull the complete set of files from a subject and experiment """
+   
+        absstoragepath = op.abspath(storagepath)
+        
+        # we define the unique experimental id based on the user input
+        subj_id = '%s_%s' % (projectid, subjectid)
+        exp_id = '%s_%s' % (subj_id, experimentid)
+        
+        experiment_uri = '/projects/%s/subjects/%s/experiments/%s' % (projectid, subj_id, exp_id)
+        metacml_uri = '%s/resources/meta/files/meta.cml' % experiment_uri
+        
+        # download meta.cml
+        metacmlpath = op.join(absstoragepath, 'meta.cml')
+        meta_uri = '%s/resources/meta/files/meta.cml' % experiment_uri
+        self._xnat_interface.select(meta_uri).get(metacmlpath)
+            
+        # parse meta.cml
+        f = open(metacmlpath, 'rb')
+        remote_connectome = parseString(f.read())
+        f.close()
+        print "Remote connectome", remote_connectome.to_xml()
+        
+        # loop over objects and download them to pyxnat cache / or path 
+        for ele in remote_connectome.get_all():
+            
+            cobj_uri = '%s/assessors/%s/out/resources/data/files/%s' % (
+                    experiment_uri, 
+                    '%s_%s' % (exp_id, ele.__class__.__name__),
+                    quote_for_xnat(ele.name)
+                    )
+            # download file
+            # does file folder exist?
+            eleobjfolderfname = op.join(absstoragepath, ele.get_unique_relpath())
+            
+            if not op.exists(op.split(eleobjfolderfname)[0]):
+                os.makedirs( op.split(eleobjfolderfname)[0] )
+            
+            self._xnat_interface.select(cobj_uri).get(eleobjfolderfname)
+                        
+        return remote_connectome
+        # recreate the connectome metacml using the tmpsrc
         
             
     def push(self, projectid, subjectid, experimentid, overwrite = False):
