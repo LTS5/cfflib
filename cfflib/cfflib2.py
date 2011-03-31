@@ -17,10 +17,11 @@ try:
     import pyxnat    
 except:
     has_pyxnat = False
-    
+
+
+DEBUG_msg = False
 
 import sys
-
 import cff as supermod
 
 etree_ = None
@@ -171,11 +172,14 @@ class connectome(supermod.connectome):
             raise Exception('You need to install PyXNAT to use this functionality')
         
         if isinstance(interface, dict):
-            self._xnat_interface = pxnat.Interface(**interface)
+            self._xnat_interface = pyxnat.Interface(**interface)
         elif isinstance(interface, pyxnat.Interface):
             self._xnat_interface = interface
         else:
             self._xnat_interface = None
+
+        if DEBUG_msg:
+            print("Connected to XNAT Server")
             
     def add_connectome_object(self, cobj):
         """ Adds an arbitrary connectome object to the container depending
@@ -223,11 +227,15 @@ class connectome(supermod.connectome):
         f = open(metacmlpath, 'rb')
         remote_connectome = parseString(f.read())
         f.close()
-        print "Remote connectome", remote_connectome.to_xml()
+        if DEBUG_msg:
+            print "Remote connectome", remote_connectome.to_xml()
         
         # loop over objects and download them to pyxnat cache / or path 
         for ele in remote_connectome.get_all():
-            
+            if DEBUG_msg:
+                print("Downloading connectome object")
+                ele.print_summary()
+                
             cobj_uri = '%s/assessors/%s/out/resources/data/files/%s' % (
                     experiment_uri, 
                     '%s_%s' % (exp_id, ele.__class__.__name__),
@@ -241,9 +249,14 @@ class connectome(supermod.connectome):
                 os.makedirs( op.split(eleobjfolderfname)[0] )
             
             self._xnat_interface.select(cobj_uri).get(eleobjfolderfname)
-                        
-        return remote_connectome
-        # recreate the connectome metacml using the tmpsrc
+
+        # update current connectome container
+        print("=============")
+        print("You can load the pulled connectome file with:")
+        print("import cfflib as cf; mycon = cf.load('%s')" % op.join(absstoragepath, 'meta.cml'))
+        print("=============")
+        
+        return True
         
             
     def push(self, projectid, subjectid, experimentid, overwrite = False):
@@ -301,11 +314,13 @@ class connectome(supermod.connectome):
             push_objects = []
             
             for ele in all_local_cobj:
-                print "Working on element %s" % ele.name
+                if DEBUG_msg:
+                    print "Working on element %s" % ele.name
                 if (ele in remote_connectome.get_all() and overwrite) or \
                     not ele in remote_connectome.get_all():
-                    print "We push element %s" % ele.name
-                    print "Element in remote?" + str(ele in remote_connectome.get_all())
+                    if DEBUG_msg:
+                        print "We push element %s" % ele.name
+                        print "Element in remote?" + str(ele in remote_connectome.get_all())
                     
                     # push connectome object to remote
                     cobj_uri = '%s/assessors/%s/out/resources/data/files/%s' % (
@@ -322,7 +337,8 @@ class connectome(supermod.connectome):
                     
                 else:
                     # we do not push
-                    print "We do nothing with element %s (already on remote and no overwrite)" % ele.name
+                    if DEBUG_msg:
+                        print "We do nothing with element %s (already on remote and no overwrite)" % ele.name
                     
                     
             # synchronize meta_cml
@@ -340,10 +356,11 @@ class connectome(supermod.connectome):
             remote_connectome.connectome_meta = self.connectome_meta
             
             _push_metacml(experiment_uri)
-                               
-            print "Current local connectome container", self.to_xml()
-            print "Current remote connectome container", remote_connectome.to_xml()
-            print "Current push objects", push_objects     
+
+            if DEBUG_msg:
+                print "Current local connectome container", self.to_xml()
+                print "Current remote connectome container", remote_connectome.to_xml()
+                print "Current push objects", push_objects
             
         else:
             # create meta.cml
