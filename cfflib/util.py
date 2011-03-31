@@ -257,7 +257,7 @@ def load_data(obj):
     if obj.parent_cfile.iszip:
         
         from tempfile import gettempdir
-    
+
         # create a meaningful and unique temporary path to extract data files
         tmpdir = op.join(gettempdir(), obj.parent_cfile.get_unique_cff_name())
 

@@ -506,9 +506,14 @@ class connectome(supermod.connectome):
     
     def get_unique_cff_name(self):
         """Return a unique connectome file title"""
+        
+        # create random number to append to the name
+        # to enable multiple people to access the files
+        import random
+        rndstr = str(int(random.random()*1000000))
         n = self.get_connectome_meta().get_title()
         n = n.lower()
-        n = n.replace(' ', '_')
+        n = n.replace(' ', '_') + rndstr
         return n
         
     def get_normalised_name(self, name):
