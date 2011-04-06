@@ -1260,7 +1260,7 @@ class CNetwork(supermod.CNetwork, CBaseClass):
     @classmethod
     def create_from_graphml(cls, name, ml_filename):
         """ Return a CNetwork object from a given ml_filename pointint to
-        a GraphML file in your file system
+        a GraphML file in your file system (not loading the file)
         
         Parameters
         ----------
@@ -1283,7 +1283,7 @@ class CNetwork(supermod.CNetwork, CBaseClass):
         cnet.tmpsrc     = op.abspath(ml_filename)
         cnet.fileformat = "GraphML"
         cnet.dtype      = "AttributeNetwork"
-        cnet.data       = nx.read_graphml(ml_filename)
+        #cnet.data       = nx.read_graphml(ml_filename)
         cnet.src        = cnet.get_unique_relpath()
 
         return cnet
@@ -1396,8 +1396,8 @@ class CSurface(supermod.CSurface, CBaseClass):
         csurf.tmpsrc     = op.abspath(gii_filename)
         csurf.fileformat = "Gifti"
         csurf.dtype      = dtype
-        import nibabel.gifti as nig
-        csurf.data       = nig.read(gii_filename)
+        #import nibabel.gifti as nig
+        #csurf.data       = nig.read(gii_filename)
         csurf.src        = csurf.get_unique_relpath()
         return csurf
     
@@ -1475,7 +1475,7 @@ class CVolume(supermod.CVolume, CBaseClass):
         else:
             cvol.fileformat = "Nifti1"
         cvol.dtype      = dtype
-        cvol.data       = ni.load(nii_filename)
+        #cvol.data       = ni.load(nii_filename)
         cvol.src        = cvol.get_unique_relpath()
         return cvol
     
