@@ -30,12 +30,12 @@ if not 'extra_setuptools_args' in globals():
 
 def main(**extra_args):
     from distutils.core import setup
-    
+    from cfflib.info import __version__
     setup(name='cfflib',
-          version='2.0',
+          version=__version__,
           description='Connectome File Format Library',
           long_description = """The Connectome File Format library supports easy handling of multi-modal neuroimaging formats and metadata for research in connectomics""",
-          author='EPFL LTS5 Diffusion Group',
+          author= 'Stephan Gerhard',
           author_email='info@connectomics.org',
           url='http://www.connectomics.org/',
           license='Modified BSD License',
@@ -49,7 +49,7 @@ def main(**extra_args):
             Topic :: Scientific/Engineering
             Topic :: Software Development
             """.splitlines() if len(c.split()) > 0],    
-          maintainer = 'Stephan Gerhard',
+          maintainer = 'EPFL LTS5 Diffusion Group',
           maintainer_email = 'info@connectomics.org',
           package_data = package_data,
           **extra_args
