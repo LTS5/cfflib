@@ -135,7 +135,7 @@ def save_to_cff(connectome, filename):
         print "ERROR - the connectome metadata have to contain a unique title"
         return
     
-    _newzip = ZipFile(filename, 'w', ZIP_DEFLATED)
+    _newzip = ZipFile(filename, 'w', ZIP_DEFLATED, allowZip64 = True)
     
     allcobj = connectome.get_all()
     
