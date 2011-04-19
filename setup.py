@@ -27,10 +27,11 @@ if len(set(('develop', 'bdist_egg', 'bdist_rpm', 'bdist', 'bdist_dumb',
 if not 'extra_setuptools_args' in globals():
     extra_setuptools_args = dict()
     
+ver_file = os.path.join('cfflib', 'info.py')
+exec(open(ver_file).read())
 
 def main(**extra_args):
     from distutils.core import setup
-    from cfflib.info import __version__
     setup(name='cfflib',
           version=__version__,
           description='Connectome File Format Library',
@@ -52,6 +53,7 @@ def main(**extra_args):
           maintainer = 'EPFL LTS5 Diffusion Group',
           maintainer_email = 'info@connectomics.org',
           package_data = package_data,
+          requires=["numpy (>=1.2)", "nibabel (>=1.0.1)"],
           **extra_args
          )
 
