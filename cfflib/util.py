@@ -265,14 +265,15 @@ def load_data(obj):
         _zipfile = ZipFile(obj.parent_cfile.src, 'r', ZIP_DEFLATED)
         try:
             exfile = _zipfile.extract(obj.src, tmpdir)
-        except: # XXX: what is the correct exception for read error?
-            raise RuntimeError('Can not extract %s from connectome file.' % str(obj.src) )
-        finally:
             print "Created temporary file %s while loading." % exfile
             obj.tmpsrc = exfile
             _zipfile.close()
-            
-        return load(exfile)
+            return load(exfile)
+        except: # XXX: what is the correct exception for read error?
+            raise RuntimeError('Can not extract "%s" from connectome file using path %s. Please extract .cff and load meta.cml directly.' % (str(obj.name), str(obj.src)) )
+      
+        return None
+        
         
     else:
         if hasattr(obj, 'tmpsrc'):
