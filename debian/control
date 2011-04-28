@@ -2,7 +2,6 @@ Source: cfflib
 Section: python
 Priority: extra
 Maintainer: Stephan Gerhard <debian@unidesign.ch>
-Uploaders: Stephan Gerhard <info@connectomics.org>
 Build-Depends: debhelper (>=  7.2.18), python-all, python-support,
 			   python-numpy,
 			   python-sphinx,
@@ -18,14 +17,14 @@ XS-Python-Version: >= 2.6
 Package: python-cfflib
 Architecture: all
 Depends: ${python:Depends}, ${misc:Depends},
-     python-lxml,
-		 python-numpy,
-     python-networkx (>= 1.4),
-     python-nibabel (>= 1.1.0),
+		python-lxml,
+		python-numpy,
+		python-networkx (>= 1.4),
+		python-nibabel (>= 1.1.0),
 Recommends: python-nose,
 			python-sphinx,
-      python-tables,
-      python-h5py
+			python-tables,
+			python-h5py
 Provides: ${python:Provides}
 Description: Multi-modal connectome and metadata management and integration
  The Connectome File Format Library (cfflib) is a Python module for

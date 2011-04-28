@@ -1,5 +1,5 @@
-cfflib (2.0.2-1) unstable; urgency=low
+cfflib (2.0.2-1~pre1) UNRELEASED; urgency=low
 
-  * Initial release.
+  * Initial release (Closes: #624456).
 
  -- Stephan Gerhard <debian@unidesign.ch>  Thu, 28 Apr 2011 10:49:57 +0200

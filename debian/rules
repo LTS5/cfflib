@@ -1,7 +1,7 @@
 #!/usr/bin/make -f
 # -*- makefile -*-
 
-PACKAGE_NAME = python-nitime
+PACKAGE_NAME = python-cfflib
 PACKAGE_ROOT_DIR = debian/${PACKAGE_NAME}
 INSTALL_PATH = $(CURDIR)/debian/tmp
 

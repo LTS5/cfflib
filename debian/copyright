@@ -1,6 +1,6 @@
-Format-Specification: http://svn.debian.org/wsvn/dep/web/deps/dep5.mdwn?op=file&rev=135
-Name: cfflib
-Maintainer: debian@unidesign.ch
+Format-Specification: http://svn.debian.org/wsvn/dep/web/deps/dep5.mdwn?op=file&rev=173
+Upstream-Name: cfflib
+Upstream-Contact: Stephan Gerhard <debian@unidesign.ch>
 Source: http://github.com/LTS5/cfflib
 
 
