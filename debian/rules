@@ -1,0 +1,12 @@
+#!/usr/bin/make -f
+# -*- makefile -*-
+
+PACKAGE_NAME = python-nitime
+PACKAGE_ROOT_DIR = debian/${PACKAGE_NAME}
+INSTALL_PATH = $(CURDIR)/debian/tmp
+
+# default Python
+PYTHON=$(shell pyversions -d)
+
+%:
+	dh $@
