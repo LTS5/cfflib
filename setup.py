@@ -35,7 +35,7 @@ def main(**extra_args):
     setup(name='cfflib',
           version=__version__,
           description='Connectome File Format Library',
-          long_description = """The Connectome File Format library supports easy handling of multi-modal neuroimaging formats and metadata for research in connectomics""",
+          long_description = """The Connectome File Format library supports handling of multi-modal neuroimaging datasets and metadata""",
           author= 'Stephan Gerhard',
           author_email='info@connectomics.org',
           url='http://www.connectomics.org/',
