@@ -112,7 +112,6 @@ def save_data(obj):
         elif 'CTrack' in objrep:
             if obj.fileformat == "TrackVis":
                 ni.trackvis.write(tmpfname, obj.data[0], obj.data[1])
-                # XXX: correct?
             else:
                 raise NotSupportedFormat("Other", str(obj))
             

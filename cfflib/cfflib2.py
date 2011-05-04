@@ -212,8 +212,11 @@ class connectome(supermod.connectome):
         absstoragepath = op.abspath(storagepath)
         
         # we define the unique experimental id based on the user input
-        subj_id = '%s_%s' % (projectid, subjectid)
-        exp_id = '%s_%s' % (subj_id, experimentid)
+        # see push for more comments
+#        subj_id = '%s_%s' % (projectid, subjectid)
+#        exp_id = '%s_%s' % (subj_id, experimentid)
+        subj_id = '%s' % subjectid
+        exp_id = '%s_%s' % (projectid, experimentid)
         
         experiment_uri = '/projects/%s/subjects/%s/experiments/%s' % (projectid, subj_id, exp_id)
         metacml_uri = '%s/resources/meta/files/meta.cml' % experiment_uri
@@ -239,8 +242,9 @@ class connectome(supermod.connectome):
             cobj_uri = '%s/assessors/%s/out/resources/data/files/%s' % (
                     experiment_uri, 
                     '%s_%s' % (exp_id, ele.__class__.__name__),
-                    quote_for_xnat(ele.name)
+                    quote_for_xnat(ele.name) + ele.get_file_ending()
                     )
+            
             # download file
             # does file folder exist?
             eleobjfolderfname = op.join(absstoragepath, ele.get_unique_relpath())
@@ -291,8 +295,15 @@ class connectome(supermod.connectome):
             raise Exception('You need to set the XNAT connection with set_xnat_connection')
 
         # we define the unique experimental id based on the user input
-        subj_id = '%s_%s' % (projectid, subjectid)
-        exp_id = '%s_%s' % (subj_id, experimentid)
+        # user do not expect this composed identifiers, so we directly use
+        # the given parameters to construct the path
+        # originally, we thought that this is required because there have to be
+        # unique subject identifiers across the whole XNAT instance
+        # we seems not to be required anymore
+        # subj_id = '%s_%s' % (projectid, subjectid)
+        # exp_id = '%s_%s' % (subj_id, experimentid)
+        subj_id = '%s' % subjectid
+        exp_id = '%s_%s' % (projectid, experimentid)
         
         experiment_uri = '/projects/%s/subjects/%s/experiments/%s' % (projectid, subj_id, exp_id)
         metacml_uri = '%s/resources/meta/files/meta.cml' % experiment_uri
@@ -326,14 +337,15 @@ class connectome(supermod.connectome):
                     cobj_uri = '%s/assessors/%s/out/resources/data/files/%s' % (
                         experiment_uri, 
                         '%s_%s' % (exp_id, ele.__class__.__name__),
-                        quote_for_xnat(ele.name)
+                        quote_for_xnat(ele.name) + ele.get_file_ending()
                         )
+                    if DEBUG_msg:
+                        print "uri", cobj_uri
                     # insert data file to xnat
                     self._xnat_interface.select(cobj_uri).insert(ele.get_abs_path(), experiments = 'xnat:imageSessionData', \
                         assessors = 'xnat:imageAssessorData', use_label=True)
                     # add element for updating metacml later on the remote
                     push_objects.append(ele)
-                    
                     
                 else:
                     # we do not push
@@ -1154,6 +1166,7 @@ class CBaseClass(object):
             self.data = custom_loader(self)
         else:
             self.data = load_data(self)
+
     def get_metadata_as_dict(self):
         """Return the metadata as a dictionary"""
         if not self.metadata is None:
@@ -1242,10 +1255,9 @@ class CNetwork(supermod.CNetwork, CBaseClass):
             print "File given by src exists. Create a new relative path."
             self.tmpsrc = src
             self.src = self.get_unique_relpath()
-        
-    def get_unique_relpath(self):
-        """ Return a unique relative path for this element """
-        
+
+    def get_file_ending(self):
+        """ Return the file name ending """
         if self.fileformat == 'GraphML':
             fend = '.graphml'
         elif self.fileformat == 'GEXF':
@@ -1254,8 +1266,11 @@ class CNetwork(supermod.CNetwork, CBaseClass):
             fend = '.gpickle'
         elif self.fileformat == 'Other':
             fend = ''
-            
-        return unify('CNetwork', self.name + fend)
+        return fend
+
+    def get_unique_relpath(self):
+        """ Return a unique relative path for this element """
+        return unify('CNetwork', self.name + self.get_file_ending())
     
     @classmethod
     def create_from_graphml(cls, name, ml_filename):
@@ -1360,17 +1375,18 @@ class CSurface(supermod.CSurface, CBaseClass):
             print "File given by src exists. Create a new relative path."
             self.tmpsrc = src
             self.src = self.get_unique_relpath()
-        
-    def get_unique_relpath(self):
-        """ Return a unique relative path for this element """
 
+    def get_file_ending(self):
+        """ Return the file name ending """
         if self.fileformat == 'Gifti':
             fend = '.gii'
         elif self.fileformat == 'Other':
             fend = ''
-            
-        return unify('CSurface', self.name + fend)
-    
+        return fend
+
+    def get_unique_relpath(self):
+        """ Return a unique relative path for this element """
+        return unify('CSurface', self.name + self.get_file_ending())
     
     # Create from a Gifti file
     @classmethod
@@ -1435,19 +1451,20 @@ class CVolume(supermod.CVolume, CBaseClass):
             print "File given by src exists. Create a new relative path."
             self.tmpsrc = src
             self.src = self.get_unique_relpath()
-                  
-    def get_unique_relpath(self):
-        """ Return a unique relative path for this element """
-    
+
+    def get_file_ending(self):
+        """ Return the file name ending """
         if self.fileformat == 'Nifti1':
             fend = '.nii'
         elif self.fileformat == 'Nifti1GZ':
             fend = '.nii.gz'
         else:
             fend = ''
-            
-        return unify('CVolume', self.name + fend)
-    
+        return fend
+
+    def get_unique_relpath(self):
+        """ Return a unique relative path for this element """
+        return unify('CVolume', self.name + self.get_file_ending())
        
     # Create a CVolume from a Nifti1 file
     @classmethod
@@ -1516,16 +1533,18 @@ class CTrack(supermod.CTrack, CBaseClass):
             print "File given by src exists. Create a new relative path."
             self.tmpsrc = src
             self.src = self.get_unique_relpath()
-            
-    def get_unique_relpath(self):
-        """ Return a unique relative path for this element """
-    
+
+    def get_file_ending(self):
+        """ Return the file name ending """
         if self.fileformat == 'TrackVis':
             fend = '.trk'
         elif self.fileformat == 'Other':
             fend = ''
-            
-        return unify('CTrack', self.name + fend)
+        return fend
+
+    def get_unique_relpath(self):
+        """ Return a unique relative path for this element """
+        return unify('CTrack', self.name + self.get_file_ending())
     
     def get_fibers_as_numpy(self):
         """ Returns fiber array """
@@ -1549,16 +1568,20 @@ class CTimeseries(supermod.CTimeseries, CBaseClass):
             print "File given by src exists. Create a new relative path."
             self.tmpsrc = src
             self.src = self.get_unique_relpath()
-            
-    def get_unique_relpath(self):
-        """ Return a unique relative path for this element """
-        
+
+    def get_file_ending(self):
+        """ Return the file name ending """
         if self.fileformat == 'HDF5':
             fend = '.h5'
+        elif self.fileformat == 'NumPy':
+            fend = '.npy'
         elif self.fileformat == 'Other':
             fend = ''
-            
-        return unify('CTimeserie', self.name + fend)
+        return fend
+
+    def get_unique_relpath(self):
+        """ Return a unique relative path for this element """
+        return unify('CTimeserie', self.name + self.get_file_ending())
     
 supermod.CTimeseries.subclass = CTimeseries
 # end class CTimeserie
@@ -1571,20 +1594,30 @@ class CData(supermod.CData, CBaseClass):
             print "File given by src exists. Create a new relative path."
             self.tmpsrc = src
             self.src = self.get_unique_relpath()
-            
-    def get_unique_relpath(self):
-        """ Return a unique relative path for this element """
-        
+
+    def get_file_ending(self):
+        """ Return the file name ending """
         if self.fileformat == 'NumPy':
             fend = '.npy'
         if self.fileformat == 'HDF5':
             fend = '.h5'
         if self.fileformat == 'XML':
             fend = '.xml'
+        if self.fileformat == 'JSON':
+            fend = '.json'
+        if self.fileformat == 'Pickle':
+            fend = '.pkl'
+        if self.fileformat == 'CSV':
+            fend = '.csv'
+        if self.fileformat == 'TXT':
+            fend = '.txt'
         elif self.fileformat == 'Other':
             fend = ''
-            
-        return unify('CData', self.name + fend)
+        return fend
+
+    def get_unique_relpath(self):
+        """ Return a unique relative path for this element """
+        return unify('CData', self.name + self.get_file_ending())
     
 supermod.CData.subclass = CData
 # end class CData
@@ -1597,10 +1630,9 @@ class CScript(supermod.CScript, CBaseClass):
             print "File given by src exists. Create a new relative path."
             self.tmpsrc = src
             self.src = self.get_unique_relpath()
-            
-    def get_unique_relpath(self):
-        """ Return a unique relative path for this element """
-        
+
+    def get_file_ending(self):
+        """ Return the file name ending """
         if self.dtype == 'Python':
             fend = '.py'
         elif self.dtype == 'Bash':
@@ -1609,8 +1641,11 @@ class CScript(supermod.CScript, CBaseClass):
             fend = '.m'
         else:
             fend = '.txt'
-            
-        return unify('CScript', self.name + fend)
+        return fend
+
+    def get_unique_relpath(self):
+        """ Return a unique relative path for this element """
+        return unify('CScript', self.name + self.get_file_ending())
 
     @classmethod
     def create_from_file(cls, name, filename, dtype= 'Python', fileformat = 'UTF-8'):
