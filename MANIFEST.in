@@ -1,4 +1,4 @@
-include THANKS COPYING Makefile* MANIFEST.in setup* README.* LICENSE
+include COPYING MANIFEST.in setup* README.*
 
 graft cfflib
 graft doc
