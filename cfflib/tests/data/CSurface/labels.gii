@@ -26,7 +26,7 @@
 	Dimensionality="2"
 	Dim0="3"
 	Dim1="1"
-	Encoding="GIFTI_ENCODING_B64GZ"
+	Encoding="GZipBase64Binary"
 	Endian="GIFTI_ENDIAN_LITTLE"
 	ExternalFileName=""
 	ExternalFileOffset="">
@@ -58,8 +58,7 @@
   0.000000   0.000000   0.000000   1.000000
 </MatrixData>
 </CoordinateSystemTransformMatrix>
-<Data>
-eJxjYAABFQcwxRAJpT0dAA1sAYc=
+<Data>eJxjYAABFQcwxRAJpT0dAA1sAYc=
 </Data>
 </DataArray>
 </GIFTI>
