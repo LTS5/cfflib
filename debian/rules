@@ -24,7 +24,6 @@ ifeq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
 	for PYTHON in $(shell pyversions -r); do \
 		echo "I: Running cfflib unittests using $$PYTHON"; \
 		PYTHONPATH=$$(/bin/ls -d $(INSTALL_PATH)/usr/lib/$$PYTHON/*-packages) \
-		MPLCONFIGDIR=/tmp/ \
-			$$PYTHON /usr/bin/nosetests cfflib; \
+		$$PYTHON /usr/bin/nosetests cfflib; \
 	done
 endif

@@ -7,3 +7,6 @@ graft scratch
 prune doc/manual
 prune doc/manual/build
 prune doc/build
+
+global-exclude *.pyc
+global-exclude .git
