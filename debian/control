@@ -28,13 +28,11 @@ Recommends: python-nose,
 Provides: ${python:Provides}
 Description: Multi-modal connectome and metadata management and integration
  The Connectome File Format Library (cfflib) is a Python module for
- multi-modal connectome data and metadata management and integration for
- the neuroimaging community. It is based on the Connectome File Format
- XML specification, providing  a Python object model. It contains a set
- of connectome objects, representing a high-level interface to
- multi-modal data files stored in various neuroimaging data formats.
- Furthermore, metadata annotation as tags and in structured form is
- possible.
- .
- The following core connectome objects are defined: CMetadata, CNetwork,
- CSurface, CVolume, CSTrack, CTimeseries, CData, CScript.
+ multi-modal neuroimaging connectome data and metadata management and integration.
+
+ It enables single subject and multi-subject data integration for a
+ variety of modalities, such as networks, surfaces, volumes, fiber tracks,
+ timeseries, scripts, arbitrary data objects such as homogeneous arrays or
+ CSV/JSON files. It relies on existing Python modules and the standard library
+ for basic data I/O, and adds a layer of metadata annotation as tags or with
+ structured properties to individual data objects.
