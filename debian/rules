@@ -27,3 +27,7 @@ ifeq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
 		$$PYTHON /usr/bin/nosetests cfflib; \
 	done
 endif
+
+override_dh_auto_clean:
+	dh_auto_clean
+	-rm -rf doc/build
