@@ -3,10 +3,28 @@
 
 PACKAGE_NAME = python-cfflib
 PACKAGE_ROOT_DIR = debian/${PACKAGE_NAME}
-INSTALL_PATH = $(CURDIR)/debian/tmp
+INSTALL_PATH = $(CURDIR)/debian/${PACKAGE_NAME}
 
 # default Python
 PYTHON=$(shell pyversions -d)
 
 %:
 	dh $@
+
+override_dh_auto_test:
+	: # Do not test just after build, lets install and then test
+
+override_dh_auto_install:
+	dh_auto_install
+	
+# All tests later on
+# cd build to prevent use of local/not-built source tree
+ifeq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
+	cd build; \
+	for PYTHON in $(shell pyversions -r); do \
+		echo "I: Running cfflib unittests using $$PYTHON"; \
+		PYTHONPATH=$$(/bin/ls -d $(INSTALL_PATH)/usr/lib/$$PYTHON/*-packages) \
+		MPLCONFIGDIR=/tmp/ \
+			$$PYTHON /usr/bin/nosetests cfflib; \
+	done
+endif
