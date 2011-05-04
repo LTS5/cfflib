@@ -262,13 +262,8 @@ def test_cvolume_nifti1():
     assert_equal(len(c.get_connectome_volume()), 1)
 
     # Check save/load the CVolume
-    testextra = v.data.extra
-    v.data.extra.update({'test':'val'})
     v.save()
     v.load()
-    assert_not_equal(v.data.extra, testextra)
-    v.data.extra = testextra
-    v.save()
     
     # Check to save the connectome
     save_to_cff(c, op.join(TMP, 'cv.cff'))
@@ -373,14 +368,9 @@ def test_csurface_gifti():
     assert_equal(len(c.get_connectome_surface()), 1)
 
     # Check save/load the CSurface
-    testver = s.data.version
-    s.data.version = '1.1.1'
     s.save()
     s.load()
-    assert_not_equal(s.data.version, testver)
-    s.data.version = testver
-    s.save()
-    
+
     # Check to save the connectome
     save_to_cff(c, op.join(TMP, 'cs.cff'))
     assert_true(op.exists(op.join(TMP, 'cs.cff')))

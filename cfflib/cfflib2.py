@@ -1146,7 +1146,7 @@ class CBaseClass(object):
             self.tmpsrc = rval
             print "Updated storage path of file: %s" % rval
         else:
-            raise Exception('There is nothing to save.')
+            print 'There is nothing to save.'
 
     # Metadata
     def load(self, custom_loader = None):
