@@ -7,10 +7,15 @@ import os
 import sys
 if os.path.exists('MANIFEST'): os.remove('MANIFEST')
 
-packages=["cfflib"]
+packages=["cfflib", "cfflib.tests"]
 
 package_data = {'cfflib':
                 ['schema/*.xsd',
+                 'tests/data/CData/*.*',
+                 'tests/data/CNetwork/*.*',
+                 'tests/data/CSurface/*.*',
+                 'tests/data/CTrack/*.*',
+                 'tests/data/CVolume/*.*'
                  ]}
 
 ################################################################################
@@ -53,7 +58,7 @@ def main(**extra_args):
           maintainer = 'EPFL LTS5 Diffusion Group',
           maintainer_email = 'info@connectomics.org',
           package_data = package_data,
-          requires=["numpy (>=1.2)", "nibabel (>=1.0.1)"],
+          requires=["numpy (>=1.2)", "nibabel (>=1.1.0)"],
           **extra_args
          )
 
