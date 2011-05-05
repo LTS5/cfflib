@@ -493,10 +493,12 @@ def load_data(obj):
         _zipfile = ZipFile(obj.parent_cfile.src, 'r', ZIP_DEFLATED)
         try:
             exfile = _zipfile.extract(obj.src, tmpdir)
-            print "Created temporary file %s while loading." % exfile
+            print "Loading file. Created temporary file: %s" % exfile
             obj.tmpsrc = exfile
             _zipfile.close()
-            return load(exfile)
+            retload = load(exfile)
+            print "Succeed."
+            return retload
         except: # XXX: what is the correct exception for read error?
             raise RuntimeError('Can not extract "%s" from connectome file using path %s. Please extract .cff and load meta.cml directly.' % (str(obj.name), str(obj.src)) )
       
@@ -506,15 +508,19 @@ def load_data(obj):
     else:
         if hasattr(obj, 'tmpsrc'):
             # we have an absolute path
-            print "Try to load object from %s" % obj.tmpsrc
+            print "Load object: %s" % obj.tmpsrc
             obj.tmpsrc = obj.tmpsrc
-            return load(obj.tmpsrc)
+            retload = load(obj.tmpsrc)
+            print "Succeed."
+            return retload
         else:
             # otherwise, we need to join the meta.cml path with the current relative path
             path2file = op.join(op.dirname(obj.parent_cfile.fname), obj.src)
-            print "Try to load object from %s" % path2file
+            print "Load object: %s" % path2file
             obj.tmpsrc = path2file
-            return load(path2file)
+            retload = load(path2file)
+            print "Succeed."
+            return retload
 
 def unify(t, n):
     """ Unify type and name """
