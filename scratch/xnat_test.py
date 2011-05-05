@@ -1,7 +1,11 @@
 import cfflib as cf
-#a=cf.connectome()
-a=cf.load('/home/stephan/test/meta.cml')
-interface = cf.pyxnat.Interface('http://sandbox.xnat.org','unidesigner', 'xnat2011')
-a.set_xnat_connection(interface)
-a.push('debug', 'new007', 'consciousnessstudy')
 
+a=cf.load('/path/to/meta.cml')
+
+cf.set_xnat_connection({'server': 'http://localhost:8080/xnat', 'user':'myuser', 'password': 'mypassword'})
+
+# push connectome object
+#cf.xnat_push(a,  projectid = 'DEB02', subjectid= 'L01', experimentid = 'EXP4', overwrite = True)
+
+# pull connectom object
+cf.xnat_pull( projectid = 'DEB02', subjectid= 'L01', experimentid = 'EXP4', storagepath='/tmp')
