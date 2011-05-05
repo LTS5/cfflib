@@ -12,14 +12,6 @@ from cff import showIndent, quote_xml, tag
 import tempfile
 import os.path as op
 import os
-has_pyxnat = True
-try:
-    import pyxnat    
-except:
-    has_pyxnat = False
-
-
-DEBUG_msg = False
 
 import sys
 import cff as supermod
@@ -148,38 +140,12 @@ class connectome(supermod.connectome):
         
         # set default title
         if title is None:
-            title = 'myconnectome'
-        
-        self._xnat_interface = None
+            title = 'newconnectome'
         
         # Default CMetadata
         if connectome_meta is None:
             self.connectome_meta = CMetadata()
             self.connectome_meta.set_title(title)
-        
-    def set_xnat_connection(self, interface = None):
-        """ Setup this connectome container to push and pull from XNAT
-        
-        Parameters
-        ----------
-        connection_interface : { pxnat.Interface, dict }
-            Set the PyXNAT interface or a dictionary
-            with keys server, user, password, cachedir (optional)
-            
-        """
-        
-        if not has_pyxnat:
-            raise Exception('You need to install PyXNAT to use this functionality')
-        
-        if isinstance(interface, dict):
-            self._xnat_interface = pyxnat.Interface(**interface)
-        elif isinstance(interface, pyxnat.Interface):
-            self._xnat_interface = interface
-        else:
-            self._xnat_interface = None
-
-        if DEBUG_msg:
-            print("Connected to XNAT Server")
             
     def add_connectome_object(self, cobj):
         """ Adds an arbitrary connectome object to the container depending
@@ -203,199 +169,7 @@ class connectome(supermod.connectome):
         elif cname == 'CTimeseries':
             self.add_connectome_timeseries(cobj)
 
-            
         # XXX> to be competed
-        
-    def pull(self, projectid, subjectid, experimentid, storagepath):
-        """ Pull the complete set of files from a subject and experiment """
-   
-        absstoragepath = op.abspath(storagepath)
-        
-        # we define the unique experimental id based on the user input
-        # see push for more comments
-#        subj_id = '%s_%s' % (projectid, subjectid)
-#        exp_id = '%s_%s' % (subj_id, experimentid)
-        subj_id = '%s' % subjectid
-        exp_id = '%s_%s' % (projectid, experimentid)
-        
-        experiment_uri = '/projects/%s/subjects/%s/experiments/%s' % (projectid, subj_id, exp_id)
-        metacml_uri = '%s/resources/meta/files/meta.cml' % experiment_uri
-        
-        # download meta.cml
-        metacmlpath = op.join(absstoragepath, 'meta.cml')
-        meta_uri = '%s/resources/meta/files/meta.cml' % experiment_uri
-        self._xnat_interface.select(meta_uri).get(metacmlpath)
-            
-        # parse meta.cml
-        f = open(metacmlpath, 'rb')
-        remote_connectome = parseString(f.read())
-        f.close()
-        if DEBUG_msg:
-            print "Remote connectome", remote_connectome.to_xml()
-        
-        # loop over objects and download them to pyxnat cache / or path 
-        for ele in remote_connectome.get_all():
-            if DEBUG_msg:
-                print("Downloading connectome object")
-                ele.print_summary()
-                
-            cobj_uri = '%s/assessors/%s/out/resources/data/files/%s' % (
-                    experiment_uri, 
-                    '%s_%s' % (exp_id, ele.__class__.__name__),
-                    quote_for_xnat(ele.name) + ele.get_file_ending()
-                    )
-            
-            # download file
-            # does file folder exist?
-            eleobjfolderfname = op.join(absstoragepath, ele.get_unique_relpath())
-            
-            if not op.exists(op.split(eleobjfolderfname)[0]):
-                os.makedirs( op.split(eleobjfolderfname)[0] )
-            
-            self._xnat_interface.select(cobj_uri).get(eleobjfolderfname)
-
-        # update current connectome container
-        print("=============")
-        print("You can load the pulled connectome file with:")
-        print("import cfflib as cf; mycon = cf.load('%s')" % op.join(absstoragepath, 'meta.cml'))
-        print("=============")
-        
-        return True
-        
-            
-    def push(self, projectid, subjectid, experimentid, overwrite = False):
-        """ Push all the connectome objects to the remote XNAT server.
-        
-        Parameters
-        ----------
-        projectid : string
-            The id of the project, has to be unique across an XNAT server
-        subjectid : string
-            The id of the subject
-        experimentid : string
-            The id of the experiment
-        overwrite : boolean
-            Overwrite remote version of the connectome object with
-            the connectome object contained in the local connectome container
-            
-        """
-        def _push_metacml(experiment_uri):
-            _, fname = tempfile.mkstemp()
-            f=open(fname, 'wb')
-            f.write(self.to_xml())
-            f.close()
-
-            # finally update remote meta.cml
-            meta_uri = '%s/resources/meta/files/meta.cml' % experiment_uri
-            self._xnat_interface.select(meta_uri).insert(fname, experiments = 'xnat:imageSessionData', \
-                        use_label=True)
-
-
-        if self._xnat_interface is None:
-            raise Exception('You need to set the XNAT connection with set_xnat_connection')
-
-        # we define the unique experimental id based on the user input
-        # user do not expect this composed identifiers, so we directly use
-        # the given parameters to construct the path
-        # originally, we thought that this is required because there have to be
-        # unique subject identifiers across the whole XNAT instance
-        # we seems not to be required anymore
-        # subj_id = '%s_%s' % (projectid, subjectid)
-        # exp_id = '%s_%s' % (subj_id, experimentid)
-        subj_id = '%s' % subjectid
-        exp_id = '%s_%s' % (projectid, experimentid)
-        
-        experiment_uri = '/projects/%s/subjects/%s/experiments/%s' % (projectid, subj_id, exp_id)
-        metacml_uri = '%s/resources/meta/files/meta.cml' % experiment_uri
-                
-        # does the experiment exists                    
-        if self._xnat_interface.select(metacml_uri).exists():
-            # it exists, just download it
-            self._remote_metacml = self._xnat_interface.select(metacml_uri).get()
-            
-            # compare it to the local object
-            remote_metacml = open(self._remote_metacml, 'rb')
-            
-            remote_connectome = parseString(remote_metacml.read())
-            
-            # loop over local connectome objects and check if the exists remotely
-            all_local_cobj = self.get_all()
-            
-            # connectome objects we need to add to the remote metacml
-            push_objects = []
-            
-            for ele in all_local_cobj:
-                if DEBUG_msg:
-                    print "Working on element %s" % ele.name
-                if (ele in remote_connectome.get_all() and overwrite) or \
-                    not ele in remote_connectome.get_all():
-                    if DEBUG_msg:
-                        print "We push element %s" % ele.name
-                        print "Element in remote?" + str(ele in remote_connectome.get_all())
-                    
-                    # push connectome object to remote
-                    cobj_uri = '%s/assessors/%s/out/resources/data/files/%s' % (
-                        experiment_uri, 
-                        '%s_%s' % (exp_id, ele.__class__.__name__),
-                        quote_for_xnat(ele.name) + ele.get_file_ending()
-                        )
-                    if DEBUG_msg:
-                        print "uri", cobj_uri
-                    # insert data file to xnat
-                    self._xnat_interface.select(cobj_uri).insert(ele.get_abs_path(), experiments = 'xnat:imageSessionData', \
-                        assessors = 'xnat:imageAssessorData', use_label=True)
-                    # add element for updating metacml later on the remote
-                    push_objects.append(ele)
-                    
-                else:
-                    # we do not push
-                    if DEBUG_msg:
-                        print "We do nothing with element %s (already on remote and no overwrite)" % ele.name
-                    
-                    
-            # synchronize meta_cml
-            # we need to retrieve the remote connectome objects and add it to the
-            # local if they no not yet exists
-            for el in remote_connectome.get_all():
-                if not el in self.get_all():
-                    self.add_connectome_object(el)
-                    
-            #for el in push_objects:
-                # add all push_objects to remote meta_cml
-             #   remote_connectome.add_connectome_object(el)
-            
-            # update cmetadata (overwriting remote with local)
-            remote_connectome.connectome_meta = self.connectome_meta
-            
-            _push_metacml(experiment_uri)
-
-            if DEBUG_msg:
-                print "Current local connectome container", self.to_xml()
-                print "Current remote connectome container", remote_connectome.to_xml()
-                print "Current push objects", push_objects
-            
-        else:
-            # create meta.cml
-
-            # loop over local connectome objects and check if the exists remotely
-            all_local_cobj = self.get_all()
-            
-            for ele in all_local_cobj:
-                print "We push element %s" % ele.name
-                
-                # push connectome object to remote
-                cobj_uri = '%s/assessors/%s/out/resources/data/files/%s' % (
-                    experiment_uri, 
-                    '%s_%s' % (exp_id, ele.__class__.__name__),
-                    quote_for_xnat(ele.name)
-                    )
-                # insert data file to xnat
-                self._xnat_interface.select(cobj_uri).insert(ele.get_abs_path(), experiments = 'xnat:imageSessionData', \
-                        assessors = 'xnat:imageAssessorData', use_label=True)
-
-            # push the current connectome object to remote
-            _push_metacml(experiment_uri)
-            
         
     def get_all(self):
         """ Return all connectome objects as a list
