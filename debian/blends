@@ -1,0 +1,5 @@
+Format: extended
+Source: cfflib
+Tasks: debian-med/imaging-dev
+Depends: python-cfflib
+Pkg-URL: http://neuro.debian.net/pkgs/%(Pkg-Name)s.html
