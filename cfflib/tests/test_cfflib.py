@@ -148,7 +148,6 @@ def test_cnetwork_graphml():
     assert_equal(c.get_connectome_network()[1].get_name(), '2nd graphml')
 
     # Check save/load the CNetwork
-    n.save()
     n.load()
 
     # Check to save the connectome
@@ -261,10 +260,6 @@ def test_cvolume_nifti1():
     assert_not_equal(c.get_connectome_volume(), [])
     assert_equal(len(c.get_connectome_volume()), 1)
 
-    # Check save/load the CVolume
-    v.save()
-    v.load()
-    
     # Check to save the connectome
     save_to_cff(c, op.join(TMP, 'cv.cff'))
     assert_true(op.exists(op.join(TMP, 'cv.cff')))
