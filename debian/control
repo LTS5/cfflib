@@ -6,8 +6,8 @@ Build-Depends: debhelper (>= 7.2.18), python-all, python-support,
 			   python-numpy,
 			   python-sphinx,
 			   python-nose,
-			   python-networkx,
-			   python-nibabel
+			   python-networkx (>= 1.4),
+			   python-nibabel (>= 1.1.0)
 Standards-Version: 3.9.2
 Homepage: http://cmtk.org/cfflib
 Vcs-Git: git://github.com/LTS5/cfflib.git
