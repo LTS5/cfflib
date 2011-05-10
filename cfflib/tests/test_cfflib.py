@@ -27,7 +27,7 @@ def test_connectome():
     
     # Check for the default CMetadata
     assert_not_equal(c.connectome_meta, None)
-    assert_equal(c.get_connectome_meta().get_title(), 'myconnectome')
+    assert_equal(c.get_connectome_meta().get_title(), 'newconnectome')
     assert_equal(c.get_connectome_meta().get_generator(), 'cfflib')
     assert_equal(c.get_connectome_meta().get_version(), '2.0')
     
