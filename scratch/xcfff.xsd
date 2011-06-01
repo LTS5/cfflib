@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema targetNamespace="http://www.connectomics.org/xcfff" xmlns:xcfff="http://www.connectomics.org/xcfff" xmlns:xdat="http://nrg.wustl.edu/xdat" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xnat="http://nrg.wustl.edu/xnat" elementFormDefault="qualified" attributeFormDefault="unqualified">
+    <xs:import namespace="http://nrg.wustl.edu/xnat" schemaLocation="xnat.xsd"/>
+    
+   <xs:element name="session" type="xcfff:sessionData"></xs:element>
+    <xs:element name="network" type="xcfff:networkData"></xs:element>
+    <xs:element name="surface" type="xcfff:surfaceData"></xs:element>
+    <xs:element name="script" type="xcfff:scriptData"></xs:element>
+    <xs:element name="tractography" type="xcfff:tractographyData"></xs:element>
+    <xs:element name="generic" type="xcfff:genericData"></xs:element>
+
+    <xs:complexType name="sessionData">
+        <xs:annotation>
+            <xs:documentation>Multi-Modal Timepoint Container Session for Raw and Processed Data
+            A timepoint can represent a single visit, different acquisitions are represented in the SCAN,
+            the behavioural assesments are in ASSESSORS, and processed data are in RECONSTRUCTION.</xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="xnat:imageSessionData"/>
+        </xs:complexContent>
+    </xs:complexType>
+    
+    <xs:complexType name="genericData">
+        <xs:annotation>
+            <xs:documentation>The base type for reconstructed data objects</xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="xnat:imageAssessorData">
+                
+                <xs:sequence minOccurs="0">
+                    <xs:element name="typereference" type="xs:string" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>A reference to an ontology concept defining the type of data. Should be a unique identifying URI such as a PURL.org</xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="description" type="xs:string" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>A textual description of the type of the data</xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                </xs:sequence>
+                
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    
+    <xs:complexType name="networkData">
+        <xs:annotation>
+            <xs:documentation></xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="xcfff:genericData"/>
+        </xs:complexContent>
+    </xs:complexType>
+    
+    <xs:complexType name="surfaceData">
+        <xs:annotation>
+            <xs:documentation></xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="xcfff:genericData"/>
+        </xs:complexContent>
+    </xs:complexType>
+    
+    <xs:complexType name="tractographyData">
+        <xs:annotation>
+            <xs:documentation></xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="xcfff:genericData"/>
+        </xs:complexContent>
+    </xs:complexType>
+    
+    <xs:complexType name="scriptData">
+        <xs:annotation>
+            <xs:documentation></xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="xcfff:genericData"/>
+        </xs:complexContent>
+    </xs:complexType>
+    
+</xs:schema>
