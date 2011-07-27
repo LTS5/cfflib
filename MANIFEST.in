@@ -1,4 +1,4 @@
-include THANKS COPYING Makefile* MANIFEST.in setup* README.* LICENSE
+include COPYING MANIFEST.in setup* README.*
 
 graft cfflib
 graft doc
@@ -7,3 +7,6 @@ graft scratch
 prune doc/manual
 prune doc/manual/build
 prune doc/build
+
+global-exclude *.pyc
+global-exclude .git

@@ -15,12 +15,16 @@ encapsulate the various data types as they occur in connectome research.
 * CMetadata: Connectome Markup Language (XML)
 * CNetwork: Networks, Connectomes (GraphML, GEXF, NXGPickle)
 * CSurface: Surface data (Gifti)
-* CVolume: Volumetric data (Nifti1)
+* CVolume: Volumetric data (Nifti1, Nifti1GZ)
 * CTrack: Fiber track data (TrackVis)
-* CTimeserie: Timeseries data (HDF5, NumPy)
+* CTimeseries: Timeseries data (HDF5, NumPy)
 * CData: Other data, like tables (HDF5, NumPy, XML, JSON, CSV, Pickle)
 * CScript: Processing and analysis scripts (ASCII, UTF-8, UTF-16)
 * CImagestack: Imagestacks (PNG, JPG, TIFF, SVG)
+
+The Connectome Markup Language was developed without knowing about the existence
+of the `"Chemical Markup Language" <http://xml-cml.org/index.php>`_. Both markup
+languages using the same abbreviation *CML* to denote their namespace.
 
 Contents:
 

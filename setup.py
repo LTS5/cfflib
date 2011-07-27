@@ -7,10 +7,15 @@ import os
 import sys
 if os.path.exists('MANIFEST'): os.remove('MANIFEST')
 
-packages=["cfflib"]
+packages=["cfflib", "cfflib.tests"]
 
 package_data = {'cfflib':
                 ['schema/*.xsd',
+                 'tests/data/CData/*.*',
+                 'tests/data/CNetwork/*.*',
+                 'tests/data/CSurface/*.*',
+                 'tests/data/CTrack/*.*',
+                 'tests/data/CVolume/*.*'
                  ]}
 
 ################################################################################
@@ -27,15 +32,16 @@ if len(set(('develop', 'bdist_egg', 'bdist_rpm', 'bdist', 'bdist_dumb',
 if not 'extra_setuptools_args' in globals():
     extra_setuptools_args = dict()
     
+ver_file = os.path.join('cfflib', 'info.py')
+exec(open(ver_file).read())
 
 def main(**extra_args):
     from distutils.core import setup
-    
     setup(name='cfflib',
-          version='2.0',
+          version=__version__,
           description='Connectome File Format Library',
-          long_description = """The Connectome File Format library supports easy handling of multi-modal neuroimaging formats and metadata for research in connectomics""",
-          author='EPFL LTS5 Diffusion Group',
+          long_description = """The Connectome File Format library supports handling of multi-modal neuroimaging datasets and metadata""",
+          author= 'Stephan Gerhard',
           author_email='info@connectomics.org',
           url='http://www.connectomics.org/',
           license='Modified BSD License',
@@ -49,9 +55,10 @@ def main(**extra_args):
             Topic :: Scientific/Engineering
             Topic :: Software Development
             """.splitlines() if len(c.split()) > 0],    
-          maintainer = 'Stephan Gerhard',
+          maintainer = 'EPFL LTS5 Diffusion Group',
           maintainer_email = 'info@connectomics.org',
           package_data = package_data,
+          requires=["numpy (>=1.2)", "nibabel (>=1.1.0)"],
           **extra_args
          )
 

@@ -27,7 +27,7 @@ def test_connectome():
     
     # Check for the default CMetadata
     assert_not_equal(c.connectome_meta, None)
-    assert_equal(c.get_connectome_meta().get_title(), 'myconnectome')
+    assert_equal(c.get_connectome_meta().get_title(), 'newconnectome')
     assert_equal(c.get_connectome_meta().get_generator(), 'cfflib')
     assert_equal(c.get_connectome_meta().get_version(), '2.0')
     
@@ -148,7 +148,6 @@ def test_cnetwork_graphml():
     assert_equal(c.get_connectome_network()[1].get_name(), '2nd graphml')
 
     # Check save/load the CNetwork
-    n.save()
     n.load()
 
     # Check to save the connectome
@@ -261,15 +260,6 @@ def test_cvolume_nifti1():
     assert_not_equal(c.get_connectome_volume(), [])
     assert_equal(len(c.get_connectome_volume()), 1)
 
-    # Check save/load the CVolume
-    testextra = v.data.extra
-    v.data.extra.update({'test':'val'})
-    v.save()
-    v.load()
-    assert_not_equal(v.data.extra, testextra)
-    v.data.extra = testextra
-    v.save()
-    
     # Check to save the connectome
     save_to_cff(c, op.join(TMP, 'cv.cff'))
     assert_true(op.exists(op.join(TMP, 'cv.cff')))
@@ -373,14 +363,9 @@ def test_csurface_gifti():
     assert_equal(len(c.get_connectome_surface()), 1)
 
     # Check save/load the CSurface
-    testver = s.data.version
-    s.data.version = '1.1.1'
     s.save()
     s.load()
-    assert_not_equal(s.data.version, testver)
-    s.data.version = testver
-    s.save()
-    
+
     # Check to save the connectome
     save_to_cff(c, op.join(TMP, 'cs.cff'))
     assert_true(op.exists(op.join(TMP, 'cs.cff')))
