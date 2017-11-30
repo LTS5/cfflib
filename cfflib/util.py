@@ -265,11 +265,11 @@ def quote_for_xnat(name):
     that can be used for PyXNAT queries """
     n = name.lower()
     # XXX: might need update
-    remove_characters = [' ', '/', '\\', '[', ']', '*', '"', '?', '\'', '%', '(', ')'] 
+    remove_characters = [' ', '/', '\\', '[', ']', '*', '"', '?', '\'', '%', '(', ')']
     for c in remove_characters:
-        n = n.replace(c, '_')    
+        n = n.replace(c, '_')
     return n
-    
+
 
 def validate_fileformat_type(src, location, fileformat):
     """ Try to evaluate whether the given file has the correct fileformat is given """
@@ -277,7 +277,7 @@ def validate_fileformat_type(src, location, fileformat):
 
 def validate_filedata_type(src, location, fileformat, dtype):
     """ Try to evalute whether the given file is of dtype type """
-    pass 
+    pass
 
 def remove_file(fpath):
     """ Closes and removes the fpath file from the temporary folder """
@@ -292,14 +292,14 @@ class NotSupportedFormat(Exception):
         return "Loading %s:\nFile format '%s' not supported by cfflib. Use your custom loader." % (self.objtype, self.fileformat)
 
 def save_data(obj):
-        
+
     objrep = str(type(obj))
-        
+
     if hasattr(obj, 'data'):
 
         # it appears that there is no remove function for zip archives implemented to date
         # http://bugs.python.org/issue6818
-                
+
         # the file was loaded, thus it exists a .tmpsrc pointing to
         # its absolute path. Use this path to overwrite the file by the
         # current .data data
@@ -309,10 +309,10 @@ def save_data(obj):
             # if it has no .tmpsrc, i.e. it is not loaded from a file path
             # but it has a .data set
             raise Exception('Element %s cannot be saved. (It was never loaded)' % str(obj))
-        
+
         dname = op.dirname(tmpfname)
         if not op.exists(dname):
-            os.makedirs()
+            os.makedirs(dname)
 
         if 'CVolume' in objrep:
             print "Saving CVolume ..."
@@ -330,20 +330,20 @@ def save_data(obj):
             else:
                 raise NotSupportedFormat("Other", str(obj))
             print "Done."
-            
+
         elif 'CSurface' in objrep:
             if obj.fileformat == "Gifti":
                 import nibabel.gifti as nig
                 nig.write(obj.data, tmpfname)
             else:
                 raise NotSupportedFormat("Other", str(obj))
-            
+
         elif 'CTrack' in objrep:
             if obj.fileformat == "TrackVis":
                 ni.trackvis.write(tmpfname, obj.data[0], obj.data[1])
             else:
                 raise NotSupportedFormat("Other", str(obj))
-            
+
         elif 'CTimeserie' in objrep:
             if obj.fileformat == "HDF5":
                 # flush the data of the buffers
@@ -354,9 +354,9 @@ def save_data(obj):
                 load = np.save(tmpfname, obj.data)
             else:
                 raise NotSupportedFormat("Other", str(obj))
-            
+
         elif 'CData' in objrep:
-            
+
             if obj.fileformat == "NumPy":
                 load = np.save(tmpfname, obj.data)
             elif obj.fileformat == "HDF5":
@@ -383,14 +383,14 @@ def save_data(obj):
                 f.close()
             else:
                 raise NotSupportedFormat("Other", str(obj))
-            
+
         elif 'CScript' in objrep:
                 f = open(tmpfname, 'w')
                 f.write(obj.data)
                 f.close()
-        
+
         return tmpfname
-    
+
     else:
         # assumes the .src paths are given relative to the meta.cml
         # valid for iszip = True and iszip = False
@@ -399,9 +399,9 @@ def save_data(obj):
         print "Connectome Object is not loaded. Nothing to save."
         return ''
 
-    
+
 def load_data(obj):
-        
+
     objrep = str(type(obj))
     if 'CVolume' in objrep:
         load = ni.load
@@ -415,28 +415,28 @@ def load_data(obj):
             load = nx.read_gpickle
         else:
             raise NotSupportedFormat("Other", str(obj))
-        
+
     elif 'CSurface' in objrep:
         if obj.fileformat == "Gifti":
             import nibabel.gifti as nig
             load = nig.read
         else:
             raise NotSupportedFormat("Other", str(obj))
-        
+
     elif 'CTrack' in objrep:
         if obj.fileformat == "TrackVis":
             load = ni.trackvis.read
         else:
             raise NotSupportedFormat("Other", str(obj))
-        
+
     elif 'CTimeserie' in objrep:
         if obj.fileformat == "HDF5":
             load = tables.openFile
         elif obj.fileformat == "NumPy":
-            load = np.load 
+            load = np.load
         else:
             raise NotSupportedFormat("Other", str(obj))
-        
+
     elif 'CData' in objrep:
         if obj.fileformat == "NumPy":
             load = np.load
@@ -453,10 +453,10 @@ def load_data(obj):
             load = open
         else:
             raise NotSupportedFormat("Other", str(obj))
-        
+
     elif 'CScript' in objrep:
         load = open
-        
+
     elif 'CImagestack' in objrep:
         if obj.parent_cfile.iszip:
             _zipfile = ZipFile(obj.parent_cfile.src, 'r', ZIP_DEFLATED)
@@ -481,9 +481,9 @@ def load_data(obj):
                 return sorted(glob(path2files))
 
     ######
-        
+
     if obj.parent_cfile.iszip:
-        
+
         from tempfile import gettempdir
 
         # create a meaningful and unique temporary path to extract data files
@@ -501,10 +501,10 @@ def load_data(obj):
             return retload
         except: # XXX: what is the correct exception for read error?
             raise RuntimeError('Can not extract "%s" from connectome file using path %s. Please extract .cff and load meta.cml directly.' % (str(obj.name), str(obj.src)) )
-      
+
         return None
-        
-        
+
+
     else:
         if hasattr(obj, 'tmpsrc'):
             # we have an absolute path
@@ -527,7 +527,7 @@ def unify(t, n):
     n = n.lower()
     n = n.replace(' ', '_')
     return '%s/%s' % (t, n)
-        
+
 
 import urllib2
 
@@ -556,7 +556,7 @@ def group_by_tagkey(cobj_list, tagkey, cobj_type = None, exclude_values = None):
     """ Specifying the connectome object type and metadata key, a
     dictionary is returned keyed by the values of the given metadata
     key.
-    
+
     Parameter
     ---------
     cobj_list : list of connectome objects
@@ -569,7 +569,7 @@ def group_by_tagkey(cobj_list, tagkey, cobj_type = None, exclude_values = None):
     exclude_values : list of string
         If you want to discard particular metadata values
         in the returned dictionary.
-    
+
     Notes
     -----
     This function is helpful to retrieve groups of connectome
@@ -578,7 +578,7 @@ def group_by_tagkey(cobj_list, tagkey, cobj_type = None, exclude_values = None):
     criteria. For example you can have a metadata key "sex" with
     values M, F and unknown. You can exclude the unknown value
     by setting exclude_values = ['unknown'].
-    
+
     If the metadata key does not exists for the connectome
     object, just skip this object.
     """
@@ -596,5 +596,5 @@ def group_by_tagkey(cobj_list, tagkey, cobj_type = None, exclude_values = None):
         for k in exclude_values:
             if rdict.has_key(k):
                 del rdict[k]
-            
+
     return rdict
